@@ -1,0 +1,82 @@
+include blocks/block-base-display.partial.pug
+
+mixin baseCard(bases)
+	.layout-row.layout-wrap.layout-gap-16
+		cub-card.card.w-268.h-194(
+			*ngFor=`let base of ${bases}; ngForTrackByID`,
+			[style.background]=`'
+				url( "assets/images/placeholder/spreadsheet.webp" )
+				center/cover
+			'`,
+			[routerLink]='[ DETAIL_PATH, base?.id ]',
+			[class.card--focusing]='base.focusing || base.selected')
+			cub-card-content
+				.action.layout-row.layout-align-space-between-start.flex
+					cub-checkbox(
+						size='large',
+						[readonly]='!base.id',
+						[(ngModel)]='base.selected',
+						(ngModelChange)='selectBase( $event, base )',
+						(click)='$event?.stopPropagation()')
+					button(
+						cubFloatingButton,
+						icon='more-vertical',
+						[disabled]='!base.id',
+						[cubMenuTriggerFor]='baseActionMenu',
+						[cubMenuTriggerContext]='{ base }',
+						(click)='$event?.stopPropagation()')
+			cub-card-info(
+				leadingIcon='stack',
+				[title]='base.name | empty',
+				[description]='"BASE.LABEL.UPDATED_AT_DATE" | translate : { time: base.updatedAt | momentDate : "DD/MM/YY, HH:mm" }')
+
+.layout-row.layout-wrap.layout-gap-16(*ngIf='category?.id; else elseBlock;')
+	+baseCard('baseMap[ category.id ]')
+ng-template(#elseBlock)
+	.layout-column.layout-gap-40
+		.layout-column(*ngIf='( bases | filter : "isFavorite" : true ).length')
+			+categoryTitle('BASE_FAVORITE')
+			+baseCard('bases | filter : "isFavorite" : true')
+		.layout-column(*ngIf='categories?.length')
+			+categoryTitle('FOLDER')
+			.layout-row.layout-wrap.layout-gap-16
+				cub-card.card.w-268.h-62(
+					variant='tonal',
+					*ngFor='let category of categories; ngForTrackByID',
+					[class.card--focusing]='category.focusing',
+					(click)='openCategory( category )')
+					cub-card-content
+						.layout-row.layout-align-space-between-center.flex
+							.layout-row.layout-align-start-center.layout-gap-8
+								img(width='20px', height='20px', [lazyLoad]='"assets/images/icons/folder-blue.webp"')
+								.text-truncate([title]='category.name')
+									| {{ category.name | empty }}
+							button.action(
+								cubFloatingButton,
+								icon='more-vertical',
+								[disabled]='!category.id',
+								[cubMenuTriggerFor]='folderActionMenu',
+								[cubMenuTriggerContext]='{ category }',
+								(click)='$event?.stopPropagation()')
+		.layout-column(*ngIf=`!( bases?.length
+			&& !( baseMap?.null | filter : "isFavorite" : false )?.length )`)
+			+categoryTitle('BASE')
+			.layout-row.layout-wrap.layout-gap-16
+				ng-container(*ngIf='!( baseMap?.null | filter : "isFavorite" : false )?.length; else elseBlock;',)
+					cub-card#spinElement.card.w-268.h-194(
+						variant='tonal',
+						*ngIf='userRole.canCreateBase',
+						(mouseenter)='handleCardHover($event)',
+						(mouseleave)='handleCardHover($event)',
+						(click)='createBase.emit()')
+						cub-card-content
+							.layout-column.layout-align-center-center.flex
+								cub-icon.base-empty__icon(
+									name='plus',
+									size='56px',
+									color='"GRAY" | color : 500')
+						cub-card-info(
+							leadingIcon='stack',
+							[title]='"BASE.LABEL.CREATE_NEW_BASE" | translate')
+				ng-template(#elseBlock)
+					+baseCard('baseMap?.null | filter : "isFavorite" : false')

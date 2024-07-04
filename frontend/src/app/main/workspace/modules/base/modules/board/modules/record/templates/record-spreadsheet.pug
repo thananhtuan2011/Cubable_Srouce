@@ -1,0 +1,598 @@
+mixin optionSort
+	button.mr-8(
+		cubBasicButton,
+		cdkDragHandle,
+		iconSize='20px',
+		icon='drag',
+		color='secondary',
+		[disabled]='!c.id')
+	cub-dropdown.w-172.mr-20(
+		includeOuterSize,
+		[clearable]='false',
+		[ngModel]='c',
+		(ngModelChange)='addSortBy( $event, c, index )')
+		cub-dropdown-item(
+			*ngFor='let column of spreadsheetCmp.getSortableColumns( c ); trackByID',
+			[label]='column.field.name',
+			[value]='column')
+	cub-button-toggle.flex.mr-8(
+		[selectedIndex]='c.sortingType === "asc" ? 0 : 1',
+		(selectedIndexChange)='sortBy( c, $event ? "desc" : "asc" )')
+		-
+			const asc = '( "BASE.BOARD.RECORD.LABEL." + ( c.field | sortingTypeLabel : true ) ) | translate';
+			const desc = '( "BASE.BOARD.RECORD.LABEL." + ( c.field | sortingTypeLabel ) ) | translate';
+		button(cubButtonToggleItem)
+			| {{ #{asc} }}
+			cub-icon(
+				name='arrow-right',
+				size='20px',
+				color='blue')
+			| {{ #{desc} }}
+		button(cubButtonToggleItem)
+			| {{ #{desc} }}
+			cub-icon(
+				name='arrow-right',
+				size='20px',
+				color='blue')
+			| {{ #{asc} }}
+	button(
+		cubBasicButton,
+		icon='close',
+		iconSize='20px',
+		(click)='unSortByColumn( c, index )')
+
+mixin optionGroup
+	button.mr-8(
+		cubBasicButton,
+		cdkDragHandle,
+		iconSize='20px',
+		icon='drag',
+		color='secondary',
+		[disabled]='!c.id')
+	cub-dropdown.w-172.mr-20(
+		includeOuterSize,
+		[clearable]='false',
+		[ngModel]='c',
+		(ngModelChange)='addGroupBy( $event, c, index )')
+		cub-dropdown-item(
+			*ngFor='let column of spreadsheetCmp.getGroupableColumns( c ); trackByID',
+			[label]='column.field.name',
+			[value]='column')
+	cub-button-toggle.flex.mr-8(
+		[selectedIndex]='c.groupingType === "asc" ? 0 : 1',
+		(selectedIndexChange)='groupBy( c, $event ? "desc" : "asc" )')
+		-
+			const asc = '( "BASE.BOARD.RECORD.LABEL." + ( c.field | sortingTypeLabel : true ) ) | translate';
+			const desc = '( "BASE.BOARD.RECORD.LABEL." + ( c.field | sortingTypeLabel ) ) | translate';
+		button(cubButtonToggleItem)
+			| {{ #{asc} }}
+			cub-icon(
+				name='arrow-right',
+				size='20px',
+				color='blue')
+			| {{ #{desc} }}
+		button(cubButtonToggleItem)
+			| {{ #{desc} }}
+			cub-icon(
+				name='arrow-right',
+				size='20px',
+				color='blue')
+			| {{ #{asc} }}
+	button(
+		cubBasicButton,
+		icon='close',
+		iconSize='20px',
+		(click)='unGroupByColumn( c, index )')
+
+mixin setting(icon, label, buttonColor, iconColor, hoverColor='#0066cc26', activeColor, active)
+	button(
+		cubBasicButton,
+		#basicButton,
+		size='large',
+		color=buttonColor,
+		iconSize='16px',
+		hoverColor=hoverColor,
+		[icon]=icon,
+		[iconColor]=iconColor,
+		[activeColor]=activeColor,
+		[active]=active)&attributes(attributes)
+		if block
+			block
+		else
+			.text-nowrap.line-height-20
+				| {{ "BASE.BOARD.RECORD.LABEL.#{label}" | translate }}
+
+cub-menu(#rowSizeMenu, width='240px')
+	cub-menu-content
+		ng-template(cubMenuContent)
+			cub-menu-group
+				h5.ph-12.pt-8.mb-4
+					| {{ "BASE.BOARD.RECORD.LABEL.ROW_HEIGHT" | translate }}
+				button(
+					cubMenuSelectItem,
+					iconSize='20px',
+					*ngFor='let rowSize of ROW_SIZES',
+					[autoClose]='false',
+					[selected]='config.row.size === rowSize',
+					[icon]='rowSize === "S"\
+						? "line-height-short"\
+						: rowSize === "M"\
+							? "line-height-medium"\
+							: rowSize === "L"\
+								? "line-height-tall"\
+								: "line-height-extra-tall"',
+					(click)='setRowSize( rowSize )')
+					| {{ "BASE.BOARD.RECORD.LABEL." + rowSize | translate }}
+
+cub-popup(
+	#deleteFieldPopup,
+	width='400px')
+	cub-popup-header
+		ng-template(cubPopupHeader)
+			.layout-row.layout-align-space-between-center
+				h5.text-nowrap
+					| {{ "BASE.BOARD.RECORD.LABEL.DELETE_COLUMN_TITLE" | translate }}
+				button(
+					cubClearButton,
+					size='20px',
+					(click)='deleteFieldPopup?.close()')
+	cub-popup-content
+		ng-template(cubPopupContent, let-column='column')
+			.layout-column.layout-gap-20
+				.layout-column.layout-gap-8
+					.layout-column.layout-gap-4
+						span
+							| {{ "BASE.BOARD.RECORD.MESSAGE.DELETE_AFFECTED" | translate }}
+						.layout-column.pl-8
+							.layout-row.layout-align-start-center
+								.pr-8
+									| ▪
+								| {{ "BASE.BOARD.RECORD.LABEL.VIEW_DATA" | translate }}
+							.layout-row.layout-align-start-center
+								.pr-8
+									| ▪
+								| {{ "BASE.BOARD.RECORD.LABEL.AUTOMATION" | translate }}
+							.layout-row.layout-align-start-center
+								.pr-8
+									| ▪
+								| {{ "BASE.BOARD.RECORD.LABEL.FILTER" | translate }}
+							.layout-row.layout-align-start-center
+								.pr-8
+									| ▪
+								| {{ "BASE.BOARD.RECORD.LABEL.LINK_COLUMN" | translate }}
+					.text-color-error
+						| {{ "BASE.BOARD.RECORD.MESSAGE.WARNING_CAN_NOT_UNDO_ACTION" | translate }}
+				.layout-row.layout-gap-12
+					button.flex(
+						cubButton='secondary',
+						(click)='isDeleteField = false; deleteFieldPopup?.close()')
+						| {{ "BASE.BOARD.RECORD.LABEL.CANCEL" | translate }}
+					button.flex(
+						cubButton='destructive',
+						(click)='isDeleteField = true; deleteFieldPopup?.close()')
+						| {{ "BASE.BOARD.RECORD.LABEL.DELETE" | translate }}
+
+
+cub-popup(
+	#searchPopup,
+	width='300px',
+	(closed)='spreadsheetCmp.search( null )')
+	cub-popup-content
+		ng-template(cubPopupContent)
+			cub-search-box(
+				autoFocusOn,
+				[searchInfo]='spreadsheetCmp.searchInfo',
+				(searchPrevious)='spreadsheetCmp.searchPrevious( $event )',
+				(searchNext)='spreadsheetCmp.searchNext( $event )',
+				(searching)='spreadsheetCmp.search( $event )')
+
+cub-menu(
+	#sortByFieldMenu,
+	width='240px',
+	maxHeight='300px')
+	cub-menu-content
+		ng-template(cubMenuContent)
+			cub-menu-group
+				button(
+					cubMenuItem,
+					iconSize='20px',
+					*ngFor='let c of spreadsheetCmp.getSortableColumns(); trackByID',
+					[icon]='( c.field.dataType | fieldMetadata ).icon',
+					(click)='addSortBy( c )')
+					.text-truncate.mr-8(
+						[title]='c.field.name | empty',
+						[class.text-color-primary]='!c.hidden',
+						[class.text-color-tertiary]='c.hidden')
+						| {{ c.field.name | empty }}
+
+cub-menu(
+	#groupByFieldMenu,
+	width='240px',
+	maxHeight='300px')
+	cub-menu-content
+		ng-template(cubMenuContent)
+			cub-menu-group
+				button(
+					cubMenuItem,
+					iconSize='20px',
+					*ngFor='let c of spreadsheetCmp.getGroupableColumns(); trackByID',
+					[icon]='( c.field.dataType | fieldMetadata ).icon',
+					(click)='addGroupBy( c )')
+					.text-truncate.mr-8(
+						[title]='c.field.name | empty',
+						[class.text-color-primary]='!c.hidden',
+						[class.text-color-tertiary]='c.hidden')
+						| {{ c.field.name | empty }}
+
+cub-menu(
+	#sortMenu,
+	minWidth='600px',
+	maxHeight='400px')
+	cub-menu-content
+		ng-template(cubMenuContent)
+			cub-menu-group
+				.layout-column.layout-gap-8.pt-8
+					h5
+						| {{ "BASE.BOARD.RECORD.LABEL.SORT_BY" | translate }}
+					cub-scroll-bar.pl-4.layout-gap-8.mah-300(
+						suppressX,
+						cdkDropList,
+						#sortFieldsScrollBar,
+						*ngIf='sortingColumns?.length',
+						[cdkDropListData]='sortingColumns',
+						(cdkDropListDropped)='onSortByDropped( $event )')
+						.layout-row.layout-align-start-center(
+							cdkDrag,
+							*ngFor='let c of sortingColumns; let index = index; trackByID',
+							[cdkDragData]='c')
+							div(*cdkDragPlaceholder)
+								.w-572.h-42
+							.drag-condition-preview(*cdkDragPreview)
+								+optionSort
+							+optionSort
+					button(
+						cubBasicButton,
+						size='large',
+						iconSize='20px',
+						icon='plus-circle',
+						[disabled]='!spreadsheetCmp.getSortableColumns()?.length',
+						[active]='sortByFieldMenu?.isOpened',
+						[cubMenuTriggerFor]='sortByFieldMenu')
+						.text-nowrap.line-height-20
+							| {{ "BASE.BOARD.RECORD.LABEL.ADD_FIELD" | translate }}
+
+cub-menu(
+	#groupMenu,
+	minWidth='600px',
+	maxHeight='400px')
+	cub-menu-content
+		ng-template(cubMenuContent)
+			cub-menu-group
+				.layout-column.layout-gap-8.pt-8
+					h5
+						| {{ "BASE.BOARD.RECORD.LABEL.GROUP_BY" | translate }}
+					cub-scroll-bar.pl-4.layout-gap-8.mah-300(
+						suppressX,
+						cdkDropList,
+						#groupFieldsScrollBar,
+						*ngIf='groupingColumns?.length',
+						[cdkDropListData]='groupingColumns',
+						(cdkDropListDropped)='onGroupByDropped( $event )')
+						.layout-row.layout-align-start-center(
+							cdkDrag,
+							*ngFor='let c of groupingColumns; let index = index; trackByID',
+							[cdkDragData]='c')
+							div(*cdkDragPlaceholder)
+								.w-572.h-42
+							.drag-condition-preview(*cdkDragPreview)
+								+optionGroup
+							+optionGroup
+					button(
+						cubBasicButton,
+						size='large',
+						iconSize='20px',
+						icon='plus-circle',
+						[disabled]=`!spreadsheetCmp.getGroupableColumns()?.length
+							|| groupingColumns?.length > 2`,
+						[active]='groupByFieldMenu?.isOpened',
+						[cubMenuTriggerFor]='groupByFieldMenu')
+						.text-nowrap.line-height-20
+							| {{ "BASE.BOARD.RECORD.LABEL.ADD_FIELD" | translate }}
+
+cub-menu(
+	#fieldSettingsAction,
+	width='240px',
+	(opened)='fieldMenu?.close()')
+	cub-menu-content
+		ng-template(cubMenuContent, let-column='column')
+			button(
+				cubMenuItem,
+				icon='gear',
+				(click)='editField( column )')
+				| {{ "BASE.BOARD.RECORD.LABEL.SETTING" | translate }}
+			//- button(
+			//- 	cubMenuItem='destructive',
+			//- 	icon='trash',
+			//- 	*ngIf='!field.isPrimary',
+			//- 	(click)='removeField( column)')
+			//- 	| {{ "BASE.BOARD.RECORD.LABEL.DELETE" | translate }}
+
+cub-menu(
+	#fieldSettings,
+	width='240px',
+	maxHeight='364px')
+	cub-menu-content
+		ng-template(cubMenuContent)
+			cub-menu-group
+				h5.ph-12.pt-8.mb-4
+					| {{ "BASE.BOARD.RECORD.LABEL.CUSTOM_FIELD" | translate }}
+				cub-scroll-bar.mah-280(
+					cdkDropList,
+					suppressX,
+					detectScroll,
+					#fieldSettingsScrollBar,
+					[cdkDropListData]='columns',
+					(cdkDropListDropped)='onFieldDropped( $event )')
+					button(
+						cubMenuItem,
+						*ngFor='let c of columns | slice : 0 : 1; ngForTrackByID',
+						[autoClose]='false')
+						.layout-row.layout-align-start-center.layout-gap-8(cubMenuItemPrefix)
+							cub-icon.m-2(
+								name='lock-on-fill',
+								color='secondary',
+								size='20px',
+								width='300px',
+								[cubTooltip]='"BASE.BOARD.RECORD.MESSAGE.PRIMARY_FIELD" | translate')
+							cub-icon(
+								size='20px',
+								color='primary',
+								[name]='( c.field.dataType | fieldMetadata ).icon')
+						.text-truncate.mr-8(
+							[title]='c.field.name | empty',
+							[class.text-color-primary]='!c.hidden',
+							[class.text-color-tertiary]='c.hidden')
+							| {{ c.field.name | empty }}
+						.layout-row.layout-gap-8(cubMenuItemSuffix)
+							button(
+								cubBasicButton,
+								#btnAction,
+								iconSize='20px',
+								icon='more-vertical',
+								iconColor='secondary',
+								[class.hide]='!boardPermission?.detail.field.createAndManage',
+								[disabled]='!c.id',
+								[cubMenuTriggerFor]='fieldSettingsAction',
+								[cubMenuTriggerContext]='{ column: c, btnAction }')
+					button(
+						cubMenuItem,
+						cdkDrag,
+						cdkDragLockAxis='y',
+						*ngFor='let c of columns | slice : 1; ngForTrackByID',
+						[autoClose]='false',
+						[cdkDragData]='c')
+						.layout-row.layout-align-start-center.layout-gap-8(cubMenuItemPrefix)
+							div(*cdkDragPlaceholder)
+								.w-224.h-44
+							button(
+								cubBasicButton,
+								cdkDragHandle,
+								iconSize='20px',
+								icon='drag',
+								color='secondary',
+								[disabled]='!c.id')
+							cub-icon(
+								size='20px',
+								[color]='c.hidden ? "tertiary" : "primary"',
+								[name]='( c.field.dataType | fieldMetadata ).icon')
+						.text-truncate.mr-8(
+							[title]='c.field.name | empty',
+							[class.text-color-primary]='!c.hidden',
+							[class.text-color-tertiary]='c.hidden')
+							| {{ c.field.name | empty }}
+						.layout-row.layout-gap-8(cubMenuItemSuffix)
+							button(
+								cubBasicButton,
+								iconSize='20px',
+								iconColor='secondary',
+								[disabled]='!c.id',
+								[icon]='c.hidden ? "eye-slash" : "eye"',
+								(click)='onFieldSwitchHide( c )')
+							button(
+								cubBasicButton,
+								#btnAction,
+								iconSize='20px',
+								icon='more-vertical',
+								iconColor='secondary',
+								[class.hide]='!boardPermission?.detail.field.createAndManage',
+								[disabled]='!c.id',
+								[cubMenuTriggerFor]='fieldSettingsAction',
+								[cubMenuTriggerContext]='{ column: c, btnAction }')
+	cub-menu-footer(*ngIf='boardPermission?.detail.field.createAndManage')
+		ng-template(cubMenuFooter)
+			button(
+				cubMenuItem,
+				fieldMenu,
+				position='start-after',
+				icon='plus-circle',
+				[autoClose]='false',
+				[pointing]='fieldMenu?.isOpened',
+				[otherFields]='otherFields',
+				[targetElement]='fieldSettingsMenuTriggerFor.overlayRef.overlayElement',
+				[context]='context',
+				(added)='createField( $event )',
+				(closed)='cdRef.markForCheck()')
+				| {{ "BASE.BOARD.RECORD.LABEL.NEW_FIELD" | translate }}
+
+//- TODO using extends, block when have multiple display
+ng-template(#displaySettingsTemplate)
+	.text-color-hyperlink(*ngIf='boardPermission.detail.record.create')
+		+setting(
+			"'plus-circle'",
+			"ADD_RECORD",
+			undefined,
+			undefined,
+			"#0066cc26")(
+				(click)='createRecord()')
+	+setting(
+		"'grid'",
+		"DISPLAY_SPREADSHEET",
+		undefined,
+		"( 'yellowGreen' | cubPalette : '500' )",
+		undefined,
+		"( 'yellowGreen' | cubPalette : '500' : 0.15 )",
+		"true")
+	ng-container(*ngIf='columns?.length')
+		+setting(
+			"'slider'",
+			"CUSTOM_FIELD",
+			undefined,
+			undefined,
+			undefined,
+			"'#0066cc26'",
+			'fieldSettings.isOpened')(
+			#fieldSettingsMenuTriggerFor='cubMenuTriggerFor',
+			[cubMenuTriggerFor]='fieldSettings',
+			(click)='cdRef.detectChanges()')
+	+setting(
+		"'filter-circle'",
+		"FILTER",
+		undefined,
+		undefined,
+		undefined,
+		"( 'orange' | cubPalette : '50' )",
+		"( filterPopup?.isOpened || filter?.options?.length )")(
+			(click)='openSpreadsheetFilter( basicButton.elementRef )')
+		.layout-row.layout-algin-start-center.layout-gap-4
+			.text-nowrap.line-height-20
+				| {{ "BASE.BOARD.RECORD.LABEL.FILTER" | translate }}
+			cub-badge(
+				inline,
+				textColor='#262626',
+				*ngIf='filter?.options?.length',
+				[color]='"orange" | cubPalette : "200"',
+				[count]='filter?.options.length')
+	+setting(
+		"'arrow-up-down'",
+		"SORT_BY",
+		undefined,
+		undefined,
+		undefined,
+		"( 'red' | cubPalette : '100' )",
+		'!!( sortMenu.isOpened || sortingColumns?.length )')(
+			[cubMenuTriggerFor]='sortMenu')
+		.layout-row.layout-algin-start-center.layout-gap-4
+			.text-nowrap.line-height-20
+				| {{ "BASE.BOARD.RECORD.LABEL.SORT_BY" | translate }}
+			cub-badge(
+				inline,
+				textColor='#262626',
+				*ngIf='sortingColumns?.length',
+				[color]='"red" | cubPalette : "200"',
+				[count]='sortingColumns.length')
+	+setting(
+		"'group'",
+		"GROUP_BY",
+		undefined,
+		undefined,
+		undefined,
+		"( 'indigo' | cubPalette : '100' )",
+		'!!( groupMenu.isOpened || groupingColumns?.length )')(
+			[cubMenuTriggerFor]='groupMenu')
+		.layout-row.layout-algin-start-center.layout-gap-4
+			.text-nowrap.line-height-20
+				| {{ "BASE.BOARD.RECORD.LABEL.GROUP_BY" | translate }}
+			cub-badge(
+				inline,
+				textColor='#262626',
+				*ngIf='groupingColumns?.length',
+				[color]='"indigo" | cubPalette : "200"',
+				[count]='groupingColumns.length')
+	+setting(
+		"( config?.row.size === 'XL'\
+			? 'line-height-extra-tall'\
+			: config?.row.size === 'M'\
+				? 'line-height-medium'\
+				: config?.row.size === 'L'\
+					? 'line-height-tall'\
+					: 'line-height-short' )",
+		"ROW_HEIGHT",
+		undefined,
+		undefined,
+		undefined,
+		"( config?.row?.size && config?.row.size !== 'S'\
+				? ( 'purple' | cubPalette : '100' )\
+				: 'white' )",
+		"( config?.row.size !== 'S' )")(
+			[cubMenuTriggerFor]='rowSizeMenu')
+	+setting(
+		"'search'",
+		"SEARCH",
+		undefined,
+		undefined,
+		undefined,
+		"'#0066cc26'",
+		'searchPopup.isOpened')(
+			[cubPopupTriggerFor]='searchPopup')
+
+ng-container(
+	*ngIf='filterStatus?.invalid; else elseBlock;')
+	.layout-column.layout-align-center-center.layout-gap-16.flex
+		.layout-column.layout-align-start-center.layout-gap-8
+			cub-image(
+				width='64px',
+				height='64px',
+				[src]=`"assets/images/warning.webp"`)
+			span
+				| {{ "BASE.BOARD.RECORD.MESSAGE.FILTER_INVALID" | translate }}
+			span
+				| {{ "BASE.BOARD.RECORD.MESSAGE." + ( view.canManage ? "PLEASE_CHECK_AGAIN" : "CONTACT_ADMIN" ) | translate }}
+		button(
+			cubButton,
+			*ngIf='view.canManage',
+			(click)='openViewFilter()')
+			| {{ "BASE.BOARD.RECORD.LABEL.CHECK" | translate }}
+ng-template(#elseBlock)
+	ng-container(*ngIf='loaded; else elseBlock1;')
+		spreadsheet(
+			[config]='config',
+			[context]='context',
+			[(columns)]='columns',
+			[(rows)]='rows',
+			(columnAdded)='onColumnAdded( $event );',
+			(columnDeleted)='onColumnDeleted( $event )',
+			(columnInserted)='onColumnInserted( $event );',
+			(columnDuplicated)='onColumnDuplicated( $event );',
+			(columnFieldEdited)='onColumnFieldEdited( $event )',
+			(columnHidden)='onColumnSwitchHide( $event )',
+			(columnFreezed)='onColumnFreezed( $event )',
+			(columnResized)='onColumnResized( $event )',
+			(columnMoved)='onColumnMoved( $event )',
+			(columnSorted)='onColumnSorted( $event )',
+			(columnGrouped)='onColumnGrouped( $event )',
+			(rowAdded)='onRowAdded( $event )',
+			(rowMoved)='onRowMoved( $event )',
+			(rowDeleted)='onRowDeleted( $event )',
+			(rowInserted)='onRowInserted( $event )',
+			(rowDuplicated)='onRowDuplicated( $event )',
+			(rowExpanded)='onRowExpanded( $event )',
+			(cellDataEdited)='onCellDataEdited( $event )',
+			(export)='onExport( $event )')
+			ng-container(
+				emptyBlock,
+				*ngIf='filterStatus?.viewNotFoundData || filterStatus?.spreadsheetNotFoundData')
+				.layout-column.layout-align-center-center.layout-gap-16.flex.w-200
+					.layout-column.layout-align-start-center.layout-gap-8
+						cub-image(
+							width='64px',
+							height='64px',
+							[src]=`"assets/images/warning.webp"`)
+						.text-center
+							| {{ "BASE.BOARD.RECORD.MESSAGE.NOT_HAVE_DATA_WITH_FILTER" | translate }}
+					button(
+						cubButton,
+						*ngIf='view.canManage && !filterStatus?.spreadsheetNotFoundData',
+						(click)='openViewFilter()')
+						| {{ "BASE.BOARD.RECORD.LABEL.EDIT_FILTER" | translate }}
+	ng-template(#elseBlock1)
+		not-found.full-width

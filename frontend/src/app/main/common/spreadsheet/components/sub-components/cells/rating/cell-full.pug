@@ -1,0 +1,12 @@
+include ../boxes.include.pug
+
++number-box()(
+	type='positive-integer')
+
+cub-rating(
+	*ngIf='!isInputting',
+	[range]='field.maxPoint',
+	[emoji]='field.emoji',
+	[readonly]='readonly',
+	[(ngModel)]='data',
+	(ngModelChange)='save()')

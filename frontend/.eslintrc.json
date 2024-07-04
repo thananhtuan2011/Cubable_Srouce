@@ -1,0 +1,18 @@
+{
+  "extends": [
+    "./node_modules/angular-core/.eslintrc.json"
+  ],
+  "parserOptions": {
+    "warnOnUnsupportedTypeScriptVersion": false
+  },
+  "overrides": [
+    {
+      "files": [
+        "*.ts"
+      ],
+      "rules": {
+        "@typescript-eslint/no-unnecessary-boolean-literal-compare": "off"
+      }
+    }
+  ]
+}

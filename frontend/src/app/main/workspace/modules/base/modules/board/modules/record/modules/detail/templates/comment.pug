@@ -1,0 +1,18 @@
+cub-comment-list.flex(
+	*ngIf='loaded',
+	[user]='userComment',
+	[boardID]='boardID',
+	[isTopSticky]='isTopSticky',
+	[editorHeight]='editorHeight',
+	[limitPerLoad]='limitPerLoad',
+	[isBottomSticky]='isBottomSticky',
+	[canComment]='hasCommentPermission',
+	[commentListHeight]='commentListHeight',
+	[loadedAllComments]='loadedAllComments',
+	[boardAvailableUsersFunc]='boardAvailableUsersFunc',
+	[(comments)]='comments',
+	(commentsLoadMore)='loadMoreComments()',
+	(commentCreated)='onCommentCreated( $event )',
+	(commentUpdated)='onCommentUpdated( $event )',
+	(commentDeleted)='onCommentDeleted( $event )',
+	(repliesLoadMore)='loadMoreReplies( $event )')

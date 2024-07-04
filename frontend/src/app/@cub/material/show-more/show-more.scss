@@ -1,0 +1,26 @@
+@import '../../scss/partials/variable';
+@import '../../scss/partials/mixin';
+
+.cub-show-more {
+	$self: &;
+
+	display: flex;
+	flex-direction: column;
+
+	> #{ $self }__content {
+		&:not(#{ $self }__content--full) {
+			@include text-truncate-multi-line(var(--limit-line));
+	
+			white-space: unset;
+		}
+	}
+
+	> #{ $self }__btn-toggle {
+		width: fit-content;
+
+		color: $color-dark-blue;
+		background-color: transparent;
+
+		cursor: pointer;
+	}
+}

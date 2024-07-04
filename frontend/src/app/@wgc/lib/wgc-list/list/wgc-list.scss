@@ -1,0 +1,135 @@
+@import 'src/scss/partials/variable';
+@import 'src/scss/partials/mixin';
+
+@mixin list-item {
+	display: flex;
+
+	&:not(.wgc-list-item--disabled) {
+		&:focus-visible,
+		&:hover,
+		&.wgc-list-item--focusing,
+		&.wgc-list-item--hovering,
+		&.wgc-list-item--dragging {
+			.wgc-list-item__drag-handle {
+				opacity: 1;
+			}
+		}
+
+		&:focus-visible,
+		&:hover,
+		&.wgc-list-item--focusing,
+		&.wgc-list-item--hovering {
+			.wgc-list-item__content {
+				background-color: $color-secondary;
+			}
+		}
+
+		&.wgc-list-item--active,
+		&.wgc-list-item--dragging {
+			.wgc-list-item__content {
+				background-color: var(--list-item-active-color, $color-white);
+			}
+		}
+	}
+
+	&.wgc-list-item--disabled {
+		.wgc-list-item__content {
+			@include cursor-not-allowed;
+			opacity: .4;
+		}
+	}
+
+	.wgc-list-item__drag-handle {
+		color: $color-placeholder;
+		opacity: 0;
+		margin-top: 10px;
+		height: fit-content;
+
+		&.wgc-list-item__drag-handle--hidden {
+			opacity: 0;
+			visibility: hidden;
+		}
+	}
+
+	.wgc-list-item__content {
+		display: flex;
+		flex-direction: column;
+		padding: 10px;
+		border-radius: 8px;
+		min-height: 40px;
+		cursor: pointer;
+		min-width: 0;
+		width: 100%;
+
+		.wgc-list-item__content-wrapper {
+			display: flex;
+			justify-content: space-between;
+			align-items: center;
+		}
+
+		.wgc-list-item__content-color-dot {
+			margin-right: 5px;
+		}
+
+		.wgc-list-item__content-label {
+			display: flex;
+			align-items: center;
+			width: 100%;
+			min-width: 0;
+			font-weight: $font-weight-semibold;
+
+			.wgc-list-item__content-icon {
+				margin-right: 5px;
+			}
+		}
+
+		.wgc-list-item__content-description {
+			font-size: 13px;
+			color: $color-label;
+		}
+	}
+}
+
+.wgc-list {
+	display: flex;
+	flex-direction: column;
+
+	&.wgc-list--stretch {
+		width: 100%;
+		min-width: 0;
+		max-width: 100vw;
+		height: 100%;
+		min-height: 0;
+		max-height: 100vh;
+	}
+
+	.wgc-list-wrapper {
+		width: 100%;
+		min-width: 0;
+		height: 100%;
+		min-height: 0;
+	}
+
+	.wgc-list-item {
+		@include list-item;
+
+		&:not(:last-child) {
+			margin-bottom: 5px;
+		}
+	}
+}
+
+.cdk-drag-preview {
+	&.wgc-list-item {
+		@include list-item;
+
+		.wgc-list-item__content {
+			background-color: $color-white !important;
+			box-shadow: $box-shadow;
+		}
+
+		.wgc-list-item__drag-handle {
+			opacity: 1;
+		}
+	}
+}

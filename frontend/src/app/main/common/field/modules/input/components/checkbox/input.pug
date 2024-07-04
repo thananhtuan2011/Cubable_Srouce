@@ -1,0 +1,62 @@
+include ../mixins/mixin.pug
+
+ng-container(*ngIf='$any( data )?.valueType; else elseBlock;')
+	.layout-row.layout-gap-8
+		ng-container([ngSwitch]='$any( data ).valueType')
+			ng-container(*ngSwitchCase='VALUE_TYPE.STATIC')
+				cub-form-field.flex(
+					[label]='innerLabel',
+					[size]='size',
+					[variant]='variant',
+					[displayErrorMode]='displayErrorMode',
+					[autoFocusOn]='autoFocusOn',
+					[hideRequiredMarker]='hideRequiredMarker',
+					[disabled]='disabled',
+					(container.click)='onClick( $any( data ).data )',
+					(container.keydown)='onKeydown( $event, $any( data ).data )',
+					(container.blur)='formControl.markAsTouched()')
+					ng-container(
+						cubFormFieldPlaceholder,
+						*ngIf='!hasData && readonly')
+						| {{ placeholder }}
+					ng-container(*ngIf='hasData || !readonly')
+						cub-checkbox(
+							readonly,
+							tabindex='-1',
+							size='large',
+							[formControl]='formControl',
+							[disableControl]='disabled',
+							[valueControl]='$any( data ).data')
+			ng-container(*ngSwitchCase='VALUE_TYPE.DYNAMIC')
+				+formField
+					+dynamicValue()(
+						readonly,
+						(click)='plusButton.open()')
+			ng-container(*ngSwitchCase='VALUE_TYPE.EMPTY')
+				+formField
+					+emptyValue
+		+valueTypeSwitch
+ng-template(#elseBlock)
+	cub-form-field(
+		[label]='innerLabel',
+		[size]='size',
+		[variant]='variant',
+		[displayErrorMode]='displayErrorMode',
+		[autoFocusOn]='autoFocusOn',
+		[hideRequiredMarker]='hideRequiredMarker',
+		[disabled]='disabled',
+		(container.click)='onClick( data )',
+		(container.keydown)='onKeydown( $event, data )',
+		(container.blur)='formControl.markAsTouched()')
+		ng-container(
+			cubFormFieldPlaceholder,
+			*ngIf='!hasData && readonly')
+			| {{ placeholder }}
+		ng-container(*ngIf='hasData || !readonly')
+			cub-checkbox(
+				readonly,
+				tabindex='-1',
+				size='large',
+				[formControl]='formControl',
+				[disableControl]='disabled',
+				[valueControl]='data')

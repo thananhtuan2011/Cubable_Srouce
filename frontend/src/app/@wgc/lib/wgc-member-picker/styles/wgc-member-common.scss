@@ -1,0 +1,24 @@
+@import 'src/scss/partials/variable';
+
+.wgc-member-common-controls {
+	display: flex;
+	align-items: center;
+	margin-top: 5px;
+	margin-bottom: 15px;
+
+	.wgc-member-common-controls__search-box {
+		width: 100%;
+		min-width: 0;
+	}
+
+	.wgc-member-common-controls__btn-toogle-all {
+		color: var(--primary-color, $color-primary);
+		font-weight: $font-weight-semibold;
+		white-space: nowrap;
+		margin-left: 15px;
+	}
+}
+
+.wgc-member-common__user-status {
+	margin-left: 5px;
+}

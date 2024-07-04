@@ -1,0 +1,171 @@
+mixin basic-editor
+	cub-basic-editor.cub-comment-box__editor(
+		#editor,
+		[submitOnEnterKey]='isEnterToSubmit',
+		[options]='options',
+		[noToolbar]='!isTextFormatting',
+		[placeholder]='"CUB.PLACEHOLDER.INPUT_COMMENT" | translate',
+		[content]='content',
+		(textChanged)='onContentChange()',
+		(keyup.enter)='isEnterToSubmit && send()')
+
+cub-menu(
+	#emojiMenu,
+	width='342px',
+	(opened)='onEmojiMenuOpened()')
+	cub-menu-content
+		ng-template(cubMenuContent)
+			cub-emoji-picker(
+				enableSearch,
+				(pickedChange)='pickEmoji( $event )')
+
+cub-menu(
+	#mentionMenu,
+	[width]='editorWidth + 12',
+	(opened)='onMentionMenuOpened()',
+	(closed)='onMentionMenuClosed()')
+	cub-menu-content
+		ng-template(cubMenuContent)
+			cub-member-picker(
+				cubScrollBar,
+				[style.width.%]='100',
+				[style.maxHeight.px]='360',
+				[strictDisplay]='false',
+				[hasInput]='false',
+				[users]='users',
+				[teams]='teams',
+				[(keySearch)]='keySearch',
+				(selectedUserIDsChange)='addedUserIDs( $event )',
+				(selectedTeamIDsChange)='addedTeamIDs( $event )')
+
+cub-popup(
+	#linkPopup,
+	width='248px',
+	(opened)='onLinkPopupOpened()',
+	(closed)='onLinkPopupClosed()')
+	cub-popup-content
+		ng-template(cubPopupContent)
+			cub-form-field(
+				[style.marginBottom.px]='8',
+				[label]='"CUB.LABEL.TEXT" | translate')
+				input(
+					cubFormFieldInput,
+					autoFocusOn,
+					maxlength='255',
+					[formControl]='labelControl',
+					[placeholder]='"CUB.PLACEHOLDER.TEXT_INPUT" | translate',
+					[(valueControl)]='label')
+				button(
+					cubBasicButton,
+					iconSize='20px',
+					icon='copy',
+					[cubClipboardCopy]='label')
+			cub-form-field([label]='"CUB.LABEL.ROUTE" | translate')
+				input(
+					cubFormFieldInput,
+					required,
+					maxlength='255',
+					[formControl]='linkControl',
+					[placeholder]='"CUB.PLACEHOLDER.ROUTE_INPUT" | translate',
+					[(valueControl)]='link',
+					(keydown.enter)=`
+						!isLinkFormInvalid
+						&& insertLink()`)
+				button(
+					cubBasicButton,
+					iconSize='20px',
+					icon='copy',
+					[cubClipboardCopy]='link')
+	cub-popup-footer
+		ng-template(cubPopupFooter)
+			button(
+				cubButton,
+				[style.width.%]='100',
+				[disabled]=`isLinkFormInvalid`,
+				(click)='insertLink()')
+				| {{ "CUB.LABEL.DONE" | translate }}
+
+cub-form-field.cub-comment-box__form-field
+	.cub-comment-box__wrapper
+		+basic-editor
+		.cub-comment-box__attachment(
+			#fileListContainer,
+			*ngIf='files?.length')
+			.cub-comment-box__attachment__scroll-button__left(
+				[class.hidden]='!canScrollingLeft')
+				cub-icon(
+					name='chevron-left',
+					size='16px',
+					color='white',
+					(click)='previousScrolling()')
+			.cub-comment-box__attachment__scroll-button__right(
+				[class.hidden]='!canScrollingRight')
+				cub-icon(
+					name='chevron-right',
+					size='16px',
+					color='white',
+					(click)='nextScrolling()')
+			.cub-comment-box__attachment__file-list
+				.cub-comment-box__attachment__file-list__wrapper(
+					*ngFor=`
+						let file of files;
+						index as idx;
+						trackByID`)
+					.cub-comment-box__attachment__file-list__wrapper--hover
+					cub-file.cub-comment-box__attachment__file-list__file(
+						showNameOnTooltip,
+						[file]='file',
+						(click)='previewFile( idx )')
+					button.cub-comment-box__attachment__file-list__file-btn-remove(
+						cubClearButton,
+						size='16px',
+						(click)='removeFile( file )')
+		.cub-comment-box__action
+			.layout-row.layout-align-start-start.layout-gap-8
+				button(
+					cubBasicButton,
+					size='small',
+					iconSize='20px',
+					icon='text',
+					[active]='isTextFormatting',
+					(click)='switchFormatting()')
+				button(
+					cubBasicButton,
+					size='small',
+					iconSize='20px',
+					icon='mention',
+					[active]='mentionMenu?.isOpened',
+					(click)='onMentionClick()')
+				button(
+					cubBasicButton,
+					size='small',
+					iconSize='20px',
+					icon='emoji',
+					[active]='emojiMenu?.isOpened',
+					[cubMenuTriggerFor]='emojiMenu')
+				button(
+					cubBasicButton,
+					size='small',
+					iconSize='20px',
+					icon='paperclip',
+					(click)='pickFile()')
+				button(
+					cubBasicButton,
+					size='small',
+					iconSize='20px',
+					icon='link',
+					[active]='linkPopup?.isOpened',
+					[cubPopupTriggerFor]='linkPopup')
+			button(
+				cubBasicButton,
+				size='small',
+				iconSize='20px',
+				icon='send-fill',
+				iconColor='blue',
+				[disabled]='isSendButtonDisabled',
+				[active]='isSending',
+				(click)='send()')
+	ng-container(
+		cubFormFieldError,
+		*ngIf='content?.text?.length > 2000')
+		| {{ "CUB.VALIDATION_MESSAGE.NOT_EXCEED_2000_CHARACTER" | translate }}

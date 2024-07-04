@@ -1,0 +1,12 @@
+span.cub-floating-button-wrapper(
+	(click)='preventClickOnInside( $event )')
+	cub-icon.cub-floating-button__icon(
+		*ngIf='leadingIcon',
+		[name]='leadingIcon',
+		[size]='leadingIconSize')
+	span.cub-floating-button__content
+		ng-content
+	cub-icon.cub-floating-button__icon(
+		*ngIf='trailingIcon',
+		[name]='trailingIcon',
+		[size]='trailingIconSize')

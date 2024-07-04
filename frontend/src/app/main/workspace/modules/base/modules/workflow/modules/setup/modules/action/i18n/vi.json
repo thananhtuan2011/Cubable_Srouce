@@ -1,0 +1,45 @@
+{
+	"LABEL": {
+		"ACTION": "Hành động",
+		"ALL": "Tất cả người dùng thuộc Base",
+		"ALL_OPTION_IS_SELECTED": "Tất cả các giá trị đã được chọn",
+		"AT": "Tại",
+		"CHANGE": "Thay đổi",
+		"CHANGE_EVENT": "Thay đổi sự kiện",
+		"CONDITIONS_ROW": "Hàng dữ liệu thỏa điều kiện",
+		"CONTENT": "Nội dung",
+		"CREATE_ROW": "Tạo hàng dữ liệu mới",
+		"DELETE_ROW": "Xóa hàng dữ liệu",
+		"NOTIFY": "Gửi thông báo",
+		"NO_OPTIONS": "Không có lựa chọn",
+		"NO_RESULTS_FOUND": "Không tìm thấy kết quả",
+		"PEOPLE_FIELD": "Trường nhân sự",
+		"PESONAL_OR_GROUP": "Cá nhân hoặc nhóm",
+		"RECEIVER": "Người nhận",
+		"RECEIVER_INFOR": "Thông tin của người nhận",
+		"REMOVE": "Loại bỏ",
+		"ROW_DATA": "Dữ liệu của hàng",
+		"ROW_FROM_EVENT_BEFORE": "Hàng dữ liệu từ sự kiện trước đó",
+		"SELECT": "Lựa chọn",
+		"SELECT_FIELD": "Chọn trường",
+		"SELECT_ROW": "Chọn hàng",
+		"SET_ROW_VALUE": "Đặt nội dung cho hàng",
+		"TITLE": "Tiêu đề",
+		"UPDATE_ROW_VALUE": "Cập nhật dữ liệu của hàng"
+	},
+	"MESSAGE": {
+		"CHANGE_EVENT": "Thay đổi này sẽ làm vô hiệu hóa những cấu hình hiện tại và ảnh hưởng đến khả năng hoạt động của những sự kiện liên quan. Bạn chắc chứ?",
+		"SELECT_AT_LEAST_ONE_FIELD": "Vui lòng chọn ít nhất 1 trường"
+	},
+	"PLACEHOLDER": {
+		"SELECT": "Lựa chọn",
+		"SEARCH": "Tìm kiếm",
+		"INPUT_TEXT": "Nhập văn bản"
+	},
+	"ERROR": {
+		"INPUT_REQUIRED": "Vui lòng chọn giá trị",
+		"REQUIRED": "Vui lòng nhập giá trị",
+		"NOT_EXCEED_255_CHARACTER": "Không vượt quá 255 ký tự",
+		"NOT_EXCEED_1000_CHARACTER": "Không vượt quá 1000 ký tự"
+	}
+}

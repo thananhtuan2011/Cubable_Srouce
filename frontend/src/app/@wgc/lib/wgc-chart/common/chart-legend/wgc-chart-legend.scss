@@ -1,0 +1,49 @@
+@import 'src/scss/partials/variable';
+
+.wgc-chart-legend {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	padding: 20px;
+
+	.wgc-chart-legend-list {
+		display: flex;
+		flex-direction: row;
+		flex-wrap: wrap;
+		align-items: center;
+		justify-content: center;
+		overflow-x: hidden;
+		overflow-y: auto;
+
+		.wgc-chart-legend-item {
+			display: flex;
+			flex-direction: row;
+			padding: 10px;
+			max-width: 250px;
+
+			&.wgc-chart-legend-item--hidden {
+				.wgc-chart-legend-item__name {
+					text-decoration: line-through;
+				}
+			}
+
+			.wgc-chart-legend-item__color-box {
+				width: 16px;
+				min-width: 16px;
+				height: 16px;
+				min-height: 16px;
+				border-radius: 2px;
+				margin-right: 10px;
+			}
+
+			.wgc-chart-legend-item__name {
+				font-weight: $font-weight-regular;
+			}
+		}
+	}
+
+	.wgc-chart-legend__more {
+		margin-top: 10px;
+	}
+}

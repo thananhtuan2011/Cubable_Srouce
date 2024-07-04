@@ -1,0 +1,16 @@
+.overlay_loading(
+	[class.overlay_loading--active]="isLoad")
+	.overlay_loading--container
+		cub-icon(
+			size='80px',
+			name='import',
+			color='white')
+		.layout-column.layout-gap-8
+			cub-slider(
+				readonly,
+				[ngModel]='percent / 100',
+				tabindex='-1')
+			.layout-row.layout-align-center-end
+				h3
+					| {{ "BASE.BOARD.IMPORT.LABEL.PROCESSING_YOUR_DATA" | translate }}
+				.loader

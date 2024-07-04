@@ -1,0 +1,26 @@
+.layout-column.layout-gap-16
+	cub-dropdown(
+		[label]='"FIELD.BUILDER.LABEL.NUMBER_FORMAT" | translate',
+		[(ngModel)]='format',
+		(ngModelChange)='formatChange.emit( $event ); onChanges();')
+		cub-dropdown-item(
+			description='Ex: 1,000,000.25',
+			[label]='"FIELD.BUILDER.LABEL.COMMAS_SEPARATOR" | translate',
+			[value]='NumberFormat.CommasSeparator')
+		cub-dropdown-item(
+			description='Ex: 1000 = 1K',
+			[label]='"FIELD.BUILDER.LABEL.THOUSAND_UNIT" | translate',
+			[value]='NumberFormat.ThousandUnit')
+		cub-dropdown-item(
+			description='Ex: 0.52 = 52%',
+			[label]='"FIELD.BUILDER.LABEL.PERCENT" | translate',
+			[value]='NumberFormat.Percent')
+	cub-dropdown(
+		[menuSize]='{ maxHeight: 200 }',
+		[label]='"FIELD.BUILDER.LABEL.DECIMAL_PLACES_FORMAT" | translate',
+		[(ngModel)]='decimalPlaces',
+		(ngModelChange)='decimalPlacesChange.emit( $event ); onChanges();')
+		cub-dropdown-item(
+			*ngFor='let i of [].constructor( 7 ); let index = index;',
+			[label]='10 | numberValue : null : index',
+			[value]='index')

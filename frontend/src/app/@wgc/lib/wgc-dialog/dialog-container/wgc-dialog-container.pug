@@ -1,0 +1,15 @@
+button.wgc-dialog-container__btn-previous(
+	wgcButton,
+	icon='chevron-left',
+	*ngIf='isPreviousPagerDisplayed',
+	[disabled]='isPreviousPagerDisabled',
+	[wgcTooltip]='"WGC.LABEL.PREVIOUS" | translate',
+	(click)='pagerClick( "previous" )')
+ng-template(cdkPortalOutlet)
+button.wgc-dialog-container__btn-next(
+	wgcButton,
+	icon='chevron-right',
+	*ngIf='isNextPagerDisplayed',
+	[disabled]='isNextPagerDisabled',
+	[wgcTooltip]='"WGC.LABEL.NEXT" | translate',
+	(click)='pagerClick( "next" )')

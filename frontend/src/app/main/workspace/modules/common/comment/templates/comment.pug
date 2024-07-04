@@ -1,0 +1,15 @@
+wgc-comment-list.flex(
+	limitContentHeight='200px',
+	[canComment]='canComment',
+	[userID]='user?.id',
+	[user]='userComment',
+	[mentionSource]='mentionSourceFn',
+	[commentsHistory]='commentsHistoryFn',
+	[(comments)]='comments',
+	(commentCreated)='onCommentCreated( $event )',
+	(commentUpdated)='onCommentUpdated( $event )',
+	(commentDeleted)='onCommentDeleted( $event )',
+	(commentsLoadMore)='loadMoreComments()',
+	(repliesLoadMore)='loadMoreReplies( $event )',
+	(reactionUpdated)='onReactionUpdated( $event )',
+	(imageClicked)='imageClicked?.emit( $event )')

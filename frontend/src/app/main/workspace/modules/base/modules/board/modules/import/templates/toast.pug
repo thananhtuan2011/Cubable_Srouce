@@ -1,0 +1,55 @@
+mixin toastLoading(templateKey)
+	.popup_loading
+		.popup_loading--inner
+			cub-loading.layout-column.layout-align-center.full-height(
+				[size]='18')
+			label
+				| {{ "BASE.BOARD.IMPORT.MESSAGE.LOADING" | translate }} {{ loadingPercentageDefault }}%...
+		.popup_loading--close
+			button(
+				cubClearButton,
+				size='16px',
+				[cubTooltip]='"BASE.BOARD.IMPORT.LABEL.CLOSE" | translate',
+				(click)=`onCloseToast( ${templateKey} )`)
+
+mixin toastSuccess(templateKey)
+	.popup_loading
+		.popup_loading--inner
+			cub-image(
+				width='36px',
+				height='36px',
+				src='assets/@cub/images/icons/toast-success.webp')
+			label
+				| {{ "BASE.BOARD.IMPORT.MESSAGE.PREVIEW_READY" | translate }}
+		.popup_loading--close
+			button(
+				cubClearButton,
+				size='16px',
+				[cubTooltip]='"BASE.BOARD.IMPORT.LABEL.CLOSE" | translate',
+				(click)=`onCloseToast( ${templateKey} )`)
+		.popup_loading--open
+			button(
+				cubBasicButton,
+				(click)='onOpen()')
+				| {{ "BASE.BOARD.IMPORT.LABEL.OPEN" | translate }}
+
+mixin toastFail(templateKey)
+	.popup_loading
+		.popup_loading--inner
+			cub-image(
+				width='36px',
+				height='36px',
+				src='assets/@cub/images/icons/toast-danger.webp')
+			label
+				| {{ "BASE.BOARD.IMPORT.MESSAGE.LOADING_FAIL" | translate }}
+		.popup_loading--close
+			button(
+				cubClearButton,
+				size='16px',
+				(click)=`onCloseToast( ${templateKey}, false )`,
+				[cubTooltip]='"BASE.BOARD.IMPORT.LABEL.CLOSE" | translate')
+		.popup_loading--open
+			button(
+				cubBasicButton,
+				(click)='openPopupImport()')
+				| {{ "BASE.BOARD.IMPORT.LABEL.RETYPE" | translate }}

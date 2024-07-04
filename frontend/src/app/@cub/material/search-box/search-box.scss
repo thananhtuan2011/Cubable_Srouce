@@ -1,0 +1,19 @@
+.cub-search-box {
+	$self: &;
+
+	display: flex;
+	flex-direction: column;
+
+	#{ $self }__info {
+		display: flex;
+
+		white-space: nowrap;
+
+		.cub-divider {
+			margin: {
+				left: 10px;
+				right: 10px;
+			};
+		}
+	}
+}

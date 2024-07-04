@@ -1,0 +1,18 @@
+{
+	"LABEL": {
+		"SET_DELAY": "Đặt thời gian chờ",
+		"SWITCH_BASE": "Rẽ nhánh dựa trên",
+		"COMPARE_VALUE": "So sánh giá trị",
+		"AT": "Tại",
+		"FIELD_DATA_SATISFIED_CONDITION": "Dữ liệu của trường thỏa điều kiện",
+		"FIND_RECORD": "Tìm hàng",
+		"FIND_RECORD_SATISFIED_CONDITION": "Tìm hàng thỏa điều kiện",
+		"CHANGE": "Thay đổi",
+		"CHANGE_EVENT": "Thay đổi sự kiện"
+	},
+	"MESSAGE": {
+		"COMPARE_VALUE_HINT": "Nếu thỏa điều kiện so sánh thì rẽ nhánh Đúng và không thỏa thì rẽ nhánh Sai",
+		"FIND_RECORD_HINT": "Nếu tìm thấy thì rẽ nhánh Đúng và không tìm thấy thì rẽ nhánh Sai",
+		"CHANGE_EVENT": "Thay đổi này sẽ làm vô hiệu hóa những cấu hình hiện tại và ảnh hưởng đến khả năng hoạt động của những sự kiện liên quan. Bạn chắc chứ?"
+	}
+}

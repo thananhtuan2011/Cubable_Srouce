@@ -1,0 +1,44 @@
+cub-card(
+	variant='tonal',
+	size='small')
+	cub-card-content
+		.layout-column.layout-gap-12
+			.layout-column.layout-gap-6
+				.text-color-secondary.ml-12
+					| {{ "BASE.WORKFLOW.SETUP.ACTION.LABEL.SELECT_ROW" | translate }}
+				cub-dropdown(
+					required,
+					#rowTypePicker,
+					[clearable]='false',
+					[formControl]='typeControl',
+					[valueControl]='row.type',
+					(valueControlChange)='onRowTypeChange( $event )')
+					//- [disabled]='!type.addable', TEMP remove
+					cub-dropdown-item(
+						*ngFor='let type of ROWS_TYPE; ngForTrackByValue',
+						[label]='( "BASE.WORKFLOW.SETUP.ACTION.LABEL." + type.name ) | translate',
+						[value]='type.value')
+			.layout-column.layout-gap-6(
+				[class.hide]='row.type !== ROW_ACTION_TYPE.CONDITION')
+				.text-color-secondary.ml-12
+					| {{ "BASE.WORKFLOW.SETUP.ACTION.LABEL.AT" | translate }}
+				select-board(
+					[baseID]='baseID',
+					[boardID]='row.boardID',
+					(boardIDChange)='onBoardIDChange( $event )')
+			cub-card(
+				size='small',
+				*ngIf=`row.type === ROW_ACTION_TYPE.CONDITION
+					&& row.boardID`)
+				cub-card-content
+					single-conditional(
+						#conditionalComp,
+						[boardID]='row.boardID',
+						[eventAdvance]='eventAdvance',
+						[logicalExpression]='row.filter.logicalExpression',
+						[options]='row.filter.options',
+						[logicalOperator]='row.filter.logicalOperator',
+						[conditions]='row.filter.conditions',
+						(optionsChange)='onFilterOptionsChange( $event )',
+						(logicalOperatorChange)='onLogicalOperatorChange( $event )',
+						(conditionsChange)='onConditionFilterChange( $event )')

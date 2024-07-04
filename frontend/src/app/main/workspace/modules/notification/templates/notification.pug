@@ -1,0 +1,133 @@
+mixin contentWarming(icon, message, color)
+	.layout-column.layout-align-start-center.layout-gap-8.flex(
+		[style.height]='"172px"')
+		cub-icon(
+			size='64px',
+			name=`${icon}`,
+			[color]=`${color}`)
+		.text-color-primary.text-center.w-220
+			| {{ "NOTIFICATION.MESSAGE.#{message}" | translate }}
+
+mixin notification(label, notification)
+	.layout-column.layout-gap-16
+		label.mt-20
+			| {{ "NOTIFICATION.LABEL.#{label}" | translate }}
+		.notification-item(
+			*ngFor=`let n of ${notification}; trackByID`,
+			(mouseenter)='isHovered = n.id',
+			(mouseleave)="isHovered = null",
+			(click)='onOpenItemDetail( n )')
+			cub-avatar(
+				[label]='n.from.name',
+				[avatar]='n.from.avatar')
+			.layout-column.layout-gap-8.full-width
+				.layout-row.layout-align-space-between-start.full-width
+					.layout-column.full-width([style.minHeight]='"28px"')
+						p([style.maxWidth]='!n.read ? "384px" : "100%"')
+							| {{ n.from.name }} 
+							ng-container([ngSwitch]='n.actionType')
+								ng-container(*ngSwitchCase='NOTIFICATION_ACTION_TYPE.COMMENT_MENTION')
+									| {{ "NOTIFICATION.MESSAGE.COMMENT_MENTION" | translate }}
+								ng-container(*ngSwitchCase='NOTIFICATION_ACTION_TYPE.REPLY_MENTION')
+									| {{ "NOTIFICATION.MESSAGE.REPLY_MENTION" | translate }}
+								ng-container(*ngSwitchCase='NOTIFICATION_ACTION_TYPE.REPLY_COMMENT')
+									| {{ "NOTIFICATION.MESSAGE.REPLY_COMMENT" | translate }}
+								ng-container(*ngSwitchCase='NOTIFICATION_ACTION_TYPE.REPLY_COMMENT_HAS_MENTION')
+									| {{ "NOTIFICATION.MESSAGE.REPLY_COMMENT_HAS_MENTION" | translate }}
+								ng-container(*ngSwitchCase='NOTIFICATION_ACTION_TYPE.REPLY_HAS_REPLY_MENTION')
+									| {{ "NOTIFICATION.MESSAGE.REPLY_HAS_REPLY_MENTION" | translate }}
+								ng-container(*ngSwitchCase='NOTIFICATION_ACTION_TYPE.REPLY_HAS_REPLY')
+									| {{ "NOTIFICATION.MESSAGE.REPLY_HAS_REPLY" | translate }}
+							label
+								|  {{ n.createdAt | cubFromNow }}
+						p.truncate(*ngIf=`n.metadata.permissionOnBoard`)
+							| {{ "NOTIFICATION.LABEL.IN" | translate }} 
+							a
+								| {{ n | recordName }}
+					ng-container(*ngIf='!n.read')
+						ng-container(*ngIf='isHovered === n.id; else notHover')
+							.mark-as-read(
+								[cubTooltip]='"NOTIFICATION.LABEL.MARK_AS_READ" | translate')
+								.mark-as-read-hover((click)='$event?.stopPropagation(); markAsRead( n )')
+									cub-icon(
+										name='check-circle',
+										size='16px')
+						ng-template(#notHover)
+							.un-read
+				ng-container(*ngIf='n.metadata.permissionOnBoard; else noPermissionOnBoard')
+					.notification-detail(*ngIf=`
+						n.metadata.content?.html?.length
+						&& n.metadata.content.text`)
+						cub-show-more(
+							limitLine='2')
+							cub-basic-editor-content-viewer(
+								[content]='n.metadata.content')
+				ng-template(#noPermissionOnBoard)
+					.notification-detail
+						.pv-8
+							| {{ "NOTIFICATION.MESSAGE.NO_PERMISSION" | translate }}
+				.cub-attachment-list(*ngIf='n.metadata.files?.length && n.metadata.permissionOnBoard')
+					.cub-attachment-list__wrapper(
+						*ngFor=`
+							let file of n.metadata?.files | slice : 0 : 11;
+							index as idx;
+							trackByID`)
+						cub-file(
+							showNameOnTooltip,
+							[file]='file',
+							[class.cub-attachment-list__wrapper__file--more]=`
+								idx === 10
+								&& n.metadata.files?.length > 10`,
+							[attr.data-more-count]='n.metadata.files?.length - 10',
+							(click)='$event?.stopPropagation(); previewFile( idx, n.metadata.files )')
+				.layout-row.layout-align-start-center.layout-gap-2.full-width
+					button.breadcrumb-item(
+						[style.cursor]='n.metadata.baseID === baseID ? "not-allowed" : "pointer"',
+						[cubTooltip]='n.metadata.baseID === baseID ? null : n.metadata.baseName',
+						(click)='$event?.stopPropagation(); navigate( n.metadata.baseID )')
+						p.text-truncate
+							| {{ n.metadata.baseName }}
+					ng-container(*ngIf='n.metadata.permissionOnBoard')
+						cub-icon(
+							name='chevron-right',
+							size='16px')
+						button.breadcrumb-item(
+							[cubTooltip]='n.metadata.boardName',
+							(click)='$event?.stopPropagation(); navigate( n.metadata.baseID, n.metadata.boardID )')
+							p.text-truncate
+								| {{ n.metadata.boardName }}
+						cub-icon(
+							name='chevron-right',
+							size='16px')
+						button.breadcrumb-item(
+							[cubTooltip]='n | recordName',
+							(click)='$event?.stopPropagation(); onOpenItemDetail( n )')
+							| {{ n | recordName }}
+
+ng-container(*ngIf='!notification?.length; else elseBlock')
+	.mt-60
+	+contentWarming(
+		'inbox-empty',
+		'EMPTY',
+		'"primary"')
+ng-template(#elseBlock)
+	cub-scroll-bar.layout-row.layout-align-center-center.full-width(
+		suppressX,
+		detectScroll,
+		(scrollReachBottom)='onNotificationScroll()')
+		.full-height(
+			[style.width]='"800px"')
+			ng-container(*ngIf='notificationToday?.length')
+				+notification('TO_DAY', 'notificationToday')
+			ng-container(*ngIf='notificationYesterday?.length')
+				+notification('YESTERDAY', 'notificationYesterday')
+			ng-container(*ngIf='notificationOlder?.length')
+				+notification('OLDER', 'notificationOlder')
+			ng-container(*ngIf=`
+				( !isLoadMore && notification.length !== 30 )
+				|| ( notification.length === 30 && isScrolling )`)
+				.flex.mt-48
+					+contentWarming(
+						'check-circle',
+						'READ_ALL',
+						'"blue" | cubPalette : "500"')

@@ -1,0 +1,14 @@
+.cub-radio-wrapper
+	.cub-radio__box
+.cub-radio__content
+	| {{ label }}
+	div(
+		(click)='$event.stopPropagation()',
+		(input)='$event.stopPropagation()')
+		ng-content
+		ng-container(
+			*ngTemplateOutlet=`
+				checked
+					? radioContent?.templateRef
+					: undefined
+			`)

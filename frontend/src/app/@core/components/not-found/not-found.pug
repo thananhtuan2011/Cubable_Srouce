@@ -1,0 +1,39 @@
+mixin content(title, description)
+	.title([innerHtml]=`${title} | safeHtml`)
+	.description([innerHtml]=`${description} | safeHtml`)
+
+ng-container(*ngIf='loaded; else elseBlock;')
+	ng-container(*ngIf='mode !== "search"; else elseBlock2;')
+		img.image(
+			[style.width.px]='imageSize?.[ 0 ]',
+			[style.height.px]='imageSize?.[ 1 ]',
+			[lazyLoad]='image')
+		ng-container([ngSwitch]='mode')
+			ng-container(*ngSwitchCase='"empty"')
+				+content(
+					'( emptyTitle || ( "CORE.MESSAGE.NO_DATA" | translate : { name: ( name || ( "CORE.LABEL.RESULTS" | translate ) ) | lowercase } ) )',
+					'emptyDescription')
+			ng-container(*ngSwitchCase='"error"')
+				+content(
+					'( errorTitle || ( "CORE.MESSAGE.COULD_NOT_LOAD_RESOURCES" | translate ) )',
+					'( errorDescription || ( "CORE.MESSAGE.COULD_NOT_LOAD_RESOURCES_DESCRIPTION" | translate ) )')
+			ng-container(*ngSwitchCase='"custom"')
+				+content('customTitle', 'customDescription')
+		.content
+			ng-content
+	ng-template(#elseBlock2)
+		img.image([lazyLoad]='"assets/images/icons/search.webp"')
+		.title
+			| {{ "CORE.MESSAGE.NO_RESULT_FOUND" | translate: { name: ( name || ( "CORE.LABEL.RESULTS" | translate ) ) | lowercase } }}
+		.description
+			| {{ "CORE.MESSAGE.NO_RESULT_FOUND_DESCRIPTION" | translate: { name: ( name || ( "CORE.LABEL.RESULTS" | translate ) ) | lowercase } }}
+ng-template(#elseBlock)
+	.loading
+		round-progress.loading__spinner(
+			[max]='100',
+			[current]='25',
+			[stroke]='3',
+			[radius]='15',
+			[color]='"INFO" | color',
+			[background]='"BORDER" | color')
+		| {{ "CORE.LABEL.LOADING_DATA" | translate }} …

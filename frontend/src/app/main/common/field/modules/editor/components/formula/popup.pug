@@ -1,0 +1,33 @@
+cub-popup(
+	#popup,
+	maxHeight='620px')
+	cub-popup-header
+		ng-template(cubPopupHeader)
+			ng-container(*ngIf='popupHeader')
+				ng-container(*ngTemplateOutlet='popupHeader')
+	cub-popup-content
+		ng-template(cubPopupContent)
+			formula-data-editor(
+				[field]='field',
+				[otherFields]='otherFields',
+				[(data)]='data',
+				(dataChange)='onDataChanged( $event )')
+	cub-popup-footer
+		ng-template(cubPopupFooter)
+			.layout-row.layout-gap-12.layout-align-space-between-center
+				cub-switch(
+					[label]='"FIELD.EDITOR.LABEL.ADVANCED" | translate',
+					[ngModel]='data?.params?.advanced',
+					(ngModelChange)='onToggleEditorMode( $event )')
+				.flex-nogrow.layout-row.layout-gap-12.layout-align-space-between
+					button.w-80(
+						cubButton='secondary',
+						(click)='cancel()')
+						| {{ "FIELD.EDITOR.LABEL.CANCEL" | translate }}
+					button.w-120(
+						cubButton,
+						[disabled]='data?.value?.length > 10000',
+						(click)='save()')
+						| {{ "FIELD.EDITOR.LABEL.DONE" | translate }}
+ng-container(
+	*ngTemplateOutlet='popup.templateRef')

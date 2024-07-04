@@ -1,0 +1,22 @@
+{
+	"LABEL": {
+		"CANCEL": "Huỷ",
+		"CURRENCY": "Tiền tệ",
+		"DATE": "Ngày",
+		"DONE": "Xong",
+		"FORMAT_TYPE": "Loại định dạng",
+		"FORMAT_VALUE": "Định dạng giá trị",
+		"FORMULA_BUILDER": "Trình tạo công thức",
+		"LINK": "Đường dẫn",
+		"NUMBER": "Số",
+		"ADVANCED": "Nâng cao",
+		"RICH_TEXT": "Siêu văn bản",
+		"TEXT": "Văn bản"
+	},
+	"PLACEHOLDER": {
+		"FILL_TEXT": "Nhập văn bản"
+	},
+	"MESSAGE": {
+		"SELECT_FIELD_TO_BUILD_FORMULA": "Vui lòng thêm <b>trường Số</b> hoặc <b>trường Tiền tệ</b> hoặc <b>trường Tiến độ</b> để tạo Công thức"
+	}
+}

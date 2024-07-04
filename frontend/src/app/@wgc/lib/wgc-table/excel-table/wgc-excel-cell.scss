@@ -1,0 +1,63 @@
+@import 'src/scss/partials/variable';
+
+.wgc-excel-cell {
+	&:not(.wgc-menu) {
+		padding: 0 !important;
+		position: relative;
+
+		&:after {
+			content: attr(data-error);
+			background-color: $color-danger;
+			color: $color-white;
+			font-size: 11px;
+			bottom: 0;
+			right: 0;
+			position: absolute;
+			padding: 2px 5px;
+			font-weight: $font-weight-regular;
+			opacity: 0;
+			visibility: hidden;
+			transition: opacity 100ms ease-in-out;
+		}
+
+		&.wgc-excel-cell--focusing {
+			border-color: var(--primary-color, $color-primary);
+		}
+
+		&.wgc-excel-cell--invalid {
+			&.wgc-excel-cell--touched,
+			&.wgc-excel-cell--dirty {
+				border-color: $color-danger;
+
+				&:not(.wgc-excel-cell--focusing):after {
+					visibility: visible;
+					opacity: 1;
+				}
+			}
+		}
+
+		&.wgc-excel-cell--has-list {
+			> div {
+				margin-right: 40px;
+			}
+		}
+
+		> div {
+			padding: 10px;
+			position: absolute;
+			top: 0;
+			right: 0;
+			left: 0;
+			bottom: 0;
+			white-space: nowrap;
+			overflow: hidden;
+		}
+
+		> button {
+			position: absolute;
+			right: 10px;
+			top: 50%;
+			transform: translateY(-50%);
+		}
+	}
+}

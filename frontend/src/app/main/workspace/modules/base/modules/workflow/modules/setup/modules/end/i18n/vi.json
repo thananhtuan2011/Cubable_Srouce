@@ -1,0 +1,11 @@
+{
+	"LABEL": {
+		"WORKFLOW_END": "Sau khi hoàn thành quy trình tự động thì",
+		"CANNOT_ACTIVE": "Hàng dữ liệu sẽ không bao giờ có thể kích hoạt lại quy trình tự động này",
+		"CAN_ACTIVE": "Hàng dữ liệu vẫn có thể kích hoạt lại quy trình tự động này",
+		"READ_MORE": "Đọc thêm tại đây"
+	},
+	"MESSAGE": {
+		"CANNOT_ACTIVE_HINT": "Để đảm bảo quy trình tự động không bị kích hoạt một cách vô ý, hệ thống đã đưa ra quy tắc: Hàng dữ liệu chỉ chính thức tham gia quy trình tự động một lần duy nhất."
+	}
+}

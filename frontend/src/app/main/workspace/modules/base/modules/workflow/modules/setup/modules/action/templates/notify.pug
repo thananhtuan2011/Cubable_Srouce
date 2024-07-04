@@ -1,0 +1,303 @@
+cub-menu(
+	#receiverMenu,
+	width='280px',
+	(opened)='onReceiverMenuOpened()',
+	(closed)='isReceiversChange = true')
+	cub-menu-content
+		ng-template(cubMenuContent)
+			ng-container([ngSwitch]='receiverMenuState')
+				ng-container(*ngSwitchCase='RECEIVER_TYPE.FIELD')
+					.layout-column.layout-align-start-start.layout-gap-8
+						.layout-row.layout-align-start-center.layout-gap-12
+							button(
+								cubBasicButton,
+								icon='chevron-left',
+								(click)='receiverMenuState = null')
+							span
+								| {{ "BASE.WORKFLOW.SETUP.ACTION.LABEL.PEOPLE_FIELD" | translate }}
+						cub-search-box.full-width(
+							includeOuterSize,
+							autoFocusOn,
+							[placeholder]='"BASE.WORKFLOW.SETUP.ACTION.PLACEHOLDER.SEARCH" | translate',
+							[searchQuery]='keySearch',
+							(searching)='onSearching( $event )')
+						.layout-column.full-width.mah-350(cubScrollBar)
+							ng-container(*ngIf='fields?.length; else notFound;')
+								ng-container(*ngFor='let f of fields; ngForTrackByID')
+									button(
+										cubMenuSelectItem,
+										*ngIf='!f?.isAdded',
+										[selected]='false',
+										[autoClose]='false',
+										(click)='addReceiverFieldID( f )')
+										div(cubMenuItemPrefix)
+											cub-icon(
+												size='20px',
+												[name]='( f?.dataType | fieldMetadata )?.icon')
+										.text-truncate(
+											[title]='f?.name | empty')
+											| {{ f?.name | empty }}
+								.notify__not-found-text(
+									*ngIf=`settings.receivers?.fieldIDs?.length
+										=== fields?.length`)
+									| {{ "BASE.WORKFLOW.SETUP.ACTION.LABEL.ALL_OPTION_IS_SELECTED" | translate }}
+							ng-template(#notFound)
+								.notify__not-found-text
+									| {{ "BASE.WORKFLOW.SETUP.ACTION.LABEL." + ( keySearch ? "NO_RESULTS_FOUND" : "NO_OPTIONS" ) | translate }}
+				ng-container(*ngSwitchCase='RECEIVER_TYPE.PEOPLE')
+					.layout-column.layout-align-start-start.layout-gap-8
+						.layout-row.layout-align-start-center.layout-gap-12
+							button(
+								cubBasicButton,
+								icon='chevron-left',
+								(click)='receiverMenuState = null')
+							span
+								| {{ "BASE.WORKFLOW.SETUP.ACTION.LABEL.PESONAL_OR_GROUP" | translate }}
+						cub-search-box.full-width(
+							includeOuterSize,
+							autoFocusOn,
+							[placeholder]='"BASE.WORKFLOW.SETUP.ACTION.PLACEHOLDER.SEARCH" | translate',
+							[searchQuery]='keySearch',
+							(searching)='onSearching( $event, true )')
+						cub-member-picker.full-width.mah-350(
+							cubScrollBar,
+							[strictDisplay]='false',
+							[hasInput]='false',
+							[optionAll]='optionAll',
+							[users]='users',
+							[teams]='teams',
+							[selectedAllMembers]='selectedAllMembers',
+							[selectedUserIDs]='selectedUserIDs',
+							[selectedTeamIDs]='selectedTeamIDs',
+							(selectedUserIDsChange)='addedUserIDs( $event )',
+							(selectedTeamIDsChange)='addedTeamIDs( $event )',
+							(selectedAllMembersChange)='onAddedOptionAll()')
+				ng-container(*ngSwitchDefault)
+					button(
+						cubMenuSelectItem,
+						trailingIcon='chevron-right',
+						trailingIconColor='tertiary',
+						[autoClose]='false',
+						[selected]='receiverMenuState === RECEIVER_TYPE.FIELD',
+						(click)=`( receiverMenuState = RECEIVER_TYPE.FIELD );
+							resetField();`)
+						| {{ "BASE.WORKFLOW.SETUP.ACTION.LABEL.PEOPLE_FIELD" | translate }}
+					button(
+						cubMenuSelectItem,
+						trailingIcon='chevron-right',
+						trailingIconColor='tertiary',
+						[autoClose]='false',
+						[selected]='receiverMenuState === RECEIVER_TYPE.PEOPLE',
+						(click)=`( receiverMenuState = RECEIVER_TYPE.PEOPLE );
+							resetPeople();`)
+						| {{ "BASE.WORKFLOW.SETUP.ACTION.LABEL.PESONAL_OR_GROUP" | translate }}
+
+cub-menu(
+	#messageMenu,
+	width='280px',
+	(opened)='onMessageMenuOpened( messageMenu.context.isMessage )',
+	(closed)='onMessageMenuClosed( messageMenu.context.isMessage )')
+	cub-menu-content
+		ng-template(cubMenuContent, let-isMessage='isMessage')
+			ng-container([ngSwitch]='messageMenuState')
+				ng-container(*ngSwitchCase='CONTENT_MENU_STATE.ROW_DATA')
+					.layout-column.layout-align-start-start.layout-gap-8
+						.layout-row.layout-align-start-center.layout-gap-12
+							button(
+								cubBasicButton,
+								icon='chevron-left',
+								(click)='messageMenuState = null')
+							span
+								| {{ "BASE.WORKFLOW.SETUP.ACTION.LABEL.ROW_DATA" | translate }}
+						cub-search-box.full-width(
+							includeOuterSize,
+							autoFocusOn,
+							[placeholder]='"BASE.WORKFLOW.SETUP.ACTION.PLACEHOLDER.SEARCH" | translate',
+							[searchQuery]='keySearch',
+							(searching)='onMessageSearching( $event, isMessage, true )')
+						.layout-column.full-width.mah-350(cubScrollBar)
+							ng-container(*ngFor='let f of fields; ngForTrackByID')
+								button(
+									cubMenuItem,
+									*ngIf='!f?.isAdded',
+									[autoClose]='false',
+									(click)='addFieldID( isMessage, f )')
+									div(cubMenuItemPrefix)
+										cub-icon(
+											size='20px',
+											[name]='( f?.dataType | fieldMetadata )?.icon')
+									.text-truncate(
+										[title]='f?.name | empty')
+										| {{ f?.name | empty }}
+				ng-container(*ngSwitchCase='CONTENT_MENU_STATE.RECEIVER_INFOR')
+					.layout-column.layout-align-start-start.layout-gap-8
+						.layout-row.layout-align-start-center.layout-gap-12
+							button(
+								cubBasicButton,
+								icon='chevron-left',
+								(click)='messageMenuState = null')
+							span
+								| {{ "BASE.WORKFLOW.SETUP.ACTION.LABEL.RECEIVER_INFOR" | translate }}
+						cub-search-box.full-width(
+							includeOuterSize,
+							autoFocusOn,
+							[placeholder]='"BASE.WORKFLOW.SETUP.ACTION.PLACEHOLDER.SEARCH" | translate',
+							[searchQuery]='keySearch',
+							(searching)='onMessageSearching( $event, isMessage )')
+						.layout-column.full-width.mah-350(cubScrollBar)
+							ng-container(*ngFor='let uf of userFields; ngForTrackByID')
+								button(
+									cubMenuItem,
+									[autoClose]='false',
+									(click)='addUserFieldID( isMessage, uf )')
+									div(cubMenuItemPrefix)
+										cub-icon(
+											size='20px',
+											[name]='( uf?.dataType | fieldMetadata )?.icon')
+									.text-truncate(
+										[title]='uf?.name | empty')
+										| {{ uf?.name | empty }}
+				ng-container(*ngSwitchDefault)
+					button(
+						cubMenuSelectItem,
+						trailingIcon='chevron-right',
+						trailingIconColor='tertiary',
+						[autoClose]='false',
+						[selected]='messageMenuState === CONTENT_MENU_STATE.ROW_DATA',
+						(click)=`( messageMenuState = CONTENT_MENU_STATE.ROW_DATA );
+							resetMessageField( isMessage );`)
+						| {{ "BASE.WORKFLOW.SETUP.ACTION.LABEL.ROW_DATA" | translate }}
+					button(
+						disabled,
+						cubMenuSelectItem,
+						trailingIcon='chevron-right',
+						trailingIconColor='tertiary',
+						[autoClose]='false',
+						[selected]='messageMenuState === CONTENT_MENU_STATE.RECEIVER_INFOR')
+						//- (click)=`( messageMenuState = CONTENT_MENU_STATE.RECEIVER_INFOR );
+						//- 	resetMessageUserField( isMessage );`
+						| {{ "BASE.WORKFLOW.SETUP.ACTION.LABEL.RECEIVER_INFOR" | translate }}
+
+select-row(
+	#selectRowComp,
+	[eventAdvance]='eventAdvance',
+	[baseID]='baseID',
+	[blockSetup]='blockSetup',
+	[(row)]='$any( settings ).row',
+	(loadFields)='loadData()',
+	(rowChange)='onRowChange()')
+
+cub-card(
+	variant='tonal',
+	size='small')
+	cub-card-content
+		.layout-column.layout-gap-12
+			cub-form-field(
+				[label]='"BASE.WORKFLOW.SETUP.ACTION.LABEL.RECEIVER" | translate')
+				.layout-row.layout-align-space-between-start.flex.remove-mg-bt(
+					(click)='isExistBoardID && receiverPlusMenuTrigger.open()')
+					.placeholder(
+						*ngIf='!members?.length')
+						| {{ "BASE.WORKFLOW.SETUP.ACTION.PLACEHOLDER.SELECT" | translate }}
+					.receiver(*ngIf='members?.length')
+						.receiver-content
+							.receiver-member(
+								*ngFor='let member of members; let index = index;',
+								(click)='$event?.stopPropagation()')
+								.receiver__people(
+									*ngIf='member.memberType === RECEIVER_TYPE.PEOPLE')
+									cub-member(
+										avatarSize='small',
+										[avatarType]=`member.type === TYPE_OF_MEMBER.TEAM
+											? AVATAR_TYPE.TEAM
+											: AVATAR_TYPE.USER`,
+										[hasViewProfile]='false',
+										[member]='member')
+								.receiver__field(
+									*ngIf='member.memberType === RECEIVER_TYPE.FIELD')
+									cub-icon.mr-4(
+										size='16px',
+										[name]='( member?.dataType | fieldMetadata )?.icon')
+									.text-truncate.maw-120(
+										[title]='member?.name | empty')
+										| {{ member?.name | empty }}
+								.receiver__icon-remove
+									cub-icon(
+										name='close',
+										size='12px',
+										color='secondary',
+										[cubTooltip]='"BASE.WORKFLOW.SETUP.ACTION.LABEL.REMOVE" | translate',
+										(click)='isExistBoardID && clearMember( index, member ); $event?.stopPropagation();')
+						button(
+							cubClearButton,
+							size='20px',
+							(click)='$event?.stopPropagation(); clearMembers();')
+					button.plus-button(
+						#receiverPlusMenuTrigger='cubMenuTriggerFor',
+						cubBasicButton,
+						icon='plus',
+						size='small',
+						iconSize='20px',
+						[disabled]='!isExistBoardID',
+						[cubMenuTriggerFor]='receiverMenu')
+				ng-container(
+					cubFormFieldError,
+					*ngIf=`
+						isReceiversChange
+						&& !( settings.receivers?.fieldIDs?.length
+						|| settings.receivers?.userIDs?.length
+						|| settings.receivers?.teamIDs?.length
+						|| settings.receivers?.baseID )
+					`)
+					| {{ "BASE.WORKFLOW.SETUP.ACTION.ERROR.INPUT_REQUIRED" | translate }}
+			cub-form-field(
+				[label]='"BASE.WORKFLOW.SETUP.ACTION.LABEL.TITLE" | translate')
+				.layout-row.layout-align-space-between-start.flex
+					.layout-row.flex(
+						(click)='subject.focus()')
+						cub-basic-editor(
+							noToolbar,
+							#subject,
+							[options]='options',
+							[placeholder]='"BASE.WORKFLOW.SETUP.ACTION.PLACEHOLDER.INPUT_TEXT" | translate',
+							[content]='subjectContent',
+							(textChanged)='onSubjectContentChange()')
+					button.plus-button(
+						cubBasicButton,
+						size='small',
+						iconSize='20px',
+						icon='plus',
+						[disabled]='!isExistBoardID',
+						[cubMenuTriggerFor]='messageMenu',
+						[cubMenuTriggerContext]='{ isMessage: false }')
+				ng-container(
+					cubFormFieldError,
+					*ngIf=`
+						( isSubjectChange && !textSubject?.length )
+						|| ( isSubjectChange && !settings?.rawSubject?.length )`)
+					| {{ "BASE.WORKFLOW.SETUP.ACTION.ERROR.REQUIRED" | translate }}
+				ng-container(
+					cubFormFieldError,
+					*ngIf=`isSubjectChange && textSubject?.length > 255`)
+					| {{ "BASE.WORKFLOW.SETUP.ACTION.ERROR.NOT_EXCEED_255_CHARACTER" | translate }}
+			cub-form-field.content(
+				[label]='"BASE.WORKFLOW.SETUP.ACTION.LABEL.CONTENT" | translate')
+				.layout-row.layout-align-space-between-start.flex
+					cub-basic-editor(
+						#message,
+						[options]='options',
+						[placeholder]='"BASE.WORKFLOW.SETUP.ACTION.PLACEHOLDER.INPUT_TEXT" | translate',
+						[content]='messageContent',
+						(textChanged)='onMessageContentChange()')
+					button.plus-button(
+						cubBasicButton,
+						size='small',
+						iconSize='20px',
+						icon='plus',
+						[disabled]='!isExistBoardID',
+						[cubMenuTriggerFor]='messageMenu',
+						[cubMenuTriggerContext]='{ isMessage: true }')
+				ng-container(
+					cubFormFieldError,
+					*ngIf=`textMessage?.length > 1000`)
+					| {{ "BASE.WORKFLOW.SETUP.ACTION.ERROR.NOT_EXCEED_1000_CHARACTER" | translate }}

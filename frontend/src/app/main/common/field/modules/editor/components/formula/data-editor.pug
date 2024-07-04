@@ -1,0 +1,110 @@
+mixin basic-operator-icon(operator)
+	ng-container([ngSwitch]=operator)
+		cub-icon(
+			*ngSwitchCase='FormulaBasicOperator.Plus',
+			name='./assets/images/field/plus.svg',
+			size='24px')
+		cub-icon(
+			*ngSwitchCase='FormulaBasicOperator.Minus',
+			name='./assets/images/field/minus.svg',
+			size='24px')
+		cub-icon(
+			*ngSwitchCase='FormulaBasicOperator.Multiply',
+			name='./assets/images/field/multiply.svg',
+			size='24px')
+		cub-icon(
+			*ngSwitchCase='FormulaBasicOperator.Divide',
+			name='./assets/images/field/divide.svg',
+			size='24px')
+
+mixin basic-editor
+	cub-menu(#basicOperatorMenu)
+		cub-menu-content
+			ng-template(cubMenuContent)
+				.layout-column.layout-gap-16.p-8
+					button.layout-column.layout-align-center-center(
+						*ngFor='let operator of BASIC_OPERATORS; trackByIndex',
+						(click)=`basicOperator = operator;
+							onBasicFormulaChanged();
+							basicOperatorMenu.close();`)
+						+basic-operator-icon("operator")
+
+	.layout-column.layout-gap-16
+		.layout-row.layout-gap-16.layout-align-space-between-center
+			cub-dropdown.flex(
+				[clearable]='false',
+				[(ngModel)]='leftFieldID',
+				(ngModelChange)='onBasicFormulaChanged()')
+				cub-dropdown-item(
+					*ngFor='let field of basicFormulaFields; trackByID',
+					[icon]='field.dataType | fieldMetadata : "icon"',
+					[label]='field.name',
+					[value]='field.id')
+			button(
+				[cubMenuTriggerFor]='basicOperatorMenu')
+				+basic-operator-icon("basicOperator")
+			cub-dropdown.flex(
+				[clearable]='false',
+				[(ngModel)]='rightFieldID',
+				(ngModelChange)='onBasicFormulaChanged()')
+				cub-dropdown-item(
+					*ngFor='let field of basicFormulaFields; trackByID',
+					[icon]='field.dataType | fieldMetadata : "icon"',
+					[label]='field.name',
+					[value]='field.id')
+		label(
+			[innerHtml]='"FIELD.EDITOR.MESSAGE.SELECT_FIELD_TO_BUILD_FORMULA" | translate')
+
+mixin advanced-editor
+	formula-editor(
+		autoFocusOn,
+		[fields]='advanceFormulaFields',
+		[data]='data',
+		[content]='value',
+		(contentChange)='onAdvancedFormulaChanged( $event )')
+
+cub-accordion.layout-column.layout-gap-16(
+	[style.width.px]='isAdvanced ? 680 : 450')
+	cub-expansion-panel.layout-column.layout-gap-16(expanded)
+		cub-expansion-panel-header
+			| {{ "FIELD.EDITOR.LABEL.FORMULA_BUILDER" | translate }}
+		cub-expansion-panel-content
+			ng-container(*ngIf='isAdvanced; else elseBlock;')
+				+advanced-editor
+			ng-template(#elseBlock)
+				+basic-editor
+	cub-expansion-panel.layout-column.layout-gap-16
+		cub-expansion-panel-header
+			| {{ "FIELD.EDITOR.LABEL.FORMAT_VALUE" | translate }}
+		cub-expansion-panel-content
+			.layout-column.layout-gap-16
+				cub-dropdown(
+					[label]='"FIELD.EDITOR.LABEL.FORMAT_TYPE" | translate',
+					[ngModel]='params?.resultFormatType',
+					(ngModelChange)='onResultFormatTypeChanged( $event )')
+					cub-dropdown-item(
+						[label]='"FIELD.EDITOR.LABEL.NUMBER" | translate',
+						[value]='FormulaResultFormatType.Number')
+					cub-dropdown-item(
+						[label]='"FIELD.EDITOR.LABEL.CURRENCY" | translate',
+						[value]='FormulaResultFormatType.Currency')
+					cub-dropdown-item(
+						[label]='"FIELD.EDITOR.LABEL.DATE" | translate',
+						[value]='FormulaResultFormatType.Date')
+				ng-container([ngSwitch]='params?.resultFormatType')
+					number-format-settings(
+						*ngSwitchCase='FormulaResultFormatType.Number',
+						[format]='$any( params?.resultFormatConfig )?.format',
+						[decimalPlaces]='$any( params?.resultFormatConfig )?.decimalPlaces',
+						(changes)='onResultFormatConfigChanged( $event )')
+					currency-format-settings(
+						*ngSwitchCase='FormulaResultFormatType.Currency',
+						[currency]='$any( params?.resultFormatConfig )?.currency',
+						[format]='$any( params?.resultFormatConfig )?.format',
+						[decimalPlaces]='$any( params?.resultFormatConfig )?.decimalPlaces',
+						(changes)='onResultFormatConfigChanged( $event )')
+					date-format-settings(
+						*ngSwitchCase='FormulaResultFormatType.Date',
+						[format]='$any( params?.resultFormatConfig )?.format',
+						[timeFormat]='$any( params?.resultFormatConfig )?.timeFormat',
+						(changes)='onResultFormatConfigChanged( $event )')

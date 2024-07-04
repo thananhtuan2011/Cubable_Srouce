@@ -1,0 +1,62 @@
+@import 'src/scss/partials/variable';
+@import 'src/scss/partials/mixin';
+
+.wgc-menu-item {
+	display: flex;
+	align-items: center;
+	padding: 8px 10px;
+	min-height: 40px;
+	border-radius: 8px;
+	border: none;
+	font-weight: $font-weight-semibold;
+	width: 100%;
+	cursor: pointer;
+	background: none;
+	text-align: left;
+	color: var(--menu-item-color, inherit);
+
+	&:not(:last-child) {
+		margin-bottom: 5px;
+	}
+
+	&:not(.wgc-menu-item--disabled) {
+		&:focus-visible,
+		&:hover,
+		&.wgc-menu-item--focusing {
+			background-color: $color-default;
+		}
+	}
+
+	&.wgc-menu-item--disabled {
+		@include cursor-not-allowed;
+		opacity: .4;
+	}
+
+	.wgc-menu-item__content {
+		display: flex;
+		align-items: center;
+		min-width: 0;
+		width: 100%;
+	}
+
+	.wgc-menu-item__prefix,
+	.wgc-menu-item__suffix,
+	.wgc-menu-item__prefix [wgcMenuItemPrefix],
+	.wgc-menu-item__suffix [wgcMenuItemSuffix] {
+		display: flex;
+		align-items: center;
+		flex-shrink: 0;
+
+		&:empty {
+			display: none;
+		}
+	}
+
+	.wgc-menu-item__prefix [wgcMenuItemPrefix] {
+		margin-right: 5px;
+	}
+
+	.wgc-menu-item__suffix [wgcMenuItemSuffix] {
+		margin-left: 5px;
+	}
+}

@@ -1,0 +1,29 @@
+@import 'src/scss/partials/variable';
+
+:host {
+	display: flex;
+	flex-direction: column;
+	width: 100%;
+	min-width: 0;
+	height: 100%;
+	min-height: 0;
+
+	.card {
+		cursor: pointer;
+
+		.action {
+			opacity: 0;
+			visibility: hidden;
+		}
+
+		&:hover,
+		&.card--focusing {
+			background-color: $color-material-hover;
+
+			.action {
+				opacity: 1;
+				visibility: visible;
+			}
+		}
+	}
+}

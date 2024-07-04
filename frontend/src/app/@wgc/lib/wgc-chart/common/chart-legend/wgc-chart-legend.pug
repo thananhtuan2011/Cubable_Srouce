@@ -1,0 +1,24 @@
+mixin item-content
+	.wgc-chart-legend-item__color-box([style.backgroundColor]='item?.fillStyle')
+	wgc-truncate.wgc-chart-legend-item__name(limitLine='1')
+		| {{ item?.text | empty }}
+
+wgc-tooltip.wgc-chart-legend(#tooltip, theme='light', maxHeight='250px', maxWidth='500px')
+	.wgc-chart-legend-list
+		ng-container(*ngFor='let item of items | slice : limit; let index = index;')
+			button.wgc-chart-legend-item(
+				wgcBasicButton,
+				(click)='toggleDataVisibility( item?.datasetIndex || ( index + limit ) )')
+				+item-content
+
+.wgc-chart-legend-list
+	ng-container(*ngFor='let item of items | slice : 0 : limit; let index = index;')
+		button.wgc-chart-legend-item(
+			wgcBasicButton,
+			[class.wgc-chart-legend-item--hidden]='item?.hidden',
+			(click)='toggleDataVisibility( item?.datasetIndex || index )')
+			+item-content
+
+wgc-tag.wgc-chart-legend__more(*ngIf='items?.length > limit', [wgcTooltip]='tooltip')
+	| +{{ items?.length - limit }}
+	| {{ "WGC.LABEL.MORE" | translate | lowercase }}

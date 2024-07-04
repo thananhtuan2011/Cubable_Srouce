@@ -1,0 +1,317 @@
+mixin fieldItem
+	.layout-row.layout-align-start-start.flex-100
+		.drag(
+			cdkDragHandle,
+			(mousedown)=`
+				f.id !== focusingFieldID
+				&& ( isDragging = true )`)
+			cub-icon(size='20px', name='drag')
+		.layout-column.flex
+			.layout-row.layout-align-space-between-center.layout-wrap.pt-8
+				.layout-row
+					.layout-row.pv-2.pr-4
+						cub-icon.mr-4(
+							size='20px',
+							[name]='( f.dataType | fieldMetadata ).icon')
+						ng-container(*ngIf=`f.id === focusingFieldID; else elseBlock`)
+							.text-truncate.maw-200([title]=`f.customFieldName`)
+								| {{ f.customFieldName }}
+						ng-template(#elseBlock)
+							.text-truncate.maw-200([title]=`f.question || f.customFieldName`)
+								| {{ f.question || f.customFieldName }}
+					cub-divider.mh-4(vertical)
+					button.p-2(
+						cubBasicButton,
+						#fieldSetting,
+						icon='gear',
+						iconSize='20px',
+						(mousedown)='$event?.stopPropagation()',
+						(click)=`editField( f, fieldSetting ); $event?.stopPropagation();`)
+				.layout-row.layout-align-end-center.pl-16
+					cub-switch.mr-12(
+						*ngIf='!( f.dataType === DATA_TYPE.Formula || f.dataType === DATA_TYPE.Lookup )',
+						[formControlName]='f.id + "_required"',
+						[label]='"BASE.BOARD.FORM.LABEL.REQUIRED" | translate',
+						[(valueControl)]='f.isRequired',
+						(valueControlChange)=`
+							checkFormValid();
+							formFieldChange.emit( f );`,
+						(mousedown)='$event?.stopPropagation()')
+					button.p-2.mr-16(
+						cubBasicButton,
+						icon='trash',
+						iconSize='20px',
+						[cubTooltip]='"BASE.BOARD.FORM.MESSAGE.REMOVE_FROM_FORM" | translate',
+						(mousedown)='$event?.stopPropagation()',
+						(click)='removeField( f )')
+			div.information__content
+					.information__content--inner
+						.mb-4(*ngIf=`f.id !== focusingFieldID`)
+							| {{ f.description || f.descriptionField }}
+	cub-divider
+	ng-container(*ngIf=`
+		f.id === focusingFieldID
+		&& !isDragging; else outFocusBlock`)
+		.p-16
+			cub-form-field([label]='"BASE.BOARD.FORM.LABEL.QUESTION" | translate')
+				input(
+					clearable,
+					autoFocusOn,
+					cubFormFieldInput,
+					[formControlName]='f.id + "_question"',
+					[placeholder]='"BASE.BOARD.FORM.PLACEHOLDER.INPUT_QUESTION" | translate',
+					[valueControl]=`f.question`,
+					(valueControlChange)=`
+						( f.question = $event );
+						checkFormValid();
+						formFieldChange.emit( f );`,
+					(mousedown)='$event?.stopPropagation()',
+					(blur)='( f.question === "" ) && ( f.question = null )')
+			cub-form-field.mt-16([label]='"BASE.BOARD.FORM.LABEL.DESCRIPTION" | translate')
+				input(
+					cubFormFieldInput,
+					[clearable]='false',
+					[formControlName]='f.id + "_description"',
+					[placeholder]='"BASE.BOARD.FORM.PLACEHOLDER.INPUT_DESCRIPTION" | translate',
+					[valueControl]=`
+						f.description || f.description === ""
+							? f.description
+							: fieldsLK[ f.id ].description`,
+					(valueControlChange)=`
+						( f.description = $event );
+						checkFormValid();
+						formFieldChange.emit( f );`,
+					(mousedown)='$event?.stopPropagation()',
+					(blur)=`
+						( f.description === "" )
+						&& ( f.description = null )`)
+		ng-container(*ngIf=`
+			index !== 0
+			|| ( f.hasConditions
+				&& f.filter?.options?.length )`)
+			cub-divider
+			.condition((mousedown)='$event?.stopPropagation()')
+				cub-switch(
+					[formControlName]='f.id + "_conditionalSwitch"',
+					[label]='"BASE.BOARD.FORM.LABEL.SET_CONDITIONAL" | translate',
+					[(valueControl)]='f.hasConditions',
+					(valueControlChange)=`
+						checkFormValid();
+						formFieldChange.emit( f );`,
+					(click)=`
+						changeConditionSwitch( f, index );
+						$event?.stopPropagation();`)
+				.condition-content(*ngIf='f.hasConditions && f.filter')
+					single-conditional(
+						isEditingForm,
+						#conditionalComp,
+						[fieldOfNewOption]='fieldOfNewOption',
+						[customIndexNewOption]='NEW_OPTION_TYPE.Before',
+						[fields]='availableFields',
+						[options]='f.filter.options',
+						[conditions]='f.filter.conditions',
+						[logicalOperator]='f.filter.logicalOperator',
+						[logicalExpression]='f.filter.logicalExpression',
+						[excludeFields]=`{
+							fields: excludeFields,
+							isDisable: index === 0 ? true : false,
+							errorMessage: "BASE.BOARD.FORM.MESSAGE.WRONG_INDEX_QUESTION" | translate }`,
+						(logicalOperatorChange)='onLogicalOperatorChange( f, $event, index )',
+						(logicalExpressionChange)='onLogicalExpressionChange( f, $event, index )',
+						(optionsChange)=`onOptionsChange( f, $event, index )`,
+						(conditionalChange)='filterChanged( f, index )',
+						(conditionsChange)='onConditionFilterChange( f, $event, index )',
+						(mousedown)='setFieldOfNewOption( index )')
+	ng-template(#outFocusBlock)
+		.p-16
+			cub-form-field
+				input(
+					cubFormFieldInput,
+					[clearable]='false',
+					[placeholder]='"BASE.BOARD.FORM.PLACEHOLDER.INPUT_TEXT" | translate',
+					(click)='focusFormField( f.id, index, f ); $event?.stopPropagation();')
+			.brad-8.mt-6.pv-6.ph-12(
+				*ngIf='f.hasConditions && f.filter?.options?.length',
+				[class.right-condition]='!f.isErrorCondition',
+				[class.wrong-condition]='f.isErrorCondition')
+				| {{ "BASE.BOARD.FORM.ERROR." + ( !f.isErrorCondition ? "RIGHT_CONDITION" : "WRONG_CONDITION") | translate }}
+
+cub-menu(
+	#editMenu,
+	minWidth='256px')
+	cub-menu-content
+		ng-template(cubMenuContent, let-isAvatar='isAvatar')
+			button(
+				cubMenuSelectItem,
+				iconSize='20px',
+				icon='image-group',
+				(click)='alterImage( isAvatar ? true : false )')
+				| {{ "BASE.BOARD.FORM.LABEL.ALTER_IMAGE" | translate }}
+			button(
+				cubMenuSelectItem,
+				iconSize='20px',
+				icon='fullscreen',
+				(click)='editImage( isAvatar ? true : false )')
+				| {{ "BASE.BOARD.FORM.LABEL.EDIT_IMAGE" | translate }}
+
+cub-scroll-bar(
+	cdkScrollable,
+	#fieldSettingsScrollBar,
+	[style.maxHeight.px]='formHeight')
+	.form-editing
+		.form-editing__header(
+			*ngIf='form?.hasAvatar || form?.hasCoverImage')
+			.bg(*ngIf='form?.hasCoverImage')
+				cub-image.bg__image(
+					[src]=`form?.coverImage
+						? form?.coverImage
+						: "assets/images/feature-specific/form/default-bg.webp"`)
+				button.bg__edit-button(
+					cubFloatingButton,
+					icon='pencil',
+					iconColor='primary',
+					[cubMenuTriggerFor]='editMenu',
+					[cubMenuTriggerContext]='{ isAvatar: false }')
+					| {{ "BASE.BOARD.FORM.LABEL.EDIT_BACKGROUND" | translate }}
+			.avatar(
+				*ngIf='form?.hasAvatar',
+				[class.no-background]='form?.hasAvatar && !form?.hasCoverImage')
+				.avatar__image
+					cub-image(
+						[src]=`form?.avatar
+							? form?.avatar
+							: "assets/images/feature-specific/form/default-avatar.webp"`)
+					button.avatar__edit-button(
+						cubFloatingButton,
+						icon='pencil',
+						iconColor='primary',
+						[cubMenuTriggerFor]='editMenu',
+						[cubMenuTriggerContext]='{ isAvatar: true }')
+		form.form-editing__body(
+			[class.non-padding-top]='form?.hasAvatar || form?.hasCoverImage',
+			[formGroup]='dataForm')
+			.information
+				ng-container(*ngIf='isTitleFocus; else elseBlock;')
+					cub-form-field.mb-4(active)
+						input.text-center(
+							required,
+							autoFocusOn,
+							cubFormFieldInput,
+							maxlength='128',
+							formControlName='title',
+							[clearable]='false',
+							[style.fontSize.px]='20',
+							[valueControl]=`
+								form?.title
+									? form?.title
+									: formViewName`,
+							[placeholder]='"BASE.BOARD.FORM.PLACEHOLDER.INPUT_TITLE" | translate',
+							(valueControlChange)=`onFormTitleChange( $event )`,
+							(keydown.enter)=`
+								dataForm.controls.title.valid
+								&& ( isTitleFocus = false )`,
+							(blur)=`
+								dataForm.controls.title.valid
+								&& ( isTitleFocus = false )`)
+						ng-template(
+							cubFormFieldError='maxlength',
+							*ngIf='dataForm.controls.title?.errors?.maxlength')
+							| {{ "BASE.BOARD.FORM.ERROR.NOT_EXCEED_128_CHARACTER" | translate }}
+				ng-template(#elseBlock)
+					.information__title((click)='isTitleFocus = true')
+						.information__title--inner
+						| {{ form?.title ? form?.title : formViewName }}
+				ng-container(*ngIf='isDescriptionFocus; else elseBlock1;')
+					cub-form-field.mv-4(
+						active,
+						resizable)
+						textarea(
+							#desInput='cubFormFieldInput',
+							cubFormFieldInput,
+							rows='10',
+							maxlength='2000',
+							formControlName='description',
+							[clearable]='false',
+							[placeholder]='"BASE.BOARD.FORM.PLACEHOLDER.INPUT_DESCRIPTION" | translate',
+							[(ngModel)]='form.description',
+							(ngModelChange)=`
+								checkFormValid();
+								formChange.emit( form );`,
+							(blur)=`
+								dataForm.controls.description.valid
+								&& ( isDescriptionFocus = false )`)
+						ng-template(
+							cubFormFieldError='maxlength',
+							*ngIf='dataForm.controls.description?.errors?.maxlength')
+							| {{ "BASE.BOARD.FORM.ERROR.NOT_EXCEED_2000_CHARACTER" | translate }}
+				ng-template(#elseBlock1)
+					.information__description
+						.information__description--inner((click)='focusDescription()')
+							ng-container(*ngIf='form.description; else elseBlock;')
+								| {{ form.description }}
+							ng-template(#elseBlock)
+								| {{ "BASE.BOARD.FORM.PLACEHOLDER.INPUT_DESCRIPTION" | translate }}
+				.layout-column.flex.layout-gap-16.mt-16(
+					cdkDropList,
+					[cdkDropListData]='form.fields',
+					(cdkDropListDropped)='onFieldDrop( $event )')
+					ng-container(*ngIf='form?.fields?.length > 0; else elseBlock2')
+						ng-container(*ngFor='let f of form.fields; let index = index;')
+							.field(
+								cdkDrag,
+								#fieldElement,
+								[cdkDragData]='f',
+								[attr.data-item-id]='f.id',
+								[class.focusing-field]=`f.id === focusingFieldID`,
+								(mousedown)=`
+									!isDragging
+									&& f.id !== focusingFieldID
+									&& focusFormField( f.id, index, f )`)
+								.drag-field-preview(
+									*cdkDragPreview,
+									[class.focusing-field]=`f.id === focusingFieldID`,
+									[style.width.px]='fieldWidth')
+									+fieldItem
+								.drag-field-placeholder(
+									*cdkDragPlaceholder,
+									[style.height.px]=`
+										f.id === focusingFieldID
+										? 260
+										: 111`)
+								+fieldItem
+					ng-template(#elseBlock2)
+						.field-drop-area(#fieldDropArea)
+							cub-icon.mr-4(
+								name='fullscreen',
+								size='20px')
+							| {{ "BASE.BOARD.FORM.LABEL.DRAG_DROP_INTO_HERE" | translate }}
+							.drag-field-placeholder(*cdkDragPlaceholder)
+
+			.re-captcha(*ngIf='form.hasRecaptcha')
+				re-captcha(
+					[siteKey]='"RECAPTCHA_SITE_KEY" | environment')
+			.submit-button
+				ng-container(*ngIf='isSubmitTextEdit; else elseBlock3;')
+					input(
+						#submitTextInput,
+						autofocus,
+						maxlength='40',
+						[cubTooltip]=`
+							form?.submitButtonName?.length === 40
+							? ( "BASE.BOARD.FORM.ERROR.MAX_40_CHARACTERS" | translate )
+							: ""`,
+						[formControl]='submitTextFormControl',
+						[(ngModel)]='form.submitButtonName',
+						(blur)='isSubmitTextEdit = false',
+						(keyup.enter)='isSubmitTextEdit = false')
+				ng-template(#elseBlock3)
+					button(
+						cubButton='primary',
+						trailingIcon='pencil',
+						(click)='editSubmitButton()')
+						ng-container(*ngIf='form?.submitButtonName; else elseBlock4;')
+							| {{ form?.submitButtonName }}
+						ng-template(#elseBlock4)
+							| {{ "BASE.BOARD.FORM.LABEL.SENT" | translate }}
+		.form-editing__footer
+			include blocks/block-form-footer.partial.pug

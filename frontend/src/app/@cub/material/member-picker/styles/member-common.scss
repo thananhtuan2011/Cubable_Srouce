@@ -1,0 +1,120 @@
+@import 'src/scss/partials/variable';
+
+.cub-member-common-controls {
+	$self: &;
+	display: flex;
+	align-items: center;
+	margin-top: 5px;
+	margin-bottom: 15px;
+
+	#{ $self }__search-box {
+		width: 100%;
+		min-width: 0;
+	}
+
+	#{ $self }__btn-toogle-all {
+		color: var(--primary-color, $color-primary);
+		font-weight: $font-weight-semibold;
+		white-space: nowrap;
+		margin-left: 15px;
+	}
+}
+
+.cub-member-common__user-status {
+	margin-left: 5px;
+}
+
+.cub-member {
+	$self: &;
+	width: 100%;
+	min-width: 0;
+	border-radius: 8px;
+
+	#{ $self }__content-box {
+		display: flex;
+		flex-direction: row;
+		flex-wrap: wrap;
+		border-radius: 8px;
+		border: 1px solid $color-border-primary;
+		min-height: 36px;
+		max-height: 104px;
+		background: $color-white;
+		width: 100%;
+
+		&:hover {
+			border-color: $color-border-quaternary;
+		}
+
+		&#{ $self }__content-box--focusing {
+			border-color: $color-border-focus;
+			box-shadow: 0 0 0 2px rgba(140, 183, 255, .8), 0 1px 2px 0 rgba(16, 24, 40, .05);
+		}
+
+		&#{ $self }__content-box--disabled {
+			background: #f2f2f2;
+		}
+
+		&:has(#{ $self }__content-box-values) {
+			padding: 0 8px;
+		}
+
+		#{ $self }__content-box-values {
+			display: flex;
+			flex-direction: row;
+			justify-content: center;
+			align-items: center;
+			gap: 4px;
+			border-radius: 20px;
+			min-height: 26px;
+			background: #f2f2f2;
+			margin: 4px;
+			padding: {
+				right: 8px;
+				left: 3px
+			};
+
+			#{ $self }__content-box-values__value {
+				color: $color-text-hyperlink;
+				font: {
+					size: 14px;
+					weight: 400,
+				}
+			}
+
+			#{ $self }__content-box-values__icon-remove {
+				display: flex;
+				flex-direction: column;
+				justify-content: center;
+				cursor: pointer;
+			}
+		}
+
+		#{ $self }__content-box-input {
+			display: flex;
+			flex: 1;
+			min-width: 200px;
+
+			&#{ $self }__content-box-input--unfocused {
+				display: none;
+			}
+
+			input {
+				border: none;
+				background: none;
+				margin: 0;
+				width: 100%;
+				min-width: 100%;
+				max-width: 100%;
+				min-height: 18px;
+
+				&.input--has-values {
+					margin: 4px;
+				}
+
+				&:not(.input--has-values) {
+					padding: 8px 12px;
+				}
+			}
+		}
+	}
+}

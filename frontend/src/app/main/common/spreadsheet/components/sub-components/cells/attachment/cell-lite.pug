@@ -1,0 +1,8 @@
+.layout-row.layout-gap-6.full-height.unscrollable
+	cub-file(
+		*ngFor=`
+			let file of data;
+			index as idx;
+			trackByID
+		`,
+		[file]='file')

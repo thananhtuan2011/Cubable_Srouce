@@ -1,0 +1,24 @@
+include ../builder.include.pug
+
+ng-template(#defaultBlock)
+	cub-phone-country-dropdown(
+		[label]='"FIELD.BUILDER.LABEL.DEFAULT_PHONE_COUNTRY_CODE" | translate',
+		[(countryCode)]='internalField.countryCode',
+		(countryCodeChange)='onCountryCodeChange( $event )')
+	phone-field-input(
+		phoneOnly,
+		autoFocusOn,
+		[required]='false',
+		[label]='"FIELD.BUILDER.LABEL.DEFAULT_VALUE" | translate',
+		[field]='internalField',
+		[(data)]='initialData',
+		(dataChange)='onInitialDataChanged( $event )')
+
+ng-container(
+	*ngTemplateOutlet=`
+		fieldTemplate;
+		context: {
+			defaultBlock,
+			canSetRequired: true,
+		};
+	`)

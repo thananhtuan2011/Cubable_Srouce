@@ -1,0 +1,58 @@
+include ../mixins/mixin.pug
+
+.layout-row.layout-align-start-center.layout-gap-8.layout-wrap.flex
+	ng-container(*ngTemplateOutlet='fieldPicker')
+
+	+comparisonOperator
+
+	ng-container(*ngIf='data?.compareType')
+		ng-container([ngSwitch]='data.compareType')
+			ng-container(*ngSwitchCase='COMPARISON_TYPE.STATIC')
+				cub-dropdown.flex.miw-200(
+					searchable,
+					required,
+					singleLine,
+					#comparisonCustomField,
+					[name]='"FIELD.COMPARISON.LABEL.DATA" | translate',
+					[displayErrorMode]='ERROR_MODE.Tooltip',
+					[multiple]='true',
+					[clearable]='false',
+					[disableControl]=`
+						error?.field
+							|| ( excludeFields?.isDisable
+								&& ( excludeFieldsLK?.[ field?.id ] ) )`,
+					[formControl]='dataControl',
+					[valueControlOptions]='{ emitEvent: true }',
+					[(valueControl)]='data.recordIDs',
+					(valueControlChange)='onItemChange()',
+					(opened)='onDropdownPickerOpened()')
+					cub-dropdown-item(
+						*ngFor='let item of availableItems; ngForTrackByID',
+						[label]=`
+							item.data
+								?? ( "FIELD.COMPARISON.LABEL.UN_NAME" | translate )
+						`,
+						[value]='item.id')
+			ng-container(*ngSwitchCase='COMPARISON_TYPE.AUTO')
+				+comparisonTypeAuto
+
+	ng-container(*ngIf='comparisonNotCustomValue.has( operator )')
+		cub-form-field.w-172(
+			displayErrorMode='tooltip')
+			input(
+				required,
+				clearable,
+				cubFormFieldInput,
+				#textInput='cubFormFieldInput',
+				[disableControl]=`
+					error?.field
+						|| ( excludeFields?.isDisable
+							&& ( excludeFieldsLK?.[ field?.id ] ) )`,
+				[name]='"FIELD.COMPARISON.LABEL.TEXT" | translate',
+				[placeholder]='"FIELD.COMPARISON.PLACEHOLDER.FILL_TEXT" | translate',
+				[formControl]='dataControl',
+				[valueControl]='data?.text',
+				(valueControlChange)='onTextDataChange( $event )')
+
+	ng-container(*ngIf='comparisonTypeHasValue.has( operator )')
+		+comparisonType

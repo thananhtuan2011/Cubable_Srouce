@@ -1,0 +1,77 @@
+@import 'src/scss/partials/variable';
+
+:host {
+	position: sticky;
+
+	display: flex;
+	flex-direction: row;
+	justify-content: space-between;
+	align-items: center;
+	height: 52px;
+	min-height: 52px;
+	max-height: 52px;
+	padding: 8px 16px;
+	margin-bottom: 12px;
+
+	background-color: $color-white;
+
+	.left {
+		display: flex;
+		flex-direction: row;
+		justify-content: center;
+		align-items: center;
+		height: 30px;
+		min-height: 30px;
+		max-height: 30px;
+	}
+
+	.content {
+		display: flex;
+		flex-direction: row;
+		align-items: center;
+		gap: 8px;
+	}
+
+	.right {
+		display: flex;
+		flex-direction: row;
+		align-items: center;
+		height: 100%;
+		margin-left: 16px;
+
+		.feature-text {
+			font-size: 11.5px;
+			line-height: 16px;
+			font-weight: $font-weight-semibold;
+		}
+	}
+}
+
+::ng-deep {
+	.cub-badge-notification {
+		bottom: 16px;
+		left: 10px;
+	}
+
+	.account-settings-menu {
+		.cub-menu__content {
+			.cub-menu-item {
+				.cub-menu-item__content {
+					// padding-bottom: 8px;
+				}
+			}
+
+			.avatar {
+				.cub-menu-item__prefix {
+					padding-top: 17px;
+				}
+			}
+
+			.custom {
+				.cub-menu-item__prefix {
+					padding-top: 15px;
+				}
+			}
+		}
+	}
+}

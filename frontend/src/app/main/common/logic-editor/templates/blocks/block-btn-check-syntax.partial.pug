@@ -1,0 +1,7 @@
+button(
+	cubBasicButton,
+	color='blue',
+	icon='search-pattern',
+	[disabled]='!content?.trim().length',
+	(click)='checkSyntax()')
+	| {{ "LOGIC_EDITOR.LABEL.CHECK_SYNTAX" | translate }}

@@ -1,0 +1,97 @@
+input[type='range'] {
+	-webkit-appearance: none;
+	width: 100%;
+	display: flex;
+	align-items: center;
+	margin: 0;
+
+	&:before,
+	&:after {
+		content: '';
+		display: block;
+		height: 4px;
+		width: 15px;
+		background-color: $color-border;
+	}
+
+	/* Safari & Chrome */
+	&:focus::-webkit-slider-thumb {
+		background-color: var(--primary-color, $color-primary);
+	}
+
+	&::-webkit-slider-runnable-track {
+		width: 100%;
+		height: 4px;
+		cursor: pointer;
+		background-color: $color-border;
+		border-radius: 2px;
+	}
+
+	&::-webkit-slider-thumb {
+		height: 14px;
+		width: 14px;
+		border-radius: 50%;
+		background-color: $color-black;
+		cursor: pointer;
+		-webkit-appearance: none;
+		margin-top: -5px;
+	}
+
+	/* Firefox */
+	&:focus::-moz-range-thumb {
+		background-color: var(--primary-color, $color-primary);
+	}
+
+	&::-moz-range-track {
+		width: 100%;
+		height: 4px;
+		cursor: pointer;
+		background-color: $color-border;
+		border-radius: 2px;
+	}
+
+	&::-moz-range-thumb {
+		height: 14px;
+		width: 14px;
+		border-radius: 50%;
+		background-color: $color-black;
+		cursor: pointer;
+		border: none;
+	}
+
+	/* IE */
+	&:focus::-ms-fill-lower {
+		background-color: var(--primary-color, $color-primary);
+	}
+
+	&:focus::-ms-thumb {
+		background-color: var(--primary-color, $color-primary);
+	}
+
+	&::-ms-track {
+		width: 100%;
+		height: 4px;
+		cursor: pointer;
+		background-color: $color-border;
+		border-radius: 2px;
+	}
+
+	&::-ms-fill-lower {
+		background-color: $color-black;
+		border-radius: 50%;
+	}
+
+	&::-ms-fill-upper {
+		background-color: $color-black;
+		border-radius: 50%;
+	}
+
+	&::-ms-thumb {
+		height: 14px;
+		width: 14px;
+		border-radius: 50%;
+		background-color: $color-black;
+		cursor: pointer;
+		margin-top: -5px;
+	}
+}

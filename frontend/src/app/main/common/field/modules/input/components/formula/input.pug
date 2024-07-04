@@ -1,0 +1,37 @@
+cub-form-field(
+	#formField,
+	[label]='innerLabel',
+	[size]='size',
+	[variant]='variant',
+	[disabled]='disabled',
+	[displayErrorMode]='displayErrorMode',
+	[hideRequiredMarker]='hideRequiredMarker',
+	[focusing]='formulaEditorPopupRef?.isOpened',
+	[control]='formControl',
+	(container.click)='openFormulaEditorPopup( $event )',
+	(container.blur)='formControl.markAsTouched()')
+	ng-container(
+		cubFormFieldPlaceholder,
+		*ngIf='!data')
+		| {{ placeholder }}
+	ng-container(*ngIf='data')
+		-
+			const calculated = 'data.calculated';
+			const resultFormatConfig = '$any( data.params.resultFormatConfig )?';
+
+		ng-container([ngSwitch]='true')
+			//- ng-container(*ngSwitchCase=`$any( ${calculated}?.resultType ) | isDateField`)
+			//- 	| {{ #{calculated}.data | dateValue : #{resultFormatConfig}.format : #{resultFormatConfig}.timeFormat }}
+			ng-container(*ngSwitchCase=`$any( ${calculated}?.resultType ) | isNumberField`)
+				| {{ #{calculated}.data | numberValue : #{resultFormatConfig}.format : #{resultFormatConfig}.decimalPlaces }}
+			//- ng-container(*ngSwitchCase=`$any( ${calculated}?.resultType ) | isTextField`)
+			//- 	| {{ #{calculated}.data }}
+			//- ng-container(*ngSwitchCase=`${calculated}?.resultType === formulaCalculatedType.CALCULATED_ARRAY`)
+				| {{ #{calculated}.data }}
+			ng-container(*ngSwitchCase=`${calculated}?.resultType === formulaCalculatedType.CALCULATED_NULL`)
+				| null
+			ng-container(*ngSwitchCase=`${calculated}?.resultType === formulaCalculatedType.CALCULATED_UNDEFINED`)
+				| undefined
+			ng-container(*ngSwitchDefault)
+				span([ngClass]=`{ "text-color-error": ${calculated} && ${calculated}.resultType === null }`)
+					| {{ #{calculated}?.data }}

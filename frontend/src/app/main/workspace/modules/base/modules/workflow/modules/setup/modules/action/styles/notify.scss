@@ -1,0 +1,212 @@
+@import 'src/app/@cub/scss/partials/variable';
+
+:host {
+	display: flex;
+	flex-direction: column;
+	width: 100%;
+	min-width: 0;
+	height: 100%;
+	min-height: 0;
+	gap: 12px;
+
+	::ng-deep {
+		.content {
+			.cub-form-field__input {
+				height: 124px;
+			}
+
+			.quill-editor {
+				width: 100%;
+				height: calc(100% - 24px);
+
+				.ql-toolbar,
+				.ql-container {
+					border: none;
+					padding: 0;
+				}
+
+				.ql-container {
+					.ql-editor {
+						padding: 8px;
+						overflow-x: hidden;
+
+						span {
+							display: inline-flex;
+							height: 20px;
+						}
+					}
+
+					.ql-editor.ql-blank::before {
+						font-style: unset;
+						right: unset;
+						left: unset;
+						color: $color-text-tertiary;
+					}
+				}
+
+				.custom-embed {
+					margin-bottom: 4px;
+					margin-left: 2px;
+					margin-right: 2px;
+
+					.message-field {
+						display: inline-flex;
+						margin: 0 auto;
+						height: 20px;
+						font-size: 12px;
+						padding: 2px 8px;
+						border-radius: 20px;
+						color: $color-text-primary;
+						background-color: $color-material-default;
+
+						.field-name {
+							height: 16px !important;
+							line-height: 16px;
+							margin-right: 4px;
+						}
+
+						.icon-remove {
+							height: 12px !important;
+							margin-top: 2px;
+							line-height: 16px;
+
+							.icon {
+								height: 12px;
+							}
+						}
+					}
+				}
+
+				.message-field {
+					display: inline-flex;
+					margin: 0 2px;
+					height: 20px;
+					font-size: 12px;
+					padding: 2px 8px;
+					border-radius: 20px;
+					color: $color-text-primary;
+					background-color: $color-material-default;
+
+					.field-name {
+						white-space: nowrap;
+						overflow: hidden;
+						text-overflow: ellipsis;
+						display: inline-block;
+						max-width: 120px;
+						margin-right: 4px;
+						height: 15px;
+						line-height: 16px;
+					}
+
+					.icon-remove {
+						height: 12px !important;
+						line-height: 16px;
+
+						.icon {
+							height: 12px;
+						}
+					}
+				}
+
+			}
+		}
+
+		.subject {
+			width: 100%;
+			word-break: break-word;
+			line-height: 20px;
+
+			.field-tag {
+				min-width: 32px;
+				max-width: 100%;
+				min-height: 20px;
+				max-height: 100%;
+				margin: 0 2px;
+				font-size: 12px;
+				padding: 2px 8px;
+				border-radius: 20px;
+				color: $color-text-primary;
+				background-color: $color-material-default;
+
+				.name-field {
+					white-space: nowrap;
+					overflow: hidden;
+					text-overflow: ellipsis;
+					display: inline-block;
+					max-width: 120px;
+					margin-right: 4px;
+					height: 15px;
+					line-height: 16px;
+				}
+			}
+		}
+	}
+
+	.placeholder {
+		color: $color-text-tertiary;
+		width: 90%;
+	}
+
+	.remove-mg-bt {
+		margin-bottom: -4px;
+	}
+
+	.receiver {
+		display: flex;
+		flex-direction: row;
+		justify-content: space-between;
+		align-items: flex-start;
+		flex: 1 1 0%;
+		margin-right: 4px;
+
+		.receiver-content {
+			display: flex;
+			flex-wrap: wrap;
+
+			.receiver-member {
+				display: flex;
+				flex-direction: row;
+				justify-content: center;
+				align-items: center;
+				background: $color-material-default;
+				gap: 4px;
+				border-radius: 20px;
+				height: 20px;
+				margin: 0 4px 4px 0;
+				padding: 0 8px 0 0;
+
+				.receiver__people {
+					display: flex;
+					align-items: center;
+				}
+
+				.receiver__field {
+					display: flex;
+					align-items: center;
+					font-size: 12px;
+					line-height: 16px;
+					padding-left: 8px;
+				}
+
+				.receiver__icon-remove {
+					display: flex;
+					flex-direction: column;
+					justify-content: center;
+					cursor: pointer;
+				}
+			}
+		}
+	}
+
+	.plus-button {
+		padding: 0 !important;
+	}
+}
+
+::ng-deep {
+	.notify__not-found-text {
+		background-color: $color-white;
+		padding: 10px 12px;
+		border-radius: 8px
+	}
+}

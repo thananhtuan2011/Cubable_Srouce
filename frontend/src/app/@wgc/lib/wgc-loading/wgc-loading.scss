@@ -1,0 +1,11 @@
+@import 'src/scss/partials/variable';
+
+.wgc-loading {
+	/* Display & Box Model */
+	display: flex;
+	width: fit-content;
+	height: fit-content;
+
+	/* Other */
+	animation: $spin-animation;
+}

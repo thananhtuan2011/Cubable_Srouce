@@ -1,0 +1,12 @@
+ng-container(*ngIf='workspace; else elseBlock;')
+	navigation-bar
+	.content
+		router-outlet
+ng-template(#elseBlock)
+	.loading-workspace
+		.h-auto
+			cub-image(width='420px', src='assets/images/arts/loading.webp')
+		.layout-row.layout-align-center-center
+			h1.mr-4
+				| {{ "WORKSPACE.MESSAGE.LOADING_WORKSPACE" | translate }}
+			cub-loading.mt-8

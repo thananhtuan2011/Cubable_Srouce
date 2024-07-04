@@ -1,0 +1,65 @@
+mixin frame
+	ng-container(
+		[ngSwitch]='previewingFile.previewInfo.type')
+		ng-container(
+			*ngSwitchCase='FilePreviewType.Image')
+			cub-image([src]='previewingFile.previewInfo.url')
+		ng-container(
+			*ngSwitchCase='FilePreviewType.Audio')
+			audio(controls, autoplay)
+				source([src]='previewingFile.previewInfo.url')
+		ng-container(
+			*ngSwitchCase='FilePreviewType.Video')
+			video(controls, autoplay)
+				source([src]='previewingFile.previewInfo.url')
+		ng-container(
+			*ngSwitchCase='FilePreviewType.Iframe')
+			iframe([src]='previewingFile.previewInfo.url')
+		ng-container(*ngSwitchDefault)
+			cub-icon(name='eyes-fill', size='52px')
+			div
+				h5
+					| {{ "CUB.MESSAGE.FILE_FORMAT_NOT_SUPPORT_PREVIEW" | translate }}
+				span
+					| {{ previewingFile.filename }}
+					| -
+					| {{ previewingFile.size | fileSizeUnit }}
+
+.cub-file-previewer__header
+	h5.cub-file-previewer__filename(
+		[attr.title]='previewingFile.filename')
+		| {{ previewingFile.filename | empty }}
+	ng-container(
+		*ngIf='!previewingFile.isEmpty')
+		button(
+			*ngIf='removable',
+			(click)='remove()')
+			cub-icon(name='trash', size='20px')
+			| {{ "CUB.LABEL.DELETE" | translate }}
+		button(
+			(click)='previewingFile.download()')
+			cub-icon(name='download-circle', size='20px')
+			| {{ "CUB.LABEL.DOWNLOAD" | translate }}
+	button(
+		cubClearButton,
+		size='20px',
+		(click)='close()')
+.cub-file-previewer__body
+	.cub-file-previewer__box
+		button.cub-file-previewer__box__btn-previous(
+			[disabled]='isFirstFilePreviewing',
+			(click)='previewPreviousFile()')
+			cub-icon(name='chevron-left', size='40px')
+		.cub-file-previewer__box__frame(
+			*ngIf='!previewingFile.isEmpty')
+			+frame
+		button.cub-file-previewer__box__btn-next(
+			[disabled]='isLastFilePreviewing',
+			(click)='previewNextFile()')
+			cub-icon(name='chevron-right', size='40px')
+	.cub-file-previewer__file-list
+		.cub-file-previewer__file-item(
+			*ngFor='let file of files; index as idx;',
+			[class.cub-file-previewer__file-item--active]='previewingIndex === idx',
+			(click)='previewingIndex = idx')
+			cub-file([file]='file')

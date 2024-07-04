@@ -1,0 +1,58 @@
+include ../mixins/pane.include.pug
+
+mixin footer-cell
+	.footer-cell.cell()&attributes(attributes)
+		block
+
+.spreadsheet__footer(
+	*ngIf='isEditorMode && config.column.calculable')
+	ng-template(
+		#footerCellTempTemplate,
+		let-column='column',
+		let-columnIndex='columnIndex')
+		+footer-cell()(
+			[attr.data-column-id]='column.id',
+			[attr.data-column-index]='columnIndex',
+			[style.--cell-width.px]='column.width')
+			ng-container(*ngTemplateOutlet=`
+				calculationBlockTemplate;
+				context: {
+					column,
+					calculatedResult: (
+						isGrouping
+							? rootGroup.metadata.calculatedResult
+							: calculatedResult
+					)?.get( column.id ),
+				};`)
+
+	+left-pane().layout-row
+		+footer-cell().index-cell
+			.text-truncate(
+				*ngVar=`{
+					rowCount: "SPREADSHEET.LABEL.ROW_COUNT"
+						| translate: { count: rows?.length || 0 },
+				}; let localVar;`,
+				[attr.title]=`localVar.rowCount`)
+				| {{ localVar.rowCount }}
+		ng-container(
+			*ngFor=`let c of leftPaneColumns;
+				trackBy: "column.id" | trackByFn;`)
+			ng-container(
+				*ngTemplateOutlet=`
+					footerCellTempTemplate;
+					context: {
+						column: c.column,
+						columnIndex: c.index,
+					};`)
+
+	+right-pane().layout-row
+		ng-container(
+			*ngFor=`let c of rightPaneColumns;
+				trackBy: "column.id" | trackByFn;`)
+			ng-container(
+				*ngTemplateOutlet=`
+					footerCellTempTemplate;
+					context: {
+						column: c.column,
+						columnIndex: c.index,
+					};`)

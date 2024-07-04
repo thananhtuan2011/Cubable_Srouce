@@ -1,0 +1,215 @@
+@import '../../../scss/partials/variable';
+@import '../../../scss/partials/mixin';
+
+.cub-button {
+	$self: &;
+
+	position: relative;
+
+	display: flex;
+	width: fit-content;
+	border: 1px solid $color-transparent;
+
+	font-weight: $font-weight-semibold;
+
+	// Type
+	@at-root {
+		&#{ $self }-primary {
+			background-color: $color-primary;
+			color: $color-white;
+
+			&:not(:disabled) {
+				&:active,
+				&:hover,
+				&:focus-visible,
+				&.cub-button--active {
+					background-color: $color-primary-active;
+				}
+
+				&:active,
+				&:focus-visible,
+				&.cub-button--active {
+					box-shadow: $box-shadow-primary;
+				}
+			}
+
+			&:disabled {
+				background-color: $color-primary-disabled;
+				color: $color-text-tertiary;
+			}
+		}
+
+		&#{ $self }-secondary {
+			border-color: $color-border-primary;
+
+			background-color: $color-white;
+
+			&:not(:disabled) {
+				&:active,
+				&:hover,
+				&:focus-visible,
+				&.cub-button--active {
+					border-color: $color-border-quaternary;
+				}
+
+				&:active,
+				&:focus-visible,
+				&.cub-button--active {
+					box-shadow: $box-shadow-secondary;
+				}
+			}
+
+			&:disabled {
+				border-color: $color-material-default;
+
+				color: $color-text-tertiary;
+			}
+		}
+
+		// &#{ $self }-tertiary {
+		// 	border-color: $color-transparent;
+
+		// 	background-color: $color-white;
+
+		// 	&:not(:disabled) {
+		// 		&:active,
+		// 		&:hover,
+		// 		&:focus-visible,
+		// 		&.cub-button--active {
+		// 			background-color: $color-material-default;
+		// 		}
+
+		// 		&:active,
+		// 		&:focus-visible,
+		// 		&.cub-button--active {
+		// 			box-shadow: $box-shadow-tertiary;
+		// 		}
+		// 	}
+
+		// 	&:disabled {
+		// 		color: $color-text-tertiary;
+		// 	}
+		// }
+
+		&#{ $self }-destructive {
+			background-color: $color-material-destructive-default;
+			color: $color-white;
+
+			&:not(:disabled) {
+				&:active,
+				&:hover,
+				&.cub-button--active,
+				&:focus-visible {
+					background-color: $color-material-destructive-hover;
+				}
+
+				&:active,
+				&:focus-visible,
+				&.cub-button--active {
+					box-shadow: $box-shadow-destructive;
+				}
+			}
+
+			&:disabled {
+				background-color: $color-material-destructive-disable;
+			}
+		}
+	}
+
+	// Size
+	@at-root {
+		&#{ $self }-x-small {
+			min-width: 24px;
+			height: 24px;
+			min-height: 24px;
+			max-height: 24px;
+			padding: 2px 4px;
+			border-radius: 6px;
+
+			&:has(#{ $self }__content:empty) {
+				width: 24px;
+				padding: 10px;
+			}
+
+			#{ $self }__icon {
+				font-size: 12px;
+			}
+		}
+
+		&#{ $self }-small {
+			min-width: 36px;
+			height: 36px;
+			min-height: 36px;
+			max-height: 36px;
+			padding: 10px 12px;
+			border-radius: 10px;
+
+			&:has(#{ $self }__content:empty) {
+				width: 36px;
+				padding: 10px;
+			}
+
+			#{ $self }__icon {
+				font-size: 12px;
+			}
+		}
+
+		&#{ $self }-large {
+			min-width: 44px;
+			height: 44px;
+			min-height: 44px;
+			max-height: 44px;
+			padding: 12px 20px;
+			border-radius: 12px;
+
+			&:has(#{ $self }__content:empty) {
+				width: 44px;
+				padding: 12px;
+			}
+
+			#{ $self }__icon {
+				font-size: 16px;
+			}
+		}
+	}
+
+	// Loading state
+	@at-root {
+		&#{ $self }--loading {
+			pointer-events: none;
+
+			#{ $self }__loading {
+				position: absolute;
+				left: calc(50% - 8px);
+			}
+
+			#{ $self }__icon,
+			#{ $self }__content {
+				opacity: 0;
+				visibility: hidden;
+			}
+		}
+	}
+
+	#{ $self }-wrapper {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		column-gap: 4px;
+		width: 100%;
+		height: 100%;
+	}
+
+	#{ $self }__icon {
+		font-size: inherit;
+		line-height: inherit;
+	}
+
+	#{ $self }__content {
+		@include text-truncate;
+
+		&:empty {
+			display: none;
+		}
+	}
+}

@@ -1,0 +1,4 @@
+.wgc-icon-button-wrapper((click)='preventClickOnWrapper( $event )')
+	wgc-icon(*ngIf='icon; else elseBlock;', [name]='icon')
+	ng-template(#elseBlock)
+		ng-content

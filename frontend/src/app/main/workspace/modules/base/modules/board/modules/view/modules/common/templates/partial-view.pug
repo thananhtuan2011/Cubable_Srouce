@@ -1,0 +1,102 @@
+mixin tabView(iconPrefix)
+	ng-container(*ngIf='view.id === activeView?.id; else elseBlock;')
+		.layout-row.layout-align-start-center
+			cub-icon(
+				size='20px',
+				[color]=`${iconPrefix}.includes('data')
+					? ( "yellowGreen" | cubPalette : "500" )
+					: ( "purple" | cubPalette : "500" )`,
+				[name]=`${iconPrefix}.includes('data')
+					? "grid"
+					: "form"`)
+			ng-container(*ngIf='!isEditingName, else elseBlock1')
+				.view-name.text-truncate.mh-8(
+					[title]='view.name | empty',
+					(click)='view.canManage && changeName( view )')
+					| {{ view.name | empty }}
+				button(
+					cubBasicButton,
+					icon='more-vertical',
+					iconColor='tertiary',
+					[cubMenuTriggerFor]='moreActionMenu',
+					[cubMenuTriggerContext]='{ view }')
+			ng-template(#elseBlock1)
+				cub-form-field.view-name-input(
+					active,
+					displayErrorMode='tooltip')
+					input(
+						cubFormFieldInput,
+						required,
+						autoFocusOn,
+						onFocus='this.select()',
+						[name]='"VIEW.COMMON.LABEL.VIEW_NAME" | translate',
+						[formControl]='nameFormControl',
+						[clearable]='false',
+						[ngModel]='view.name',
+						(keydown.enter)='updateName( view )',
+						(blur)='updateName( view )',
+						(ngModelChange)='nameView = $event')
+	ng-template(#elseBlock)
+		.layout-row.layout-align-start-center.layout-gap-8.flex(
+			(click)='activeViewChange.emit({ view })')
+			cub-icon(
+				size='20px',
+				color='white',
+				[name]=`${iconPrefix}.includes('data')
+					? "grid"
+					: "form"`)
+			.flex-grow.text-truncate(
+				[title]='view.name | empty',
+				[style.color]='"WHITE" | color')
+				| {{ view.name | empty }}
+
+mixin allView(iconPrefix)
+	.layout-row((click)='tabAccess && activeViewChange.emit({ view })')
+		.layout-row.layout-align-start-center.pv-10
+			cub-icon.mr-8(
+				size='20px',
+				[color]=`${iconPrefix}.includes('data')
+					? ( "yellowGreen" | cubPalette : "500" )
+					: ( "purple" | cubPalette : "500" )`,
+				[name]=`${iconPrefix}.includes('data')
+					? "grid"
+					: "form"`)
+		.layout-row.layout-align-space-between-center.flex-grow.item.pv-10
+			.flex-grow.text-truncate.maw-258([title]='view.name | empty')
+				| {{ view.name | empty }}
+			button(
+				cubBasicButton,
+				iconColor='primary',
+				iconSize='20px',
+				*ngIf='tabAccess',
+				[icon]='view.isDefault || isHovering ? "flag-fill" : "flag" ',
+				[class.item-action__flag]='!view.isDefault',
+				[class.item-action__flag-fill]='view.isDefault',
+				[class.item-action__flag-active]='view.isDefault',
+				[cubTooltip]='"VIEW.COMMON.LABEL.SET_DEFAULT" | translate',
+				(click)=`$event?.stopPropagation();
+					updateChange.emit({
+						view,
+						data: { isDefault: view.isDefault ? false : true } })`,
+				(mouseenter)='isHovering = true',
+				(mouseout)='isHovering = false')
+			button.mh-8(
+				cubBasicButton,
+				iconColor='primary',
+				iconSize='20px',
+				*ngIf='tabAccess',
+				[icon]='view.isHidden ? "eye-slash" : "eye"',
+				[cubTooltip]=`( view.isHidden
+					? "VIEW.COMMON.LABEL.SHOW_VIEW"
+					: "VIEW.COMMON.LABEL.HIDE_VIEW" ) | translate`,
+				(click)=`$event.stopPropagation();
+					updateChange.emit({
+						view,
+						data: { isHidden: !view.isHidden ? true : false } } )`)
+			button.mh-8(
+				cubBasicButton,
+				icon='more-vertical',
+				iconColor='tertiary',
+				*ngIf='tabManage',
+				[cubMenuTriggerFor]='moreActionMenu',
+				[cubMenuTriggerContext]='{ view }')

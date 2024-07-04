@@ -1,0 +1,57 @@
+@import '../../../scss/partials/variable';
+
+.cub-file-picker {
+	$self: &;
+
+	.cub-popup {
+		background: none;
+
+		.cub-popup__content {
+			padding: 0 !important;
+		}
+	}
+
+	#{ $self }-wrapper {
+		display: flex;
+		width: 100%;
+		min-width: 0;
+		max-width: 100%;
+		height: 100%;
+		min-height: 0;
+		max-height: 100%;
+	}
+
+	#{ $self }__left,
+	#{ $self }__right {
+		height: 100%;
+		min-height: 0;
+		max-height: 100%;
+	}
+
+	#{ $self }__left {
+		width: 200px;
+		min-width: 200px;
+		max-width: 200px;
+		padding: 12px;
+
+		background-color: #F0F0F080; // sass-lint:disable-line no-invalid-hex
+
+		.cub-list {
+			.cub-list-item {
+				&.cub-list-item--active {
+					background-color: $color-white;
+				}
+			}
+		}
+	}
+
+	#{ $self }__right {
+		display: flex;
+		flex-direction: column;
+		width: 100%;
+		min-width: 0;
+		max-width: 100%;
+
+		background-color: $color-white;
+	}
+}

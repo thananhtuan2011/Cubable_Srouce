@@ -1,0 +1,47 @@
+cub-scroll-bar.multiple-email-input__box(
+	#boxElm,
+	suppressX,
+	[class.mb-20]='!isInvalid',
+	[class.multiple-email-input__box--invalid]='isInvalid',
+	[class.multiple-email-input__box--disabled]='disabled',
+	[class.multiple-email-input__box--focusing]='focusing',
+	(click)='focus()')
+	.multiple-email-input__box-values(
+		*ngFor='let value of values; let index = index;',
+		[class.multiple-email-input__box-values--invalid]='value.isInvalid',
+		(click)='!focusing && $event?.stopPropagation();')
+		.multiple-email-input__box-values__value
+			.text-truncate([title]='value.value')
+				| {{ value.value | empty }}
+		.multiple-email-input__box-values__icon-remove
+			cub-icon(
+				name='close',
+				size='12px',
+				color='secondary',
+				[cubTooltip]='"CUB.LABEL.REMOVE" | translate',
+				(click)='onRemove( index ); !focusing && $event?.stopPropagation();')
+	.multiple-email-input__box-input([class.multiple-email-input__box-input--unfocused]='values?.length && !focusing')
+		input(
+			cubFormFieldInput,
+			clearable,
+			#multipleEmailInput='cubFormFieldInput',
+			[class.input--has-values]='values?.length',
+			[autoReset]='autoReset',
+			[autoFocusOn]='autoFocusOn',
+			[disabled]='disabled',
+			[formControl]='formControl',
+			[placeholder]='!values?.length ? ( placeholder || ( "CUB.PLACEHOLDER.TYPE_VALUE" | translate ) ) : ""',
+			[(ngModel)]='valueContent',
+			(paste)='onPaste( $event ); $event?.preventDefault();',
+			(keyup.enter)='onSave( true )',
+			(keyup.esc)='onCancel()',
+			(keydown)='triggerKeyDown( $event )',
+			(blur)='onSave()')
+.multiple-email-input__error(*ngIf='isInvalid')
+	.multiple-email-input__error-message
+		- const error = 'errorMessage || ( "CUB.MESSAGE.MULTIPLE_VALUE_INVALID" | translate )';
+
+		.text-truncate([title]=error)
+			| {{ #{ error } }}.&nbsp;
+	button.multiple-email-input__error-button((click)='onRemoveValueInvalid()')
+		| {{ errorActionTitle || ( "CUB.LABEL.REMOVE_INVALID" | translate ) }}

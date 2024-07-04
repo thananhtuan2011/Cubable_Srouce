@@ -1,0 +1,147 @@
+//- mixin more-member-actions
+//- 	button.wgc-member-common-controls__btn-toogle-all(
+//- 		wgcBasicButton,
+//- 		*ngIf='!readonly && filteredSelectedMembers?.length',
+//- 		[disabled]='disabled',
+//- 		(click)='removeAllMembers()')
+//- 		| {{ "WGC.LABEL.REMOVE_ALL" | translate }}
+
+//- mixin more-member
+//- 	button(wgcMenuItem, [autoClose]='false')
+//- 		wgc-member(
+//- 			[hasViewProfile]='false',
+//- 			[displayMemberStatus]='true',
+//- 			[scrolling$]='moreMenu?.scroller?.scrolling$',
+//- 			[member]='member',
+//- 			[canViewProfile]='canViewProfile')
+//- 		+btn-view-profile
+//- 		button(
+//- 			wgcMenuItemSuffix,
+//- 			wgcBasicButton,
+//- 			icon='trash',
+//- 			*ngIf='!readonly',
+//- 			[disabled]='disabled',
+//- 			[color]='"DANGER" | color',
+//- 			[wgcTooltip]='"WGC.LABEL.REMOVE" | translate',
+//- 			(click)='removeMember( member )')
+
+//- include ../blocks/block-member.partial.pug
+
+//- wgc-menu.wgc-member-list.wgc-member-list-menu(
+//- 	#moreMenu,
+//- 	maxHeight='400px',
+//- 	[hasScrollBar]='false',
+//- 	[minWidth]='availableStatus?.length < 2 ? "290px" : "360px"',
+//- 	[title]='"WGC.PLACEHOLDER.SELECTED" | translate',
+//- 	(opened)='onMoreMenuOpened()',
+//- 	(closed)='onMoreMenuClosed()')
+//- 	wgc-menu-content
+//- 		ng-template(wgcMenuContent)
+//- 			wgc-tab-group(
+//- 				stretch,
+//- 				stretchTab,
+//- 				contentPaddingHorizontal='0',
+//- 				contentPaddingBottom='0',
+//- 				[contentPaddingTop]='availableStatus?.length < 2 ? 0 : 10',
+//- 				[ngSwitch]='true',
+//- 				[hasScrollBar]='false',
+//- 				[(selectedIndex)]='selectedIndex')
+//- 				wgc-tab(
+//- 					*ngSwitchCase='availableStatus | includes : MEMBER_STATUS?.ACTIVE',
+//- 					[label]='"WGC.LABEL.ACTIVE_COUNT" | translate : { count: ( ( selectedMembersClone | filter : "status" : MEMBER_STATUS?.ACTIVE )?.length | commas ) || 0 }')
+//- 					ng-template(wgcTabContent)
+//- 						+members-search-box('selectedMembersClone | filter : "status" : MEMBER_STATUS?.ACTIVE', 'filteredSelectedMembers')
+//- 							+more-member-actions
+//- 						+not-found-members('filteredSelectedMembers')
+//- 						+member-lists('useVirtualScroll', 'filteredSelectedMembers')
+//- 							+more-member
+//- 				wgc-tab(
+//- 					*ngSwitchCase='availableStatus | includes : MEMBER_STATUS?.INACTIVE',
+//- 					[label]='"WGC.LABEL.INACTIVE_COUNT" | translate : { count: ( ( selectedMembersClone | filter : "status" : MEMBER_STATUS?.INACTIVE )?.length | commas ) || 0 }')
+//- 					ng-template(wgcTabContent)
+//- 						+members-search-box('selectedMembersClone | filter : "status" : MEMBER_STATUS?.INACTIVE', 'filteredSelectedMembers')
+//- 							+more-member-actions
+//- 						+not-found-members('filteredSelectedMembers')
+//- 						+member-lists('useVirtualScroll', 'filteredSelectedMembers')
+//- 							+more-member
+//- 				wgc-tab(
+//- 					*ngSwitchCase='availableStatus | includes : MEMBER_STATUS?.WAITING',
+//- 					[label]='"WGC.LABEL.PENDING_COUNT" | translate : { count: ( ( selectedMembersClone | filter : "status" : MEMBER_STATUS?.WAITING )?.length | commas ) || 0 }')
+//- 					ng-template(wgcTabContent)
+//- 						+members-search-box('selectedMembersClone | filter : "status" : MEMBER_STATUS?.WAITING', 'filteredSelectedMembers')
+//- 							+more-member-actions
+//- 						+not-found-members('filteredSelectedMembers')
+//- 						+member-lists('useVirtualScroll', 'filteredSelectedMembers')
+//- 							+more-member
+
+//- label.wgc-member-list__label(wgcTruncate, [attr.required]='required || undefined')
+//- 	| {{ label }}
+
+//- .wgc-member-list__content(
+//- 	wgcBlockTruncate,
+//- 	#blockTruncate='wgcBlockTruncate',
+//- 	[limit]='limit',
+//- 	[length]='selectedMembers?.length',
+//- 	[parent]='elementRef?.nativeElement?.parentElement')
+//- 	.wgc-member-list__content-item(
+//- 		#block,
+//- 		*ngFor='let member of selectedMembers | slice : 0 : blockTruncate?.maxDisplay; trackBy: "id" | trackByFn;')
+//- 		wgc-member(
+//- 			[member]='member',
+//- 			[canViewProfile]='canViewProfile',
+//- 			[displayMemberName]='!!readonly && selectedMembers?.length === 1',
+//- 			(viewDetail)='viewProfile( $event )')
+//- 		button.wgc-member-list__content-item__btn-remove(
+//- 			wgcIconButton,
+//- 			circle,
+//- 			size='16px',
+//- 			icon='close',
+//- 			iconSize='12px',
+//- 			*ngIf='!readonly && !disabled',
+//- 			[color]='"BLACK" | color',
+//- 			[wgcTooltip]='"WGC.LABEL.REMOVE" | translate',
+//- 			(click)='$event?.stopPropagation(); removeMember( member, true );')
+
+//- 	.wgc-member-list__content-item(*ngIf='blockTruncate?.isTruncated')
+//- 		button(wgcBasicButton, [wgcMenuTriggerFor]='moreMenu', (menuOpened)='cdRef?.detectChanges()')
+//- 			wgc-avatar(
+//- 				[avatar]='{ color: "BLACK" | color }',
+//- 				[label]='blockTruncate?.moreDisplay < 10 ? "+" + blockTruncate?.moreDisplay : "9+"')
+
+//- button.wgc-member-list__btn-add(
+//- 	wgcIconButton,
+//- 	wgcMemberPicker,
+//- 	circle,
+//- 	size='small',
+//- 	icon='user-plus',
+//- 	*ngIf='!readonly',
+//- 	[class.wgc-member-list__btn-add--focusing]='isOpened',
+//- 	[class.wgc-member-list__btn-add--required]='required',
+//- 	[position]='position',
+//- 	[originX]='originX',
+//- 	[originY]='originY',
+//- 	[overlayX]='overlayX',
+//- 	[overlayY]='overlayY',
+//- 	[itemSize]='itemSize',
+//- 	[isAutoOpen]='isAutoOpen',
+//- 	[disabled]='disabled',
+//- 	[required]='required',
+//- 	[name]='name',
+//- 	[label]='label',
+//- 	[scrolling$]='scrolling$',
+//- 	[context]='context',
+//- 	[canViewProfile]='canViewProfile',
+//- 	[members]='_members',
+//- 	[includesStatus]='includesStatus',
+//- 	[(selectedMembers)]='selectedMembers',
+//- 	[(selected)]='selected',
+//- 	(opened)='onPickerMenuOpened( $event )',
+//- 	(closed)='onPickerMenuClosed( $event )',
+//- 	(added)='added?.emit( $event )',
+//- 	(removed)='removed?.emit( $event )',
+//- 	(viewDetail)='viewDetail?.emit( $event )',
+//- 	(selectedChange)='selectedChange?.emit( $event )',
+//- 	(selectedMembersChange)='selectedMembersChange?.emit( $event )')
+
+//- .wgc-member-list__no-id(*ngIf='readonly && !selectedMembers?.length')
+//- 	| {{ undefined | empty }}

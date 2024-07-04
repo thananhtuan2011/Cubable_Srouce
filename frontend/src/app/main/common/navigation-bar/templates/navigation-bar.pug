@@ -1,0 +1,144 @@
+mixin feature(icon, label, path)
+	button((click)=`navigate( ${path} )`)&attributes(attributes)
+		.layout-column.layout-align-start-center
+			cub-icon(
+				size='22px',
+				color='primary',
+				[name]=icon)
+			block
+			.feature-text(
+				[class.text-color-primary]=`${path} === currentMainModule`,
+				[class.text-color-secondary]=`${path} !== currentMainModule`)
+				| {{ "NAVIGATION.LABEL.#{label}" | translate }}
+
+cub-menu(
+	#languageMenu,
+	minWidth='200px')
+	cub-menu-content
+		ng-template(cubMenuContent)
+			button(
+				cubMenuSelectItem,
+				[selected]='localeService?.locale === "vi"',
+				(click)='changeLanguage( "vi" )')
+				cub-icon(name='assets/images/flags/VN.svg', size='26px')
+				| Tiếng Việt
+			button(
+				cubMenuSelectItem,
+				[selected]='localeService?.locale === "en"',
+				(click)='changeLanguage( "en" )')
+				cub-icon(name='assets/images/flags/GB.svg', size='26px')
+				| English
+
+cub-menu.account-settings-menu(
+	#accountSettingsMenu,
+	width='300px',
+	[title]='"NAVIGATION.LABEL.ACCOUNT" | translate')
+	cub-menu-content
+		ng-template(cubMenuContent)
+			//- .mb-8
+			//- 	button(cubMenuItem, disabled='true', [routerLink]='"/" + ACCOUNT_SETTINGS_PATH')
+			//- 		div(cubMenuItemPrefix)
+			//- 			cub-avatar(size='small', [label]='account?.name', [avatar]='account?.avatar')
+			//- 		div
+			//- 			.text-truncate.font-size-14.line-height-24([title]='account?.email | empty')
+			//- 				| {{ account?.email | empty }}
+			//- 			.color-label.text-italic([style.fontSize.px]='11')
+			//- 				| {{ "NAVIGATION.LABEL.ACCOUNT_SETTINGS" | translate }}
+			//- 		cub-icon(size='20px', name='chevron-right', [color]='"LABEL" | color')
+			//- 	button(
+			//- 		cubMenuItem,
+			//- 		icon='globe',
+			//- 		position='after',
+			//- 		disabled='true',
+			//- 		[autoClose]='false',
+			//- 		[cubMenuTriggerFor]='languageMenu')
+			//- 		.line-height-20
+			//- 			| {{ "NAVIGATION.LABEL.LANGUAGE" | translate }}:
+			//- 			| {{ localeService?.locale === "vi" ? "VIE" : "ENG" }}
+			//- 		div(cubMenuItemPrefix)
+			//- 			cub-icon(name='globe', size='20px')
+			//- 		cub-icon(size='20px', name='chevron-right', [color]='"LABEL" | color')
+			.text-truncate.text-color-primary.font-weight-500.line-height-15.ml-12.mb-4(
+				cubMenuItem,
+				[title]='workspace.name | empty',
+				[style.fontSize.px]='11')
+				| {{ workspace.name | empty }}
+			.mb-8
+				button(
+					cubMenuItem,
+					icon='dashboard',
+					iconSize='20px',
+					iconColor='primary',
+					*ngIf='isAdministrator',
+					[routerLink]='WORKSPACE_PATH')
+					.text-color-primary.line-height-20
+						| {{ "NAVIGATION.LABEL.MANAGE_WORKSPACE" | translate }}
+				button(
+					cubMenuItem,
+					icon='user-add',
+					iconSize='20px',
+					iconColor='primary',
+					*ngIf='userRole?.canInviteNewUser',
+					(click)='inviteUser()')
+					.text-color-primary.line-height-20
+						| {{ "NAVIGATION.LABEL.INVITE_USERS" | translate }}
+				//- button(cubMenuItem, [routerLink]='USER_PATH')
+				//- 	div(cubMenuItemPrefix)
+				//- 		cub-icon(name='slider-edit', size='20px')
+				//- 	div
+				//- 		.text-regular.line-height-20
+				//- 			| {{ "NAVIGATION.LABEL.CUSTOM" | translate }}
+				//- 		.color-label.text-italic.font-size-10
+				//- 			| {{ "NAVIGATION.LABEL.NOTIFICATION_MEMBER_PROFILE" | translate }}
+				//- 	cub-icon(size='20px', name='chevron-right', [color]='"LABEL" | color')
+				button(
+					cubMenuItem,
+					icon='switch',
+					iconSize='20px',
+					iconColor='primary',
+					trailingIcon='chevron-right',
+					trailingIconColor='tertiary',
+					(click)='switchWorkspace()')
+					.text-color-primary.line-height-20
+						| {{ "NAVIGATION.LABEL.SWITCH_WORKSPACE" | translate }}
+			button(
+				cubMenuItem,
+				icon='shutdown',
+				iconSize='20px',
+				iconColor='destructive',
+				(click)='signOut()')
+				.line-height-20
+					| {{ "NAVIGATION.LABEL.SIGN_OUT" | translate }}
+
+.left
+	cub-image.cursor(
+		width='111px',
+		height='28px',
+		src='assets/images/logos/logo-horizontal.svg',
+		(click)='navigateToMainPath()')
+	cub-divider.h-30.mh-16(vertical, *ngIf='contentTmp')
+.content(*ngIf='contentTmp')
+	ng-container(*ngTemplateOutlet='contentTmp')
+.right
+	ng-container(*ngIf='hasFeatureModule')
+		cub-divider.mr-8.h-30(vertical)
+		+feature(
+			'currentMainModule === BASE_PATH ? "stack-fill" : "stack"',
+			'BASE',
+			'BASE_PATH').mr-4.w-48
+		+feature('"magic-wand-fill"', 'TEMPLATE').mr-8.w-50
+		+feature('"bell"', 'NOTIFICATION').mr-4.w-58(
+			(click)='openDialogNotification()')
+			cub-badge.cub-badge-notification(
+				*ngIf=`
+					countNotification
+					&& countNotification.newNotification !== 0`,
+				[color]='"red" | cubPalette : "500"',
+				[textColor]='"WHITE" | color',
+				[count]='countNotification.newNotification')
+		+feature('"help-circle"', 'HELP').mr-8.w-50
+	button([cubMenuTriggerFor]='accountSettingsMenu')
+		cub-avatar(
+			size='large',
+			[label]='account?.name',
+			[avatar]='account?.avatar')

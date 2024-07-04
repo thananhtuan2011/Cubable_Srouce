@@ -1,0 +1,12 @@
+cub-card(
+	variant='tonal',
+	size='small')
+	cub-card-content
+		.layout-column.layout-gap-6
+			.text-color-secondary.ml-12
+				| {{ "BASE.WORKFLOW.SETUP.ACTION.LABEL.AT" | translate }}
+			select-board(
+				#selectBoardComp,
+				[baseID]='baseID',
+				[boardID]='settings.boardID',
+				(boardIDChange)='onBoardIDChange( $event )')

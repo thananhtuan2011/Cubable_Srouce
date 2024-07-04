@@ -1,0 +1,41 @@
+@import 'src/scss/partials/variable';
+
+.wgc-inline-input {
+	min-width: 0;
+	max-width: 100%;
+
+	input,
+	input::placeholder {
+		font-size: inherit;
+		font-family: inherit;
+		font-weight: inherit;
+		font-kerning: inherit;
+		font-stretch: inherit;
+		font-variant: inherit;
+		text-align: inherit;
+		text-decoration: inherit;
+		text-transform: inherit;
+		text-orientation: inherit;
+		text-indent: inherit;
+		text-shadow: inherit;
+		text-overflow: inherit;
+		text-justify: inherit;
+		line-height: inherit;
+		letter-spacing: inherit;
+		color: inherit;
+	}
+
+	input {
+		border: none;
+		background: none;
+		padding: 0;
+		margin: 0;
+		width: 100%;
+		min-width: 100%;
+		max-width: 100%;
+
+		&::placeholder {
+			color: $color-placeholder;
+		}
+	}
+}

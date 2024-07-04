@@ -1,0 +1,43 @@
+.wgc-multiple-value-input__box(
+	#boxElm,
+	[class.wgc-multiple-value-input__box--invalid]='isInvalid',
+	[class.wgc-multiple-value-input__box--disabled]='disabled',
+	[class.wgc-multiple-value-input__box--focusing]='focusing',
+	(click)='focus()')
+	.wgc-multiple-value-input__box-values(
+		*ngFor='let value of values; let index = index;',
+		[class.wgc-multiple-value-input__box-values--invalid]='value.isInvalid',
+		(click)='!focusing && $event?.stopPropagation();')
+		.wgc-multiple-value-input__box-values__value
+			wgc-truncate(limitLine='1')
+				| {{ value.value | empty }}
+		.wgc-multiple-value-input__box-values__icon-remove
+			wgc-icon(
+				name='close',
+				size='12px',
+				color='secondary',
+				[wgcTooltip]='"WGC.LABEL.REMOVE" | translate',
+				(click)='onRemove( index ); !focusing && $event?.stopPropagation();')
+	.wgc-multiple-value-input__box-input([class.wgc-multiple-value-input__box-input--unfocused]='values?.length && !focusing')
+		input(
+			wgcFormFieldInput,
+			clearable,
+			#multipleValueInput='wgcFormFieldInput',
+			[class.input--has-values]='values?.length',
+			[autoReset]='autoReset',
+			[autoFocusOn]='autoFocusOn',
+			[disabled]='disabled',
+			[formControl]='formControl',
+			[trim]='trim',
+			[placeholder]='!values?.length ? ( placeholder || ( "WGC.PLACEHOLDER.TYPE_VALUE" | translate ) ) : ""',
+			[(ngModel)]='value',
+			(pasted)='onPasted( $event ); $event?.preventDefault();',
+			(keyup.enter)='onSave( true )',
+			(keyup.esc)='onCancel()',
+			(blur)='onSave()')
+.wgc-multiple-value-input__error(*ngIf='isInvalid')
+	.wgc-multiple-value-input__error-message
+		wgc-truncate(limitLine='1')
+			| {{ errorMessage || ( "WGC.MESSAGE.MULTIPLE_VALUE_INVALID" | translate ) }}.&nbsp;
+	button.wgc-multiple-value-input__error-button(wgcBasicButton, color='#06C', (click)='onRemoveValueInvalid()')
+		| {{ errorActionTitle || ( "WGC.LABEL.REMOVE_INVALID" | translate ) }}

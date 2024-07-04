@@ -1,0 +1,40 @@
+@import 'src/scss/partials/variable';
+
+.wgc-color-dot {
+	display: flex;
+
+	&.wgc-color-dot--hidden {
+		.wgc-color-dot-wrapper:before {
+			display: none;
+		}
+	}
+
+	&.wgc-color-dot--circle {
+		.wgc-color-dot-wrapper:before {
+			border-radius: 50%;
+		}
+	}
+
+	.wgc-color-dot-wrapper {
+		display: flex;
+		align-items: center;
+
+		&:before {
+			content: '';
+			display: block;
+			min-height: var(--color-dot-size, 10px);
+			max-height: var(--color-dot-size, 10px);
+			height: var(--color-dot-size, 10px);
+			min-width: var(--color-dot-size, 10px);
+			max-width: var(--color-dot-size, 10px);
+			width: var(--color-dot-size, 10px);
+			background-color: var(--color-dot-color, $color-white);
+			border: 1px dashed var(--color-dot-color, $color-border-thick);
+			border-radius: 3px;
+		}
+
+		&:not(:empty):before {
+			margin-right: 5px;
+		}
+	}
+}

@@ -1,0 +1,12 @@
+.cub-dialog-container-wrapper(
+	mwlResizable,
+	(resizing)='onResizing( $event )',
+	(resizeEnd)='onResizeEnd()')
+	.cub-dialog-container-resizer(
+		mwlResizeHandle,
+		*ngIf='ref.config.resizable',
+		[resizeEdges]=`{
+			top: isVerticalDir,
+			left: isHorizontalDir,
+		}`)
+	ng-template(cdkPortalOutlet)

@@ -1,0 +1,35 @@
+cub-card(
+	variant='tonal',
+	size='small')
+	cub-card-content
+		.layout-column.layout-gap-12
+			cub-dropdown(
+				required,
+				hideRequiredMarker,
+				#rowPicker,
+				[label]='"BASE.WORKFLOW.SETUP.TRIGGER.LABEL.SELECT_ROW" | translate',
+				[clearable]='false',
+				[formControl]='typeControl',
+				[valueControl]='row.type',
+				(valueControlChange)='onRowTypeChange( $event )')
+				cub-dropdown-item( 
+					*ngFor='let type of ROWS_TYPE; ngForTrackByValue',
+					[label]='( "BASE.WORKFLOW.SETUP.TRIGGER.LABEL." + type.name ) | translate',
+					[value]='type.value')
+			cub-card(
+				size='small',
+				*ngIf='row.type === ROW_TRIGGER_TYPE.CONDITION')
+				cub-card-content
+					single-conditional(
+						#conditionalComp,
+						*ngIf='boardID',
+						[boardID]='boardID',
+						[logicalExpression]='row.filter.logicalExpression',
+						[options]='row.filter.options',
+						[logicalOperator]='row.filter.logicalOperator',
+						[conditions]='row.filter.conditions',
+						(optionsChange)='onFilterOptionsChange( $event )',
+						(logicalOperatorChange)='onLogicalOperatorChange( $event )',
+						(logicalExpressionChange)='onLogicalExpressionChange( $event )',
+						(conditionsChange)='onConditionFilterChange( $event )',
+						(conditionalChange)='onConditionalChange()')

@@ -1,0 +1,42 @@
+@import 'src/scss/partials/variable';
+:host {
+	display: flex;
+	flex-direction: column;
+	height: 100%;
+	min-height: 0;
+	width: 100%;
+	min-width: 0;
+	.popup_label{
+		margin-left: 10px;
+		margin-bottom: -10px;
+	}
+	::ng-deep {
+
+		.multiple-email-input__box{
+			height: 80px;
+			margin-bottom: unset;
+		}
+
+		input::placeholder {
+			color: $color-text-tertiary;
+		}
+		
+
+		.multiple-email-input  {
+			.multiple-email-input__box-values{
+				min-height: 22px !important;
+				height: 20px;
+			}
+			.multiple-email-input__box {
+
+				.multiple-email-input__box-input 
+				{
+					input{
+						position: absolute;
+						left: 0;
+					}
+				}
+			}
+		}
+	}
+}

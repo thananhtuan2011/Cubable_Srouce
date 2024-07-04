@@ -1,0 +1,22 @@
+include ../builder.include.pug
+
+ng-template(#defaultBlock)
+	formula-data-editor(
+		[field]='internalField',
+		[otherFields]='otherFields',
+		[(data)]='initialData',
+		(dataChange)='onInitialDataChanged( $event )')
+
+ng-template(#footerExtraBlock)
+	cub-switch(
+		[label]='"FIELD.BUILDER.LABEL.ADVANCED" | translate',
+		[ngModel]='initialData?.params?.advanced',
+		(ngModelChange)='onToggleEditorMode( $event )')
+
+ng-container(
+	*ngTemplateOutlet=`
+		fieldTemplate;
+		context: {
+			defaultBlock,
+			footerExtraBlock,
+		};`)

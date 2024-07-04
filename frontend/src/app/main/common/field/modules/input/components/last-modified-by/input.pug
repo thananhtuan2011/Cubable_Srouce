@@ -1,0 +1,15 @@
+cub-form-field(
+	[size]='size',
+	[variant]='variant')
+	ng-container(
+		cubFormFieldPlaceholder,
+		*ngIf='!data')
+		| {{ placeholder }}
+	ng-container(*ngIf='data')
+		cub-chip(
+			hasAvatar,
+			*ngFor='let member of data.selected; ngForTrackByID')
+			cub-member(
+				avatarSize='small',
+				[hasViewProfile]='false',
+				[member]='member')

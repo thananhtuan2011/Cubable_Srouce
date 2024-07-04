@@ -1,0 +1,84 @@
+ng-container(*ngTemplateOutlet='popupResendInviteUser.templateRef')
+
+cub-popup.admin-popup(
+	#popupResendInviteUser,
+	width='400px')
+	cub-popup-header
+		ng-template(cubPopupHeader)
+			.layout-row.layout-align-space-between-center.layout-gap-8.flex
+				h5
+					| {{ "SETTINGS.WORKSPACE.USER_SYSTEM.USER.LABEL.RESEND_INVITATION" | translate }}
+				button(
+					cubClearButton,
+					size='20px',
+					[cubTooltip]='"SETTINGS.WORKSPACE.USER_SYSTEM.USER.LABEL.CLOSE" | translate',
+					(click)='popupRef.close()')
+	cub-popup-content
+		form.layout-column.layout-gap-16([formGroup]='resendInviteForm')
+			cub-form-field([label]='"SETTINGS.WORKSPACE.USER_SYSTEM.USER.LABEL.EMAIL_ADDRESS" | translate')
+				cub-icon(name='mail', size='20px')
+				input(
+					cubFormFieldInput,
+					required,
+					readonly,
+					disabled,
+					type='email',
+					[placeholder]='"SETTINGS.WORKSPACE.USER_SYSTEM.USER.PLACEHOLDER.TYPE_EMAIL" | translate',
+					formControlName='email',
+					[(valueControl)]='userUpdating.email')
+			cub-dropdown(
+				ngDefaultControl,
+				required,
+				formControlName='roleID',
+				[clearable]='false',
+				[label]='"SETTINGS.WORKSPACE.USER_SYSTEM.USER.LABEL.USER_ROLE_IN_WORKSPACE" | translate',
+				[(valueControl)]='userUpdating.roleID')
+				cub-dropdown-item(
+					*ngFor='let role of roles; ngForTrackByValue',
+					[label]='role.name',
+					[description]='role?.description',
+					[value]='role.id')
+			.layout-column.layout-gap-6
+				.text-color-secondary.ml-12
+					| {{ "SETTINGS.WORKSPACE.USER_SYSTEM.USER.LABEL.TEAM" | translate }}
+				cub-member-list(
+					limit='5',
+					width='360px',
+					overlayX='start',
+					[placeholder]='"SETTINGS.WORKSPACE.USER_SYSTEM.USER.PLACEHOLDER.FIND_TEAM" | translate',
+					[teams]='teams',
+					[strictDisplay]='false',
+					[hasFooter]='false',
+					[selectedTeamIDs]='userUpdating.teamIDs',
+					(addedTeams)='addTeams( $event )',
+					(removedTeams)='removeTeams( $event )')
+				//- cub-member-picker(
+				//- 	[strictDisplay]='false',
+				//- 	[placeholder]='"SETTINGS.WORKSPACE.USER_SYSTEM.USER.PLACEHOLDER.FIND_TEAM" | translate',
+				//- 	[teams]='teams',
+				//- 	[(selectedTeamIDs)]='userUpdating.teamIDs')
+			cub-dropdown(
+				ngDefaultControl,
+				formControlName='expiration',
+				[clearable]='false',
+				[label]='"SETTINGS.WORKSPACE.USER_SYSTEM.USER.LABEL.INVITE_EXPIRATION" | translate',
+				[(valueControl)]='userUpdating.expiration')
+				cub-dropdown-item(
+					*ngFor='let item of INVITE_EXPIRATION; ngForTrackByValue',
+					[label]='item.name',
+					[value]='item.value')
+	cub-popup-footer
+		ng-template(cubPopupFooter)
+			.layout-row.layout-gap-12.layout-align-end
+				button.w-80(
+					cubButton='secondary',
+					(click)='popupRef.close()')
+					| {{ "SETTINGS.WORKSPACE.USER_SYSTEM.USER.LABEL.CANCEL" | translate }}
+				button.w-120(
+					cubButton,
+					[loading]='isSubmitting',
+					[disabled]=`resendInviteForm?.invalid
+						|| !isChanged
+						|| isSubmitting`,
+					(click)='resendInvite()')
+					| {{ "SETTINGS.WORKSPACE.USER_SYSTEM.USER.LABEL.RESEND" | translate }}

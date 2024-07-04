@@ -1,0 +1,25 @@
+.wgc-toast-wrapper
+	.wgc-toast__header
+		wgc-icon.wgc-toast__icon(*ngIf='iconName', [name]='iconName', size='20px')
+		.wgc-toast__title(*ngIf='title')
+			ng-container(*ngIf='translate; else elseBlock;')
+				span([innerHtml]='( title | translate: translateParams ) | safeHtml')
+			ng-template(#elseBlock)
+				span([innerHtml]='title | safeHtml')
+	.wgc-toast__content
+		.wgc-toast__description(*ngIf='description')
+			ng-container(*ngIf='translate; else elseBlock;')
+				span([innerHtml]='( description | translate: translateParams ) | safeHtml')
+			ng-template(#elseBlock)
+				span([innerHtml]='description | safeHtml')
+		.wgc-toast__buttons
+			a(*ngFor='let button of buttons; trackBy: "label" | trackByFn;', (click)='button?.onClicked(); closed?.emit( $event );')
+				ng-container(*ngIf='translate; else elseBlock;')
+					span([innerHtml]='( button?.label | translate: translateParams ) | safeHtml')
+				ng-template(#elseBlock)
+					span([innerHtml]='button?.label | safeHtml')
+button.wgc-toast__btn-close(
+	wgcBasicButton,
+	icon='close',
+	*ngIf='canClose',
+	(click)='closed?.emit( $event )')

@@ -1,0 +1,15 @@
+img(
+	#img,
+	loading='lazy',
+	[attr.src]='src',
+	[attr.width]='width',
+	[attr.height]='height',
+	[style.width]='width',
+	[style.minWidth]='minWidth || width',
+	[style.maxWidth]='maxWidth',
+	[style.height]='height',
+	[style.minHeight]='minHeight || height',
+	[style.maxHeight]='maxHeight',
+	[style.objectFit]='fitMode',
+	(load)='onImageLoaded()',
+	(error)='onImageError()')

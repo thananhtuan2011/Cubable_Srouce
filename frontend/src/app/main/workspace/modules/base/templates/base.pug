@@ -1,0 +1,114 @@
+mixin cubBasicButton(icon, tooltip)
+	button.w-24.h-24(
+		cubBasicButton,
+		color='white',
+		icon=`${icon}`,
+		iconColor='primary',
+		iconSize='20px',
+		[cubTooltip]=`"BASE.LABEL.${tooltip}" | translate`)&attributes(attributes)
+
+mixin baseDisplay
+	ng-container([ngSwitch]='displayBy')
+		base-display-table(*ngSwitchCase='DISPLAY.TABLE', [style.minWidth.px]='1050')&attributes(attributes)
+		base-display-grid(*ngSwitchCase='DISPLAY.GRID', [style.minWidth.px]='1050')&attributes(attributes)
+
+cub-menu(#folderActionMenu, width='240px')
+	cub-menu-header
+		ng-template(cubMenuHeader)
+			cub-form-field(active)
+				input(
+					cubFormFieldInput,
+					clearable,
+					required,
+					[name]='"BASE.LABEL.NAME" | translate',
+					[placeholder]='"BASE.PLACEHOLDER.TYPE_NAME" | translate',
+					[formControl]='categoryNameFormControl',
+					[ngModel]='category.name',
+					(ngModelChange)='newCategoryName = $event',
+					(keydown.enter)='renameCategory()',
+					(blur)='renameCategory()')
+	cub-menu-content
+		ng-template(cubMenuContent)
+			button(
+				cubMenuItem='destructive',
+				icon='trash',
+				(click)='removeCategory()')
+				| {{ "BASE.LABEL.REMOVE" | translate }}
+
+cub-page
+	div(cubPageHeader)
+		.layout-row.layout-align-space-between-start.layout-gap-12.mb-16
+			.layout-row.layout-align-start-baseline.layout-gap-4.h-48
+				ng-container(*ngIf='category; else elseBlock;')
+					button.h-40((click)='onCategoryChange()')
+						h3.text-color-secondary.pr-6.pv-2
+							| {{ "BASE.LABEL.BASE_LIST" | translate }}
+					cub-icon(name='chevron-right', size='24px')
+					button.h-40(
+						cubBasicButton,
+						trailingIcon='chevron-down',
+						trailingIconSize='24px',
+						size='large',
+						[active]='folderActionMenu?.isOpened',
+						[cubMenuTriggerFor]='folderActionMenu')
+						h3.text-truncate(
+							[title]='category.name | empty')
+							| {{ category.name | empty }}
+				ng-template(#elseBlock)
+					h3.pr-8.pv-4
+						| {{ "BASE.LABEL.BASE_LIST" | translate }}
+			.layout-row.layout-align-space-between-end.layout-gap-12.pt-8
+				button.w-120(
+					cubButton='secondary',
+					size='large',
+					leadingIcon='magic-wand-fill',
+					leadingIconSize='16px')
+					| {{ "BASE.LABEL.TEMPLATE" | translate }}
+				button.w-160(
+					cubButton,
+					size='large',
+					*ngIf='userRole.canCreateBase',
+					[disabled]='isCreating',
+					[loading]='isCreating',
+					(click)='createBase()')
+					| {{ "BASE.LABEL.CREATE_NEW_BASE" | translate }}
+		.layout-row.layout-align-space-between-center.layout-nowrap
+			.layout-row.layout-align-start-center.layout-gap-100
+				ng-container(*ngIf='( bases?.length || categories?.length ) && displayBy === DISPLAY.TABLE')
+					.w-200([style.marginLeft]='"104px"')
+						| {{ "BASE.LABEL.NAME" | translate }}
+					.w-100
+						| {{ "BASE.LABEL.CREATED_AT" | translate }}
+					.w-126
+						| {{ "BASE.LABEL.CREATED_BY" | translate }}
+					.w-100
+						| {{ "BASE.LABEL.UPDATED_AT" | translate }}
+			.layout-row.layout-align-start-center.layout-gap-12.h-28
+				+cubBasicButton('refresh', 'REFRESH')((click)='refresh()')
+				ng-container(*ngIf='!isShowSearchBox; else showSearchBox;')
+					+cubBasicButton('search', 'SEARCH')((click)='changeSearchBoxVisibility( true )')
+				ng-template(#showSearchBox)
+					cub-search-box(
+						autoFocusOn,
+						#displaySearchBox,
+						size='small',
+						(searching)='searchingChanged( $event )',
+						(blur)='changeSearchBoxVisibility( !!displaySearchBox?.searchQuery )')
+				cub-divider.full-height(vertical)
+				+cubBasicButton('view-card', 'GRID_LAYOUT')(
+					[active]='displayBy === DISPLAY.GRID',
+					(click)='displayBy = DISPLAY.GRID')
+				+cubBasicButton('bullet-list', 'LIST_LAYOUT')(
+					[active]='displayBy === DISPLAY.TABLE',
+					(click)='displayBy = DISPLAY.TABLE')
+	div(cubPageContent)
+		+baseDisplay()(
+			[userRole]='userRole',
+			[displayBy]='displayBy',
+			[(bases)]='bases',
+			[(categories)]='categories',
+			[(baseMap)]='baseMap',
+			[(category)]='category',
+			(basesChange)='onBasesChange()',
+			(categoryChange)='onCategoryChange( $event )',
+			(createBase)='createBase()')

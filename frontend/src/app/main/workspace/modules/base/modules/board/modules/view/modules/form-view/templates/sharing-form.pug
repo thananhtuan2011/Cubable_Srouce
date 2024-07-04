@@ -1,0 +1,82 @@
+cub-menu(
+	#shareFormMenu,
+	width='305px')
+	cub-menu-content
+		ng-template(cubMenuContent)
+			cub-menu-group
+				.layout-row.layout-align-start-center.layout-gap-8
+					cub-icon(
+						name='lock-on',
+						size='20px')
+					.layout-column
+						.line-height-20
+							| {{ "BASE.BOARD.DETAIL.VIEW.FORM.LABEL.SHARE_PRIVATE" | translate }}
+						.h6.text-color-secondary.line-height-20
+							| {{ "BASE.BOARD.DETAIL.VIEW.FORM.MESSAGE.SHARE_PRIVATE" | translate }}
+					cub-switch(
+						[ngModel]='form.sharingStatus === sharingType.ACCESSIBLE_ALL',
+						(ngModelChange)='onSharingPrivateChange( $event )')
+			cub-menu-group
+				.layout-column.layout-gap-8
+					.layout-row.layout-align-start-center.layout-gap-8
+						cub-icon(
+							name='link',
+							size='20px')
+						.layout-column
+							.line-height-20
+								| {{ "BASE.BOARD.DETAIL.VIEW.FORM.LABEL.SHARE_PUBLIC" | translate }}
+							.h6.text-color-secondary.line-height-20
+								| {{ "BASE.BOARD.DETAIL.VIEW.FORM.MESSAGE.SHARE_PUBLIC" | translate }}
+						cub-switch(
+							[(ngModel)]='form.isPublic',
+							(ngModelChange)='onSharingPublicChange()')
+					ng-container(*ngIf='form.isPublic')
+						.layout-column.layout-gap-6
+							.h6.text-color-tertiary.ml-12
+								| {{ "BASE.BOARD.DETAIL.VIEW.FORM.LABEL.LINK" | translate }}
+							.layout-row.layout-gap-8
+								cub-form-field.flex([active]='false')
+									input(
+										cubFormFieldInput,
+										readonly,
+										[clearable]='false',
+										[ngModel]='publicLink')
+								button(
+									cubButton='secondary',
+									icon='copy',
+									iconSize='16px',
+									[disabled]='!publicLink',
+									[cubClipboardCopy]='publicLink')
+						.layout-column.layout-gap-6(*ngIf='hasIFrame')
+							.h6.text-color-tertiary.ml-12
+								| {{ "BASE.BOARD.DETAIL.VIEW.FORM.LABEL.FRAME" | translate }}
+							.layout-row.layout-gap-8
+								cub-form-field.flex([active]='false')
+									input(
+										cubFormFieldInput,
+										readonly,
+										[clearable]='false',
+										[ngModel]='publicIframe')
+								button(
+									cubButton='secondary',
+									icon='copy',
+									iconSize='16px',
+									[disabled]='!publicLink',
+									[cubClipboardCopy]='publicIframe')
+						.layout-column.layout-gap-6
+							.h6.text-color-secondary.ml-12
+								| {{ "BASE.BOARD.DETAIL.VIEW.FORM.LABEL.SHARE_QR" | translate }}
+							qrcode(
+								width='116',
+								height='116',
+								[qrdata]='publicLink',
+								[allowEmptyString]='!publicLink',
+								(qrCodeURL)='onChangeQRUrl( $event )')
+						button(
+							cubBasicButton,
+							icon='download-circle',
+							[disabled]='!publicLink',
+							(click)='downloadQR()')
+							| {{ "BASE.BOARD.DETAIL.VIEW.FORM.LABEL.DOWNLOAD_QR" | translate }}
+
+ng-container(*ngTemplateOutlet='shareFormMenu.templateRef')

@@ -1,0 +1,32 @@
+cub-card(
+	variant='tonal',
+	size='small')
+	cub-card-content
+		.layout-column.layout-gap-6
+			.text-color-secondary.ml-12
+				| {{ "BASE.WORKFLOW.SETUP.CONDITION.LABEL.AT" | translate }}
+			select-board(
+				#selectBoardComp,
+				[baseID]='baseID',
+				[boardID]='settings?.boardID',
+				(boardIDChange)='onBoardIDChange( $event )')
+
+cub-card(
+	variant='tonal',
+	size='small',
+	*ngIf='settings?.boardID')
+	cub-card-content
+		single-conditional(
+			#conditionalComp,
+			[label]='"BASE.WORKFLOW.SETUP.SUB_PROCESS.LABEL.CONDITION_LIST" | translate',
+			[eventAdvance]='eventAdvance',
+			[boardID]='settings?.boardID',
+			[logicalExpression]='settings?.filter?.logicalExpression',
+			[options]='settings?.filter?.options',
+			[logicalOperator]='settings?.filter?.logicalOperator',
+			[conditions]='settings?.filter?.conditions',
+			(optionsChange)='onFilterOptionsChange( $event )',
+			(logicalOperatorChange)='onLogicalOperatorChange( $event )',
+			(logicalExpressionChange)='onLogicalExpressionChange( $event )',
+			(conditionsChange)='onConditionFilterChange( $event )',
+			(conditionalChange)='onSettingChanged()')

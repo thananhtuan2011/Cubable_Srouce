@@ -1,0 +1,200 @@
+@import 'src/scss/partials/variable';
+
+:host {
+	display: flex;
+	flex-direction: column;
+	height: 100%;
+	min-height: 0;
+	width: 100%;
+	min-width: 0;
+
+	.dot_status {
+		width: 8px;
+		height: 8px;
+		border-radius: 3px;
+	}
+
+	.table_wrapper {
+		height: 100%;
+    	overflow-y: auto;
+		padding-bottom: 60px;
+	}
+
+	table {
+		width: 100%;
+		min-width: 0;
+		border-spacing: 0;
+		
+		position: relative;
+		border: transparent;
+		display: flex;
+		flex-direction: column;
+		border-collapse: collapse;
+		thead { 
+			width: 100%;
+			min-width: 0;
+			
+			left: 0;
+			top: 0;
+			z-index: 3;
+			position: sticky;
+			display: flex;
+			
+			border-bottom: 0.5px solid #E4E4E6;
+
+			th {
+				transition: box-shadow 300ms ease-in-out;
+				font-size: 13px;
+				min-height: 40px;
+				padding: 0 8px;
+				:not(.action-cell) {
+					right: 8px;
+				}
+	
+				.header-cell-wrapper {
+					height: 100%;
+					width: 100%;
+					padding: 0 8px;
+					border-radius: 4px;
+					
+					display: flex;
+					position: relative;
+					align-items: center;
+					justify-items: center;
+					align-content: center;
+					
+					label {
+						color: $color-text-primary;
+					}
+				}
+			}
+		}
+		tbody{
+			display: flex;
+			flex-direction: column;
+			width: 100%;
+			min-width: 0;
+			tr {
+				display: flex;
+				flex-direction: row;
+				width: 100%;
+				min-width: 0;
+				td {
+					display: flex;
+					position: relative;
+					flex-direction: column;
+					justify-content: center;
+
+					width: 100%;
+					min-width: 0;
+					padding: 0 8px;
+			
+					&.action-cell {
+						flex-direction: row;
+						position: sticky;
+						justify-content: flex-end;
+						font-size: 20px;
+						right: 0;
+						z-index: 1;
+					}
+				}
+			}
+		}
+		&:not([border]) {
+			::ng-deep {
+				tr:not(:first-child),
+				thead + tbody tr:first-child {
+					td {
+						border-top: 1px solid $color-border;
+					}
+				}
+			}
+		}
+	
+		&[border] {
+			border-collapse: separate;
+	
+			::ng-deep {
+				th,
+				td {
+					border: 1px solid rgba($color-border, .5);
+				}
+			}
+		}
+	
+		::ng-deep {
+			th,
+			td {
+				text-align: center;
+				background-color: $color-white;
+				height: 40px;
+				min-height: 40px;
+	
+				&[align='left'] {
+					text-align: left;
+				}
+	
+				&[align='center'] {
+					text-align: center;
+				}
+	
+				&[align='right'] {
+					text-align: right;
+				}
+	
+			}
+	
+			thead {
+				th,
+				td {
+					font-size: 13px;
+					font-weight: $font-weight-regular;
+					color: $color-label;
+					height: 40px;
+					min-height: 40px;
+				}
+			}
+	
+			tbody {
+				tr {
+					&:hover {
+						td,
+						td[sticky] {
+							background-color:#E2EEF9;
+						}
+					}
+
+					&:not(:hover)[active] td {
+						background-color: $color-active;
+					}
+				}
+	
+				td {
+					transition: background 100ms ease-in-out;
+				}
+			}
+		}
+
+		.sticky {
+			display: flex;
+			position: sticky;
+			z-index: 2;
+			&-left {
+				left: 0;
+			}
+			&-right{
+				right: 0px;
+				width: 100%;
+			}
+		}
+	}
+
+	::ng-deep {
+		.cub-member-list__content{
+			&-items{
+				padding: unset !important;
+			}
+		}
+	}
+
+}

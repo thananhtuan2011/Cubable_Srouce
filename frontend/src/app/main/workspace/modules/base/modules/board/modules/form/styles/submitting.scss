@@ -1,0 +1,122 @@
+@import 'src/scss/partials/variable';
+
+:host {
+	display: flex;
+	flex-direction: column;
+	width: 100%;
+	min-width: 0;
+	height: 100%;
+	min-height: 0;
+
+	.submitting {
+		display: flex;
+		justify-content: center;
+		padding-bottom: 30px;
+
+		.submitting__block {
+			display: flex;
+			flex-direction: column;
+			width: 572px;
+			border-radius: 12px;
+			background-color: rgba(0, 0, 0, .03);
+
+			.submitting__block-cover-image {
+				position: relative;
+				width: 100%;
+				height: 160px;
+
+				.avatar {
+					position: absolute;
+					width: 100px;
+					height: 100px;
+					top: 100%;
+					left: 50%;
+					transform: translate(-50%, -50%);
+
+					::ng-deep {
+						img {
+							border-radius: 50%
+						}
+					}
+				}
+
+				::ng-deep {
+					img {
+						border-top-left-radius: 12px;
+						border-top-right-radius: 12px;
+					}
+				}
+			}
+
+			.submitting__block-avatar {
+				display: flex;
+				justify-content: center;
+				width: 100%;
+				height: 100px;
+
+				.avatar {
+					border-radius: 100%;
+					width: 100px;
+					height: 100px;
+					background-color: $color-white;
+
+					::ng-deep {
+						img {
+							border-radius: 50%
+						}
+					}
+				}
+			}
+
+			&-heading {
+				width: 100%;
+				overflow: hidden;
+				overflow-wrap: break-word;
+				text-align: center;
+				&__title{
+					h4 {
+						overflow: hidden;
+						display: -webkit-box;
+						-webkit-box-orient: vertical;
+						-webkit-line-clamp: 3;
+					}
+				}
+			}
+			&-description {
+				width: 100%;
+				overflow: hidden;
+				overflow-wrap: break-word;
+				&__title{
+					label {
+						overflow: hidden;
+						display: -webkit-box;
+						-webkit-box-orient: vertical;
+					}
+				}
+			}
+
+
+			&-content {
+				width: 100%;
+				overflow: hidden;
+				overflow-wrap: break-word;
+				&__title{
+					label {
+						overflow: hidden;
+						display: -webkit-box;
+						-webkit-box-orient: vertical;
+						-webkit-line-clamp: 3;
+					}
+				}
+			}
+			
+			.submitting__block-filed {
+				width: 100%;
+				display: flex;
+				flex-direction: column;
+				border-radius: 12px;
+				background-color: $color-white;
+			}
+		}
+	}
+}

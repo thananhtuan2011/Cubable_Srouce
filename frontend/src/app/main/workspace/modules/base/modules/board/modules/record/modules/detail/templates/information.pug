@@ -1,0 +1,55 @@
+mixin fieldInformation( editable )
+	field-information(
+		[field]='f',
+		[cellValue]='itemDetail.cells[ f.id ]',
+		[recordID]='itemDetail.id',
+		[boardID]='itemDetail.boardID',
+		[itemName]='itemName',
+		[otherFields]='fields',
+		[editable]=`${editable}`,
+		[lookupContext]='lookupContext')
+
+.layout-column.layout-align-space-between.layout-gap-12.full-height
+	.item-detail__content
+		cub-search-box(
+			includeOuterSize,
+			#searchField,
+			[data]='fields',
+			(filtered)='filter( $event )')
+		.layout-column.layout-gap-16
+			ng-container(
+				*ngIf=`filteredFields?.length; else elseBlock;`)
+				ng-container(*ngIf='filteredFields?.length && viewID; else elseBlock1')
+					ng-container(*ngFor='let f of filteredFields; trackByID')
+						ng-container(*ngIf='!f.extra?.isHidden')
+							+fieldInformation(`
+									!FIELD_READONLY.has( f.extra.dataType )
+									&& (
+										f.extra.canEditAllRow
+										|| editable === true
+										|| editable?.[ f.id ] === true )`)
+				ng-template(#elseBlock1)
+					ng-container(*ngFor='let f of fields; trackByID')
+						+fieldInformation('true')
+				button(
+					cubBasicButton,
+					*ngIf='hiddenFields.length',
+					[icon]=`isShowFieldsHidden
+						? "chevron-down"
+						: "chevron-right"`,
+					(click)='isShowFieldsHidden = !isShowFieldsHidden')
+					span
+						.pv-2.ph-2
+							| {{ "RECORD.DETAIL.LABEL.FIELD_HIDDEN" | translate : { count: hiddenFields.length } }}
+				ng-container(*ngIf='isShowFieldsHidden')
+					ng-container(*ngFor='let f of hiddenFields; trackByID')
+						field-information(
+							[field]='f')
+			ng-template(#elseBlock)
+				.text-color-secondary.pl-12
+					| {{ "RECORD.DETAIL.MESSAGE.NO_RESULT_FOUND" | translate }}
+			//- button(
+			//- 	cubButton='secondary',
+			//- 	icon='plus-circle',
+			//- 	iconSize='16px')
+			//- 	| {{ "RECORD.DETAIL.LABEL.ADD_FIELD" | translate }}

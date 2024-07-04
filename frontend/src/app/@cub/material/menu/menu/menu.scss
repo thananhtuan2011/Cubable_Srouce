@@ -1,0 +1,43 @@
+@import '../../../scss/partials/variable';
+
+cub-menu {
+	display: none;
+}
+
+.cub-overlay-menu-pane {	
+	&.cub-overlay-sub-menu-pane {
+		margin: 0;
+	}
+}
+
+.cub-menu {
+	$self: &;
+
+	display: flex;
+	flex-direction: column;
+	row-gap: 8px;
+	width: 100%;
+	min-width: 0;
+	max-width: 100%;
+
+	#{ $self }__header,
+	#{ $self }__content,
+	#{ $self }__footer {
+		display: flex;
+		flex-direction: column;
+
+		&:empty {
+			display: none;
+		}
+
+		&:has(.cub-menu-group) {
+			row-gap: 8px;
+		}
+	}
+
+	#{ $self }__content {
+		height: 100%;
+		min-height: 0;
+		max-height: 100%;
+	}
+}

@@ -1,0 +1,67 @@
+mixin setting
+	ng-container([ngSwitch]='type')
+		ng-container(*ngSwitchCase='SUB_PROCESS_TYPE.ROW_FROM_EVENT_BEFORE')
+		.h-fit-content(*ngSwitchCase='SUB_PROCESS_TYPE.ROW_MATCH_CONDITION')
+			other-record(
+				#otherRecordSettingComp,
+				[baseID]='baseID',
+				[blockSetup]='blockSetup',
+				[boardsLk]='boardsLk',
+				[(settings)]='settings',
+				(settingsChange)='onSettingChanged()')
+
+cub-card(
+	variant='tonal',
+	size='small')
+	cub-card-content
+		.layout-column.layout-gap-6
+			.text-color-secondary.ml-12
+				| {{ "BASE.WORKFLOW.SETUP.SUB_PROCESS.LABEL.SELECT_ROW" | translate }}
+			cub-dropdown(
+				required,
+				#subProcessTypePicker,
+				[clearable]='false',
+				[beforeSelectItem]='onBeforeSelectType',
+				[formControl]='typeControl',
+				[valueControl]='typeSelected',
+				(valueControlChange)='onSubProcessTypeChange( $event )',
+				(selected)='eventSelected = $event.metadata')
+				//- [disabled]='!type.addable', TEMP remove
+				cub-dropdown-group
+					cub-dropdown-item(
+						*ngFor='let event of prevEvents',
+						iconColor='blue',
+						[metadata]='event',
+						[label]='"BASE.WORKFLOW.SETUP.SUB_PROCESS.LABEL.ROW_FROM_EVENT" | translate : { eventName: event.name | lowercase }',
+						[value]='event.value',
+						[icon]='event.icon')
+				cub-dropdown-group
+					cub-dropdown-item(
+						*ngFor='let type of subProcessType; ngForTrackByValue',
+						[label]='( "BASE.WORKFLOW.SETUP.SUB_PROCESS.LABEL." + type.name ) | translate',
+						[value]='type.value',
+						[iconColor]='type.iconColor',
+						[icon]='type.icon')
+			.layout-row.full-width.text-color-secondary.ml-12(
+				*ngIf='type === SUB_PROCESS_TYPE.ROW_FROM_EVENT_BEFORE')
+				cub-icon.mr-8(
+					name='info-circle',
+					size='20px',
+					color='secondary')
+				.text-truncate(
+					[title]=`
+						("BASE.WORKFLOW.SETUP.SUB_PROCESS.MESSAGE.ROW_RECORD_OF" | translate)
+						+ ' ' + eventSelected?.boardName`)
+					| {{ "BASE.WORKFLOW.SETUP.SUB_PROCESS.MESSAGE.ROW_RECORD_OF" | translate }}
+					| {{ eventSelected?.boardName | empty }}
+
++setting
+
+complete-setting(
+	#completeSettingComp,
+	*ngIf='type',
+	[boardID]='settings.boardID',
+	[blockSetup]='blockSetup',
+	[boardsLk]='boardsLk',
+	[(completeSetting)]='settings.complete',
+	(completeSettingChange)='onSettingChanged()')

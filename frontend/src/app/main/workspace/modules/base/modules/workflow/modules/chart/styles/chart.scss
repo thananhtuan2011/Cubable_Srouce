@@ -1,0 +1,122 @@
+@import 'src/app/@cub/scss/partials/variable';
+
+:host {
+	display: flex;
+	flex-direction: row;
+	width: 100%;
+	min-width: 0;
+	height: 100%;
+	min-height: 0;
+
+	.node {
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		position: relative;
+
+		.node__invalid-icon {
+			position: absolute;
+			left: -35px;
+		}
+
+		.block-description {
+			margin: auto;
+			margin-left: 0;
+			white-space: pre-line;
+			word-wrap: break-word;
+		}
+
+		.delay-card {
+			display: flex;
+			flex-direction: row;
+			justify-content: center;
+			gap: 6px;
+			padding: 4px 8px;
+			border-radius: 20px;
+			border: none;
+			min-inline-size: max-content;
+
+			cursor: pointer;
+
+			background-color: color( grey, 300 );
+
+			&.delay-card--active {
+				outline: 1px solid $color-border-focus;
+				box-shadow: 0px 15px 35px -6px rgba(0, 0, 0, .15),
+					$box-shadow-primary;
+			}
+
+			&.delay-card--error {
+				outline: 1px solid $color-border-error;
+				border: none;
+				box-shadow: 0px 15px 35px -6px rgba(0, 0, 0, .15),
+					$box-shadow-destructive;
+			}
+		}
+	}
+
+	.node-end {
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		width: 50px;
+		min-width: 50px;
+		max-width: 50px;
+		height: 50px;
+		min-height: 50px;
+		max-height: 50px;
+		border-radius: 50%;
+
+		background-color: color(grey, 500);
+	}
+
+	.outer-box-button {
+		padding: 4px;
+		border-color: color(purple, 200);
+
+		.outer-box-icon {
+			width: 28px;
+			min-width: 28px;
+			max-width: 28px;
+			height: 28px;
+			min-height: 28px;
+			max-height: 28px;
+			padding: 4px;
+			border-radius: 6px;
+
+			background-color: color(purple, 100);
+		}
+	}
+
+	.outer-box-button--active {
+		outline: 1px solid $color-border-focus;
+		box-shadow: 0px 15px 35px -6px rgba(0, 0, 0, .15),
+			$box-shadow-primary;
+	}
+
+	.outer-box-button--error {
+		outline: 1px solid $color-border-error;
+		box-shadow: 0px 15px 35px -6px rgba(0, 0, 0, .15),
+			$box-shadow-destructive;
+	}
+
+	.node-outer-box {
+		height: 28px;
+		min-height: 28px;
+		max-height: 28px;
+		border-radius: 20px;
+		padding: 4px 8px;
+		color: $color-white;
+
+		background-color: color(grey, 500);
+	}
+	
+	.node-merge {
+		padding: 4px 8px;
+		border-radius: 20px;
+		color: $color-white;
+
+		background-color: color(grey, 500);
+	}
+
+}

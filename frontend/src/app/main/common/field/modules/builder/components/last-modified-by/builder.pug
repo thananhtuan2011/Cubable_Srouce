@@ -1,0 +1,33 @@
+include ../builder.include.pug
+
+ng-template(#settingBlock)
+	.layout-column.layout-gap-8
+		b
+			| {{ "FIELD.BUILDER.LABEL.CHECK_LAST_MODIFIED_BY" | translate }}
+		cub-radio-group(
+			[(ngModel)]='isTargetAllFields',
+			(ngModelChange)='onTargetFieldChanged()')
+			cub-radio(
+				[label]='"FIELD.BUILDER.LABEL.FOR_ALL_FIELDS" | translate',
+				[value]='true')
+			cub-radio(
+				[label]='"FIELD.BUILDER.LABEL.FOR_SPECIFIC_FIELD" | translate',
+				[value]='false')
+				ng-template(cubRadioContent)
+					cub-dropdown(
+						required,
+						autoFocusOn,
+						searchable,
+						#fieldDropdown,
+						[clearable]='false',
+						[label]='"FIELD.BUILDER.LABEL.FIELD_TO_CHECK" | translate',
+						[formControl]='checkFieldFormControl',
+						[(ngModel)]='internalField.targetFieldID')
+						cub-dropdown-item(
+							*ngFor='let field of otherFields',
+							[icon]='field.dataType | fieldMetadata : "icon"',
+							[label]='field.name',
+							[value]='field.id')
+
+ng-container(
+	*ngTemplateOutlet='fieldTemplate; context: { settingBlock };')

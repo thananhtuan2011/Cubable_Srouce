@@ -1,0 +1,38 @@
+ng-template
+	.wgc-menu(
+		[ngClass]='classList',
+		[style.width]='width',
+		[style.minWidth]='minWidth',
+		[style.maxWidth]='maxWidth',
+		[style.height]='height',
+		[style.minHeight]='minHeight',
+		[style.maxHeight]='maxHeight')
+		.wgc-menu__header(
+			*ngIf='title || !!menuHeader?.templateRef',
+			[ngClass]='menuHeader?.classList')
+			.wgc-menu__header__title(*ngIf='title || !!menuHeader?.menuHeaderTitle?.templateRef')
+				.wgc-menu__header__title-wrapper([ngClass]='menuHeader?.menuHeaderTitle?.classList')
+					wgc-truncate(limitLine='1', *ngIf='title')
+						| {{ title }}
+					ng-container(*ngIf='!!menuHeader?.menuHeaderTitle?.templateRef')
+						ng-container(*ngTemplateOutlet='menuHeader?.menuHeaderTitle?.templateRef; context: data;')
+				button(
+					wgcBasicButton,
+					icon='close',
+					*ngIf='hasButtonClose',
+					[wgcTooltip]='"WGC.LABEL.CLOSE" | translate',
+					(click)='close()')
+			.wgc-menu__header__content(*ngIf='!!menuHeader?.templateRef')
+				ng-container(*ngTemplateOutlet='menuHeader?.templateRef; context: data;')
+		.wgc-menu__content(
+			wgcScrollBar,
+			detectScroll,
+			suppressScrollX,
+			*ngIf='!!menuContent?.templateRef',
+			[ngClass]='menuContent?.classList',
+			[suppress]='!hasScrollBar',
+			[mode]='scrollBarMode',
+			(scrollReachBottom)='loadMore?.emit( !!$event )')
+			ng-container(*ngTemplateOutlet='menuContent?.templateRef; context: data;')
+		.wgc-menu__footer(*ngIf='!!menuFooter?.templateRef', [ngClass]='menuFooter?.classList')
+			ng-container(*ngTemplateOutlet='menuFooter?.templateRef; context: data;')

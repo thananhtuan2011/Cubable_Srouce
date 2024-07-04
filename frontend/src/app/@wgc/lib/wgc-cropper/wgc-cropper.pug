@@ -1,0 +1,32 @@
+- const wgcPrefix = "WGC";
+
+img(#cropper)
+.wgc-cropper__settings
+	button(wgcIconButton, circle, size='small', icon='settings', [wgcMenuTriggerFor]='viewModeMenu')
+wgc-menu(#viewModeMenu)
+	wgc-menu-content
+		ng-template(wgcMenuContent)
+			button(
+				wgcMenuItem,
+				maxWidth='300px',
+				[wgcTooltip]=`"${wgcPrefix}.MESSAGE.CROPPER_VIEW_MODE_1" | translate`,
+				(click)='setViewMode( 0 )')
+				| {{ "#{wgcPrefix}.LABEL.CROPPER_VIEW_MODE_1" | translate }}
+			button(
+				wgcMenuItem,
+				maxWidth='300px',
+				[wgcTooltip]=`"${wgcPrefix}.MESSAGE.CROPPER_VIEW_MODE_2" | translate`,
+				(click)='setViewMode( 1 )')
+				| {{ "#{wgcPrefix}.LABEL.CROPPER_VIEW_MODE_2" | translate }}
+			button(
+				wgcMenuItem,
+				maxWidth='300px',
+				[wgcTooltip]=`"${wgcPrefix}.MESSAGE.CROPPER_VIEW_MODE_3" | translate`,
+				(click)='setViewMode( 2 )')
+				| {{ "#{wgcPrefix}.LABEL.CROPPER_VIEW_MODE_3" | translate }}
+			button(
+				wgcMenuItem,
+				maxWidth='300px',
+				[wgcTooltip]=`"${wgcPrefix}.MESSAGE.CROPPER_VIEW_MODE_4" | translate`,
+				(click)='setViewMode( 3 )')
+				| {{ "#{wgcPrefix}.LABEL.CROPPER_VIEW_MODE_4" | translate }}

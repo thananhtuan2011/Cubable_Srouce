@@ -1,0 +1,58 @@
+mixin calculation-result
+	.text-truncate
+		| {{ CALCULATIONS_TYPE.get( column.calculatingType ).label | translate }} :
+	b
+		| {{ calculatedResult | calculatingResult : column.calculatingType : column.field }}
+
+mixin calculation-block
+	.calculation-block()&attributes(attributes)
+		block
+cub-menu(
+	#operatorsMenu,
+	width='200px',
+	maxHeight='500px')
+	cub-menu-content
+		ng-template(
+			cubMenuContent,
+			let-column='column')
+			button(
+				cubMenuItem,
+				(click)='uncalculateByColumn( column, true )')
+				| {{ "SPREADSHEET.LABEL.NONE" | translate }}
+			button(
+				cubMenuItem,
+				*ngFor='let type of column.field.dataType | calculatingTypes',
+				(click)='calculateByColumn( column, type.value, true )')
+				| {{ type.label | translate }}
+
+ng-template(
+	#calculationBlockTemplate,
+	let-column='column',
+	let-calculatedResult='calculatedResult')
+	ng-container(
+		*ngIf=`isEditorMode
+			&& config.column.calculable;
+			else elseBlock;`)
+		+calculation-block()(
+			#trigger='cubMenuTriggerFor',
+			originX='end',
+			overlayX='end',
+			cubMenuTriggerPosition='above',
+			[class.calculation-block--active]=`
+				column.calculatingType
+					|| trigger.isOpened`,
+			[cubMenuTriggerFor]='operatorsMenu',
+			[cubMenuTriggerContext]='{ column }')
+			cub-icon(
+				size='13px',
+				[name]=`trigger.isOpened
+					? "chevron-up"
+					: "chevron-down"`)
+			ng-container(
+				*ngIf='column.calculatingType; else elseBlock;')
+				+calculation-result
+			ng-template(#elseBlock)
+				| {{ "SPREADSHEET.LABEL.CALCULATE" | translate }}
+	ng-template(#elseBlock)
+		+calculation-block().calculation-block--viewonly
+			+calculation-result

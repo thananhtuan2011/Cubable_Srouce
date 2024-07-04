@@ -1,0 +1,54 @@
+cub-form-field(
+	#formField,
+	[label]='label',
+	[description]='description',
+	[helpText]='helpText',
+	[size]='size',
+	[variant]='variant',
+	[control]='control',
+	[displayErrorMode]='displayErrorMode',
+	[autoWidth]='autoWidth',
+	[includeOuterSize]='includeOuterSize',
+	[hideRequiredMarker]='hideRequiredMarker')
+	ng-container(
+		cubFormFieldPrefix,
+		*ngIf=`!phoneOnly
+			&& !readonly
+			&& ( formField.isFocused
+				|| ( phone && countryCode ) )`)
+		cub-phone-country-picker(
+			flagOnly,
+			[flagSize]=`
+				formField.isSmallSize
+					? "16px"
+					: "20px"
+			`,
+			[disabled]='isDisabled',
+			[readonly]='readonly',
+			[defaultCountryCode]='defaultCountryCode',
+			[(countryCode)]='countryCode',
+			(picked)='onCountryCodePicked( $event.code )',
+			(opened)='formField.focusing = true',
+			(closed)='formField.focusing = false; formField.focus();')
+	input(
+		cubFormFieldInput,
+		type='tel',
+		[attr.tabindex]='tabindex',
+		[name]='name || label',
+		[placeholder]=`placeholder
+			?? (
+				( countryCode | cubExamplePhoneNumber )
+				|| ( "CUB.PLACEHOLDER.FILL_PHONE_NUMBER" | translate )
+			)`,
+		[autoFocusOn]='autoFocusOn',
+		[autoReset]='autoReset',
+		[required]='isRequired',
+		[disabled]='isDisabled',
+		[readonly]='readonly',
+		[clearable]='clearable',
+		[ngModel]='phone',
+		(ngModelChange)='onPhoneChanged( $event )',
+		(cleared)='onCleared()',
+		(input)='$event.stopPropagation()',
+		(focus)='onFocus( $event )',
+		(blur)='onBlur( $event )')

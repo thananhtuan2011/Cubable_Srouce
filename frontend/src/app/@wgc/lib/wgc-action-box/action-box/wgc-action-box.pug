@@ -1,0 +1,8 @@
+.wgc-action-box__start
+	ng-container(*ngTemplateOutlet='actionBoxStart?.templateRef')
+.wgc-action-box__middle
+	ng-container(*ngTemplateOutlet='actionBoxMiddle?.templateRef')
+.wgc-action-box__end
+	ng-container(*ngTemplateOutlet='actionBoxEnd?.templateRef')
+	button.wgc-action-box__btn-dismiss(wgcButton, *ngIf='!actionBoxEnd', (click)='dismiss( $event )')
+		| {{ "WGC.LABEL.DISMISS" | translate }}

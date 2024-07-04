@@ -1,0 +1,18 @@
+@import 'src/app/@cub/scss/partials/variable';
+
+:host {
+	::ng-deep {
+		.logic-editor, .filter-option {
+			background-color: $color-white !important;
+		}
+	}
+}
+
+::ng-deep {
+	.field-builder {
+		display: flex;
+		width: 100%;
+		min-width: 0;
+		max-width: 100%;
+	}
+}

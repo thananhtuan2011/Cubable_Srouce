@@ -1,0 +1,61 @@
+@import 'src/scss/partials/variable';
+
+.wgc-code-block {
+	/* Display & Box Model */
+	display: flex;
+	flex-direction: column;
+	border: {
+		width: 1px;
+		style: solid;
+		color: $color-border;
+		radius: 8px;
+	};
+	padding: 10px;
+
+	/* Color */
+	background-color: $color-secondary;
+	color: $color-text;
+
+	/* Text */
+	font-family: $font-family-code;
+	font-weight: $font-weight-semibold;
+	line-height: 20px;
+	word-break: break-all;
+
+	&:not(.wgc-code-block--multiline) {
+		/* Display & Box Model */
+		flex-direction: row;
+		align-items: center;
+		justify-content: space-between;
+		height: 40px;
+		min-height: 40px;
+		max-height: 40px;
+
+		/* Text */
+		white-space: nowrap;
+
+		/* Other */
+		user-select: all;
+	}
+
+	input,
+	textarea {
+		/* Display & Box Model */
+		width: 100%;
+		min-width: 0;
+		height: 100%;
+		min-height: 0;
+		border: none;
+		padding: 0;
+
+		/* Color */
+		background-color: inherit;
+		color: inherit;
+
+		/* Text */
+		font-weight: inherit;
+
+		/* Other */
+		resize: none;
+	}
+}

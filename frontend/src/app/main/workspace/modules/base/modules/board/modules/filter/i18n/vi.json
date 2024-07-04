@@ -1,0 +1,25 @@
+{
+	"LABEL": {
+		"ADD_CONDITION": "Thêm điều kiện",
+		"AND": "Và",
+		"BACK_CONFIRM": "Bạn sẽ mất tiến trình hiện tại",
+		"CANCEL": "Hủy",
+		"CANCEL_CONFIRM": "Xác nhận hủy",
+		"CUSTOM": "Tùy chỉnh",
+		"FILTER": "Bộ lọc",
+		"FIXED_FILTER": "Bộ lọc cố định",
+		"KEEP": "Giữ lại",
+		"OR": "Hoặc",
+		"REMOVE_ALL": "Gỡ tất cả",
+		"SAVE": "Lưu"
+	},
+	"MESSAGE": {
+		"APPLY_LOGIC": "Áp dụng lô-gíc",
+		"CANCEL_MESSAGE": "Bạn có chắc chắn muốn hủy?",
+		"FOR_CONDITIONS_BELOW": "cho những điều kiện dưới đây",
+		"ALL_FILTER_OPTIONS_REMOVED": "Tất cả điều kiện lọc đã bị xóa. Thêm điều kiện để lọc",
+		"NOT_HAVE_FILTER_CONDITION": "Không có điều kiện lọc nào được áp dụng",
+		"VIEW_FILTER_MESSAGE": "Bộ lọc cố định giúp người thiết lập lọc ra những dữ liệu mà họ chỉ muốn xuất hiện trong chế độ xem này",
+		"NOT_HAVE_FIELDS": "Bạn không có quyền trên bất kỳ trường dữ liệu nào. Hãy liên hệ Quản trị viên để được cấp quyền "
+	}
+}

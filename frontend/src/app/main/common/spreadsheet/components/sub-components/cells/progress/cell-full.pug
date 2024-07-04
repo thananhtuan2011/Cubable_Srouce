@@ -1,0 +1,18 @@
+include ../boxes.include.pug
+
++number-box()(
+	type='positive-integer',
+	[content]='data | convertPercent')
+
+.flex.layout-row.layout-gap-4.layout-align-space-between-center(
+	*ngIf='!isInputting')
+	cub-slider.flex.maw-300(
+		[readonly]='readonly',
+		[min]='field.startValue',
+		[max]='field.endValue',
+		[(ngModel)]='data',
+		(ngModelChange)='save()',
+		(sliding)='slidingPercent = $event',
+		(slideEnd)='slidingPercent = null')
+	span.miw-36.h-20.text-nowrap.text-right
+		| {{ ( slidingPercent ?? data ) | percent }}

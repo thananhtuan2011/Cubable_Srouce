@@ -1,0 +1,66 @@
+mixin item
+	button(wgcMenuItem, [autoClose]='type !== "multi-list"', (click)='setTextContent( item )')
+		wgc-truncate
+			//- span([innerHtml]='item | markText : searchBox?.searchQuery : true')
+			| {{ item | empty }}
+
+wgc-menu.wgc-excel-cell(
+	#excellCellList,
+	width='280px',
+	maxHeight='400px',
+	[hasScrollBar]='!useVirtualScroll')
+	wgc-menu-header
+		ng-template(wgcMenuHeader)
+			wgc-search-box(autoFocusOn, [searchKey]='null', [data]='list')
+	wgc-menu-content
+		ng-template(wgcMenuContent)
+			ng-container(*ngTemplateOutlet='searchBox?.notFoundTemplate')
+			ng-container(*ngIf='filteredList?.length')
+				ng-container(*ngIf='useVirtualScroll; else elseBlock;')
+					cdk-virtual-scroll-viewport(
+						[itemSize]='itemSize',
+						[minBufferPx]='itemSize * 5',
+						[maxBufferPx]='itemSize * 10',
+						[style.height.px]='400')
+						ng-container(*cdkVirtualFor='let item of filteredList')
+							+item
+				ng-template(#elseBlock)
+					ng-container(*ngFor='let item of filteredList')
+						+item
+
+div(
+	mwlResizable,
+	#excellCellContent,
+	#resizableElement='mwlResizable',
+	[attr.contenteditable]='!readonly || undefined',
+	(resizing)='onResizing( $event )',
+	(input)='onInput( $event )',
+	(keydown)='onKeydown( $event )',
+	(focus)='onFocus( $event )',
+	(blur)='onBlur( $event ); formControl?.markAsTouched();')
+	ng-content
+span(
+	mwlResizeHandle,
+	style='position: absolute; top: 0; bottom: 0; right: 0; width: 5px; cursor: col-resize;',
+	[resizableContainer]='resizableElement',
+	[resizeEdges]='{ right: true }')
+span(
+	mwlResizeHandle,
+	style='position: absolute; left: 0; right: 0; bottom: 0; height: 5px; cursor: row-resize;',
+	[resizableContainer]='resizableElement',
+	[resizeEdges]='{ bottom: true }')
+button(
+	wgcBasicButton,
+	wgcDatePicker,
+	dateOnly,
+	icon='calendar',
+	*ngIf='!readonly && type === "date"',
+	[wgcTooltip]='"WGC.LABEL.PICK" | translate',
+	(picked)='onDatePicked( $event )')
+button(
+	wgcBasicButton,
+	*ngIf='!readonly && list?.length',
+	[icon]='excellCellList?.isOpened ? "chevron-up" : "chevron-down"',
+	[wgcTooltip]='"WGC.LABEL.PICK" | translate',
+	[wgcMenuTriggerFor]='excellCellList')
+input(style='display: none', tabindex='-1', [formControl]='formControl', [ngModel]='textContent')

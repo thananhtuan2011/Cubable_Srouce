@@ -1,0 +1,24 @@
+{
+	"LABEL": {
+		"ACCOUNT": "Tài khoản",
+		"ACCOUNT_SETTINGS": "Cài đặt tài khoản",
+		"BASE": "Base",
+		"CONFIRM_CANCEL": "Xác nhận hủy",
+		"CUSTOM": "Tuỳ chỉnh",
+		"HELP": "Trợ giúp",
+		"INVITE_USERS": "Mời người dùng",
+		"KEEP": "Giữ lại",
+		"LANGUAGE": "Ngôn ngữ",
+		"NOTIFICATION": "Thông báo",
+		"NOTIFICATION_MEMBER_PROFILE": "Thông báo, Hồ sơ Thành viên",
+		"SIGN_OUT": "Đăng xuất",
+		"SWITCH_WORKSPACE": "Chuyển Workspace",
+		"TEMPLATE": "Template",
+		"WORKSPACE_NAME": "Tên Workspace",
+		"MANAGE_WORKSPACE": "Quản trị Workspace"
+	},
+	"MESSAGE": {
+		"CANCEL_MESSAGE": "Bạn có chắc chắn muốn hủy?",
+		"LOST_CURRENT_PROGRESS": "Bạn sẽ mất tiến trình hiện tại"
+	}
+}

@@ -1,0 +1,80 @@
+@import 'src/scss/partials/variable';
+
+@mixin item-day {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	width: 40px;
+	height: 40px;
+	border-radius: 50%;
+
+	cursor: pointer;
+
+	&:hover {
+		background-color: $color-material-hover;
+	}
+}
+
+@mixin item-active {
+	color: $color-white;
+	background-color: $color-primary-active;
+
+	&:hover {
+		background-color: $color-primary-active;
+	}
+}
+
+:host {
+	display: flex;
+	flex-direction: column;
+	width: 100%;
+	min-width: 0;
+	height: 100%;
+	min-height: 0;
+	gap: 12px;
+
+	.schedule-content {
+		display: flex;
+		flex-direction: column;
+		gap: 12px;
+		border-radius: 8px;
+		padding: 12px;
+		background-color: $color-white;
+
+		.select-day {
+			display: flex;
+			margin-top: 6px;
+			justify-content: space-between;
+			justify-items: center;
+			padding: 8px;
+			border-radius: 8px;
+			border: 1px solid $color-border-primary;
+
+			.item-day {
+				@include item-day
+			}
+
+			.item-active {
+				@include item-active
+			}
+		}
+
+		.select-day-of-month {
+			display: flex;
+			margin-top: 6px;
+			gap: 33px;
+			flex-wrap: wrap;
+			padding: 8px;
+			border-radius: 8px;
+			border: 1px solid $color-border-primary;
+
+			.item-day {
+				@include item-day
+			}
+
+			.item-active {
+				@include item-active
+			}
+		}
+	}
+}

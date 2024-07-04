@@ -1,0 +1,93 @@
+@import 'src/scss/partials/variable';
+@import 'src/scss/partials/mixin';
+
+.wgc-icon-button {
+	$self: &;
+	display: flex;
+	cursor: pointer;
+	width: var(--icon-button-size);
+	min-width: var(--icon-button-size);
+	max-width: var(--icon-button-size);
+	height: var(--icon-button-size);
+	min-height: var(--icon-button-size);
+	max-height: var(--icon-button-size);
+	font-size: var(--icon-button-icon-size, calc(var(--icon-button-size) / 2));
+	line-height: var(--icon-button-icon-size, calc(var(--icon-button-size) / 2));
+	color: var(--icon-button-icon-color, $color-label);
+	background-color: var(--icon-button-color, $color-default);
+	border: {
+		width: var(--icon-button-border-width, 1px);
+		style: var(--icon-button-border-style, solid);
+		color: var(--icon-button-border-color, transparent);
+		radius: 8px;
+	};
+	padding: 2px;
+
+	// Color state
+	@at-root {
+		&.wgc-primary {
+			background-color: var(--primary-color, $color-primary);
+			color: $color-white;
+		}
+
+		&.wgc-white {
+			background-color: $color-white;
+			border-color: var(--icon-button-border-color, $color-border);
+			color: var(--icon-button-icon-color, $color-text);
+		}
+	}
+
+	// Shape state
+	@at-root {
+		&#{ $self }--circle {
+			border-radius: 50%;
+		}
+	}
+
+	// Size state
+	@at-root {
+		&#{ $self }--small {
+			--icon-button-size: 32px !important;
+		}
+
+		&#{ $self }--medium {
+			--icon-button-size: 40px !important;
+		}
+
+		&#{ $self }--large {
+			--icon-button-size: 56px !important;
+		}
+
+		&#{ $self }--xlarge {
+			--icon-button-size: 72px !important;
+		}
+	}
+
+	// Disabled state
+	@at-root {
+		&:not(#{ $self }--disabled) {
+			&:hover {
+				opacity: .8;
+			}
+
+			&:focus-visible {
+				box-shadow: $box-shadow-focus;
+			}
+		}
+
+		&#{ $self }--disabled {
+			@include cursor-not-allowed;
+			background-color: $color-disabled;
+			border-color: $color-disabled;
+			color: $color-white;
+		}
+	}
+
+	#{ $self }-wrapper {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		height: 100%;
+		width: 100%;
+	}
+}

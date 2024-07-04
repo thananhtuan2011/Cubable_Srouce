@@ -1,0 +1,38 @@
+{
+	"LABEL": {
+		"ACTION": "Hành động",
+		"CANCEL": "Hủy",
+		"CHANGE": "Thay đổi",
+		"CHANGE_EVENT": "Đổi loại sự kiện",
+		"CONDITION_BRANCH": "Nhánh Đúng / Sai",
+		"DELAY": "Tạm hoãn",
+		"DELETE": "Xóa",
+		"EDIT_DESCRIPTION": "Chỉnh sửa mô tả",
+		"LOOP": "Vòng lặp",
+		"LOOP_EXIT": "Thoát",
+		"LOOP_START": "Bắt đầu",
+		"MORE_ACTION": "Thao tác khác",
+		"REFRESH_DESCRIPTION": "Đặt lại mô tả",
+		"RIGHT": "Đúng",
+		"SUB_PROCESS": "Quy trình phụ",
+		"SUB_PROCESS_EXIT": "Thoát",
+		"SUB_PROCESS_START": "Bắt đầu",
+		"TRIGGER": "Kích hoạt",
+		"PARALLEL": "Nhánh song song",
+		"MERGE": "Gộp nhánh",
+		"WRONG": "Sai"
+	},
+	"MESSAGE": {
+		"DELETE_EVENT": "Xóa sự kiện",
+		"WILL_AFFECTED": "Quy trình tự động sẽ bị ảnh hưởng và có thể không hoạt động như mong muốn. Bạn có chắc chắn muốn xóa sự kiện này?",
+		"CHANGE_EVENT": "Thay đổi sự kiện",
+		"CHANGE_AFFECTED": "Thay đổi này sẽ làm vô hiệu hóa những cấu hình hiện tại và ảnh hưởng đến khả năng hoạt động của những sự kiện liên quan. <br/> Bạn chắc chứ?"
+	},
+	"PLACEHOLDER": {
+		"DELAY": "Tạm hoãn",
+		"TRIGGER": "Là sự kiện kích hoạt quy trình làm việc",
+		"ACTION": "Là hàng động do hệ thống thực hiện",
+		"CONDITION": "Là điều kiện rẽ nhánh quy trình làm việc của bạn",
+		"TYPE_DESCRIPTION": "Nhập mô tả"
+	}
+}

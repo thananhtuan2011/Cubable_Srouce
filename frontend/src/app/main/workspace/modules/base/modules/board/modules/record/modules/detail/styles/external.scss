@@ -1,0 +1,55 @@
+@import 'src/scss/partials/variable';
+
+:host {
+	display: flex;
+	flex-direction: column;
+	width: 100%;
+	min-width: 0;
+	height: 100%;
+	min-height: 0;
+
+	.information__content {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		justify-content: center;
+
+		.information__content-header {
+			display: flex;
+			flex-direction: column;
+			gap: 16px;
+			width: 700px;
+			min-width: 700px;
+			max-width: 700px;
+		}
+	}
+
+	.record-empty {
+		display: flex;
+		flex-direction: column;
+		justify-content: center;
+		align-items: center;
+		margin-top: 62px;
+
+		.record-empty__content {
+			display: flex;
+			flex-direction: column;
+			justify-content: center;
+			align-items: center;
+			gap: 48px;
+			width: 612px;
+			min-width: 612px;
+			max-width: 612px;
+			padding: 40px 20px;
+			border-radius: 12px;
+
+			background-color: rgba(0, 0, 0, 0.03);
+
+			.develop-by {
+				font-size: 11px;
+				font-weight: $font-weight-semibold;
+				color: $color-dark-blue;
+			}
+		}
+	}
+}

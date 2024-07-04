@@ -1,0 +1,131 @@
+.logic-editor__editor
+	syntax-editor(
+		lineNumbers,
+		[autoFocusOn]='autoFocusOn',
+		[placeholder]='"LOGIC_EDITOR.PLACEHOLDER.TYPE_FORMULA_HERE" | translate',
+		[readonly]='readonly',
+		[disabled]='disabled',
+		[highlighters]='highlighters',
+		[replacers]='replacers',
+		[beforeKeydown]='beforeSyntaxEditorKeydownFn',
+		[beforeHighlightBrackets]='beforeSyntaxEditorHighlightBracketsFn',
+		[(content)]='content',
+		[fields]='fields',
+		(contentChange)='contentChange.emit( $event )',
+		(input)='onSyntaxEditorInput( $event )')
+
+.logic-editor__action-bar.text-color-error
+	-
+		const maxLength = 'content?.length > 10000';
+		const calculated = 'data.calculated';
+	ng-container(
+		*ngIf=`${maxLength}; else elseBlock`)
+		b.layout-row.layout-align-start-center.layout-gap-4
+			cub-icon(
+				size='16px',
+				name='warning')
+			| {{ "LOGIC_EDITOR.ERROR.MAX_10000_CHARACTERS" | translate  }}
+	ng-template(#elseBlock)
+		b.layout-row.layout-align-start-center.layout-gap-4(
+			*ngIf=`${calculated}
+				&& ${calculated}?.resultType === null` )
+			cub-icon(
+				size='16px',
+				name='warning')
+			| {{ #{calculated}?.data ?? ( "LOGIC_EDITOR.LABEL.ERROR" | translate ) }}
+
+.formula-editor__help-area
+	-
+		const fieldExist = 'displayingFields?.length';
+		const logicalFunctionsExist = 'displayingLogicalFunctions?.length';
+	cub-scroll-bar.formula-editor__help-area-left
+		cub-list
+			cub-list-group(
+				*ngIf=`${fieldExist}`,
+				[label]='"LOGIC_EDITOR.LABEL.FIELDS" | translate')
+				button(
+					cubListItem,
+					*ngFor='let field of displayingFields; trackByID',
+					(pointingChange)='$event && suggestField( field )',
+					(focus)='suggestField( field )',
+					(click)='addField( field )')
+					.layout-row.layout-gap-6.layout-align-start-center
+						cub-icon(
+							size='16px',
+							[name]='field.dataType | fieldMetadata : "icon"')
+						| {{ field.name }}
+			cub-list-group(
+				*ngIf=`${logicalFunctionsExist}`,
+				[label]='"LOGIC_EDITOR.LABEL.LOGICAL_FUNCTION" | translate')
+				button(
+					cubListItem,
+					*ngFor='let logicalFunction of displayingLogicalFunctions; trackByProperty: "keyword"',
+					(pointingChange)='$event && suggestLogicalFunction( logicalFunction )',
+					(focus)='suggestLogicalFunction( logicalFunction )',
+					(click)='addLogicalFunction( logicalFunction )')
+					| {{ logicalFunction.keyword }}
+	cub-scroll-bar.formula-editor__help-area-right
+		-
+			const suggestTarget = '$any( suggesting.target )';
+		.layout-column.layout-gap-8(
+			[ngSwitch]='suggesting.type')
+			ng-container(*ngSwitchCase='"logical-function"')
+				.layout-column
+					b
+						| {{ #{suggestTarget}.keyword }}
+					label.layout-column.layout-gap-4
+						.h6
+							| {{ #{suggestTarget}.description }}
+						.h6
+							| {{ #{suggestTarget}.argument }}
+				.layout-row.layout-gap-8.layout-align-start-center
+					label.w-120
+						| {{ "LOGIC_EDITOR.LABEL.SYNTAX" | translate }}
+					cub-form-field.flex
+						input(
+							cubFormFieldInput,
+							readonly,
+							[clearable]='false',
+							[value]=`${suggestTarget}.syntax`)
+						ng-container(#cubFormFieldSuffix)
+							button(
+								cubBasicButton,
+								icon='copy',
+								iconSize='20px',
+								[cubClipboardCopy]=`${suggestTarget}.syntax`)
+				.layout-row.layout-gap-8.layout-align-start-center
+					label.w-120
+						| {{ "LOGIC_EDITOR.LABEL.EXAMPLE" | translate }}
+					cub-form-field.flex
+						input(
+							cubFormFieldInput,
+							readonly,
+							[clearable]='false',
+							[value]=`${suggestTarget}.example`)
+						ng-container(#cubFormFieldSuffix)
+							button(
+								cubBasicButton,
+								icon='copy',
+								iconSize='20px',
+								[cubClipboardCopy]=`${suggestTarget}.example`)
+				.layout-row.layout-gap-8.layout-align-start-center
+					label.w-120
+						| {{ "LOGIC_EDITOR.LABEL.EXPECTED_RESULT" | translate }}
+					cub-form-field.flex
+						input(
+							cubFormFieldInput,
+							readonly,
+							[clearable]='false',
+							[value]=`${suggestTarget}.expectedResult`)
+						ng-container(#cubFormFieldSuffix)
+							button(
+								cubBasicButton,
+								icon='copy',
+								iconSize='20px',
+								[cubClipboardCopy]=`${suggestTarget}.expectedResult`)
+			ng-container(*ngSwitchCase='"field"')
+				.layout-column
+					b
+						| {{ #{suggestTarget}.name }}
+					label.h6
+						| {{ #{suggestTarget}.description ?? ( ( #{suggestTarget}.dataType | fieldMetadata : "description" ) | translate ) }}

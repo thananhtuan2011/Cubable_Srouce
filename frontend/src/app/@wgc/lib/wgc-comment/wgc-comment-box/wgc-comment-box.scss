@@ -1,0 +1,144 @@
+@import 'src/scss/partials/variable';
+@import 'src/scss/partials/mixin';
+
+.wgc-comment-box {
+	display: block;
+
+	&.wgc-comment-box--sub {
+		.wgc-comment-box__file-list {
+			.wgc-comment-box__file-btn-add {
+				border: none;
+			}
+
+			.wgc-comment-box__file {
+				background-color: $color-white;
+
+				&.wgc-comment-box__image {
+					width: 60px;
+					height: 60px;
+				}
+			}
+		}
+	}
+
+	.wgc-comment-box__editor {
+		height: auto;
+		background-color: $color-white;
+		border-radius: 8px;
+		margin-bottom: 10px;
+
+		.ql-editor {
+			min-height: 60px;
+			padding: 10px 15px;
+		}
+	}
+
+	.wgc-comment-box__file-list {
+		display: flex;
+		margin-top: 15px;
+		margin-bottom: 15px;
+
+		.wgc-comment-box__file-list-wrapper {
+			flex-direction: row;
+			padding-top: 5px;
+			padding-right: 5px;
+		}
+
+		.wgc-comment-box__file-btn-add {
+			@include border-dashed(8px, 2, 7);
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			border-radius: 8px;
+			background-color: $color-white;
+			width: 32px;
+			min-height: 0;
+			margin-right: 15px;
+			margin-top: 5px;
+			cursor: pointer;
+		}
+
+		.wgc-comment-box__file-btn-remove {
+			position: absolute;
+			top: -4px;
+			right: -4px;
+		}
+
+		.wgc-comment-box__file {
+			position: relative;
+			border-radius: 10px;
+			background-color: $color-default;
+
+			&:not(:last-child) {
+				margin-right: 15px;
+			}
+
+			&.wgc-comment-box__image {
+				background-color: $color-placeholder;
+			}
+		}
+	}
+
+	.wgc-comment-box__attachment {
+		display: flex;
+		align-items: center;
+		padding: 5px 20px 5px 10px;
+
+		.wgc-comment-box__attachment__image {
+			margin-right: 10px;
+		}
+
+		.wgc-comment-box__attachment__info {
+			width: 100%;
+			min-width: 0;
+
+			.wgc-comment-box__attachment__name {
+				font-size: 13px;
+			}
+
+			.wgc-comment-box__attachment__size {
+				font-size: 12px;
+				color: $color-label;
+			}
+		}
+	}
+
+	.wgc-comment-box__image {
+		background-color: $color-placeholder;
+		background-position: center;
+		background-size: cover;
+		background-repeat: no-repeat;
+		width: 80px;
+		max-width: 80px;
+		height: 80px;
+		max-height: 80px;
+	}
+
+	.wgc-comment-box__util {
+		display: flex;
+		align-items: center;
+
+		.wgc-comment-box__util-left,
+		.wgc-comment-box__util-right {
+			display: flex;
+			align-items: center;
+		}
+
+		.wgc-comment-box__util-left {
+			overflow: auto;
+			padding-top: 5px;
+			margin-right: 5px;
+			width: 100%;
+			min-width: 0;
+		}
+
+		.wgc-comment-box__btn-close,
+		.wgc-comment-box__btn-action {
+			margin-right: 15px;
+		}
+
+		.wgc-comment-box__btn-action {
+			color: $color-label;
+		}
+	}
+}

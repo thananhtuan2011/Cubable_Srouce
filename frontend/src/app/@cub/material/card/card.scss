@@ -1,0 +1,77 @@
+@import '../../scss/partials/variable';
+
+.cub-card {
+	$self: &;
+
+	position: relative;
+
+	display: flex;
+	flex-direction: column;
+	border-radius: 12px;
+
+	background-color: $color-white;
+
+	backdrop-filter: blur(100px);
+
+	// Variant
+	@at-root {
+		&#{ $self }--outlined {
+			outline: 1px solid $color-border-quaternary;
+		}
+
+		&#{ $self }--tonal {
+			background-color: rgba(0, 0, 0, .03);
+		}
+	}
+	
+	// Size
+	@at-root {
+		&#{ $self }--small {
+			#{ $self }-header {
+				padding: 8px 12px;
+			}
+
+			#{ $self }-content {
+				padding: 12px;
+			}
+		}
+
+		&#{ $self }--large {
+			#{ $self }-header {
+				padding: 8px 16px;
+			}
+
+			#{ $self }-content {
+				padding: 16px;
+			}
+		}
+	}
+
+	// State
+	@at-root {
+		&#{ $self }--clickable {
+			cursor: pointer;
+
+			&:hover:not(#{ $self }--active):not(#{ $self }--error) {
+				outline: 1px solid $color-border-quaternary;
+			}
+		}
+
+		&#{ $self }--shadow {
+			box-shadow: 0px 15px 35px -6px rgba(0, 0, 0, .15),
+				0px 0px 2px 0px rgba(0, 0, 0, .05);
+		}
+
+		&#{ $self }--active {
+			outline: 1px solid $color-border-focus;
+			box-shadow: 0px 15px 35px -6px rgba(0, 0, 0, .15),
+				$box-shadow-primary;
+		}
+
+		&#{ $self }--error {
+			outline: 1px solid $color-border-error;
+			box-shadow: 0px 15px 35px -6px rgba(0, 0, 0, .15),
+				$box-shadow-destructive;
+		}
+	}
+}

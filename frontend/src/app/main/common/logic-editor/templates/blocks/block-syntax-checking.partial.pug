@@ -1,0 +1,19 @@
+div(
+	[class.hidden]='isSyntaxChecking === undefined')
+	.layout-row.layout-align-start-center.layout-gap-4(
+		*ngIf='isSyntaxChecking; else elseBlock;')
+		cub-loading
+		| {{ "LOGIC_EDITOR.MESSAGE.CHECKING_SYNTAX" | translate }}
+	ng-template(#elseBlock)
+		b.layout-row.layout-align-start-center.layout-gap-4(
+			[ngClass]='{ "text-color-error": syntaxError, "text-color-success": !syntaxError }')
+			cub-icon(
+				size='16px',
+				[name]='syntaxError ? "warning" : "check"')
+			span
+				ng-container(
+					*ngIf='syntaxError; else elseBlock;')
+					| {{ "LOGIC_EDITOR.MESSAGE." + ( syntaxError.key || "SYNTAX_ERROR" ) | translate : syntaxError.params }}
+				ng-template(#elseBlock)
+					| {{ "LOGIC_EDITOR.MESSAGE.EVERYTHING_LOOKS_GOOD" | translate }}
+

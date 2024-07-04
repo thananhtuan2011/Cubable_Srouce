@@ -1,0 +1,28 @@
+@import 'src/scss/partials/variable';
+@import 'src/scss/partials/mixin';
+
+:host {
+	@include border-dashed(10px);
+	display: flex;
+	flex-direction: column;
+	text-align: center;
+	justify-content: center;
+	background-color: $color-white;
+	border-radius: 10px;
+	padding: 45px 10px;
+
+	.icon {
+		font-size: 24px;
+		margin-bottom: 10px;
+	}
+
+	.title {
+		font-size: 16px;
+		font-weight: $font-weight-semibold;
+	}
+
+	.description {
+		font-size: 14px;
+		color: $color-label;
+	}
+}

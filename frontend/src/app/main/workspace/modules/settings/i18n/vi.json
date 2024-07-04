@@ -1,0 +1,11 @@
+{
+	"LABEL": {
+		"CLOSE": "Đóng",
+		"MY_SETTINGS": "Cài đặt của tôi",
+		"WORKSPACE_SETTINGS": "Cài đặt Workspace"
+	},
+	"MESSAGE": {
+		"SETTINGS_DESCRIPTION": "Cá nhân, Workspace, giao diện và nhiều hơn nữa",
+		"SETTINGS_TITLE": "Cài đặt"
+	}
+}

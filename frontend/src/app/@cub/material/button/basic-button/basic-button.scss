@@ -1,0 +1,125 @@
+@import '../../../scss/partials/variable';
+
+.cub-basic-button {
+	$self: &;
+
+	display: flex;
+	width: fit-content;
+
+	color: var(--basic-button-color, inherit);
+
+	text-align: left;
+
+	// Type
+	@at-root {
+		&#{ $self }-destructive {
+			color: $color-material-destructive-default;
+
+			&:disabled {
+				color: $color-material-destructive-disable;
+			}
+		}
+	}
+
+	// Size
+	@at-root {
+		&#{ $self }-small {
+			padding: 2px 4px;
+			border-radius: 6px;
+
+			&:has(#{ $self }__content:empty) {
+				padding: 2px;
+				border-radius: 4px;
+			}
+		}
+
+		&#{ $self }-large {
+			padding: 4px 8px;
+			border-radius: 8px;
+
+			&:has(#{ $self }__content:empty) {
+				padding: 4px;
+				border-radius: 6px;
+			}
+		}
+	}
+
+	// Color
+	@at-root {
+		&[color='primary'] {
+			color: $color-text-primary;
+		}
+
+		&[color='secondary'] {
+			color: $color-text-secondary;
+		}
+
+		&[color='tertiary'] {
+			color: $color-text-tertiary;
+		}
+
+		&[color='white'] {
+			color: $color-text-white;
+		}
+
+		&[color='black'] {
+			color: $color-text-black;
+		}
+
+		&[color='blue'] {
+			color: $color-text-blue;
+		}
+
+		&[color='success'] {
+			color: $color-text-success;
+		}
+
+		&[color='error'] {
+			color: $color-text-error;
+		}
+	}
+
+	// Common states
+	@at-root {
+		&:not(:disabled) {
+			&:active,
+			&:hover,
+			&:focus-visible {
+				background-color: var(
+					--basic-button-hover-color,
+					$color-material-hover
+				);
+			}
+
+			&#{ $self }--active {
+				background-color: var(
+					--basic-button-active-color,
+					$color-material-focus
+				);
+			}
+		}
+	}
+
+	#{ $self }-wrapper {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		column-gap: 4px;
+		height: 100%;
+		width: 100%;
+	}
+
+	#{ $self }__icon {
+		font-size: inherit;
+		line-height: inherit;
+	}
+
+	#{ $self }__content {
+		display: flex;
+		align-items: center;
+
+		&:empty {
+			display: none;
+		}
+	}
+}

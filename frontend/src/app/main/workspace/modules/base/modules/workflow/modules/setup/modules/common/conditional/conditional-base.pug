@@ -1,0 +1,117 @@
+mixin drag
+	.layout-row.layout-align-center-center.layout-gap-8(
+		[style.marginTop]='"3px"')
+		cub-icon(
+			cdkDragHandle,
+			name='drag',
+			size='16px',
+			[color]='"LABEL" | color')
+		.index-filter-option
+			.line-height-20
+				ng-container(*ngIf='index < 9; else elseBlock1')
+					| 0{{ index + 1 }}
+				ng-template(#elseBlock1)
+					| {{ index + 1 }}
+
+mixin remove
+	button(
+		cubBasicButton,
+		icon='close',
+		iconColor='primary',
+		iconSize='20px',
+		*ngIf='options.length > 1 || !mustHaveOption || isEditingForm',
+		[style.marginTop]='"3px"')&attributes(attributes)
+
+.layout-column.layout-gap-12.flex
+	.layout-row.layout-align-space-between-center.layout-row-6(
+		*ngIf='options?.length; else elseBlock;')
+		ng-container(*ngIf='isEditingForm; else elseEditingForm')
+			.layout-row.layout-align-space-between-center.flex
+				.layout-row.layout-align-start-center.layout-gap-6
+					.line-height-20
+						| {{ "BASE.WORKFLOW.SETUP.COMMON.LABEL.APPLY_LOGIC" | translate }}
+					cub-dropdown(
+						autoWidth,
+						size='small',
+						[clearable]='false',
+						[formControl]='logicalOperatorControl',
+						[valueControl]='logicalOperator',
+						(valueControlChange)='onLogicalOperatorChange( $event )')
+						cub-dropdown-item(
+							[label]='"BASE.WORKFLOW.SETUP.COMMON.LABEL.AND" | translate | uppercase',
+							[value]='LOGICAL_OPERATOR.AND')
+						cub-dropdown-item(
+							[label]='"BASE.WORKFLOW.SETUP.COMMON.LABEL.OR" | translate | uppercase',
+							[value]='LOGICAL_OPERATOR.OR')
+						cub-dropdown-item(
+							[label]='"BASE.WORKFLOW.SETUP.COMMON.LABEL.CUSTOM" | translate | uppercase',
+							[value]='LOGICAL_OPERATOR.CUSTOM')
+					.line-height-20
+						| {{ "BASE.WORKFLOW.SETUP.COMMON.LABEL.FOR_CONDITIONS_BELOW" | translate }}
+				button(
+					cubBasicButton='destructive',
+					icon='trash',
+					iconSize='20px',
+					*ngIf='options.length > 1',
+					(click)='removeAllFilterOption()')
+					| {{ "BASE.WORKFLOW.SETUP.COMMON.LABEL.REMOVE_ALL" | translate }}
+		ng-template(#elseEditingForm)
+			.line-height-20
+				| {{ label || ( "BASE.WORKFLOW.SETUP.COMMON.LABEL.ROW_FILTER_CONDITION" | translate ) }}
+			.layout-row.layout-align-start-center.layout-gap-6
+				.line-height-20
+					| {{ "BASE.WORKFLOW.SETUP.COMMON.LABEL.APPLY_LOGIC" | translate }}
+				cub-dropdown(
+					autoWidth,
+					size='small',
+					[clearable]='false',
+					[formControl]='logicalOperatorControl',
+					[valueControl]='logicalOperator',
+					(valueControlChange)='onLogicalOperatorChange( $event )')
+					cub-dropdown-item(
+						[label]='"BASE.WORKFLOW.SETUP.COMMON.LABEL.AND" | translate | uppercase',
+						[value]='LOGICAL_OPERATOR.AND')
+					cub-dropdown-item(
+						[label]='"BASE.WORKFLOW.SETUP.COMMON.LABEL.OR" | translate | uppercase',
+						[value]='LOGICAL_OPERATOR.OR')
+					cub-dropdown-item(
+						[label]='"BASE.WORKFLOW.SETUP.COMMON.LABEL.CUSTOM" | translate | uppercase',
+						[value]='LOGICAL_OPERATOR.CUSTOM')
+	ng-template(#elseBlock)
+		| {{ label }}
+	ng-container(*ngIf='logicalOperator === LOGICAL_OPERATOR.CUSTOM')
+		expression-editor(
+			autoFocusOn,
+			[content]='logicalExpression',
+			[options]='filterOptionsAnnotation',
+			(contentChange)='onEditorContentChange()')
+	.layout-column.layout-gap-8(
+		cdkDropList,
+		*ngIf='options?.length',
+		[cdkDropListData]='options',
+		(cdkDropListDropped)='onFilterOptionArrange( $event )')
+		.filter-option(
+			[ngClass]="{ 'filter-option-form': isEditingForm, 'filter-option': !isEditingForm }",
+			cdkDrag,
+			*ngFor=`let o of options | orderBy: [ "+order" ];
+				let index = index;
+				ngForTrackByID`,
+			[cdkDragData]='o')
+			div(*cdkDragPlaceholder)
+				.w-521.h-146
+			.drag-condition-preview(*cdkDragPreview)
+				+option
+			+option()(
+				(click)='removeFilterOption( index )')
+	label(*ngIf='isEditingForm && !options.length')
+		| {{ "BASE.WORKFLOW.SETUP.COMMON.LABEL.ALL_FILTER_OPTIONS_REMOVED" | translate }}
+	button(
+		*ngIf='!hideAddCondition',
+		cubBasicButton,
+		size='large',
+		iconSize='20px',
+		icon='plus-circle',
+		[disabled]='!fields?.length',
+		(click)='addCondition()')
+		.text-nowrap.line-height-20
+			| {{ addConditionLabel || ( "BASE.WORKFLOW.SETUP.COMMON.LABEL.ADD_CONDITION" | translate ) }}

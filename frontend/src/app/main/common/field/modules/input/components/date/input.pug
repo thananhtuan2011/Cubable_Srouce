@@ -1,0 +1,76 @@
+include ../mixins/mixin.pug
+
+ng-container(*ngIf='$any( data )?.valueType; else elseBlock;')
+	.layout-row.layout-gap-8
+		ng-container([ngSwitch]='$any( data ).valueType')
+			ng-container(*ngSwitchCase='VALUE_TYPE.STATIC')
+				cub-form-field.flex(
+					[label]='innerLabel',
+					[size]='size',
+					[variant]='variant',
+					[disabled]='disabled',
+					[displayErrorMode]='displayErrorMode',
+					[hideRequiredMarker]='hideRequiredMarker',
+					(container.click)='datePicker?.open()')
+					ng-container(
+						cubFormFieldDisplay,
+						*ngIf=`
+							$any( data ).valueType === VALUE_TYPE.STATIC
+							&& $any( data ).data`)
+						| {{ $any( data ).data | dateValue : field.format : field.timeFormat }}
+					input(
+						cubFormFieldInput,
+						#datePicker='cubDatePicker',
+						*ngIf=`$any( data ).valueType === VALUE_TYPE.STATIC`,
+						[placeholder]='placeholder',
+						[autoFocusOn]='autoFocusOn',
+						[required]='isRequired',
+						[readonly]='readonly',
+						[clearable]='!readonly',
+						[formControl]='formControl',
+						[disableControl]='disabled',
+						[cubDatePicker]='$any( data ).data',
+						[cubDatePickerDateFormat]='placeholder ?? field.inputFormat',
+						[cubDatePickerDateOnly]='!field.timeFormat',
+						[cubDatePickerDisableOpen]='readonly',
+						(dateChanged)='onDataChanged( $event )',
+						(opened)='isPreventOnBlur = true',
+						(closed)='isPreventOnBlur = false')
+			ng-container(*ngSwitchCase='VALUE_TYPE.DYNAMIC')
+				+formField
+					+dynamicValue()(
+						readonly,
+						(click)='plusButton.open()')
+			ng-container(*ngSwitchCase='VALUE_TYPE.EMPTY')
+				+formField
+					+emptyValue
+		+valueTypeSwitch
+ng-template(#elseBlock)
+	cub-form-field(
+		[label]='innerLabel',
+		[size]='size',
+		[variant]='variant',
+		[displayErrorMode]='displayErrorMode',
+		[hideRequiredMarker]='hideRequiredMarker',
+		(container.click)='datePicker.open()')
+		ng-container(
+			cubFormFieldDisplay,
+			*ngIf='data')
+			| {{ data | dateValue : field.format : field.timeFormat }}
+		input(
+			cubFormFieldInput,
+			#datePicker='cubDatePicker',
+			[placeholder]='placeholder',
+			[autoFocusOn]='autoFocusOn',
+			[required]='isRequired',
+			[readonly]='readonly',
+			[clearable]='!readonly',
+			[formControl]='formControl',
+			[disableControl]='disabled',
+			[cubDatePicker]='data',
+			[cubDatePickerDateFormat]='placeholder ?? field.inputFormat',
+			[cubDatePickerDateOnly]='!field.timeFormat',
+			[cubDatePickerDisableOpen]='readonly',
+			(dateChanged)='onDataChanged( $event )',
+			(opened)='isPreventOnBlur = true',
+			(closed)='isPreventOnBlur = false')

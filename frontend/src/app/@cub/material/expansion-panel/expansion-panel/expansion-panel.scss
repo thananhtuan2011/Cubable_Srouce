@@ -1,0 +1,28 @@
+@import '../../../scss/partials/variable';
+
+.cub-expansion-panel {
+	$self: &;
+
+	display: flex;
+	flex-direction: column;
+
+	> #{ $self }__header,
+	> #{ $self }__content {
+		&:empty {
+			display: none;
+		}
+	}
+
+	> #{ $self }__header {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		column-gap: 6px;
+		margin-bottom: 2px;
+		border-bottom: 1px solid $color-border-primary;
+
+		font-weight: $font-weight-semibold;
+
+		cursor: pointer;
+	}
+}

@@ -1,0 +1,25 @@
+include ../mixins/mixin.pug
+
+.layout-row.layout-align-start-center.layout-gap-8.layout-wrap.flex
+	ng-container(*ngTemplateOutlet='fieldPicker')
+
+	+comparisonOperator
+
+	ng-container(*ngIf='data?.compareType')
+		ng-container([ngSwitch]='data.compareType')
+			ng-container(*ngSwitchCase='COMPARISON_TYPE.STATIC')
+				cub-form-field.flex.miw-200(
+					displayErrorMode='tooltip')
+					cub-checkbox(
+						[formControl]='dataControl',
+						[disableControl]=`
+							error?.field
+								|| ( excludeFields?.isDisable
+									&& ( excludeFieldsLK?.[ field?.id ] ) )`,
+						[(valueControl)]='data.checkbox',
+						(valueControlChange)='onDataChange()')
+			ng-container(*ngSwitchCase='COMPARISON_TYPE.AUTO')
+				+comparisonTypeAuto
+
+	ng-container(*ngIf='operatorHasComparisonType.has( operator )')
+		+comparisonType

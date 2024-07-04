@@ -1,0 +1,38 @@
+//- include ../../common/templates/blocks/block-setting-header.partial.pug
+
+.left
+	.layout-row.layout-align-start-center.layout-gap-8.ml-24.mt-12
+		cub-icon(
+			name='dashboard',
+			size='20px',
+			color='primary')
+		h5
+			| {{ "SETTINGS.WORKSPACE.LABEL.MANAGE_WORKSPACE" | translate }}
+	cub-divider.mt-12.mb-8
+	cub-scroll-bar.ph-12.pb-12(
+		suppressX)
+		cub-list
+			cub-list-group.layout-gap-4
+				button(
+					cubListItem,
+					active,
+					*ngFor='let compTemplate of compTemplatesArr; ngForTrackByID',
+					[title]='compTemplate.label | translate',
+					(click)='selectCompTemplate( compTemplate )')
+					.layout-row.layout-align-start-center.layout-gap-6
+						cub-icon(
+							size='20px',
+							color='primary',
+							[name]='compTemplate.icon')
+						.text-semibold.text-color-primary
+							| {{ compTemplate.label | translate }}
+.right
+	ng-container(
+		*ngTemplateOutlet='currentCompTemplate')
+
+ng-template(
+	#compTemplate,
+	icon='user',
+	labelTranslationKey='SETTINGS.WORKSPACE.LABEL.MANAGE_USER',
+	key='USER_SYSTEM')
+	user-system(#compChild)

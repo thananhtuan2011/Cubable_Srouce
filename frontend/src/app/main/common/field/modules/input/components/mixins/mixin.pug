@@ -1,0 +1,180 @@
+mixin valueTypeSwitch
+	button(
+		cubButton='secondary',
+		icon='switch',
+		iconSize='16px',
+		[active]='valueTypeMenu?.isOpened',
+		[cubMenuTriggerFor]='valueTypeMenu',
+		[cubMenuTriggerContext]=`{ data }`)
+
+mixin dynamicValue
+	.layout-row.layout-align-start-center.flex.layout-gap-4
+		cub-basic-editor.flex.mih-20.mah-212(
+			noToolbar,
+			[options]='tagOptions',
+			[placeholder]=`
+				"FIELD.INPUT.PLACEHOLDER."
+				+ (
+					( ALLOW_INPUT_DATA_TYPES | includes: field.dataType )
+					=== true
+						? "INPUT_OR_SELECT_VALUE"
+						: "SELECT_VALUE"
+				) | translate`,
+			[content]='contentEditor',
+			(textChanged)='onContentEditorChange()')&attributes(attributes)
+		ng-container(
+			cubFormFieldSuffix)
+			button(
+				cubBasicButton,
+				icon='plus',
+				iconSize='20px',
+				#plusButton='cubMenuTriggerFor',
+				[disabled]='$any( field )?.isRichTextFormatting',
+				[cubMenuTriggerOtherConfig]='{ offsetX: 12, offsetY: 4 }',
+				[cubMenuTriggerFor]='dynamicValueMenu',
+				[style.padding.px]='0',
+				[active]='dynamicValueMenu?.isOpened')
+	ng-container(
+		cubFormFieldError,
+		*ngIf='errors?.required')
+		| {{ "FIELD.INPUT.ERROR.INPUT_OR_SELECT_VALUE" | translate }}
+
+mixin emptyValue
+	span
+		| {{ "FIELD.INPUT.PLACEHOLDER.EMPTY_VALUE" | translate }}
+
+mixin operatorIcon(operator)
+	ng-container([ngSwitch]=operator)
+		cub-icon(
+			*ngSwitchCase='calculateTypes.EQUAL',
+			name='./assets/images/field/equal.svg',
+			size='24px',
+			[cubTooltip]='"FIELD.INPUT.MESSAGE.EQUAL" | translate')
+		cub-icon(
+			*ngSwitchCase='calculateTypes.PLUS',
+			name='./assets/images/field/plus.svg',
+			size='24px',
+			[cubTooltip]='"FIELD.INPUT.MESSAGE.PLUS" | translate')
+		cub-icon(
+			*ngSwitchCase='calculateTypes.MINUS',
+			name='./assets/images/field/minus.svg',
+			size='24px',
+			[cubTooltip]='"FIELD.INPUT.MESSAGE.MINUS" | translate')
+		cub-icon(
+			*ngSwitchCase='calculateTypes.MULTIPLY',
+			name='./assets/images/field/multiply.svg',
+			size='24px',
+			[cubTooltip]='"FIELD.INPUT.MESSAGE.MULTIPLY" | translate')
+		cub-icon(
+			*ngSwitchCase='calculateTypes.DIVIDE',
+			name='./assets/images/field/divide.svg',
+			size='24px',
+			[cubTooltip]='"FIELD.INPUT.MESSAGE.DIVIDE" | translate')
+
+mixin formField
+	cub-form-field.flex(
+		[label]='innerLabel',
+		[size]='size',
+		[variant]='variant',
+		[displayErrorMode]='displayErrorMode',
+		[autoFocusOn]='autoFocusOn',
+		[disabled]='disabled',
+		[hideRequiredMarker]='hideRequiredMarker')
+		block
+
+cub-menu(#operatorMenu)
+	cub-menu-content
+		ng-template(cubMenuContent)
+			.layout-column.layout-gap-16.p-8
+				button.layout-column.layout-align-center-center(
+					*ngFor='let o of OPERATORS; trackByIndex',
+					(click)=`$any( data ).calculateType = o;
+						operatorChanged();
+						operatorMenu.close();`)
+					+operatorIcon("o")
+
+cub-menu(
+	#valueTypeMenu,
+	width='202px')
+	cub-menu-content
+		ng-template(cubMenuContent, let-data='data')
+			button(
+				cubMenuSelectItem,
+				[selected]='data.valueType === VALUE_TYPE.STATIC',
+				(click)='onTypeChange( VALUE_TYPE.STATIC )')
+				| {{ "FIELD.INPUT.LABEL.STATIC_VALUE" | translate }}
+			button(
+				cubMenuSelectItem,
+				[selected]='data.valueType === VALUE_TYPE.DYNAMIC',
+				(click)='onTypeChange( VALUE_TYPE.DYNAMIC )')
+				| {{ "FIELD.INPUT.LABEL.DYNAMIC_VALUE" | translate }}
+			button(
+				cubMenuSelectItem,
+				[selected]='data.valueType === VALUE_TYPE.EMPTY',
+				(click)='onTypeChange( VALUE_TYPE.EMPTY )')
+				| {{ "FIELD.INPUT.LABEL.EMPTY_VALUE" | translate }}
+
+cub-menu.cub-menu__dynamic-value(
+	#dynamicValueMenu,
+	width='456px',
+	height='350px',
+	(opened)='onSelectEvent()')
+	cub-menu-content
+		ng-template(cubMenuContent)
+			.layout-row.layout-gap-8.full-height
+				.layout-column.layout-gap-8.flex-50.pv-8
+					.text-semibold.text-color-primary.ph-12
+						| {{ "FIELD.INPUT.LABEL.USE_DATA_FROM" | translate }}
+					button(
+						cubMenuItem,
+						leadingIcon='list',
+						leadingIconSize='20px',
+						trailingIcon='chevron-right',
+						trailingIconSize='20px',
+						trailingIconColor='tertiary',
+						[selected]='!eventAdvanceSelected && eventFields',
+						[autoClose]='false',
+						(click)='onSelectEvent()')
+						| {{ "FIELD.INPUT.LABEL.DATA_ON_SAME_ROW" | translate }}
+					cub-menu-group.flex(
+						*ngIf='eventAdvance?.length')
+						cub-scroll-bar(suppressX)
+							button(
+								cubMenuItem,
+								trailingIcon='chevron-right',
+								trailingIconSize='20px',
+								trailingIconColor='tertiary',
+								leadingIconSize='20px',
+								*ngFor='let event of eventAdvance; ngForTrackByID',
+								[selected]='eventAdvanceSelected?.id === event.id',
+								[autoClose]='false',
+								[leadingIcon]='event.icon',
+								(click)='onSelectEvent( event )')
+								| {{ "FIELD.INPUT.LABEL.ROW_FROM_EVENT" | translate : { eventName: event.name | lowercase } }}
+				cub-divider(vertical)
+				.layout-column.layout-gap-8.flex-50.pv-8
+					.text-semibold.text-color-primary.ph-12
+						| {{ "FIELD.INPUT.LABEL.SELECT_DYNAMIC" | translate }}
+					cub-search-box(
+						includeOuterSize,
+						size='large',
+						[data]='eventFields',
+						(filtered)='eventFieldsFiltered = $event')
+					.layout-column.layout-gap-4.mih-0
+						.ml-12.text-semibold.text-color-secondary.line-height-15(
+							[style.fontSize.px]='11')
+							| {{ "FIELD.INPUT.LABEL.FIELD" | translate }}
+						.event-fields__empty(
+							*ngIf='!eventFieldsFiltered?.length; else elseBlock;')
+							| {{ "FIELD.INPUT.LABEL.NO_FIELDS" | translate }}
+						ng-template(#elseBlock)
+							cub-menu-group.mih-0
+								cub-scroll-bar(suppressX)
+									button(
+										cubMenuItem,
+										leadingIconSize='20px',
+										*ngFor='let field of eventFieldsFiltered; ngForTrackByID',
+										[leadingIcon]='( field.dataType | fieldMetadata ).icon',
+										(click)='onFieldAdvanceChanged( field )')
+										.text-truncate([title]='field.name | empty')
+											| {{ field.name | empty }}

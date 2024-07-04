@@ -1,0 +1,50 @@
+mixin not-found-members(filteredData)
+	ng-container(*ngTemplateOutlet='searchBox?.notFoundTemplate; context: { name: "WGC.LABEL.MEMBERS" | translate };')
+
+mixin user-status-image(img)
+	img.wgc-member-common__user-status(
+		width='20px',
+		height='20px',
+		[lazyLoad]=`"assets/images/icons/${img}.webp"`)
+
+mixin userStatus(status)
+	ng-container([ngSwitch]=`${status}`)
+		ng-container(*ngSwitchCase='MEMBER_STATUS?.ACTIVE')
+			+user-status-image("status-active")
+		ng-container(*ngSwitchCase='MEMBER_STATUS?.WAITING')
+			+user-status-image("status-pending")
+		ng-container(*ngSwitchCase='MEMBER_STATUS?.INACTIVE')
+			+user-status-image("status-inactive")
+
+mixin btn-view-profile
+	button(
+		wgcBasicButton,
+		wgcMenuItemSuffix,
+		icon='external',
+		*ngIf='canViewProfile && member?.status !== MEMBER_STATUS?.INACTIVE',
+		[color]='"LABEL" | color',
+		[wgcTooltip]='"WGC.LABEL.VIEW_PROFILE" | translate',
+		(click)='$event?.stopPropagation(); viewProfile( member );')
+
+mixin members-search-box(data, filtered)
+	.wgc-member-common-controls
+		wgc-search-box.wgc-member-common-controls__search-box(
+			autoFocusOn,
+			[data]=data,
+			(filtered)=`${filtered} = $event`)
+		block
+
+mixin member-lists(useVirtualScroll, filteredData)
+	ng-container(*ngIf=`${filteredData}?.length`)
+		ng-container(*ngIf=`${useVirtualScroll}; else WGCScrollMembers`)
+			cdk-virtual-scroll-viewport(
+				[itemSize]='itemSize',
+				[minBufferPx]='itemSize * 5',
+				[maxBufferPx]='itemSize * 10',
+				[style.height.px]='400')
+				ng-container(*cdkVirtualFor=`let member of ${filteredData} | orderBy: "+order"; trackBy: "id" | trackByFn;`)
+					block
+		ng-template(#WGCScrollMembers)
+			wgc-scroll-bar(suppressScrollX)
+				ng-container(*ngFor=`let member of ${filteredData} | orderBy: "+order"; trackBy: "id" | trackByFn;`)
+					block

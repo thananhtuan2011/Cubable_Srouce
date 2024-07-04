@@ -1,0 +1,18 @@
+cub-card(
+	variant='tonal',
+	size='small')
+	cub-card-content
+		single-conditional(
+			#conditionalComp,
+			[label]='"BASE.WORKFLOW.SETUP.CONDITION.LABEL.FIELD_DATA_SATISFIED_CONDITION" | translate',
+			[eventAdvance]='eventAdvance',
+			[boardID]='blockSetup.boardID',
+			[logicalExpression]='settings?.filter?.logicalExpression',
+			[options]='settings?.filter?.options',
+			[logicalOperator]='settings?.filter?.logicalOperator',
+			[conditions]='settings?.filter?.conditions',
+			(logicalExpressionChange)='onLogicalExpressionChange( $event )',
+			(optionsChange)='onFilterOptionsChange( $event )',
+			(logicalOperatorChange)='onLogicalOperatorChange( $event )',
+			(conditionsChange)='onConditionFilterChange( $event )',
+			(conditionalChange)='onSettingChanged()')

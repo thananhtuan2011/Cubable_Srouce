@@ -1,0 +1,22 @@
+// .cdk-drop-list {
+// 	.cdk-drag {
+// 		transition: transform 300ms ease-in-out;
+// 	}
+
+// 	.cdk-drag-preview {
+// 		transition: none !important;
+// 	}
+
+// 	.cdk-drag-placeholder {
+// 		opacity: .5;
+// 	}
+// }
+
+.ql-editor {
+	word-break: break-word;
+}
+
+// Temp fix: google drive picker below the file picker
+.picker.picker-dialog {
+	z-index: $z-level-4;
+}

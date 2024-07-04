@@ -1,0 +1,21 @@
+{
+	"LABEL": {
+		"ALL_USER_CAN_ACCESS": "Tất cả những người được quyền truy cập",
+		"DATA": "Dữ liệu",
+		"DELETE": "Xoá",
+		"DUPLICATE": "Tạo bản sao",
+		"EDIT_SETTINGS": "Chỉnh sửa",
+		"FORM": "Biểu mẫu",
+		"HIDE_VIEW": "Ẩn",
+		"ONLY_USER_CAN_MANAGE": "Chỉ những người được quyền quản lý",
+		"SET_DEFAULT": "Đặt làm mặc định",
+		"SHARING": "Chia sẻ",
+		"SHOW_VIEW": "Hiện",
+		"VIEW_NAME": "Tên Chế độ xem",
+		"WHO_CAN_ACCESS": "Ai có thể truy cập chế độ xem này",
+		"EXPORT": "Xuất dữ liệu"
+	},
+	"MESSAGE": {
+		"HIDING_VIEW": "Chế độ xem này đang bị ẩn"
+	}
+}

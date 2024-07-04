@@ -1,0 +1,12 @@
+ng-container(*ngIf='formDetail')
+	submitting(
+		[form]='formDetail',
+		[formMode]='internalMode',
+		[boardID]='boardID',
+		[submitFunc]='submit.bind( this )')
+	button.edit-button(
+		cubFloatingButton,
+		trailingIcon='pencil',
+		*ngIf='form.canManage',
+		(click)='formBuilderChange.emit()')
+		| {{ "BASE.BOARD.FORM.LABEL.EDIT_FORM" | translate }}

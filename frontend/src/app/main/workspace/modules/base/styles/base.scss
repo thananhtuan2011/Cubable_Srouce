@@ -1,0 +1,31 @@
+:host {
+	display: flex;
+	flex-direction: column;
+	height: 100%;
+	min-height: 0;
+
+	::ng-deep {
+		.cub-page__header {
+			border-top-right-radius: 16px;
+			min-width: 1078px;
+		}
+
+		cub-search-box {
+			height: inherit;
+
+			.cub-form-field__input {
+				height: 30px;
+				min-height: 0;
+				padding: 4px 8px;
+
+				.cub-form-field__input__prefix {
+					height: 20px;
+				}
+			}
+
+			.cub-form-field .cub-form-field__input [cubFormFieldInput] {
+				min-height: 20px;
+			}
+		}
+	}
+}

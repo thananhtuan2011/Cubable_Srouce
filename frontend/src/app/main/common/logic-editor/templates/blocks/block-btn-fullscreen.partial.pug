@@ -1,0 +1,5 @@
+button(
+	cubBasicButton,
+	[icon]='isExpanding ? "collapse" : "expand"',
+	[cubTooltip]='"LOGIC_EDITOR.LABEL." + ( isExpanding ? "COLLAPSE" : "EXPAND" ) | translate',
+	(click)='isExpanding ? collapse() : expand()')

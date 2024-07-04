@@ -1,0 +1,113 @@
+include ../builder.include.pug
+
+ng-template(#settingBlock)
+	ng-container(*ngIf='!loaded, else elseBlock')
+		.layout-row.layout-align-center-start.full-width
+			cub-loading
+	ng-template(#elseBlock)
+		form.layout-gap-16([formGroup]='fieldForm')
+			.layout-column.layout-gap-16
+				.layout-column.layout-gap-10
+					cub-dropdown(
+						formControlName='includeSetting',
+						[clearable]='false',
+						[valueControl]='internalField.includeSetting?.type',
+						[label]='"FIELD.BUILDER.LABEL.SHOW_ONLY_THESE_USERS" | translate',
+						(valueControlChange)='onSettingsChange( $event, true )')
+						cub-dropdown-item(
+							*ngFor='let i of peopleConfigInclude; ngForTrackByID',
+							[label]='i.label',
+							[description]='i.id === PEOPLE_TYPE_CONFIG.CURRENT_VIEWER\
+								? ( "FIELD.BUILDER.LABEL.USER_INPUT" | translate )\
+								: ""',
+							[value]='i.id')
+					cub-member-list(
+						limit='2',
+						width='360px',
+						overlayX='start',
+						*ngIf='internalField.includeSetting?.type === PEOPLE_TYPE_CONFIG.INDIVIDUALS',
+						[placeholder]='"FIELD.BUILDER.LABEL.ADD_USER" | translate',
+						[users]='includeUsers',
+						[strictDisplay]='false',
+						[hasFooter]='false',
+						[selectedUserIDs]='selectedIncludeUserIDs',
+						(added)='addUsers( $event, true )',
+						(removed)='removeUsers( $event, true )')
+					cub-member-list(
+						limit='2',
+						width='360px',
+						overlayX='start',
+						*ngIf='internalField.includeSetting?.type === PEOPLE_TYPE_CONFIG.TEAM',
+						[placeholder]='"FIELD.BUILDER.LABEL.ADD_TEAM" | translate',
+						[teams]='includeTeams',
+						[strictDisplay]='false',
+						[hasFooter]='false',
+						[selectedTeamIDs]='selectedIncludeTeamIDs',
+						(added)='addTeams( $event, true )',
+						(removed)='removeTeams( $event, true )')
+				.layout-column.layout-gap-10
+					cub-dropdown(
+						formControlName='excludeSetting',
+						[label]='"FIELD.BUILDER.LABEL.NOT_SHOW_THESE_USERS" | translate',
+						[valueControl]='internalField.excludeSetting?.type',
+						(valueControlChange)='onSettingsChange( $event )')
+						cub-dropdown-item(
+							*ngFor='let e of peopleConfigExclude; ngForTrackByID',
+							[label]='e.label',
+							[description]='e.id === PEOPLE_TYPE_CONFIG.CURRENT_VIEWER\
+								? ( "FIELD.BUILDER.LABEL.USER_INPUT" | translate )\
+								: ""',
+							[value]='e.id')
+					cub-member-list(
+						limit='2',
+						width='360px',
+						overlayX='start',
+						*ngIf='internalField.excludeSetting?.type === PEOPLE_TYPE_CONFIG.INDIVIDUALS',
+						[placeholder]='"FIELD.BUILDER.LABEL.ADD_USER" | translate',
+						[users]='excludeUsers',
+						[strictDisplay]='false',
+						[hasFooter]='false',
+						[selectedUserIDs]='selectedExcludeUserIDs',
+						(added)='addUsers( $event, false )',
+						(removed)='removeUsers( $event, false )')
+					cub-member-list(
+						limit='2',
+						width='360px',
+						overlayX='start',
+						*ngIf='internalField.excludeSetting?.type === PEOPLE_TYPE_CONFIG.TEAM',
+						[placeholder]='"FIELD.BUILDER.LABEL.ADD_TEAM" | translate',
+						[teams]='excludeTeams',
+						[strictDisplay]='false',
+						[hasFooter]='false',
+						[selectedTeamIDs]='selectedExcludeTeamIDs',
+						(added)='addTeams( $event, false )',
+						(removed)='removeTeams( $event, false )')
+			.layout-column.layout-gap-8
+				cub-checkbox(
+					formControlName='isNotifyAdded',
+					[label]='"FIELD.BUILDER.LABEL.NOTI_TO_USER" | translate',
+					[(valueControl)]='internalField.isNotifyAdded')
+				cub-checkbox(
+					formControlName='isMultipleSelect',
+					[label]='"FIELD.BUILDER.LABEL.ALLOW_MULTIPLE_SELECT" | translate',
+					[(valueControl)]='internalField.isMultipleSelect',
+					(click)='checkMultipleOption()')
+
+ng-template(#defaultBlock)
+	.layout-column.full-width
+		.text-color-secondary.ml-12.mb-6
+			| {{ "FIELD.BUILDER.LABEL.DEFAULT_VALUE" | translate }}
+		cub-member-list(
+			limit='2',
+			width='360px',
+			overlayX='start',
+			[users]='initialUsers',
+			[strictDisplay]='false',
+			[hasFooter]='false',
+			[selectedUserIDs]='selectedInitialUserIDs',
+			[canMultipleSelect]='internalField.isMultipleSelect',
+			(added)='addInitialUsers( $event )',
+			(removed)='removeInitialUsers( $event )')
+
+ng-container(
+	*ngTemplateOutlet='fieldTemplate; context: { settingBlock, defaultBlock, canSetRequired: true };')

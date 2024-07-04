@@ -1,0 +1,17 @@
+{
+	"LABEL": {
+		"ACCOUNT": "Account",
+		"ACCOUNT_SETTINGS": "Account settings",
+		"BASE": "Base",
+		"CUSTOM": "Custom",
+		"HELP": "Help",
+		"INVITE_USERS": "Invite users",
+		"LANGUAGE": "Language",
+		"NOTI": "Noti",
+		"NOTIFICATION_MEMBER_PROFILE": "Thông báo, Hồ sơ Thành viên",
+		"SIGN_OUT": "Sign out",
+		"SWITCH_WORKSPACE": "Switch workspace",
+		"TEMPLATE": "Template",
+		"WORKSPACE_SETTINGS": "Workspace settings"
+	}
+}

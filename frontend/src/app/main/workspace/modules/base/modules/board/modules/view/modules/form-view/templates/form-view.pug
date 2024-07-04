@@ -1,0 +1,28 @@
+include ../../common/templates/more-action-view.pug
+include ../../common/templates/partial-view.pug
+
+ng-container(*ngIf='isFromAllView, else elseBlock')
+	+allView('"form"')
+ng-template(#elseBlock)
+	+tabView('"form"')
+
+//- TODO
++moreActionView('isFromManageTab')
+	button(
+		cubMenuItem,
+		icon='pencil',
+		iconSize='20px',
+		(click)='editForm()')
+		| {{ "BASE.BOARD.DETAIL.VIEW.FORM.LABEL.EDIT" | translate }}
+	button(
+		cubMenuItem,
+		sharingForm,
+		icon='share',
+		iconSize='20px',
+		position='after',
+		trailingIcon='chevron-right',
+		trailingIconColor='tertiary',
+		[autoClose]='false',
+		[pointing]='sharingForm?.isOpened',
+		[context]=`{ form: view }`)
+		| {{ "VIEW.COMMON.LABEL.SHARING" | translate }}

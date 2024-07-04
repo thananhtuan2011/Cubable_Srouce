@@ -1,0 +1,324 @@
+ng-template(#fieldPickerTemplate)
+	cub-dropdown.w-172(
+		searchable,
+		singleLine,
+		#comparisonFieldDropdown,
+		displayErrorMode='tooltip',
+		[disableControl]=`
+			excludeFields?.isDisable
+				&& ( excludeFieldsLK?.[ fieldID ] )`,
+		[clearable]='false',
+		[formControl]='fieldControl',
+		[(valueControl)]='fieldID',
+		(valueControlChange)='comparisonFieldChange()')
+		cub-dropdown-item(
+			*ngFor='let f of availableFields; ngForTrackByID',
+			[icon]='f.dataType | fieldMetadata : "icon"',
+			[label]='f.name',
+			[value]='f.id')
+		ng-container(
+			cubDropdownError,
+			*ngIf='excludeFieldsLK?.[ fieldID ]')
+			| {{ excludeFields.errorMessage }}
+
+ng-container(*ngIf='fieldsMap')
+	ng-container([ngSwitch]='field.dataType')
+		ng-container(*ngSwitchCase='DATA_TYPE.Text')
+			text-comparison(
+				#subComparison,
+				[source]='source',
+				[fieldPicker]='groupAble ? undefined : fieldPickerTemplate',
+				[error]='error',
+				[excludeFields]='excludeFields',
+				[field]='fieldsMap.get( fieldID ) || field',
+				[advanceOperators]='advanceOperators',
+				[otherFields]='fields | otherFields : fieldsMap.get( fieldID )',
+				[eventAdvance]='eventAdvance',
+				[(operator)]='operator',
+				[(data)]='data',
+				(operatorChange)='operatorChange.emit( $event )',
+				(dataChange)='dataChange.emit( $event )')
+		ng-container(*ngSwitchCase='DATA_TYPE.Dropdown')
+			dropdown-comparison(
+				#subComparison,
+				[source]='source',
+				[fieldPicker]='groupAble ? undefined : fieldPickerTemplate',
+				[error]='error',
+				[excludeFields]='excludeFields',
+				[field]='fieldsMap.get( fieldID ) || field',
+				[advanceOperators]='advanceOperators',
+				[otherFields]='fields | otherFields : fieldsMap.get( fieldID )',
+				[eventAdvance]='eventAdvance',
+				[(operator)]='operator',
+				[(data)]='data',
+				(operatorChange)='operatorChange.emit( $event )',
+				(dataChange)='dataChange.emit( $event )')
+		ng-container(*ngSwitchCase='DATA_TYPE.Checkbox')
+			checkbox-comparison(
+				#subComparison,
+				[source]='source',
+				[fieldPicker]='groupAble ? undefined : fieldPickerTemplate',
+				[error]='error',
+				[excludeFields]='excludeFields',
+				[field]='fieldsMap.get( fieldID ) || field',
+				[advanceOperators]='advanceOperators',
+				[otherFields]='fields | otherFields : fieldsMap.get( fieldID )',
+				[eventAdvance]='eventAdvance',
+				[(operator)]='operator',
+				[(data)]='data',
+				(operatorChange)='operatorChange.emit( $event )',
+				(dataChange)='dataChange.emit( $event )')
+		ng-container(*ngSwitchCase='DATA_TYPE.Number')
+			number-comparison(
+				#subComparison,
+				[source]='source',
+				[fieldPicker]='groupAble ? undefined : fieldPickerTemplate',
+				[error]='error',
+				[excludeFields]='excludeFields',
+				[field]='fieldsMap.get( fieldID ) || field',
+				[advanceOperators]='advanceOperators',
+				[otherFields]='fields | otherFields : fieldsMap.get( fieldID )',
+				[eventAdvance]='eventAdvance',
+				[(operator)]='operator',
+				[(data)]='data',
+				(operatorChange)='operatorChange.emit( $event )',
+				(dataChange)='dataChange.emit( $event )')
+		ng-container(*ngSwitchCase='DATA_TYPE.Currency')
+			currency-comparison(
+				#subComparison,
+				[source]='source',
+				[fieldPicker]='groupAble ? undefined : fieldPickerTemplate',
+				[error]='error',
+				[excludeFields]='excludeFields',
+				[field]='fieldsMap.get( fieldID ) || field',
+				[advanceOperators]='advanceOperators',
+				[otherFields]='fields | otherFields : fieldsMap.get( fieldID )',
+				[eventAdvance]='eventAdvance',
+				[(operator)]='operator',
+				[(data)]='data',
+				(operatorChange)='operatorChange.emit( $event )',
+				(dataChange)='dataChange.emit( $event )')
+		ng-container(*ngSwitchCase='DATA_TYPE.Date')
+			date-comparison(
+				#subComparison,
+				[source]='source',
+				[fieldPicker]='groupAble ? undefined : fieldPickerTemplate',
+				[error]='error',
+				[excludeFields]='excludeFields',
+				[field]='fieldsMap.get( fieldID ) || field',
+				[advanceOperators]='advanceOperators',
+				[otherFields]='fields | otherFields : fieldsMap.get( fieldID )',
+				[eventAdvance]='eventAdvance',
+				[(operator)]='operator',
+				[(data)]='data',
+				(operatorChange)='operatorChange.emit( $event )',
+				(dataChange)='dataChange.emit( $event )')
+		ng-container(*ngSwitchCase='DATA_TYPE.LastModifiedTime')
+			last-modified-time-comparison(
+				#subComparison,
+				[source]='source',
+				[fieldPicker]='groupAble ? undefined : fieldPickerTemplate',
+				[error]='error',
+				[excludeFields]='excludeFields',
+				[field]='fieldsMap.get( fieldID ) || field',
+				[advanceOperators]='advanceOperators',
+				[otherFields]='fields | otherFields : fieldsMap.get( fieldID )',
+				[eventAdvance]='eventAdvance',
+				[(operator)]='operator',
+				[(data)]='data',
+				(operatorChange)='operatorChange.emit( $event )',
+				(dataChange)='dataChange.emit( $event )')
+		ng-container(*ngSwitchCase='DATA_TYPE.CreatedTime')
+			created-time-comparison(
+				#subComparison,
+				[source]='source',
+				[fieldPicker]='groupAble ? undefined : fieldPickerTemplate',
+				[error]='error',
+				[excludeFields]='excludeFields',
+				[field]='fieldsMap.get( fieldID ) || field',
+				[advanceOperators]='advanceOperators',
+				[otherFields]='fields | otherFields : fieldsMap.get( fieldID )',
+				[eventAdvance]='eventAdvance',
+				[(operator)]='operator',
+				[(data)]='data',
+				(operatorChange)='operatorChange.emit( $event )',
+				(dataChange)='dataChange.emit( $event )')
+		ng-container(*ngSwitchCase='DATA_TYPE.Paragraph')
+			paragraph-comparison(
+				#subComparison,
+				[source]='source',
+				[fieldPicker]='groupAble ? undefined : fieldPickerTemplate',
+				[error]='error',
+				[field]='fieldsMap.get( fieldID ) || field',
+				[advanceOperators]='advanceOperators',
+				[excludeFields]='excludeFields',
+				[(operator)]='operator',
+				(operatorChange)='operatorChange.emit( $event )')
+		ng-container(*ngSwitchCase='DATA_TYPE.Link')
+			link-comparison(
+				#subComparison,
+				[source]='source',
+				[fieldPicker]='groupAble ? undefined : fieldPickerTemplate',
+				[error]='error',
+				[field]='fieldsMap.get( fieldID ) || field',
+				[advanceOperators]='advanceOperators',
+				[excludeFields]='excludeFields',
+				[(operator)]='operator',
+				(operatorChange)='operatorChange.emit( $event )')
+		ng-container(*ngSwitchCase='DATA_TYPE.Email')
+			email-comparison(
+				#subComparison,
+				[source]='source',
+				[fieldPicker]='groupAble ? undefined : fieldPickerTemplate',
+				[error]='error',
+				[excludeFields]='excludeFields',
+				[field]='fieldsMap.get( fieldID ) || field',
+				[advanceOperators]='advanceOperators',
+				[otherFields]='fields | otherFields : fieldsMap.get( fieldID )',
+				[eventAdvance]='eventAdvance',
+				[(operator)]='operator',
+				[(data)]='data',
+				(operatorChange)='operatorChange.emit( $event )',
+				(dataChange)='dataChange.emit( $event )')
+		ng-container(*ngSwitchCase='DATA_TYPE.Attachment')
+			attachment-comparison(
+				#subComparison,
+				[source]='source',
+				[fieldPicker]='groupAble ? undefined : fieldPickerTemplate',
+				[error]='error',
+				[field]='fieldsMap.get( fieldID ) || field',
+				[advanceOperators]='advanceOperators',
+				[excludeFields]='excludeFields',
+				[(operator)]='operator',
+				(operatorChange)='operatorChange.emit( $event )')
+		ng-container(*ngSwitchCase='DATA_TYPE.Progress')
+			progress-comparison(
+				#subComparison,
+				[source]='source',
+				[fieldPicker]='groupAble ? undefined : fieldPickerTemplate',
+				[error]='error',
+				[excludeFields]='excludeFields',
+				[field]='fieldsMap.get( fieldID ) || field',
+				[advanceOperators]='advanceOperators',
+				[otherFields]='fields | otherFields : fieldsMap.get( fieldID )',
+				[eventAdvance]='eventAdvance',
+				[(operator)]='operator',
+				[(data)]='data',
+				(operatorChange)='operatorChange.emit( $event )',
+				(dataChange)='dataChange.emit( $event )')
+		ng-container(*ngSwitchCase='DATA_TYPE.Rating')
+			rating-comparison(
+				#subComparison,
+				[source]='source',
+				[fieldPicker]='groupAble ? undefined : fieldPickerTemplate',
+				[error]='error',
+				[excludeFields]='excludeFields',
+				[field]='fieldsMap.get( fieldID ) || field',
+				[advanceOperators]='advanceOperators',
+				[otherFields]='fields | otherFields : fieldsMap.get( fieldID )',
+				[eventAdvance]='eventAdvance',
+				[(operator)]='operator',
+				[(data)]='data',
+				(operatorChange)='operatorChange.emit( $event )',
+				(dataChange)='dataChange.emit( $event )')
+		ng-container(*ngSwitchCase='DATA_TYPE.Phone')
+			phone-comparison(
+				#subComparison,
+				[source]='source',
+				[fieldPicker]='groupAble ? undefined : fieldPickerTemplate',
+				[error]='error',
+				[excludeFields]='excludeFields',
+				[field]='fieldsMap.get( fieldID ) || field',
+				[advanceOperators]='advanceOperators',
+				[otherFields]='fields | otherFields : fieldsMap.get( fieldID )',
+				[eventAdvance]='eventAdvance',
+				[(operator)]='operator',
+				[(data)]='data',
+				(operatorChange)='operatorChange.emit( $event )',
+				(dataChange)='dataChange.emit( $event )')
+		ng-container(*ngSwitchCase='DATA_TYPE.Lookup')
+			lookup-comparison(
+				[source]='source',
+				[fieldPicker]='groupAble ? undefined : fieldPickerTemplate',
+				[error]='error',
+				[excludeFields]='excludeFields',
+				[field]='fieldsMap.get( fieldID ) || field',
+				[fields]='fields',
+				[advanceOperators]='advanceOperators',
+				[(operator)]='operator',
+				[(data)]='data',
+				(operatorChange)='operatorChange.emit( $event )',
+				(dataChange)='dataChange.emit( $event )')
+		ng-container(*ngSwitchCase='DATA_TYPE.Reference')
+			reference-comparison(
+				#subComparison,
+				[source]='source',
+				[fieldPicker]='groupAble ? undefined : fieldPickerTemplate',
+				[error]='error',
+				[excludeFields]='excludeFields',
+				[field]='fieldsMap.get( fieldID ) || field',
+				[advanceOperators]='advanceOperators',
+				[otherFields]='fields | otherFields : fieldsMap.get( fieldID )',
+				[eventAdvance]='eventAdvance',
+				[(operator)]='operator',
+				[(data)]='data',
+				(operatorChange)='operatorChange.emit( $event )',
+				(dataChange)='dataChange.emit( $event )')
+		ng-container(*ngSwitchCase='DATA_TYPE.People')
+			people-comparison(
+				#subComparison,
+				[source]='source',
+				[fieldPicker]='groupAble ? undefined : fieldPickerTemplate',
+				[error]='error',
+				[excludeFields]='excludeFields',
+				[field]='fieldsMap.get( fieldID ) || field',
+				[advanceOperators]='advanceOperators',
+				[otherFields]='fields | otherFields : fieldsMap.get( fieldID )',
+				[eventAdvance]='eventAdvance',
+				[(operator)]='operator',
+				[(data)]='data',
+				(operatorChange)='operatorChange.emit( $event )',
+				(dataChange)='dataChange.emit( $event )')
+		ng-container(*ngSwitchCase='DATA_TYPE.LastModifiedBy')
+			last-modified-by-comparison(
+				#subComparison,
+				[source]='source',
+				[fieldPicker]='groupAble ? undefined : fieldPickerTemplate',
+				[error]='error',
+				[excludeFields]='excludeFields',
+				[field]='fieldsMap.get( fieldID ) || field',
+				[advanceOperators]='advanceOperators',
+				[otherFields]='fields | otherFields : fieldsMap.get( fieldID )',
+				[eventAdvance]='eventAdvance',
+				[(operator)]='operator',
+				[(data)]='data',
+				(operatorChange)='operatorChange.emit( $event )',
+				(dataChange)='dataChange.emit( $event )')
+		ng-container(*ngSwitchCase='DATA_TYPE.CreatedBy')
+			created-by-comparison(
+				#subComparison,
+				[source]='source',
+				[fieldPicker]='groupAble ? undefined : fieldPickerTemplate',
+				[error]='error',
+				[excludeFields]='excludeFields',
+				[field]='fieldsMap.get( fieldID ) || field',
+				[advanceOperators]='advanceOperators',
+				[otherFields]='fields | otherFields : fieldsMap.get( fieldID )',
+				[eventAdvance]='eventAdvance',
+				[(operator)]='operator',
+				[(data)]='data',
+				(operatorChange)='operatorChange.emit( $event )',
+				(dataChange)='dataChange.emit( $event )')
+		ng-container(*ngSwitchCase='DATA_TYPE.Formula')
+			formula-comparison(
+				#formulaComparison,
+				[source]='source',
+				[fieldPicker]='groupAble ? undefined : fieldPickerTemplate',
+				[error]='error',
+				[fields]='fields',
+				[field]='fieldsMap.get( fieldID ) || field',
+				[advanceOperators]='advanceOperators',
+				[(operator)]='operator',
+				[(data)]='data',
+				(operatorChange)='operatorChange.emit( $event )',
+				(dataChange)='dataChange.emit( $event )')

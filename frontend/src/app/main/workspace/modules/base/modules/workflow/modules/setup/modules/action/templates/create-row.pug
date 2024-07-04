@@ -1,0 +1,9 @@
+include ./blocks/select-board.partial.pug
+
+set-row-content(
+	*ngIf='settings.boardID',
+	[required]='false',
+	[baseID]='baseID',
+	[blockSetup]='blockSetup',
+	[settings]='settings',
+	(settingsChange)='onSettingChange( $any( $event ) )')

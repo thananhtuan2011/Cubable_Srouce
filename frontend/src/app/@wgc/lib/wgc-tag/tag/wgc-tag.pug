@@ -1,0 +1,12 @@
+ng-template(#labelTemp)
+	ng-container(*ngIf='label; else elseBlock;')
+		| {{ label }}
+	ng-template(#elseBlock)
+		ng-content
+
+.wgc-tag__content
+	ng-container(*ngIf='truncate; else elseBlock;')
+		wgc-truncate([limitLine]='truncateLimitLine')
+			ng-container(*ngTemplateOutlet='labelTemp')
+	ng-template(#elseBlock)
+		ng-container(*ngTemplateOutlet='labelTemp')

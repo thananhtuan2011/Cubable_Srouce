@@ -1,0 +1,35 @@
+@import '../../../scss/partials/variable';
+
+.cub-action-item {
+	$self: &;
+
+	display: flex;
+	align-items: center;
+	column-gap: 4px;
+	padding: 8px 10px;
+	border-radius: 50px;
+
+	text-align: center;
+	white-space: nowrap;
+
+	// Type
+	@at-root {
+		&#{ $self }-destructive {
+			color: $color-material-destructive-default;
+
+			&:disabled {
+				color: $color-material-destructive-disable;
+			}
+		}
+	}
+
+	// Hover & Active states
+	@at-root {
+		&:not(:disabled) {
+			&:hover,
+			&#{ $self }--active {
+				background-color: $color-material-hover;
+			}
+		}
+	}
+}

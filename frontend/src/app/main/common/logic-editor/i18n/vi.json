@@ -1,0 +1,27 @@
+{
+	"LABEL": {
+		"CHECK_SYNTAX": "Kiểm tra cú pháp",
+		"COLLAPSE": "Thu gọn",
+		"EXAMPLE": "Ví dụ",
+		"EXPAND": "Mở rộng",
+		"EXPECTED_RESULT": "Kết quả mong muốn",
+		"ERROR": "#Error",
+		"FIELDS": "Trường",
+		"LOGICAL_FUNCTION": "Hàm lô-gíc",
+		"SYNTAX": "Cú pháp"
+	},
+	"PLACEHOLDER": {
+		"TYPE_EXPRESSION_HERE": "Nhập...",
+		"TYPE_FORMULA_HERE": "Nhập công thức. Ví dụ: Amount*Price SUM(Amount)"
+	},
+	"MESSAGE": {
+		"CHECKING_SYNTAX": "Kiểm tra cú pháp...",
+		"EVERYTHING_LOOKS_GOOD": "Mọi thứ rất ổn!",
+		"NOT_FOUND_OPTIONS": "Không tìm thấy lựa chọn: {{ options }}",
+		"RIGHT_SYNTAX": "Đúng cú pháp",
+		"SYNTAX_ERROR": "Lỗi cú pháp!"
+	},
+	"ERROR": {
+		"MAX_10000_CHARACTERS": "Giá trị phải nhỏ hơn hoặc bằng 10.000 ký tự"
+	}
+}

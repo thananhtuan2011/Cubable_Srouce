@@ -1,0 +1,316 @@
+cub-action-box(
+	[offset]='actionBoxOffset',
+	[visible]=`!isPickerMode
+		&& config.row.actions !== null
+		&& hasSelectingRow`,
+	(dismissed)='deselectAllRows()')
+	cub-action-box-start
+		| {{ "SPREADSHEET.LABEL.SELECTED_COUNT" | translate : { count: selectedRows?.length } }}
+	cub-action-box-middle
+		ng-container(
+			*ngFor=`let action of config.row.actions
+				| filter
+				: "support"
+				: [ null, undefined, "multiple-only" ]`)
+			button(
+				cubActionItem,
+				*ngIf='!action.hidden',
+				[icon]='action.icon',
+				[label]='action.label',
+				[disabled]='action.disabled',
+				[cubMenuTriggerFor]='action.menu',
+				[cubMenuTriggerContext]='{ action }',
+				(click)='triggerAction( selectedRows, action )')
+		button(
+			cubActionItem,
+			icon='print',
+			*ngIf='isEditorMode && config.row.printable',
+			[label]='"SPREADSHEET.LABEL.PRINT" | translate',
+			(click)='print()')
+		//- button(
+		//- 	cubActionItem,
+		//- 	icon='export',
+		//- 	position='above',
+		//- 	*ngIf='isEditorMode && config.row.exportable',
+		//- 	[label]='"SPREADSHEET.LABEL.EXPORT" | translate',
+		//- 	[cubMenuTriggerFor]='exportOptionMenu')
+		button(
+			cubActionItem,
+			icon='export',
+			position='above',
+			*ngIf='isEditorMode && config.row.exportable',
+			[label]='"SPREADSHEET.LABEL.EXPORT" | translate',
+			(click)='exportXlsx( selectedRows )')
+		button(
+			cubActionItem,
+			type='destructive',
+			icon='trash',
+			[label]='"SPREADSHEET.LABEL.DELETE" | translate',
+			[disabled]='!canDeleteSelectedRows',
+			(click)='deleteSelectedRows()')
+
+//- cub-menu(
+//- 	#exportOptionMenu)
+//- 	cub-menu-content
+//- 		ng-template(cubMenuContent)
+//- 			//- button(
+//- 			//- 	cubMenuItem,
+//- 			//- 	(click)='export( "pdf" )')
+//- 			//- 	| Adobe PDF
+//- 			button(
+//- 				cubMenuItem,
+//- 				(click)='export( "xlsx" )')
+//- 				| Microsoft Excel
+//- 			button(
+//- 				cubMenuItem,
+//- 				(click)='export( "csv" )')
+//- 				| CSV
+
+cub-menu(
+	#duplicateOptionMenu,
+	width='220px',
+	(opened)='fieldMenuRef?.close()')
+	cub-menu-content
+		ng-template(cubMenuContent, let-column='column')
+			button(
+				cubMenuItem,
+				(click)='duplicateColumn( column )')
+				| {{ "SPREADSHEET.LABEL.DUPLICATE_CONFIG_ONLY" | translate }}
+			button(
+				cubMenuItem,
+				(click)='duplicateColumn( column, true )')
+				| {{ "SPREADSHEET.LABEL.DUPLICATE_CONFIG_AND_VALUE" | translate }}
+
+cub-menu(
+	#columnActionMenu,
+	width='250px')
+	cub-menu-content
+		ng-template(
+			cubMenuContent,
+			let-column='column',
+			let-columnIndex='columnIndex',
+			let-headerCell='headerCell',
+			let-trigger='trigger',
+			let-isMultiple='isMultiple')
+			ng-container(
+				*ngIf='isMultiple; else elseBlock;')
+				button(
+					cubMenuItem,
+					icon='eye-slash',
+					*ngIf='config.column.hideable',
+					[disabled]='!canHideSelectedColumns',
+					(click)='hideSelectedColumns()')
+					| {{ "SPREADSHEET.LABEL.HIDE_SELECTED_COLUMNS" | translate }}
+				button(
+					cubMenuItem='destructive',
+					icon='trash',
+					*ngIf='config.column.manageable',
+					[autoClose]='false',
+					[disabled]='!canDeleteSelectedColumns',
+					(click)='deleteSelectedColumns()')
+					| {{ "SPREADSHEET.LABEL.DELETE_SELECTED_COLUMNS" | translate }}
+			ng-template(#elseBlock)
+				cub-menu-group
+					button(
+						cubMenuItem,
+						icon='gear',
+						*ngIf='config.column.manageable',
+						(click)='editColumnFieldProperties( column, headerCell )')
+						| {{ "SPREADSHEET.LABEL.SETTING" | translate }}
+				cub-menu-group
+					button(
+						cubMenuItem,
+						icon='duplicate',
+						*ngIf='config.column.creatable',
+						[pointing]='duplicateOptionMenu.isOpened',
+						[disabled]='column.field.isInvalid',
+						[cubSubMenuTriggerFor]='duplicateOptionMenu',
+						[cubMenuTriggerContext]='{ column }')
+						| {{ "SPREADSHEET.LABEL.DUPLICATE" | translate }}
+						ng-container(cubMenuItemSuffix)
+							cub-icon(
+								name='chevron-right',
+								size='20px',
+								color='tertiary')
+					button(
+						cubMenuItem,
+						icon='arrow-left',
+						*ngIf='config.column.creatable',
+						[autoClose]='false',
+						[disabled]='column.field.isPrimary',
+						(click)=`openColumnFieldMenu(
+							trigger.overlayRef.overlayElement,
+							"start-before",
+							columnIndex
+						)`)
+						| {{ "SPREADSHEET.LABEL.INSERT_LEFT" | translate }}
+					button(
+						cubMenuItem,
+						icon='arrow-right',
+						*ngIf='config.column.creatable',
+						[autoClose]='false',
+						(click)=`openColumnFieldMenu(
+							trigger.overlayRef.overlayElement,
+							"start-after",
+							columnIndex + 1
+						)`)
+						| {{ "SPREADSHEET.LABEL.INSERT_RIGHT" | translate }}
+				cub-menu-group
+					button(
+						cubMenuItem,
+						icon='sidebar',
+						*ngIf='config.column.freezable',
+						[disabled]=`
+							( layoutProperties.column.offsets[ columnIndex + 1 ]
+								/ virtualScroll.viewportWidth )
+								> MAX_FREEZE_VIEWPORT_RATIO`,
+						(click)='freezeUpToColumnIndex( columnIndex )')
+						| {{ "SPREADSHEET.LABEL.FREEZE_UP_TO_THIS_COLUMN" | translate }}
+				cub-menu-group(
+					*ngIf=`config.column.sortable
+						&& !UNSORTABLE_FIELD_DATA_TYPES.has( column.field.dataType )
+						&& !UNSORTABLE_FIELD_DATA_TYPES.has( column.field?.lookup?.targetDataType )
+						&& !UNSORTABLE_FIELD_DATA_TYPES.has( column.field?.lookup?.targetFieldParams?.lookup?.targetDataType )`)
+					-
+						const asc = '( "SPREADSHEET.LABEL." + ( column.field | sortingTypeLabel : true ) ) | translate';
+						const desc = '( "SPREADSHEET.LABEL." + ( column.field | sortingTypeLabel ) ) | translate';
+					button(
+						cubMenuItem,
+						icon='sort-up',
+						[disabled]='column.field.isInvalid',
+						(click)='sortByColumn( column, "asc", undefined, true )')
+						| {{ "SPREADSHEET.LABEL.SORT_ASCENDING" | translate : { asc: #{asc}, desc: #{desc} } }}
+					button(
+						cubMenuItem,
+						icon='sort-down',
+						[disabled]='column.field.isInvalid',
+						(click)='sortByColumn( column, "desc", undefined, true )')
+						| {{ "SPREADSHEET.LABEL.SORT_DESCENDING" | translate : { asc: #{asc}, desc: #{desc} } }}
+				cub-menu-group(
+					*ngIf='config.column.groupable && !UNGROUPABLE_FIELD_DATA_TYPES.has( column.field.dataType )')
+					button(
+						cubMenuItem,
+						icon='group',
+						[disabled]='column.field.isInvalid || groupingColumns?.size > 2',
+						(click)='groupByColumn( column, "asc", undefined, true )')
+						| {{ "SPREADSHEET.LABEL.GROUP_BY_THIS_COLUMN" | translate }}
+				cub-menu-group
+					button(
+						cubMenuItem,
+						icon='eye-slash',
+						*ngIf='config.column.hideable',
+						[disabled]='column.field.isPrimary',
+						(click)='hideColumn( column, true )')
+						| {{ "SPREADSHEET.LABEL.HIDE" | translate }}
+					button(
+						cubMenuItem='destructive',
+						icon='trash',
+						*ngIf='config.column.manageable',
+						[autoClose]='false',
+						[disabled]='column.field.isPrimary || !column.deletable',
+						(click)='deleteColumn( column )')
+						| {{ "SPREADSHEET.LABEL.DELETE" | translate }}
+cub-menu(
+	#rowActionMenu,
+	width='250px')
+	cub-menu-content
+		ng-template(
+			cubMenuContent,
+			let-group='group',
+			let-row='row',
+			let-rowRawIndex='rowRawIndex',
+			let-rowIndex='rowIndex',
+			let-isMultiple='isMultiple')
+			ng-container(
+				*ngIf='isMultiple; else elseBlock;')
+				cub-menu-group(
+					*ngIf='config.row.actions?.length')
+					ng-container(
+						*ngFor=`let action of config.row.actions
+							| filter
+								: "support"
+								: [ null, undefined, "multiple-only" ]`)
+						button(
+							cubMenuItem,
+							*ngIf='!action.hidden',
+							[icon]='action.icon',
+							[iconColor]='action.color',
+							[disabled]='action.disabled',
+							[autoClose]='!action.menu',
+							[cubMenuTriggerFor]='action.menu',
+							[cubMenuTriggerContext]='{ action }',
+							(click)='triggerAction( selectedRows, action )')
+							| {{ action.label }}
+				cub-menu-group
+					button(
+						cubMenuItem,
+						icon='export',
+						*ngIf='isEditorMode && config.row.exportable',
+						(click)='exportXlsx( selectedRows )')
+						| {{ "SPREADSHEET.LABEL.EXPORT_SELECTED_ROWS" | translate }}
+						//- [cubMenuTriggerFor]='exportOptionMenu')
+				cub-menu-group
+					button(
+						cubMenuItem='destructive',
+						icon='trash',
+						[disabled]='!canDeleteSelectedRows',
+						(click)='deleteSelectedRows()')
+						| {{ "SPREADSHEET.LABEL.DELETE_SELECTED_ROWS" | translate }}
+			ng-template(#elseBlock)
+				cub-menu-group
+					button(
+						cubMenuItem,
+						icon='expand',
+						*ngIf='isEditorMode && config.row.expandable',
+						(click)='expandRow( row )')
+						| {{ "SPREADSHEET.LABEL.VIEW_DETAIL" | translate }}
+				cub-menu-group
+					button(
+						cubMenuItem,
+						icon='duplicate',
+						*ngIf='config.row.creatable',
+						(click)=`isGrouping
+							? duplicateRowInGroup( group, row )
+							: duplicateRow( row )`)
+						| {{ "SPREADSHEET.LABEL.DUPLICATE" | translate }}
+					button(
+						cubMenuItem,
+						icon='arrow-up',
+						*ngIf='config.row.creatable',
+						(click)=`isGrouping
+							? createRowInGroup( group, rowRawIndex )
+							: createRow( rowIndex )`)
+						| {{ "SPREADSHEET.LABEL.INSERT_ABOVE" | translate }}
+					button(
+						cubMenuItem,
+						icon='arrow-down',
+						*ngIf='config.row.creatable',
+						(click)=`isGrouping
+							? createRowInGroup( group, rowRawIndex + 1 )
+							: createRow( rowIndex + 1 )`)
+						| {{ "SPREADSHEET.LABEL.INSERT_BELOW" | translate }}
+				cub-menu-group(
+					*ngIf='config.row.actions?.length')
+					ng-container(
+						*ngFor=`let action of config.row.actions
+							| filter
+								: "support"
+								: [ null, undefined, "single-only" ]`)
+						button(
+							cubMenuItem,
+							*ngIf='!action.hidden',
+							[icon]='action.icon',
+							[iconColor]='action.color',
+							[disabled]='action.disabled',
+							[autoClose]='!action.menu',
+							[cubMenuTriggerFor]='action.menu',
+							[cubMenuTriggerContext]='{ action }',
+							(click)='triggerAction( [ row ], action )')
+							| {{ action.label }}
+				cub-menu-group
+					button(
+						cubMenuItem='destructive',
+						icon='trash',
+						*ngIf='row.deletable',
+						(click)='deleteRow( row )')
+						| {{ "SPREADSHEET.LABEL.DELETE" | translate }}

@@ -1,0 +1,45 @@
+.detail-content(*ngIf='board; else notFound;')
+	view(
+		#viewComp,
+		[style.paddingLeft.px]='isDrawerOpen ? "0" : ""',
+		[isDrawerOpen]='isDrawerOpen',
+		[board]='board',
+		[boards]='boards',
+		(boardChange)='boardChange.emit( $event )',
+		(isBorderRadiusAdd)='isBorderRadiusAdd = $event',
+		(allViewHidden)='allViewHidden = $event',
+		(notHasView)='notHasView = $event',
+		(activeViewChange)='onActiveViewChange( $event )')
+
+	.content([class.content__first-view--inactive]='!isDrawerOpen || ( isDrawerOpen && isBorderRadiusAdd )')
+		ng-container(*ngIf='!notHasView && !allViewHidden; else elseBlock;')
+			ng-container(*ngIf='activeView')
+				ng-container([ngSwitch]='activeView.type')
+					record(
+						*ngSwitchCase='viewType.DATA',
+						[baseID]='baseID',
+						[board]='board',
+						[view]='activeView')
+					board-form(
+						*ngSwitchCase='viewType.FORM',
+						[form]='formView',
+						[board]='board',
+						[editing]='editingForm')
+		ng-template(#elseBlock)
+			.layout-column.layout-align-center-center.flex
+				not-found(
+					mode='empty',
+					[emptyImage]='"assets/images/icons/view-empty.webp"',
+					[emptyTitle]='"BASE.BOARD.MESSAGE." + ( notHasView ? "NOT_HAS_VIEW" : "ALL_VIEWS_HIDDEN" ) | translate')
+				button(
+					cubButton='secondary',
+					*ngIf='notHasView && board.permission.detail.view.create',
+					[cubMenuTriggerFor]='viewComp.newViewMenu')
+					| {{ "BASE.BOARD.LABEL.CREATE_NEW_VIEW" | translate }}
+				button(
+					cubButton='secondary',
+					*ngIf='allViewHidden',
+					[cubPopupTriggerFor]='viewComp.allViewComp?.allViewPopup')
+					| {{ "BASE.BOARD.LABEL.MANAGE_VIEW" | translate }}
+ng-template(#notFound)
+	not-found.not-found-custom

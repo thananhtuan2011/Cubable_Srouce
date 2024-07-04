@@ -1,0 +1,6 @@
+.flex.layout-row.layout-gap-4.layout-align-space-between-center
+	.layout-column.flex.maw-300.ph-6(
+		[style.--progress-percentage]='percentage',
+		[innerHTML]='progressDom | safeHtml')
+	span.miw-36.h-20.text-nowrap.text-right
+		| {{ data | percent }}

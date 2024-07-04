@@ -1,0 +1,53 @@
+@import 'src/app/@cub/scss/partials/variable';
+
+:host {
+	display: flex;
+	flex-direction: row;
+	width: 100%;
+	min-width: 0;
+	height: 100%;
+	min-height: 0;
+
+	[cubDialogContent] {
+		display: flex;
+		flex-direction: row;
+		padding: 0;
+	}
+
+	.sidebar {
+		display: flex;
+		flex-direction: column;
+		width: 240px;
+		min-width: 240px;
+		max-width: 240px;
+		padding: 0 12px;
+
+		background-color: rgba(240, 240, 240, .50);
+	}
+
+	.content {
+		display: flex;
+		flex-direction: column;
+		width: 100%;
+		min-width: 0;
+
+		background-color: $color-white;
+	}
+
+	.card-content{
+		width: 800px;
+		max-width: 800px;
+		min-width: 800px;
+		height: 100%;
+		border: 1px solid $color-border-primary;
+
+		cursor: pointer;
+	}
+
+	.cub-list-item {
+		&:hover,
+		&.cub-list-item--active {
+			background-color: $color-white;
+		}
+	}
+}

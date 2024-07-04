@@ -1,0 +1,235 @@
+mixin buttonAction(title, icon, tabType, countBadge)
+	button(
+		cubListItem,
+		[active]=`activeTab === ${tabType}`,
+		(click)=`changedAction(${tabType})`)
+		.layout-row.layout-align-space-between-center.flex
+			.layout-row.layout-align-start-center.layout-gap-8
+				cub-icon(
+					size='20px',
+					name=icon)
+				| {{ "BASE.WORKFLOW.LABEL.#{title}"  | translate }}
+			ng-container(*ngIf='countBadge')
+				cub-badge(
+					inline,
+					[count]=`${countBadge}`)
+
+mixin content(title, name, pipe)
+	.layout-row.layout-gap-4
+		.text-semibold
+			| {{ "BASE.WORKFLOW.LABEL.#{title}" | translate }}
+		| {{ workflow.#{name} | #{pipe} }}
+
+cub-menu(
+	#dialogAction,
+	width='162px')
+	cub-menu-content
+		ng-template(cubMenuContent, let-workflow='workflow')
+			cub-menu-group
+				button(
+					cubMenuItem,
+					icon='pencil',
+					[cubPopupTriggerOrigin]='null',
+					[cubPopupTriggerHasBackdrop]='true',
+					[cubPopupTriggerContext]='{ workflow }',
+					[cubPopupTriggerFor]='renamePopup')
+					| {{ "BASE.WORKFLOW.LABEL.RENAME" | translate }}
+				button(
+					cubMenuItem,
+					icon='duplicate',
+					(click)='duplicatedWorkflow( workflow.id )')
+					| {{ "BASE.WORKFLOW.LABEL.DUPLICATION" | translate }}
+				button(
+					cubMenuItem,
+					icon='info-circle',
+					[cubPopupTriggerOrigin]='null',
+					[cubPopupTriggerHasBackdrop]='true',
+					[cubPopupTriggerContext]='{ workflow }',
+					[cubPopupTriggerFor]='infoPopup',
+					[cubPopupTriggerDisableClose]='nameControl.dirty || descriptionControl.dirty')
+					| {{ "BASE.WORKFLOW.LABEL.VIEW" | translate }}
+			cub-menu-group
+					button(
+						cubMenuItem='destructive',
+						icon='trash',
+						(click)='deleteWorkflow( workflow )')
+						| {{ "BASE.WORKFLOW.LABEL.DELETE" | translate }}
+cub-popup(
+	#infoPopup,
+	width='400px',
+	(opened)='openInfoPopup( infoPopup.context.workflow )')
+	cub-popup-header
+		ng-template(cubPopupHeader)
+			.layout-row.layout-align-space-between-center.layout-gap-4
+				h5
+					| {{ "BASE.WORKFLOW.LABEL.INFO" | translate }}
+				button(
+					cubClearButton,
+					size='20px',
+					(click)='infoPopup.close()')
+	cub-popup-content
+			ng-template(cubPopupContent, let-workflow='workflow' )
+				.layout-column.layout-gap-8
+					+content('CREATOR', 'createdBy', 'empty')
+					+content('CREATE_AT', 'createdAt', 'dateValue')
+					+content('UPDATER', 'updatedBy', 'empty')
+					+content('UPDATED_DATE', 'updatedAt', 'dateValue')
+cub-popup(
+	#renamePopup,
+	width='400px',
+	(closed)='closeRename()')
+	cub-popup-header
+		ng-template(cubPopupHeader)
+			.layout-row.layout-align-space-between-center.layout-gap-4
+				h5
+					| {{ "BASE.WORKFLOW.LABEL.RENAME" | translate }}
+				button(
+					cubClearButton,
+					size='20px',
+					(click)='renamePopup.close()')
+	cub-popup-content
+			ng-template(cubPopupContent, let-workflow='workflow')
+				.layout-column.layout-gap-16
+					cub-form-field(
+						[label]='"BASE.WORKFLOW.LABEL.NAME" | translate')
+						input(
+							required,
+							cubFormFieldInput,
+							clearable,
+							autoFocusOn,
+							[formControl]='nameControl',
+							[placeholder]='"BASE.WORKFLOW.PLACEHOLDER.ENTER_NAME" | translate',
+							[valueControl]='workflow.name',
+							(valueControlChange)='workflowName = $event')
+						ng-template(
+							cubFormFieldError='maxlength',
+							*ngIf='nameControl?.errors?.maxlength')
+							| {{ "BASE.WORKFLOW.ERROR.NOT_EXCEED_100_CHARACTER" | translate }}
+					cub-form-field(
+						resizable,
+						[label]='"BASE.WORKFLOW.LABEL.DESCRIPTION" | translate')
+						textarea(
+							cubFormFieldInput,
+							rows='3',
+							clearable,
+							[formControl]='descriptionControl',
+							[placeholder]='"BASE.WORKFLOW.PLACEHOLDER.ENTER_DESCRIPTION" | translate',
+							[valueControl]='workflow.description',
+							(valueControlChange)='workflowDescription = $event')
+						ng-template(
+							cubFormFieldError='maxlength',
+							*ngIf='descriptionControl?.errors?.maxlength')
+							| {{ "BASE.WORKFLOW.ERROR.NOT_EXCEED_1000_CHARACTER" | translate }}
+	cub-popup-footer
+		ng-template(cubPopupFooter, let-workflow='workflow')
+			.layout-row.layout-gap-12.layout-align-end
+				button.w-80(
+					cubButton='secondary',
+					(click)='renamePopup.close()')
+					| {{ "BASE.WORKFLOW.LABEL.CANCEL" | translate }}
+				button.w-120(
+					cubButton,
+					[loading]='isSubmitting',
+					[disabled]='( !nameControl.dirty && !descriptionControl.dirty ) || nameControl.invalid || descriptionControl.invalid',
+					(click)='updateInformation ( workflow )')
+					| {{ "BASE.WORKFLOW.LABEL.DONE" | translate }}
+div(cubDialogContent)
+	.sidebar(*ngIf='!isCustomizing')
+		h5.pv-12.pl-8
+			| {{ "BASE.WORKFLOW.LABEL.TYPE" | translate }}
+		cub-list-group.layout-gap-4
+			+buttonAction('ALL', 'bolt-circle','TAB_TYPE.All', 'countBadge.all' )
+			+buttonAction('ACTIVE', 'check-circle', 'TAB_TYPE.Active', 'countBadge.active' )
+			+buttonAction('INACTIVE', 'ban-circle', 'TAB_TYPE.Inactive', 'countBadge.inactive' )
+		//- h5.pv-12.pl-8
+		//- 	| {{ "BASE.WORKFLOW.LABEL.HELP" | translate }}
+		//- cub-list-group.layout-gap-4
+		//- 	button(
+		//- 		cubListItem)
+		//- 		.layout-row.layout-align-space-between-center.flex
+		//- 			.layout-row.layout-align-start-center.layout-gap-8
+		//- 				cub-icon(
+		//- 					size='20px',
+		//- 					name='help-circle')
+		//- 				| {{ "BASE.WORKFLOW.LABEL.USER_GUIDE"  | translate }}
+	.content
+		.layout-row.layout-align-space-between-center.pv-10.ph-20
+			.layout-row.layout-align-start-center.layout-gap-8(
+				*ngIf='isCustomizing; else elseBlock;')
+				button(
+					cubBasicButton,
+					icon='chevron-left',
+					iconSize='20px',
+					(click)='backToWorkflowList()')
+				h5.text-truncate(
+					[attr.title]='workflow.name | empty')
+					| {{ workflow.name | empty }}
+			ng-template(#elseBlock)
+				h5
+					| {{ "BASE.WORKFLOW.LABEL.AUTOMATE_WORKFLOW" | translate }}
+			.layout-row.layout-align-start-center.layout-gap-12
+				ng-container(*ngIf='isCustomizing; else elseBlock1;')
+					button.h-32(
+						cubButton,
+						leadingIconSize='16px',
+						[disabled]='!canSave',
+						(click)='save()')
+						| {{ "BASE.WORKFLOW.LABEL.SAVE" | translate }}
+				ng-template(#elseBlock1)
+					button.h-32(
+						cubButton,
+						leadingIcon='plus-circle',
+						leadingIconSize='16px',
+						(click)='addWorkflow()')
+						| {{ "BASE.WORKFLOW.LABEL.ADD_AUTOMATION_WORKFLOW" | translate }}
+				button(
+					cubClearButton,
+					size='20px',
+					[cubTooltip]='"BASE.WORKFLOW.LABEL.CLOSE" | translate',
+					(click)='close()')
+		cub-divider
+		ng-container(*ngIf='!isCustomizing; else elseBlock2;')
+			ng-container(*ngIf='workflows, else loadingTemplate')
+				cub-scroll-bar(
+					suppressX,
+					#automationScrollBar)
+					.layout-column.layout-align-start-center.layout-gap-16.pv-24
+						cub-card.card-content(
+							size='small',
+							[state]=`
+								highlightCard && last && 'active'
+							`,
+							*ngFor=`let workflow of workflows; let last = last; ngForTrackByID`)
+							cub-card-content(
+								(click)='accessWorkflow ( workflow.id )')
+								.layout-column.layout-gap-4
+									.layout-row.layout-align-space-between-start.layout-gap-24
+										h5.text-wrap-no-spaces
+											| {{ workflow.name | empty }}
+										.layout-row.layout-align-center-center.layout-gap-16
+											cub-switch(
+												color='primary',
+												size='large',
+												[cubTooltip]='"BASE.WORKFLOW.LABEL." + ( workflow.isActive ? "DEACTIVATE" : "ACTIVATE" ) | translate',
+												[onBeforeSwitch]='onBeforeSwitchMode',
+												[ngModel]='workflow.isActive',
+												(click)='$event.stopPropagation()',
+												(mousedown)='workflowIsActive = workflow')
+											button(
+												cubBasicButton,
+												iconSize='20px',
+												icon='more-vertical',
+												[cubMenuTriggerContext]='{ workflow }',
+												[cubMenuTriggerFor]=' dialogAction ',
+												(click)=' $event.stopPropagation(); ')
+									.layout-column
+										.text-color-secondary(
+											cubShowMore,
+											(click)=' $event.stopPropagation(); '
+											limitLine='4')
+											| {{ workflow.description }}
+			ng-template(#loadingTemplate)
+					cub-loading.margin-auto
+		ng-template(#elseBlock2)
+			custom-workflow(
+				[workflow]='workflow')

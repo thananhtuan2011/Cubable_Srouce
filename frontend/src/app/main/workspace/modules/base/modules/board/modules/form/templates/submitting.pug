@@ -1,0 +1,101 @@
+mixin title-field
+	.layout-column.layout-gap-8.pv-8.ph-16
+		.layout-row.layout-gap-4
+			.text-truncate.maw-200([title]=`
+				f?.question
+				|| $any( fieldsLK?.[ f.id ] )?.name
+				|| f.customFieldName`)
+				| {{ f?.question || $any( fieldsLK?.[ f.id ] )?.name || f.customFieldName }}
+			.text-color-error(*ngIf='f.isRequired')
+				| *
+		div.submitting__block-content
+			label.submitting__block-content__title(*ngIf='f?.description')
+				| {{ f.description }}
+
+cub-scroll-bar(suppressX, detectScroll)
+	.submitting(
+		[class.mt-40]='formMode === FORM_MODE.PREVIEW')
+		.submitting__block
+			.submitting__block-cover-image(*ngIf='form.hasCoverImage')
+				cub-image(
+					width='572px',
+					[src]=`form?.coverImage
+						? form.coverImage
+						: "assets/images/feature-specific/form/default-bg.webp"`)
+				.avatar(*ngIf='form.hasAvatar')
+					cub-image(
+						[src]=`form?.avatar
+							? form.avatar
+							: "assets/images/feature-specific/form/default-avatar.webp"`)
+			.ph-20.pb-20(
+				[ngClass]=`{
+					'pt-20' : ( !form.hasCoverImage && !form.hasAvatar ) || ( !form.hasCoverImage && form.hasAvatar ),
+					'mt-66': ( form.hasCoverImage && form.hasAvatar )
+				}`)
+				ng-container(*ngIf='form')
+					.submitting__block-avatar(*ngIf='!form.hasCoverImage && form.hasAvatar')
+						.avatar
+							cub-image(
+								[src]=`form?.avatar
+									? form.avatar
+									: "assets/images/feature-specific/form/default-avatar.webp"`)
+					.ph-12.pv-8.mb-8.layout-row.layout-align-center
+						ng-container(*ngIf='isSubmitted; else elseBlock')
+							cub-icon(
+								name='check-circle',
+								size='60px',
+								[color]='"green" | cubPalette : "700"')
+						ng-template(#elseBlock)
+							div.submitting__block-heading
+								h4.submitting__block-heading__title
+									| {{ form.title ? form.title : form?.name }}
+					.ph-12.pb-24.layout-row.layout-align-center(*ngIf='form.description')
+						div.submitting__block-description
+							label.submitting__block-description__title
+								| {{ form.description }}
+					.layout-column(
+						#group='fieldInputGroup',
+						fieldInputGroup)
+						.layout-column.layout-align-center-center.layout-gap-16
+							ng-container(*ngIf='isSubmitted; else formDisplay;')
+								| {{ form?.settings?.completeMessage || ( "BASE.BOARD.FORM.MESSAGE.COMPLETE_CUSTOM_MESSAGE_CONTENT" | translate ) }}
+								button.w-224(
+									cubButton,
+									*ngIf='!form?.settings || form?.settings?.hintSendOtherAnswer',
+									[disabled]='form?.hasRecaptcha && !isRecaptchaResolved',
+									(click)='sendAnotherResponse()')
+									| {{ "BASE.BOARD.FORM.LABEL.SUBMIT_ANOTHER_RESPONSE" | translate }}
+							ng-template(#formDisplay)
+								ng-container(*ngFor='let f of form.fields; let index = index; ngForTrackByID')
+									.layout-column.layout-gap-6.full-width(*ngIf=`
+										!f?.hasConditions
+										|| ( f?.hasConditions && validConditions?.[ f.id ] )`)
+										.submitting__block-filed
+											+title-field
+											cub-divider
+											.p-16
+												ng-template(
+													fieldInputFactory,
+													size='large',
+													[disabled]='readonlyField.has( f.dataType )',
+													[readonly]='readonlyField.has( f.dataType )',
+													[field]='fields[ index ]',
+													[data]='formSubmit.cells[ f.id ]',
+													[metadata]='metadata?.[ f.id ]',
+													(dataChange)='onFormChange( $event, index )')
+						ng-container(*ngIf='!isSubmitted')
+							.layout-column.layout-align-center-center.layout-gap-16.mt-16
+								re-captcha(
+									*ngIf='form?.hasRecaptcha',
+									[siteKey]='"RECAPTCHA_SITE_KEY" | environment',
+									(resolved)='isRecaptchaResolved = !!$event')
+								button.w-224(
+									cubButton,
+									[disabled]='( form?.hasRecaptcha && !isRecaptchaResolved ) || group.invalid',
+									(click)='submit()')
+									ng-container(*ngIf='form?.submitButtonName; else elseBlock4;')
+										| {{ form?.submitButtonName }}
+									ng-template(#elseBlock4)
+										| {{ "BASE.BOARD.FORM.LABEL.SENT" | translate }}
+				.mt-40
+					include blocks/block-form-footer.partial.pug

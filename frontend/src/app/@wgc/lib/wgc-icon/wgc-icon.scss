@@ -1,0 +1,17 @@
+@import 'src/scss/partials/variable';
+
+.wgc-icon {
+	display: flex;
+
+	color: var(--icon-color, inherit);
+
+	&.wgc-primary {
+		color: var(--primary-color, $color-primary);
+	}
+
+	i {
+		font-size: var(--icon-font-size, inherit);
+		// line-height: var(--icon-line-height, inherit);
+		line-height: normal;
+	}
+}

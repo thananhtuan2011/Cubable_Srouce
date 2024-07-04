@@ -1,0 +1,253 @@
+cub-action-box(
+	[visible]='selectedRows?.length > 0',
+	[offset]='actionBoxOffset',
+	(dismissed)='onDeselectAllRows()')
+	cub-action-box-start
+		| {{ "SETTINGS.WORKSPACE.USER_SYSTEM.USER.LABEL.SELECTED_COUNT" | translate }} : {{ selectedRows?.length }}
+	cub-action-box-middle
+		button(
+			cubActionItem,
+			icon='check-circle',
+			[label]='"SETTINGS.WORKSPACE.USER_SYSTEM.USER.LABEL.ACTIVE_USER" | translate',
+			(click)='onActivateUsers()')
+		button(
+			cubActionItem,
+			icon='ban-circle',
+			[label]='"SETTINGS.WORKSPACE.USER_SYSTEM.USER.LABEL.INACTIVE_USER" | translate',
+			(click)='onDeActivateUsers()')
+		button(
+			cubActionItem,
+			type='destructive',
+			icon='trash',
+			[label]='"SETTINGS.WORKSPACE.USER_SYSTEM.USER.LABEL.DELETE" | translate',
+			(click)='onDeleteUsers()')
+
+cub-menu(
+	#control,
+	width='220px'
+	max-height='96px')
+	cub-menu-content
+		ng-template(cubMenuContent, let-user='user')
+			ng-container(*ngIf='user.status === USER_STATUS.Active')
+				button(
+					autoClose,
+					cubMenuItem,
+					icon='user-close-circle',
+					(click)='onDeActiveUser( user.email )',
+					[disabled]='user.isOwner || user.isAccount',
+					[cubTooltip]=`(
+						user.isAccount
+							? 'SETTINGS.WORKSPACE.USER_SYSTEM.USER.MESSAGE.DEACTIVATE_IS_ACCOUNT' 
+							: user.isOwner
+								? 'SETTINGS.WORKSPACE.USER_SYSTEM.USER.MESSAGE.DEACTIVATE_IS_OWNER' 
+								: '' 
+						) | translate
+					`)
+					| {{ "SETTINGS.WORKSPACE.USER_SYSTEM.USER.LABEL.INACTIVE_USER" | translate }}
+			ng-container(*ngIf='user.status === USER_STATUS.Inactive')
+				button(
+					autoClose,
+					cubMenuItem,
+					icon='user-check-circle',
+					(click)='onActiveUser( user.email )')
+					| {{ "SETTINGS.WORKSPACE.USER_SYSTEM.USER.LABEL.ACTIVE_USER" | translate }}
+			ng-container(*ngIf=`user.status === USER_STATUS.RejectInvite
+				|| user.status === USER_STATUS.PendingInvite
+				|| user.status === USER_STATUS.ExpiredInvite`)
+				button(
+					autoClose,
+					cubMenuItem,
+					icon='mail-resend',
+					(click)='openPopupResendInviteUser( user )')
+					| {{ "SETTINGS.WORKSPACE.USER_SYSTEM.USER.LABEL.RESEND_INVITATION" | translate }}
+
+			button(
+				autoClose,
+				icon='trash',
+				cubMenuItem='destructive',
+				[disabled]='user.isOwner || user.isAccount',
+				(click)='onDeleteUser( user.email )',
+				[cubTooltip]=`(
+					user.isAccount
+						? 'SETTINGS.WORKSPACE.USER_SYSTEM.USER.MESSAGE.DELETE_IS_ACCOUNT' 
+						: user.isOwner
+							? 'SETTINGS.WORKSPACE.USER_SYSTEM.USER.MESSAGE.DELETE_IS_OWNER' 
+							: '' 
+					) | translate
+				`,)
+				| {{ "SETTINGS.WORKSPACE.USER_SYSTEM.USER.LABEL.DELETE_USER" | translate }}
+
+.full-width.miw-0.flex.layout-row.layout-align-space-between.layout-align-start-center.p-16
+	h4
+		| {{ "SETTINGS.WORKSPACE.USER_SYSTEM.USER.LABEL.USER_MANAGEMENT" | translate }}
+	button(
+		cubButton,
+		icon='user-add',
+		iconSize='16px',
+		(click)='openPopupInviteUser()')
+			| {{ "SETTINGS.WORKSPACE.USER_SYSTEM.USER.LABEL.INVITE_NEW_USER" | translate }}
+cub-divider
+.table_wrapper
+	table
+		thead
+			tr.full-width.miw-0
+				.full-width.miw-0.layout-row.pos-relative
+					.sticky.sticky-left
+						th.w-40(align='left')
+							.layout-row.layout-align-center-center.full-height
+								cub-checkbox(
+									[readonly]='isHeaderReadOnly',
+									[ngModel]='isHeaderChecked',
+									(ngModelChange)='onHeaderSelected( $event )')
+						th.w-210(align='left')
+							.layout-row.header-cell-wrapper
+								label.layout-row.layout-align-start-center
+									| {{ "SETTINGS.WORKSPACE.USER_SYSTEM.USER.LABEL.USER_NAME" | translate }}
+					th.w-172(align='left')
+						.layout-row.header-cell-wrapper
+							label.layout-row.layout-align-start-center
+								| {{ "SETTINGS.WORKSPACE.USER_SYSTEM.USER.LABEL.USER_EMAIL" | translate }}
+					th.w-172(align='left')
+						.layout-row.header-cell-wrapper
+							label.layout-row.layout-align-start-center
+								| {{ "SETTINGS.WORKSPACE.USER_SYSTEM.USER.LABEL.ROLE" | translate }}
+					th.w-172(align='left')
+						.layout-row.header-cell-wrapper
+							label.layout-row.layout-align-start-center
+								| {{ "SETTINGS.WORKSPACE.USER_SYSTEM.USER.LABEL.USER_STATUS" | translate }}
+					th.w-172(align='left')
+						.layout-row.header-cell-wrapper
+							label.layout-row.layout-align-start-center
+								| {{ "SETTINGS.WORKSPACE.USER_SYSTEM.USER.LABEL.USER_TEAMS" | translate }}
+					th.w-172(align='left')
+						.layout-row.header-cell-wrapper
+							label.layout-row.layout-align-start-center
+								| {{ "SETTINGS.WORKSPACE.USER_SYSTEM.USER.LABEL.USER_JOINED" | translate }}
+					th.w-172(align='left')
+						.layout-row.header-cell-wrapper
+							label.layout-row.layout-align-start-center
+								| {{ "SETTINGS.WORKSPACE.USER_SYSTEM.USER.LABEL.USER_LAST_LOGIN" | translate }}
+					th.w-172(align='left')
+						.layout-row.header-cell-wrapper
+							label.layout-row.layout-align-start-center
+								| {{ "SETTINGS.WORKSPACE.USER_SYSTEM.USER.LABEL.USER_INVITE_BY" | translate }}
+		tbody(*ngIf='users?.length')
+			tr.full-width.miw-0(
+				*ngFor='let user of users | orderBy : [ "id" ]; let index = index; trackByID',
+				(mouseenter)='user.isHover = true',
+				(mouseleave)='user.isHover = false')
+				.full-width.miw-0.layout-row.pos-relative
+					.sticky.sticky-left
+						td.w-40(align='center')
+							.layout-row.layout-align-center-center(*ngIf='user?.isHover || user?.isSelected; else elseBlock;')
+								cub-checkbox(
+									[ngModel]="user.isSelected",
+									[readonly]="user?.isOwner || user?.isAccount",
+									(ngModelChange)="onRowSelected($event, index)",
+									[cubTooltip]=`
+										((user?.isAccount) 
+											? 'SETTINGS.WORKSPACE.USER_SYSTEM.USER.MESSAGE.CHECK_IS_ACCOUNT' 
+											: (user?.isOwner) 
+												? 'SETTINGS.WORKSPACE.USER_SYSTEM.USER.MESSAGE.CHECK_IS_OWNER'  
+												: '' 
+										) | translate
+										`,)
+							ng-template(#elseBlock)
+								| {{ index + 1 }}
+						td.w-210(align='left')
+							.layout-row.layout-align-start-center.flex
+								cub-avatar.mr-8(
+									size='medium-small',
+									[label]='user?.name', 
+									[avatar]='user?.avatar')
+								ng-container(*ngIf='user.name; else avatarTemp;')
+									span.text-truncate.maw-158(
+										[innerHtml]='user?.name', 
+										[cubTooltip]='user?.name',)
+								ng-template(#avatarTemp)
+									span.text-truncate.maw-158(
+										[innerHtml]='user?.email', 
+										[cubTooltip]='user?.email',)
+					td.w-172(align='left')
+						.text-truncate.maw-156
+							a(
+								target='_blank',
+								limitLine='1',
+								[cubTooltip]='user?.email',
+								[href]='"mailto:" + user?.email')
+								span([innerHtml]='user?.email')
+					td.w-172(
+						align='left',
+						(mouseenter)='user.isHoverRole = true',
+						(mouseleave)='user.isHoverRole = false')
+						.layout-row.layout-gap-8(*ngIf='user?.roleIDs?.length')
+							cub-chip
+								ng-container(*ngIf='user?.isOwner')
+									cub-icon.mr-4(name='crown-fill')
+								span.text-truncate(
+									[innerHtml]=`
+										user?.isOwner
+											? ('SETTINGS.WORKSPACE.USER_SYSTEM.USER.LABEL.ADMIN' | translate) 
+											: (user?.roles?.[ 0 ]?.name)
+										`)
+							cub-chip(
+								*ngIf='user?.roleIDs?.length > 1',
+								[cubTooltip]='user?.tooltipRoles')
+								span.text-truncate([attr.title]='user?.roles?.[0]?.name')
+									| + {{ user?.roles?.length - 1 }}
+					td.w-172(align='left')
+						ng-container(*ngIf='user?.infoStatus !== 0; else statusTemp')
+							cub-chip.layout-row.layout-gap-4
+								ng-container(*ngIf='user?.infoStatus !== 0')
+									span.dot_status([ngStyle]="{ 'background-color': user?.infoStatus?.color }")
+									label
+										| {{ user?.infoStatus?.label | translate }}		
+						ng-template(#statusTemp)
+							| --
+					td.w-172(align='left')
+						ng-container(*ngIf='user?.selectedTeamIDs?.length; else teamsTemp')
+							cub-member-list(
+								avatarSize='medium-small',
+								limit='3',
+								width='200px',
+								[canAdd]='false',
+								[canRemove]='false',
+								[teams]='user.teams',
+								[selectedTeamIDs]='user?.selectedTeamIDs')
+						ng-template(#teamsTemp)
+							| --
+					td.w-172(align='left')
+						ng-container(*ngIf='user.isOwner')
+							ng-container(*ngIf='user?.createdAt; else createdAtTemp')
+								| {{ user.createdAt | momentDate : "DD/MM/YY HH:mm" }}
+							ng-template(#createdAtTemp)
+								| --
+						ng-container(*ngIf='!user.isOwner')
+							ng-container(*ngIf='user?.joinAt; else joinAtTemp')
+								| {{ user?.joinAt | momentDate : "DD/MM/YY HH:mm" }}
+							ng-template(#joinAtTemp)
+								| --
+					td.w-172(align='left')
+						ng-container(*ngIf='user.latestLogin; else lastLoginTemp')
+							| {{ user.latestLogin | momentDate : "DD/MM/YY HH:mm" }}
+						ng-template(#lastLoginTemp)
+							| --
+					td.w-172(align='left')
+						ng-container(*ngIf='user?.createdBy; else invitedByTemp;')
+							.layout-row.layout-align-start-center.flex.gap-8
+								cub-avatar.mr-10(
+									[label]='user?.createdByUser?.name', 
+									[avatar]='user?.createdByUser?.avatar')
+								ng-container(*ngIf='user?.createdByUser?.name; else avatarTemp;')
+									span.text-truncate.maw-158([innerHtml]='user?.createdByUser?.name')
+						ng-template(#invitedByTemp)
+							| --
+					.sticky.sticky-right
+						td.action-cell
+							button(
+								cubBasicButton,
+								icon='more-vertical',
+								overlayX='start',
+								[cubTooltip]='"SETTINGS.WORKSPACE.USER_SYSTEM.USER.LABEL.MORE_ACTIONS" | translate',
+								[cubMenuTriggerContext]='{ user }',
+								[cubMenuTriggerFor]='control')

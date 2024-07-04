@@ -1,0 +1,40 @@
+@import 'src/scss/partials/variable';
+
+.wgc-dropdown {
+	display: flex;
+	flex-direction: column;
+	cursor: pointer;
+
+	.wgc-dropdown-controls {
+		display: flex;
+		align-items: center;
+
+		.wgc-dropdown-controls__search-box {
+			width: 100%;
+			min-width: 0;
+		}
+
+		.wgc-dropdown-controls__btn-toogle-all {
+			color: var(--primary-color, $color-primary);
+			font-weight: $font-weight-semibold;
+			white-space: nowrap;
+			margin-left: 15px;
+		}
+	}
+
+	[wgcFormFieldPrefix] {
+		&:not(:last-of-type) {
+			margin-right: 5px;
+		}
+	}
+
+	[wgcFormFieldSuffix] {
+		&:not(:first-of-type) {
+			margin-left: 5px;
+		}
+	}
+
+	[wgcFormFieldInput] {
+		cursor: pointer;
+	}
+}

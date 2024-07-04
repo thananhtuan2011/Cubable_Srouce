@@ -1,0 +1,32 @@
+@import 'src/scss/partials/variable';
+
+.wgc-member-picker {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	max-height: 400px;
+	width: var(width);
+	padding: 15px;
+	border-radius: 10px;
+	border: solid 1px $color-border;
+	background-color: $color-white;
+	box-shadow: $box-shadow;
+	animation: $popup-animation;
+
+	.wgc-member-picker__header {
+		display: flex;
+		width: 100%;
+		align-items: center;
+		margin-bottom: 10px;
+
+		.wgc-member-picker__header-title {
+			display: flex;
+			align-items: center;
+			font-size: 16px;
+			font-weight: $font-weight-semibold;
+			margin-right: 5px;
+			width: 100%;
+			min-width: 0;
+		}
+	}
+}

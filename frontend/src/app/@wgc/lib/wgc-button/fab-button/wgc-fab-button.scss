@@ -1,0 +1,153 @@
+@import 'src/scss/partials/variable';
+@import 'src/scss/partials/mixin';
+
+.wgc-fab-button {
+	$self: &;
+	display: flex;
+	cursor: pointer;
+	min-width: var(--fab-button-size);
+	height: var(--fab-button-size);
+	min-height: var(--fab-button-size);
+	max-height: var(--fab-button-size);
+	font-weight: $font-weight-semibold;
+	color: var(--fab-button-icon-color, $color-label);
+	background-color: var(--fab-button-color, $color-default);
+	border: {
+		width: var(--fab-button-border-width, 1px);
+		style: var(--fab-button-border-style, solid);
+		color: var(--fab-button-border-color, $color-default);
+		radius: 8px;
+	};
+	box-shadow: $box-shadow-thick;
+
+	// Color state
+	@at-root {
+		&.wgc-primary {
+			background-color: var(--primary-color, $color-primary);
+			border-color: var(--primary-color, $color-primary);
+			color: $color-white;
+
+			&.wgc-fab-button--loading .wgc-loading--dots .wgc-loading-dot {
+				background-color: $color-white;
+			}
+		}
+
+		&.wgc-white {
+			background-color: $color-white;
+			border-color: var(--fab-button-border-color, $color-border);
+			color: var(--fab-button-icon-color, $color-text);
+		}
+	}
+
+	// Size state
+	@at-root {
+		&#{ $self }--small {
+			--fab-button-size: 32px !important;
+		}
+
+		&#{ $self }--medium {
+			--fab-button-size: 40px !important;
+		}
+
+		&#{ $self }--large {
+			--fab-button-size: 56px !important;
+		}
+
+		&#{ $self }--xlarge {
+			--fab-button-size: 72px !important;
+		}
+	}
+
+	// Alignment state
+	@at-root {
+		&#{ $self }--left {
+			#{ $self }-wrapper {
+				justify-content: flex-start;
+			}
+		}
+
+		&#{ $self }--center {
+			#{ $self }-wrapper {
+				justify-content: center;
+			}
+		}
+
+		&#{ $self }--right {
+			#{ $self }-wrapper {
+				justify-content: flex-end;
+			}
+		}
+	}
+
+	// Has icon state
+	@at-root {
+		&:not(#{ $self }--has-icon) {
+			#{ $self }-wrapper {
+				min-width: calc(var(--fab-button-size) * 2);
+			}
+		}
+
+		&#{ $self }--has-icon {
+			#{ $self }__content {
+				padding-left: 5px;
+				padding-right: 5px;
+			}
+		}
+	}
+
+	// Disabled state
+	@at-root {
+		&:not(#{ $self }--disabled) {
+			&:hover {
+				opacity: .8;
+			}
+		}
+
+		&#{ $self }--disabled {
+			@include cursor-not-allowed;
+			background-color: $color-disabled;
+			border-color: $color-disabled;
+			color: $color-white;
+		}
+	}
+
+	// Loading state
+	@at-root {
+		&#{ $self }--loading {
+			.wgc-loading--dots .wgc-loading-dot {
+				background-color: $color-black;
+			}
+
+			#{ $self }__icon,
+			#{ $self }__content {
+				display: none;
+			}
+		}
+	}
+
+	#{ $self }-wrapper {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		height: 100%;
+		width: 100%;
+		padding: {
+			left: 10px;
+			right: 10px;
+		};
+	}
+
+	#{ $self }__icon {
+		font-size: var(--fab-button-icon-size, calc(var(--fab-button-size) / 2));
+		line-height: var(--fab-button-icon-size, calc(var(--fab-button-size) / 2));
+	}
+
+	#{ $self }__content {
+		display: flex;
+		align-items: center;
+
+		&:empty {
+			display: none;
+		}
+	}
+}

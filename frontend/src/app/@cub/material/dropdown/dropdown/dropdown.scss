@@ -1,0 +1,70 @@
+@import '../../../scss/partials/variable';
+@import '../../../scss/partials/mixin';
+
+.cub-dropdown {
+	$self: &;
+
+	display: flex;
+	flex-direction: column;
+
+	&#{ $self }--single-line {
+		#{ $self }__displaying-list {
+			flex-wrap: nowrap;
+
+			.cub-chip {
+				min-width: fit-content;
+			}
+		}
+	}
+
+	#{ $self }-item {
+		display: flex;
+		flex-direction: column;
+
+		#{ $self }-item__label,
+		#{ $self }-item__description {
+			word-break: break-word;
+
+			&:empty {
+				display: none;
+			}
+		}
+
+		#{ $self }-item__description {
+			color: $color-text-secondary;
+
+			font-size: 12px;
+			line-height: 16px;
+		}
+	}
+
+	#{ $self }__displaying-list {
+		display: flex;
+		flex-wrap: wrap;
+		row-gap: 8px;
+		column-gap: 8px;
+		max-width: 100%;
+
+		&:empty {
+			display: none;
+		}
+
+		&:not(:empty) {
+			~ input {
+				display: none !important;
+			}
+		}
+
+		#{ $self }__displaying-item {
+			column-gap: 4px;
+
+			#{ $self }__displaying-item__label {
+				@include text-truncate;
+			}
+		}
+	}
+
+	#{ $self }__displaying-raw {
+		display: none;
+	}
+}

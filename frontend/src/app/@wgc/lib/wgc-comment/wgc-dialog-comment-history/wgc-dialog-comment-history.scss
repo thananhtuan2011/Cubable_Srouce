@@ -1,0 +1,32 @@
+@import 'src/scss/partials/variable';
+
+.wgc-dialog-comment-history_list {
+	display: flex;
+	flex-direction: column-reverse;
+
+	.wgc-dialog-comment-history__header {
+		display: flex;
+		padding-bottom: 20px;
+
+		.wgc-dialog-comment-history__card {
+			flex-grow: 1;
+			margin-left: 10px;
+
+			.wgc-dialog-comment-history__header__title__name {
+				font-weight: $font-weight-semibold;
+			}
+
+			.wgc-dialog-comment-history__header__title__time {
+				font-size: 13px;
+				color: $color-label;
+				padding-bottom: 15px;
+			}
+
+			.wgc-dialog-comment-history__content {
+				> :not(:last-child):not(:empty) {
+					margin-bottom: 10px;
+				}
+			}
+		}
+	}
+}

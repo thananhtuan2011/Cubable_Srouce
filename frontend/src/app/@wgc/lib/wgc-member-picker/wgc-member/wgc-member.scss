@@ -1,0 +1,35 @@
+@import 'src/scss/partials/variable';
+
+.wgc-member {
+	display: flex;
+	align-items: center;
+
+	.wgc-member-tooltip {
+		.wgc-member-tooltip__name {
+			display: flex;
+			flex-direction: row;
+			align-items: center;
+			margin-bottom: 3px;
+		}
+
+		.wgc-member-tooltip__status {
+			color: $color-label;
+			font-size: 13px;
+			font-weight: 600;
+		}
+
+		.wgc-member-tooltip__btn-view-profile {
+			margin-top: 15px;
+		}
+	}
+
+	.wgc-member__avatar {
+		background-color: $color-white;
+		border-radius: 50%;
+		padding: 1px;
+	}
+
+	.wgc-member__name {
+		margin-left: 5px;
+	}
+}

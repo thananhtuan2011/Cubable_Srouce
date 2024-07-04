@@ -1,0 +1,417 @@
+include ./toast.pug
+
+mixin switchModeMapping
+	cub-switch(
+		size='small',
+		[label]='"BASE.BOARD.IMPORT.LABEL.AUTO_MAPPING" | translate',
+		[onBeforeSwitch]='onBeforeSwitchModeFn.bind( this, item.isAuto )',
+		[(ngModel)]='item.isAuto',
+		(ngModelChange)='onChangeMappingMode( $event, item )')
+
+overlay-loading(
+	[isLoad]='isLoading',
+	[percent]='percentLoading')
+
+ng-template(#toastFail)
+	+toastFail('toastFail')
+
+ng-template(#warningPopup)
+	.layout-column.layout-gap-8
+		.text-color-secondary
+			| {{ "BASE.BOARD.IMPORT.MESSAGE.INVALID_VALUES_SKIPPED" | translate }}
+		button(
+			*ngIf='isErrorField',
+			cubBasicButton,
+			color='blue',
+			icon='download-circle',
+			iconSize='16px',
+			(click)='onDownErrorReport()')
+			| {{ "BASE.BOARD.IMPORT.LABEL.DOWNLOAD_ERROR_REPORT" | translate }}
+
+cub-menu(
+	#addManualOptionMenu,
+	width='280px',
+	maxHeight='300px',
+	(closed)='onAddManualOptionMenuClose( addManualOptionMenu.context.field )')
+	cub-menu-content
+		ng-template(cubMenuContent, let-field='field')
+			cub-menu-group
+				button(
+					cubMenuItem,
+					[autoClose]='false')
+					ng-container(cubMenuItemPrefix)
+						cub-checkbox(
+							[ngModel]='isSelectAllManualOption?.[ field.id ]',
+							(ngModelChange)='onAddAllManualOption( $event, field )')
+					| {{ "BASE.BOARD.IMPORT.LABEL.SELECT_ALL" | translate }}
+			cub-menu-group
+				ng-container(
+					*ngFor='let option of excelFieldOptions[ field.id ]; ngForTrackByID')
+					button(
+						cubMenuItem,
+						*ngIf='!option.added',
+						[autoClose]='false')
+						ng-container(cubMenuItemPrefix)
+							cub-checkbox(
+								[(ngModel)]='option.selected',
+								(ngModelChange)='onAddManualOption( field )')
+						.text-truncate(
+							[attr.title]='option.name | empty')
+							| {{ option.name | empty }}
+	cub-menu-footer
+		ng-template(cubMenuFooter, let-field='field')
+			.layout-row.layout-align-end-center.layout-gap-8
+				button.w-80(
+					cubButton='secondary',
+					(click)='cancelAddManualOption( field )')
+					| {{ "BASE.BOARD.IMPORT.LABEL.CANCEL" | translate }}
+				button.w-120(
+					cubButton,
+					(click)='addValueOptions( field )')
+					| {{ "BASE.BOARD.IMPORT.LABEL.ADD_VALUE" | translate }}
+
+cub-menu(
+	#addFields,
+	width='255px'
+	max-height='500px')
+	cub-menu-content
+		ng-template(cubMenuContent, let-index='index')
+			cub-menu-group
+				cub-scroll-bar.mah-280(
+					cdkDropList,
+					suppressX,
+					detectScroll)
+					button(*ngFor='let field of fieldSupport; ngForTrackByID',
+						cubMenuItem,
+						[icon]='(field?.dataType | fieldMetadata ).icon',
+						[disabled]='field?.isMatch',
+						[value]='field.id',
+						(click)='onFieldChange( field.id, index )')
+						| {{field.name}}
+			cub-menu-group
+				button(
+					cubMenuItem,
+					fieldMenu,
+					position='start-after',
+					icon='plus-circle',
+					[autoClose]='false',
+					[unsupportDataTypes]='fieldTypeNotSupport',
+					(added)='createField( $event )')
+					| {{ "BASE.BOARD.RECORD.LABEL.NEW_FIELD" | translate }}
+
+div(cubDialogHeader)
+	.layout-row.layout-align-space-between-center.pv-10.ph-20.flex
+		h5
+			| {{ "BASE.BOARD.IMPORT.LABEL.PREVIEW_DATA" | translate }}
+		.layout-row.layout-align-start-center.layout-gap-12
+			button.h-32(
+				cubButton,
+				(click)='onSubmitData()')
+				| {{ "BASE.BOARD.IMPORT.LABEL.INPUT" | translate }}
+			button(
+				cubClearButton,
+				size='24px',
+				[cubTooltip]='"BASE.BOARD.IMPORT.LABEL.CLOSE" | translate',
+				(click)='onClose()')
+div(cubDialogContent)
+	.content
+		.content_left
+			.layout-column.layout-align-space-between-start.layout-gap-4.p-12
+				h5.ph-8
+					| {{ "BASE.BOARD.IMPORT.LABEL.LINK_COLUMN_FROM_SPREADSHEET" | translate }}
+				.content_info(
+					[ngClass]='{ "content_info--hidden": isHidden, "content_info": !isHidden }')
+					.layout-row.layout-align-start-center.layout-gap-8
+						cub-icon(
+							name='info-circle',
+							size='20px')
+						.text-color-secondary
+							| {{ "BASE.BOARD.IMPORT.MESSAGE.SKIP_UNLINKED_COLUMNS" | translate }}
+					button(
+						cubClearButton,
+						size='16px',
+						[cubTooltip]='"BASE.BOARD.IMPORT.LABEL.CLOSE" | translate',
+						(click)='isHidden = !isHidden')
+			cub-divider.full-width(horizontal)
+			.content_controls
+				.layout-row.layout-align-space-between-center.p-12.full-width
+					cub-checkbox(
+						[label]='"BASE.BOARD.IMPORT.LABEL.HEADER_ROWS_IN_SPREADSHEET" | translate',
+						[ngModel]='infoSheet.isHasTitle',
+						(ngModelChange)='onCheckTitle( $event )')
+					.layout-row.layout-gap-8
+						button(
+							cubBasicButton,
+							color='blue',
+							[disabled]='isSelectAll',
+							(click)='onSelectAll()')
+							| {{ "BASE.BOARD.IMPORT.LABEL.SELECT_ALL" | translate }}
+						button(
+							cubBasicButton,
+							color='blue',
+							[disabled]='isRemoveAll',
+							(click)='onRemoveAll()')
+							| {{ "BASE.BOARD.IMPORT.LABEL.REMOVE_ALL" | translate }}
+						button(
+							cubBasicButton,
+							color='blue',
+							(click)='onResetAll()')
+							| {{ "BASE.BOARD.IMPORT.LABEL.RESET" | translate }}
+			cub-scroll-bar(
+					suppressX,
+					#AutomationScrollBar)
+				.content_fields
+					.content_fields--bg.layout-row(
+						*ngFor='let item of fieldsExcel; let i = index; ngForTrackByID')
+						.content_fields--wrapper
+							.layout-row.layout-gap-8
+								cub-checkbox(
+									[ngModel]='item?.isMatch',
+									(ngModelChange)='onCheckField( $event , i )')
+								.text-truncate.maw-190
+									| {{ item?.fieldCurrent?.value }}
+							.content_fields--inner
+								cub-icon(name='arrow-right', size='20px')
+								cub-form-field(#formField)
+									ng-container(*ngIf='item?.isMatch; else elseField')
+										cub-icon(
+											[name]='(item?.field?.dataType | fieldMetadata )?.icon',
+											size='20px')
+										button.content_fields-btn--dropdown(
+											iconSize='20px',
+											[cubMenuTriggerContext]='{ index: i }',
+											[cubMenuTriggerFor]='addFields')
+											| {{ item?.field?.name }}
+										cub-icon(
+											name='chevron-down',
+											size='16px')
+									ng-template(#elseField)
+										button.content_fields-btn--dropdown--placeholder(
+											iconSize='20px',
+											[cubMenuTriggerContext]='{ index: i }',
+											[cubMenuTriggerFor]='addFields')
+											| {{ "BASE.BOARD.IMPORT.PLACEHOLDER.CHOOSE_FIELDS" | translate }}
+
+						.content_fields--warning(*ngIf='item.totalError > 0')
+							cub-icon(
+								name='warning',
+								size='20px')
+							span
+								| {{ item.totalError }}/{{ totalRows }} {{ "BASE.BOARD.IMPORT.MESSAGE.CELL_IS_VALID" | translate }}
+						ng-container([ngSwitch]='item.field?.dataType')
+							ng-container(*ngSwitchCase='DATA_TYPE.Dropdown')
+								.content_fields--advanced
+									+switchModeMapping
+									.content_fields--dropdown(
+										*ngIf='!item.isAuto')
+										cub-scroll-bar.layout-column.layout-gap-12.mah-200(
+											*ngIf=`manualValueOptions
+												&& manualValueOptions[ item.field.id ]?.length`)
+											ng-container(
+												*ngFor=`let option of manualValueOptions[ item.field.id ];
+												let idx = index;`)
+												.layout-row.layout-align-space-between-center.layout-gap-12
+													.text-color-primary.text-truncate
+														| {{ option?.name | empty }}
+													.layout-row.layout-align-start-center.layout-gap-12
+														cub-icon(
+															name='arrow-right',
+															size='20px',
+															color='secondary')
+														.layout-row.layout-align-start-center.layout-gap-6
+															cub-dropdown(
+																searchable,
+																singleLine,
+																includeOuterSize,
+																displayErrorMode='tooltip',
+																[ngModel]='mappingValueOptions?.[ item.field.id ]?.[ option.name ]',
+																(ngModelChange)='onMappingManualOptions( $event, item, option )',
+																(opened)='onDropdownPickerOpened( item.field )')
+																cub-dropdown-item(
+																	*ngFor='let o of dropdownFieldOptions?.[ item.field.id ]; ngForTrackByValue',
+																	[label]='o.name | empty',
+																	[value]='o.value',
+																	[color]='o.color')
+															button(
+																cubBasicButton,
+																icon='close',
+																iconSize='20px',
+																iconColor='secondary',
+																(click)='removeMappingManualOption( item, idx, option.name )')
+										button(
+											cubBasicButton,
+											icon='plus-circle',
+											iconSize='20px',
+											iconColor='primary',
+											[active]=`addManualOptionMenu?.context?.field?.id === item.field.id
+												&& addManualOptionMenu?.isOpened`,
+											[disabled]=`
+												( isSelectAllManualOption?.[ item.field.id ]
+													&& !addManualOptionMenu.isOpened )
+												|| ( isSelectAllManualOption?.[ item.field.id ]
+												&& addManualOptionMenu?.context?.field?.id !== item.field.id
+												&& addManualOptionMenu.isOpened )
+												|| !excelFieldOptions[ item.field.id ]?.length`,
+											[cubMenuTriggerContext]='{ field: item.field }',
+											[cubMenuTriggerFor]='addManualOptionMenu')
+											| {{ "BASE.BOARD.IMPORT.LABEL.ADD_VALUE" | translate }}
+									.layout-row.layout-align-start.layout-gap-8
+										cub-icon(
+											name='info-circle',
+											size='20px',
+											color='secondary')
+										.text-color-secondary
+											ng-container(*ngIf='item.isAuto; else elseBlock;')
+												| {{ "BASE.BOARD.IMPORT.MESSAGE.MODE_AUTO_DROPDOWN_CAN_ADD_OPTION" | translate }}
+											ng-template(#elseBlock)
+												| {{ "BASE.BOARD.IMPORT.MESSAGE.MODE_MANUAL_DROPDOWN_SKIP_OPTION" | translate }}
+							ng-container(*ngSwitchCase='DATA_TYPE.People')
+								.content_fields--advanced
+									+switchModeMapping
+									.content_fields--dropdown(
+										*ngIf='!item.isAuto')
+										cub-scroll-bar.layout-column.layout-gap-12.mah-200(
+											*ngIf=`manualValueOptions
+												&& manualValueOptions[ item.field.id ]?.length`)
+											ng-container(
+												*ngFor=`let option of manualValueOptions[ item.field.id ];
+												let idx = index;`)
+												.layout-row.layout-align-space-between-center.layout-gap-12
+													.text-color-primary.text-truncate
+														| {{ option.name | empty }}
+													.layout-row.layout-align-start-center.layout-gap-12
+														cub-icon(
+															name='arrow-right',
+															size='20px',
+															color='secondary')
+														.layout-row.layout-align-start-center.layout-gap-6
+															cub-dropdown(
+																searchable,
+																singleLine,
+																includeOuterSize,
+																displayErrorMode='tooltip',
+																[ngModel]='mappingValueOptions?.[ item.field.id ]?.[ option.name ]',
+																(ngModelChange)='onMappingManualOptions( $event, item, option )',
+																(opened)='onPeoplePickerOpened( item.field )')
+																cub-dropdown-item(
+																	*ngFor='let o of peopleFieldOptions?.[ item.field.id ]; ngForTrackByValue',
+																	[label]='o.name | empty',
+																	[value]='o.id')
+															button(
+																cubBasicButton,
+																icon='close',
+																iconSize='20px',
+																iconColor='secondary',
+																(click)='removeMappingManualOption( item, idx, option.name )')
+										button(
+											cubBasicButton,
+											icon='plus-circle',
+											iconSize='20px',
+											iconColor='primary',
+											[active]=`addManualOptionMenu?.context?.field?.id === item.field.id
+												&& addManualOptionMenu?.isOpened`,
+											[disabled]=`
+												( isSelectAllManualOption?.[ item.field.id ]
+													&& !addManualOptionMenu.isOpened )
+												|| ( isSelectAllManualOption?.[ item.field.id ]
+												&& addManualOptionMenu?.context?.field?.id !== item.field.id
+												&& addManualOptionMenu.isOpened )
+												|| !excelFieldOptions[ item.field.id ]?.length`,
+											[cubMenuTriggerContext]='{ field: item.field }',
+											[cubMenuTriggerFor]='addManualOptionMenu')
+											| {{ "BASE.BOARD.IMPORT.LABEL.ADD_VALUE" | translate }}
+									.layout-row.layout-align-start.layout-gap-8
+										cub-icon(
+											name='info-circle',
+											size='20px',
+											color='secondary')
+										.text-color-secondary
+											ng-container(*ngIf='item.isAuto; else elseBlock;')
+												| {{ "BASE.BOARD.IMPORT.MESSAGE.MODE_AUTO_VALUE_CAN_NOT_ADD_OPTION" | translate }}
+											ng-template(#elseBlock)
+												| {{ "BASE.BOARD.IMPORT.MESSAGE.MODE_MANUAL_VALUE_SKIP_OPTION" | translate }}
+							ng-container(*ngSwitchCase='DATA_TYPE.Reference')
+								.content_fields--advanced
+									+switchModeMapping
+									.content_fields--dropdown(
+										*ngIf='!item.isAuto')
+										cub-scroll-bar.layout-column.layout-gap-12.mah-200(
+											*ngIf=`manualValueOptions
+												&& manualValueOptions[ item.field.id ]?.length`)
+											ng-container(
+												*ngFor=`let option of manualValueOptions[ item.field.id ];
+												let idx = index;`)
+												.layout-row.layout-align-space-between-center.layout-gap-12
+													.text-color-primary.text-truncate
+														| {{ option.name | empty }}
+													.layout-row.layout-align-start-center.layout-gap-12
+														cub-icon(
+															name='arrow-right',
+															size='20px',
+															color='secondary')
+														.layout-row.layout-align-start-center.layout-gap-6
+															cub-dropdown(
+																searchable,
+																singleLine,
+																includeOuterSize,
+																displayErrorMode='tooltip',
+																[ngModel]='mappingValueOptions?.[ item.field.id ]?.[ option.name ]',
+																(ngModelChange)='onMappingManualOptions( $event, item, option)',
+																(opened)='onReferencePickerOpened( item.field )')
+																cub-dropdown-item(
+																	*ngFor='let o of referenceFieldOptions?.[ item.field.id ]; ngForTrackByValue',
+																	[label]='o.data | empty',
+																	[value]='o.id')
+															button(
+																cubBasicButton,
+																icon='close',
+																iconSize='20px',
+																iconColor='secondary',
+																(click)='removeMappingManualOption( item, idx, option.name )')
+										button(
+											cubBasicButton,
+											icon='plus-circle',
+											iconSize='20px',
+											iconColor='primary',
+											[active]=`addManualOptionMenu?.context?.field?.id === item.field.id
+												&& addManualOptionMenu?.isOpened`,
+											[disabled]=`
+												( isSelectAllManualOption?.[ item.field.id ]
+													&& !addManualOptionMenu.isOpened )
+												|| ( isSelectAllManualOption?.[ item.field.id ]
+												&& addManualOptionMenu?.context?.field?.id !== item.field.id
+												&& addManualOptionMenu.isOpened )
+												|| !excelFieldOptions[ item.field.id ]?.length`,
+											[cubMenuTriggerContext]='{ field: item.field }',
+											[cubMenuTriggerFor]='addManualOptionMenu')
+											| {{ "BASE.BOARD.IMPORT.LABEL.ADD_VALUE" | translate }}
+									.layout-row.layout-align-start.layout-gap-8
+										cub-icon(
+											name='info-circle',
+											size='20px',
+											color='secondary')
+										.text-color-secondary
+											ng-container(*ngIf='item.isAuto; else elseBlock;')
+												| {{ "BASE.BOARD.IMPORT.MESSAGE.MODE_AUTO_VALUE_CAN_NOT_ADD_OPTION" | translate }}
+											ng-template(#elseBlock)
+												| {{ "BASE.BOARD.IMPORT.MESSAGE.MODE_MANUAL_VALUE_SKIP_OPTION" | translate }}
+		.content_right
+			ng-container(*ngIf='dataPreview.columns.length > 0; else elseBlock1')
+				spreadsheet(
+					[config]='dataPreview.config',
+					[(columns)]='dataPreview.columns',
+					[(rows)]='rows')
+			ng-template(#elseBlock1)
+				.layout-column.layout-align-start-center.mt-100
+					cub-icon(
+						name='inbox-empty'
+						size='80px',
+						color='secondary')
+					| {{ "BASE.BOARD.IMPORT.LABEL.NO_DATA" | translate }}
+			ng-container(*ngIf='dataPreview.columns.length > 0 && rowsTempt.length > 0')
+				pagination(
+					[data]='rowsTempt',
+					[config]='dataPreview.config',
+					[limit]='itemsPerPage',
+					[maxPage]='maxPage',
+					(pageChange)='onPageChange( $event)')

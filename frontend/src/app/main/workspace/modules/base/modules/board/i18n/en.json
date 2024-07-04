@@ -1,0 +1,12 @@
+{
+	"LABEL": {
+		"AUTOMATION": "Automation",
+		"CREATE_NEW": "Create new",
+		"DELETE": "Delete",
+		"DUPLICATE": "Duplicate",
+		"MORE_ACTION": "More action"
+	},
+	"PLACEHOLDER": {
+		"TYPE_BOARD_NAME": "Type board name"
+	}
+}

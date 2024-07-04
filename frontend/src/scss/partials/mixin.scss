@@ -1,0 +1,83 @@
+@mixin scroll($x: overlay, $y: overlay) {
+	overflow: {
+		x: $x;
+		y: $y;
+	};
+
+	@supports (-moz-appearance: none) {
+		@if $x == overlay {
+			overflow-x: auto !important;
+		}
+
+		@if $y == overlay {
+			overflow-y: auto !important;
+		}
+	}
+}
+
+@mixin border-dashed($radius: 0, $width: 3, $invisible: 10, $visible: 6) {
+	// sass-lint:disable quotes
+	background-image: url("data:image/svg+xml,%3csvg width='100%25' height='100%25' xmlns='http://www.w3.org/2000/svg'%3e%3crect width='100%25' height='100%25' fill='none' rx='#{$radius}' ry='#{$radius}' stroke='%23babcc0' stroke-width='#{$width}' stroke-dasharray='#{$visible}%2c #{$invisible}' stroke-dashoffset='0' stroke-linecap='square'/%3e%3c/svg%3e");
+}
+
+@mixin required-dot {
+	background-color: $color-info;
+	border-radius: 50%;
+	width: 5px;
+	min-width: 5px;
+	max-width: 5px;
+	height: 5px;
+	min-height: 5px;
+	max-height: 5px;
+	margin-left: 5px;
+	margin-right: 5px;
+	margin-top: auto;
+	margin-bottom: auto;
+}
+
+@mixin required-tag {
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	position: relative;
+	height: fit-content;
+	padding: 2px 5px;
+	margin-left: 5px;
+	border-radius: 4px;
+	font: {
+		size: 12px;
+		weight: $font-weight-semibold;
+	};
+	line-height: 12px;
+	color: $color-white;
+	background-color: $color-info;
+	white-space: nowrap;
+	text-transform: uppercase;
+}
+
+@mixin inside-required-dot {
+	&:after {
+		@include required-dot;
+		content: '';
+	}
+}
+
+@mixin inside-required-tag {
+	&:after {
+		@include required-tag;
+		content: 'Required';
+	}
+}
+
+@mixin cursor-not-allowed {
+	cursor: not-allowed;
+	transform: none;
+
+	&:active {
+		pointer-events: none;
+	}
+}
+
+@mixin inside-zindex {
+	opacity: .99;
+}

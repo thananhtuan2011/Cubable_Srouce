@@ -1,0 +1,164 @@
+mixin group-cell
+	.group-cell.cell()&attributes(attributes)
+		block
+
+mixin group-header
+	.group__header()&attributes(attributes)
+		block
+
+mixin group-info
+	ng-container(
+		*ngIf='group.metadata?.isEmpty; else elseBlock;')
+		label
+			| (Empty)
+	ng-template(#elseBlock)
+		ng-container(
+			*ngTemplateOutlet=`
+				groupDataTemplates.get(
+					group.metadata.column.field.dataType
+				);
+				context: {
+					column: group.metadata.column,
+					data: group.metadata.data,
+				};`)
+
+mixin group
+	.group.box(
+		*ngFor=`let group of groupVSViewport?.renderedGroups;
+			trackByProperty: "ulid"`,
+		[style.--group-total-depth]='groupDepth',
+		[style.--group-depth]='group.depth',
+		[style.top.px]='group.offset.top',
+		[style.height.px]='group.offset.height',
+		[class.group-first-depth]='group.depth === 1',
+		[class.group-last-depth]='group.depth === groupDepth',
+		[class.group--collapsed]='group.collapsed',
+		[class.box--radius]='group.depth === 1')&attributes(attributes)
+		block
+
+mixin group-left
+	+left-pane
+		+group().group-left.box-left
+			+group-header
+				.group-cell.cell.index-cell
+					.index-cell-wrapper
+						button(
+							cubBasicButton,
+							iconSize='13px',
+							[icon]=`group.collapsed
+								? "chevron-right"
+								: "chevron-down"`,
+							(click)='collapseGroup( group )')
+				ng-container(
+					*ngFor=`let c of leftPaneColumns;
+						trackBy: "column.id" | trackByFn;
+						first as first;`)
+					ng-container(
+						*ngIf='first && frozenIndex >= 0; else elseBlock;')
+						.group-cell.cell(
+							[style.width.%]='100')
+							+group-info
+						+group-cell()(
+							[style.--cell-width.px]='config.column.minResizeWidth')
+							ng-container(*ngTemplateOutlet=`
+								calculationBlockTemplate;
+								context: {
+									column: c.column,
+									calculatedResult: group
+										.metadata
+										.calculatedResult
+										?.get( c.column.id ),
+								};`)
+					ng-template(#elseBlock)
+						+group-cell()(
+							[style.--cell-width.px]='c.column.width')
+							ng-container(*ngTemplateOutlet=`
+								calculationBlockTemplate;
+								context: {
+									column: c.column,
+									calculatedResult: group
+										.metadata
+										.calculatedResult
+										?.get( c.column.id ),
+								};`)
+			.group__body(
+				*ngIf='!group.children')
+				cdk-virtual-scroll-viewport(
+					style='position: relative; z-index: 1;',
+					*ngIf='group.items?.length',
+					[itemSize]='rowHeight')
+					ng-container(
+						*cdkVirtualFor=`let row of group.items;
+							templateCacheSize: 50;
+							index as index;
+							cdkVirtualForTrackByID`)
+						ng-container(
+							*ngTemplateOutlet=`
+								rowLeftTemplate;
+								context: {
+									group,
+									row,
+									rowRawIndex: index,
+									rowIndex: group.startIndex + index,
+								};`)
+				+insert-row(true)(
+					(click)='createRowInGroup( group )')
+
+mixin group-right
+	+right-pane
+		+group().group-right.box-right
+			+group-header
+				ng-container(
+					*ngFor=`let c of rightPaneColumns;
+						trackBy: "column.id" | trackByFn;
+						first as first;`)
+					.layout-row(
+						*ngIf='first && frozenIndex < 0; else elseBlock;',
+						[style.--cell-width.px]='c.column.width')
+						+group-info
+						+group-cell()(
+							[style.--cell-width.px]='config.column.minResizeWidth')
+							ng-container(
+								*ngTemplateOutlet=`
+									calculationBlockTemplate;
+									context: {
+										column: c.column,
+										calculatedResult: group
+											.metadata
+											.calculatedResult
+											?.get( c.column.id ),
+									};`)
+					ng-template(#elseBlock)
+						+group-cell()(
+							[style.--cell-width.px]='c.column.width')
+							ng-container(
+								*ngTemplateOutlet=`
+									calculationBlockTemplate;
+									context: {
+										column: c.column,
+										calculatedResult: group
+											.metadata
+											.calculatedResult
+											?.get( c.column.id ),
+									};`)
+			.group__body(*ngIf='!group.children')
+				cdk-virtual-scroll-viewport(
+					style='position: relative; z-index: 1;',
+					*ngIf='group.items?.length',
+					[itemSize]='rowHeight')
+					ng-container(
+						*cdkVirtualFor=`let row of group.items;
+							templateCacheSize: 50;
+							index as index;
+							cdkVirtualForTrackByID`)
+						ng-container(
+							*ngTemplateOutlet=`
+								rowRightTemplate;
+								context: {
+									group,
+									row,
+									rowRawIndex: index,
+									rowIndex: group.startIndex + index,
+								};`)
+				+insert-row(false).last-row(
+					(click)='createRowInGroup( group )')

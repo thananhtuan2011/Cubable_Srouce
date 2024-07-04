@@ -1,0 +1,105 @@
+@import '../../scss/partials/variable';
+
+.cub-flowchart-node {
+	$self: &;
+
+	position: relative;
+
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: 80px;
+
+	&:has(> #{ $self }__btn-insert-next-node) {
+		gap: 30px;
+	}
+
+	&#{ $self }--boxed {
+		> #{ $self }-wrapper {
+			gap: 0;
+			padding: 6px;
+			border: 1px solid $color-transparent-dark-grey-10;
+			border-radius: 12px;
+
+			background-color: $color-transparent-dark-grey-5;
+
+			> #{ $self }__content-block {
+				width: 100%;
+			}
+
+			> #{ $self }__children-block {
+				padding: 24px;
+			}
+		}
+	}
+
+	> #{ $self }-wrapper {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		gap: 38px;
+
+		> #{ $self }__content-block {
+			position: relative;
+	
+			display: flex;
+			flex-direction: column;
+			align-self: center;
+	
+			cursor: pointer;
+		}
+	
+		> #{ $self }__children-block {
+			display: inline-grid;
+			column-gap: 64px;
+			grid-auto-columns: 1fr;
+			grid-auto-flow: column;
+			justify-content: center;
+			width: max-content;
+			min-width: 320px;
+			min-height: 24px;
+
+			&:empty {
+				display: none;
+			}
+
+			> #{ $self } {
+				width: 100%;
+			}
+		}
+
+		> #{ $self }__spliting-point,
+		> #{ $self }__merging-point {
+			position: relative;
+
+			width: 10px;
+			height: 10px;
+
+			&:after {
+				content: '';
+
+				position: absolute;
+				inset: 0;
+
+				border: 2px solid var(--flowchart-line-color);
+				border-radius: 2px;
+
+				background-color: var(--flowchart-backdrop-color);
+
+				transform: rotate(-135deg);
+			}
+		}
+
+		> #{ $self }__spliting-point {
+			order: 1;
+		}
+
+		> #{ $self }__children-block {
+			order: 2;
+		}
+
+		> #{ $self }__merging-point {
+			order: 3;
+		}
+	}
+}

@@ -1,0 +1,54 @@
+@import 'src/app/@cub/scss/partials/variable';
+
+:host {
+	overflow: hidden;
+	display: flex;
+	flex-direction: column;
+	width: 100%;
+	min-width: 0;
+	min-height: 0;
+
+	// .field-view-edit {
+	// 	overflow: hidden;
+
+	// 	.field-content {
+	// 		position: relative;
+	// 		display: flex;
+	// 		flex-direction: row;
+	// 		gap: 6px;
+
+	// 		.field-content-item {
+	// 			min-height: 22px;
+	// 			max-height: 300px;
+	// 			display: flex;
+	// 			align-items: center;
+	// 			flex-direction: row;
+	// 			flex-wrap: wrap;
+	// 			gap: 6px;
+	// 		}
+
+	// 		.cub-chip {
+	// 			border: 1px solid $color-material-default;
+	// 		}
+
+	// 		.field__btn-stick-on-content {
+	// 			position: sticky;
+	// 			top: 0;
+	// 			height: fit-content;
+	// 			margin-left: auto;
+	// 			margin-right: 10px;
+	// 		}
+	// 	}
+	// }
+
+	// ::ng-deep {
+	// 	.cub-form-field .cub-form-field__input
+	// 	.cub-form-field__input__content {
+	// 		display: flex;
+	// 		flex-direction: row;
+	// 		flex-wrap: wrap;
+	// 		gap: 6px;
+	// 	}
+	// }
+
+}

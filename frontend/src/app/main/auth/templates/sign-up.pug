@@ -1,0 +1,116 @@
+include mixin/mixin.pug
+
++checkWeekPassword
+
+mixin content
+	.layout.layout-column(
+		[ngStyle]=`{
+			'max-width.px'
+			: (step == SIGNUP_STEP?.otp)
+			? 404 : '376' }`)
+		.layout-column.layout-align-start-center.layout-gap-20.full-width
+			ng-container([ngSwitch]='step')
+				ng-container(*ngSwitchCase='SIGNUP_STEP?.signUp')
+					h2
+						| {{ "AUTH.MESSAGE.SIGN_UP_TITLE" | translate }}
+					.layout-column.layout-gap-16.full-width
+						form#signUpForm(
+							autocomplete='off',
+							[formGroup]='signUpForm',
+							(submit)='signup()')
+							cub-form-field(
+								hideRequiredMarker,
+								[label]='"AUTH.LABEL.EMAIL" | translate')
+								input(
+									cubFormFieldInput,
+									autoFocusOn,
+									type='email',
+									[placeholder]='"AUTH.PLACEHOLDER.TYPE_EMAIL" | translate',
+									[formControl]='signUpForm?.controls?.email',
+									[(ngModel)]='account.email',
+									(ngModelChange)='emailChange( $event )')
+								div(cubFormFieldError, *ngIf='isExistAccount')
+									| {{ "AUTH.MESSAGE.EXISTING_ACCOUNT" | translate }}
+						button.full-width(
+							cubButton='primary',
+							form='signUpForm',
+							type='submit',
+							size='large',
+							[loading]='isSubmitting',
+							[disabled]=`signUpForm?.invalid
+								|| isSubmitting
+								|| isExistAccount
+								|| isGoogleSubmitting
+								|| isMicrosoftSubmitting`)
+							| {{ "AUTH.LABEL.SIGN_UP" | translate }}
+						.text-center(
+							[innerHtml]='"AUTH.MESSAGE.SIGN_UP_HINT" | translate | safeHtml')
+					.layout-column.layout-align-start-center.full-viewport-horizontal.layout-gap-8
+						.layout-row.full-width.layout-align-center-center
+							cub-divider.full-width(horizontal)
+							.continue-with
+								| {{ "AUTH.LABEL.OR_CONTINUE_WITH" | translate }}
+							cub-divider.full-width(horizontal)
+						.button-login
+							button.flex-50(
+								cubButton='secondary',
+								icon='assets/images/icons/google.webp',
+								iconSize='16px',
+								[loading]='isGoogleSubmitting',
+								[disabled]=`isSubmitting
+									|| isGoogleSubmitting
+									|| isMicrosoftSubmitting`,
+								(click)='signUpByGoogle()')
+								| {{ "AUTH.LABEL.SIGN_UP_WITH_GOOGLE" | translate }}
+							button.flex-50(
+								cubButton='secondary',
+								icon='assets/images/icons/microsoft.webp',
+								iconSize='16px',
+								[loading]='isMicrosoftSubmitting',
+								[disabled]=`isSubmitting
+									|| isGoogleSubmitting
+									|| isMicrosoftSubmitting`,
+								(click)='signUpByMicrosoft()')
+								| {{ "AUTH.LABEL.SIGN_UP_WITH_MICROSOFT" | translate }}
+					include blocks/block-have-account.partial.pug
+				ng-container(*ngSwitchCase='SIGNUP_STEP?.otp')
+					+otp('SIGNUP_STEP.signUp')
+				ng-container(*ngSwitchCase='SIGNUP_STEP?.submit')
+					h2
+						| {{ "AUTH.MESSAGE.SETTING_ACCOUNT" | translate }}
+					.layout-column.layout-gap-16.full-width
+						.layout-row.layout-align-center-center
+							| {{ "AUTH.MESSAGE.EMAIL_REGISTERING_WITH" | translate }}&nbsp;
+							.text-semibold
+								| {{ account.email }}
+						form#signUpForm.layout-column.layout-gap-16.full-width(
+							autocomplete='off',
+							[formGroup]='signUpForm',
+							(submit)='submitAccountInfo()')
+							cub-form-field(
+								hideRequiredMarker,
+								[label]='"AUTH.LABEL.NAME" | translate')
+								input(
+									cubFormFieldInput,
+									autoFocusOn,
+									minlength='4',
+									[placeholder]='"AUTH.PLACEHOLDER.TYPE_NAME" | translate',
+									[formControl]='signUpForm?.controls?.name',
+									[(ngModel)]='account.name')
+							+passwordFormFieldInput(
+								'PASSWORD',
+								'signUpForm?.controls?.newPassword')
+							+confirmPasswordFormFieldInput(
+								'CONFIRM_PASSWORD',
+								'signUpForm?.controls?.confirmNewPassword')
+						button.full-width(
+							cubButton='primary',
+							form='signUpForm',
+							type='submit',
+							size='large',
+							[disabled]='signUpForm?.invalid || isSubmitting',
+							[loading]='isSubmitting')
+							| {{ "AUTH.LABEL.DONE" | translate }}
+						.text-center([innerHtml]='"AUTH.MESSAGE.SIGN_UP_HINT" | translate')
+
+include patterns/auth.pug

@@ -1,0 +1,11 @@
+@import '../../scss/partials/variable';
+
+.cub-button-toggle {
+	$self: &;
+
+	display: flex;
+	width: fit-content;
+	border-radius: 8px;
+
+	background-color: $color-material-default;
+}

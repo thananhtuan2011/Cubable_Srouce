@@ -1,0 +1,35 @@
+cub-scroll-bar.setting-block(suppressX)
+	.layout-column.layout-gap-8
+		| {{ "BASE.BOARD.FORM.MESSAGE.COMPLETE_CUSTOM_MESSAGE" | translate }}
+		cub-form-field(
+			resizable,
+			[label]='"BASE.BOARD.FORM.LABEL.CONTENT" | translate')
+			textarea(
+				cubFormFieldInput,
+				rows='3',
+				[ngModel]=`( default.completeMessage | translate )
+					|| form.settings?.completeMessage`,
+				(ngModelChange)='setCompleteMessage( $event )',
+				(blur)='setDefaultCompleteMessage()')
+	.layout-column.layout-gap-8
+		| {{ "BASE.BOARD.FORM.MESSAGE.CUSTOMIZE_THE_SHARING_STATUS_MESSAGE" | translate }}
+		cub-form-field(
+			resizable,
+			[label]='"BASE.BOARD.FORM.LABEL.CONTENT" | translate')
+			textarea(
+				cubFormFieldInput,
+				rows='3',
+				[ngModel]=`( default.invalidFormMessage | translate )
+					|| form.settings?.invalidFormMessage`,
+				(ngModelChange)='setInvalidFormMessage( $event )',
+				(blur)='setDefaultInvalidFormMessage()')
+	.layout-row.layout-align-start-center.layout-gap-8
+		cub-switch(
+			color='primary',
+			[formControl]='switchControl',
+			[valueControl]=`( form.settings?.hintSendOtherAnswer === false
+				|| form.settings?.hintSendOtherAnswer === true )
+					? form.settings?.hintSendOtherAnswer
+					: true`,
+			(valueControlChange)='hintSendOtherAnswerChange( $event )')
+		span([innerHtml]='"BASE.BOARD.FORM.LABEL.SHOW_BUTTON" | translate')

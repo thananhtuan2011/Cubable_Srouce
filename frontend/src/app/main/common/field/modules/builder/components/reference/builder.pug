@@ -1,0 +1,103 @@
+include ../builder.include.pug
+
+ng-template(#settingBlock)
+	cub-menu.search-menu(#searchMenu, maxHeight='330px')
+		cub-menu-content
+			ng-template(cubMenuContent)
+				ng-container(*ngIf='searchData?.boards.length || searchData?.views.length')
+					ng-container(*ngIf='searchData?.boards.length')
+						.ml-12.mb-4
+							| {{ "FIELD.BUILDER.LABEL.BOARD" | translate }}
+						cub-menu-group
+							button(
+								cubMenuItem,
+								*ngFor='let board of searchData.boards; ngForTrackByID',
+								(click)='onReferenceBoardIDChanged( board.id )')
+								| {{ board.name | empty }}
+					ng-container(*ngIf='searchData?.views.length')
+						.ml-12.mb-4
+							| {{ "FIELD.BUILDER.LABEL.VIEW" | translate }}
+						cub-menu-group
+							button(
+								cubMenuItem,
+								*ngFor='let view of searchData.views; ngForTrackByID',
+								(click)='onReferenceViewIDChanged( view.id, view.boardID )')
+								| {{ view.name | empty }}
+				ng-container(*ngIf='!searchData?.boards.length && !searchData?.views.length')
+					.ph-12.pv-10([style.backgroundColor]='"WHITE" | color', [style.borderRadius]='"12px"')
+						| {{ "FIELD.BUILDER.MESSAGE.NO_RESULT_FOUND" | translate }}
+
+	.layout-column.layout-gap-8
+		b
+			| {{ "FIELD.BUILDER.LABEL.REFERENCE_FROM" | translate }}
+		cub-search-box(
+			cubMenuTriggerProgrammatically,
+			cubMenuTriggerType='fit-menu',
+			#searchMenuTriggerFor='cubMenuTriggerFor',
+			[cubMenuTriggerDisableOpen]='!searchName',
+			[placeholder]='"FIELD.BUILDER.PLACEHOLDER.SEARCH_REFERENCE_LINK" | translate',
+			[searchQuery]='searchName',
+			[cubMenuTriggerFor]='searchMenu',
+			(searching)='search( $event )',
+			(container.click)='searchMenuTriggerFor.open()')
+	ng-container(*ngIf='isLoading, else elseBlock')
+		.layout-row.layout-align-center-start.full-width
+			cub-loading
+	ng-template(#elseBlock)
+		form.layout-column.layout-gap-16([formGroup]='referenceForm')
+			cub-dropdown(
+				required,
+				#boardDropdown,
+				formControlName='board',
+				[label]='"FIELD.BUILDER.LABEL.BOARD" | translate',
+				[valueControl]='internalField?.reference?.boardID',
+				(valueControlChange)='onReferenceBoardIDChanged( $event )')
+				cub-dropdown-item(
+					*ngFor='let board of listBoardreference; ngForTrackByID',
+					[label]='board.name',
+					[value]='board.id')
+				ng-container(
+					cubDropdownError,
+					*ngIf=`
+						internalField?.reference
+						&& internalField.reference.boardID === null`)
+					| {{ "FIELD.BUILDER.MESSAGE.BOARD_DELETED" | translate }}
+
+			cub-dropdown(
+				#viewDropdown,
+				formControlName='view',
+				[disableControl]='!internalField?.reference?.boardID',
+				[label]='"FIELD.BUILDER.LABEL.VIEW" | translate',
+				[valueControl]='internalField?.reference?.viewID',
+				(valueControlChange)='onReferenceViewIDChanged( $event )')
+				cub-dropdown-item(
+					*ngFor='let view of views; ngForTrackByID',
+					[label]='view.name',
+					[value]='view.id')
+				ng-container(
+					cubDropdownError,
+					*ngIf=`
+						internalField?.reference
+						&& internalField.reference.viewID === null`)
+					| {{ "FIELD.BUILDER.MESSAGE.VIEW_DELETED" | translate }}
+
+	cub-checkbox(
+		[label]='"FIELD.BUILDER.LABEL.ALLOW_MULTIPLE_SELECT" | translate',
+		[(ngModel)]='internalField.isMultipleSelect',
+		(ngModelChange)='onSelectionModeSwitched( $event )')
+
+ng-template(#defaultBlock)
+	cub-dropdown(
+		[multiple]='internalField.isMultipleSelect',
+		[searchable]='true',
+		[label]='"FIELD.BUILDER.LABEL.DEFAULT_VALUE" | translate',
+		[ngModel]='initialData?.value',
+		(ngModelChange)='onInitialDataChanged( $event )',
+		(opened)='openDropdownDefaultValue()')
+		cub-dropdown-item(
+			*ngFor='let item of recordItems || initialData?.selected; ngForTrackByID',
+			[label]='item.data',
+			[value]='item.id')
+
+ng-container(
+	*ngTemplateOutlet='fieldTemplate; context: { settingBlock, defaultBlock, canSetRequired: true };')

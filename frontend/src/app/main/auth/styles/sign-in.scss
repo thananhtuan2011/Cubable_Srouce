@@ -1,0 +1,155 @@
+@import 'src/app/@cub/scss/partials/variable';
+
+@mixin workspace-item {
+	flex-direction: column;
+	border: 1px solid $color-border-primary;
+	row-gap: 8px;
+
+	.workspace-item__content {
+		display: flex;
+		flex-direction: row;
+		column-gap: 8px;
+
+		.workspace-icon {
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			color: $color-white;
+			font-weight: 500;
+			border-radius: 8px;
+			height: 68px;
+			width: 68px;
+			font-size: 24px;
+			line-height: 32px;
+		}
+
+		.remove-button {
+			place-self: flex-start;
+		}
+
+		.selected-show {
+			display: none;
+			align-items: center;
+		}
+
+		.selected-hide {
+			display: flex;
+			align-items: center;
+		}
+
+		.d-flex {
+			display: flex !important;
+		}
+	}
+
+	.workspace-item__action {
+		display: none;
+		flex-direction: row;
+		column-gap: 8px;
+	}
+}
+
+:host {
+	.workspace-list {
+		display: flex;
+		justify-content: center;
+		flex-flow: wrap;
+		gap: 8px;
+		width: 100%;
+		max-height: 468px;
+
+		.workspace {
+			cursor: pointer;
+
+			display: flex;
+			justify-content: center;
+			border-radius: 16px;
+			padding: 8px;
+			width: 250px;
+			height: 84px;
+		}
+
+		.new-workspace-item {
+			flex-direction: row;
+			align-items: center;
+			column-gap: 12px;
+			border: 1px dashed $color-border-secondary;
+
+			&:hover {
+				border: 1px solid $color-border-quaternary;
+			}
+		}
+
+		.workspace-item {
+			@include workspace-item;
+
+			&:hover {
+				border-color: $color-border-quaternary;
+			}
+		}
+
+		.workspace-item--fade {
+			@include workspace-item;
+
+			background-color: $color-white;
+			animation: fade .2s ease-in-out;
+		}
+
+		.workspace-item--selected {
+			@include workspace-item;
+
+			&:hover {
+				border-color: $color-border-quaternary;
+			}
+
+			.workspace-item__content {
+				.workspace-small-icon {
+					height: 36px;
+					width: 36px;
+					font-size: 13px;
+					line-height: 20px;
+				}
+
+				.selected-show {
+					display: flex;
+				}
+
+				.selected-hide {
+					display: none;
+				}
+			}
+
+			.workspace-item__action {
+				display: flex;
+			}
+		}
+	}
+
+	not-found {
+		min-height: 0;
+		padding-top: 0;
+	}
+
+	@media screen and (min-width: 854px) {
+		.workspace-list {
+			justify-content: start;
+		}
+	}
+
+	@keyframes borderAnimation {
+		from { background-position: 0 0, -20px 0, 100% -20px, 0 100%; }
+		to { background-position: 0 -20px, 0 0, 100% 0, -20px 100%; }
+	}
+
+	@keyframes fade {
+		0% {
+			opacity: 1;
+		}
+		50% {
+			opacity: 0;
+		}
+		100% {
+			opacity: 1;
+		}
+	}
+}

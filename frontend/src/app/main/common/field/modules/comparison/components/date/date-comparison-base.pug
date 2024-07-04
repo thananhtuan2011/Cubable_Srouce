@@ -1,0 +1,193 @@
+include ../mixins/mixin.pug
+
+mixin rangeButton
+	button(
+		cubDatePicker,
+		cubDatePickerDateOnly,
+		cubDatePickerDateRange,
+		cubDatePickerDateRangeInput,
+		trailingIcon='chevron-down',
+		leadingIcon='calendar-clock-fill',
+		#rangeTrigger='cubDatePicker',
+		[isShowInvalidState]=`
+			( showRequireError?.required
+				|| showRequireError?.value )
+			&& error?.data`,
+		[disabled]='error?.field',
+		[(dateRangeValue)]='dateRangeValue',
+		(dateRangeValueChange)='dateRangeValueChange()')&attributes(attributes)
+		span
+			ng-container(*ngIf='dateRangeValue; else elseBlock;')
+				| {{ dateRangeValue[ 0 ] | dateValue : field?.format }}
+				| -
+				| {{ dateRangeValue[ 1 ] | dateValue : field?.format }}
+			ng-template(#elseBlock)
+				.text-color-tertiary
+					| {{ "FIELD.COMPARISON.PLACEHOLDER.SELECT_OPTION" | translate }}
+
+mixin range
+	ng-container(
+		*ngIf=`
+			!( showRequireError?.required
+				|| showRequireError?.value ); else elseBlock`)
+		+rangeButton()(cubButton='secondary')
+	ng-template(#elseBlock)
+		cub-form-field.date-basic-button(
+			displayErrorMode='tooltip')
+			+rangeButton()(cubBasicButton)
+			ng-container(
+				cubFormFieldError,
+				*ngIf='showRequireError?.required')
+				| {{ "FIELD.COMPARISON.MESSAGE.REQUIRED" | translate }}
+			ng-container(
+				cubFormFieldError,
+				*ngIf='showRequireError?.value')
+				| {{ "FIELD.COMPARISON.MESSAGE.END_EARLIER_START_DATE" | translate }}
+
+//- mixin dateType
+//- 	cub-dropdown(
+//- 		required,
+//- 		#compareTypeDropdown,
+//- 		*ngIf='data?.compareType',
+//- 		[displayErrorMode]='ERROR_MODE.Tooltip',
+//- 		[disableControl]=`
+//- 			error?.field
+//- 				|| ( excludeFields?.isDisable
+//- 					&& ( excludeFieldsLK?.[ field?.id ] ) )`,
+//- 		[clearable]='false',
+//- 		[formControl]='generalComparisonControl',
+//- 		[valueControl]='data?.compareType',
+//- 		(valueControlChange)='onCompareTypeChange( $event )')
+//- 		cub-dropdown-item(
+//- 			[label]='"FIELD.COMPARISON.METHOD.CUSTOM.SPECIFIC_DATE" | translate',
+//- 			[value]='dateDataType.CUSTOM_DATE')
+//- 		cub-dropdown-item(
+//- 			[label]='"FIELD.COMPARISON.METHOD.SPECIFIC_FIELD" | translate',
+//- 			[value]='dateDataType.CUSTOM_FIELD')
+
+cub-menu.compare-today-menu(
+	#compareTodayMenu,
+	width='282px',
+	(closed)='onDataChange()')
+	cub-menu-content
+		ng-template(cubMenuContent)
+			.context
+				.layout-row.layout-align-start-center.layout-gap-8([formGroup]='compareTodayForm')
+					cub-dropdown.flex.miw-94(
+						formControlName='prefixControl',
+						[clearable]='false',
+						[disableControl]=`
+							error?.field
+								|| ( excludeFields?.isDisable
+									&& ( excludeFieldsLK?.[ field?.id ] ) )`,
+						[placeholder]='"FIELD.COMPARISON.PLACEHOLDER.SELECT_OPTION" | translate',
+						[(valueControl)]='data.prefix',
+						(valueControlChange)='handleDateRange()')
+						cub-dropdown-item(
+							*ngFor='let p of prefixes; ngForTrackByValue',
+							[label]='p | prefixTranslate | lowercase',
+							[value]='p')
+					cub-form-field.maw-54(
+						displayErrorMode='tooltip',
+						*ngIf='data?.prefix !== timePeriodPrefixType.THIS')
+						input(
+							cubFormFieldInput,
+							min='0',
+							type='number',
+							placeholder='0',
+							pattern='[0-9]+',
+							formControlName='quantityControl',
+							[disableControl]=`
+								error?.field
+									|| ( excludeFields?.isDisable
+										&& ( excludeFieldsLK?.[ field?.id ] ) )`,
+							[clearable]='false',
+							[valueControl]='data.quantity',
+							(valueControlChange)='handleDateRange( $event )')
+						ng-container(
+							cubFormFieldError,
+							*ngIf='data?.quantity < 1')
+							| {{ "FIELD.COMPARISON.MESSAGE.QUANTITY_INVALID" | translate }}
+					cub-dropdown.flex.miw-94(
+						formControlName='typeControl',
+						[clearable]='false',
+						[disableControl]=`
+							error?.field
+								|| ( excludeFields?.isDisable
+									&& ( excludeFieldsLK?.[ field?.id ] ) )`,
+						[placeholder]='"FIELD.COMPARISON.PLACEHOLDER.SELECT_OPTION" | translate',
+						[(valueControl)]='data.type',
+						(valueControlChange)='handleDateRange()')
+						cub-dropdown-item(
+							*ngFor='let u of types; ngForTrackByValue',
+							[label]='u | typeTranslate: data.prefix | lowercase',
+							[value]='u')
+				.text-color-tertiary
+					| {{'CUB.MESSAGE.FILTER' | translate}}
+			cub-date-picker(
+				dateOnly,
+				dateRange,
+				[canManualChange]='false',
+				[picked]='dateRangeValue')
+
+.layout-row.layout-align-start-center.layout-gap-8.layout-wrap.flex
+	ng-container(*ngTemplateOutlet='fieldPicker')
+
+	+comparisonOperator
+
+	ng-container([ngSwitch]='operator')
+		ng-container(*ngSwitchCase='comparisonOperator.IS_BETWEEN')
+			+range
+		ng-container(*ngSwitchCase='comparisonOperator.IS_NOT_BETWEEN')
+			+range
+		ng-container(*ngSwitchCase='comparisonOperator.COMPARE_TODAY')
+			cub-form-field.date-basic-button(
+				displayErrorMode='tooltip')
+				button(
+					cubBasicButton,
+					leadingIconSize='20px',
+					trailingIconSize='16px',
+					trailingIcon='chevron-down',
+					leadingIcon='calendar-fill',
+					#compareTodayMenuTrigger='cubMenuTriggerFor',
+					[disabled]='error?.field',
+					[cubMenuTriggerFor]='compareTodayMenu')
+					span
+						ng-container(*ngIf='data?.prefix; else elseBlock')
+							| {{ ( data.prefix | prefixTranslate ) }}&nbsp;
+							ng-container(*ngIf='data.quantity')
+								| {{ data.quantity }}&nbsp;
+							| {{ data.type | typeTranslate: data.prefix | lowercase }}
+						ng-template(#elseBlock)
+							.text-color-tertiary
+								| {{ "FIELD.COMPARISON.PLACEHOLDER.SELECT_OPTION" | translate }}
+				ng-container(
+					cubFormFieldError,
+					*ngIf='error?.data')
+					| {{ "FIELD.COMPARISON.MESSAGE.QUANTITY_INVALID" | translate }}
+
+	ng-container(*ngIf='data?.compareType')
+		ng-container([ngSwitch]='data?.compareType')
+			ng-container(*ngSwitchCase='COMPARISON_TYPE.STATIC')
+				cub-form-field.flex.miw-200(
+					displayErrorMode='tooltip')
+					input(
+						required,
+						cubDatePickerDateOnly,
+						cubFormFieldInput,
+						placeholder='DD/MM/YYYY',
+						#dateInput='cubFormFieldInput',
+						[clearable]='false',
+						[disableControl]=`
+							error?.field
+								|| ( excludeFields?.isDisable
+									&& ( excludeFieldsLK?.[ field?.id ] ) )`,
+						[formControl]='dataControl',
+						[cubDatePicker]='data?.date',
+						[cubDatePickerDateFormat]='field?.format',
+						(picked)='pickSpecificDate( $event )')
+			ng-container(*ngSwitchCase='COMPARISON_TYPE.AUTO')
+				+comparisonTypeAuto
+
+	ng-container(*ngIf='operatorHasComparisonType.has( operator )')
+		+comparisonType

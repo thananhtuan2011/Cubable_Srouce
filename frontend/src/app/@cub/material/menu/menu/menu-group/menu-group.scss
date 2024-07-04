@@ -1,0 +1,67 @@
+@import '../../../../scss/partials/variable';
+
+.cub-menu-group {
+	$self: &;
+	$item: '.cub-menu-item';
+
+	display: flex;
+	flex-direction: column;
+	row-gap: 6px;
+	width: 100%;
+	min-width: 0;
+	max-width: 100%;
+
+	&:has(#{ $self }__content:empty) {
+		display: none;
+	}
+
+	&#{ $self }--row-direction {
+		#{ $self }__content {
+			display: flex;
+			flex-direction: row;
+			flex-wrap: wrap;
+
+			#{ $item } {
+				flex: 0 1 calc(100% / var(--items-per-line));
+				border-radius: unset;
+
+				&#{ $item }-last {
+					#{ $item }__right:after {
+						border: none;
+					}
+				}
+			}
+		}
+	}
+
+	#{ $self }__title,
+	#{ $self }__content {
+		&:empty {
+			display: none;
+		}
+	}
+
+	#{ $self }__title {
+		padding: {
+			left: 12px;
+			right: 12px;
+		};
+
+		color: $color-text-secondary;
+
+		font-weight: $font-weight-semibold;
+		font-size: 12px;
+		line-height: 16px;
+	}
+
+	#{ $self }__content {
+		border-radius: 8px;
+		overflow: hidden;
+
+		background-color: $color-white;
+
+		&:not(:has(#{ $item })) {
+			padding: 10px 12px;
+		}
+	}
+}

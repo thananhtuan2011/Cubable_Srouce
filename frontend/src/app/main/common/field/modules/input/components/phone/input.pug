@@ -1,0 +1,50 @@
+include ../mixins/mixin.pug
+
+ng-container(*ngIf='$any( data )?.valueType; else elseBlock;')
+	.layout-row.layout-gap-8
+		ng-container([ngSwitch]='$any( data ).valueType')
+			ng-container(*ngSwitchCase='VALUE_TYPE.STATIC')
+				cub-phone-field.flex(
+					[label]='innerLabel',
+					[placeholder]='placeholder',
+					[size]='size',
+					[variant]='variant',
+					[displayErrorMode]='displayErrorMode',
+					[autoFocusOn]='autoFocusOn',
+					[hideRequiredMarker]='hideRequiredMarker',
+					[required]='isRequired',
+					[readonly]='readonly',
+					[clearable]='!readonly',
+					[phoneOnly]='phoneOnly',
+					[defaultCountryCode]='readonly ? undefined : field.countryCode',
+					[formControl]='formControl',
+					[disableControl]='disabled',
+					[valueControl]='$any( data )?.data | clone',
+					(valueControlChange)='onDataChanged( $event )')
+			ng-container(*ngSwitchCase='VALUE_TYPE.DYNAMIC')
+				+formField
+					+dynamicValue()(
+						readonly,
+						(click)='plusButton.open()')
+			ng-container(*ngSwitchCase='VALUE_TYPE.EMPTY')
+				+formField
+					+emptyValue
+		+valueTypeSwitch
+ng-template(#elseBlock)
+	cub-phone-field(
+		[label]='innerLabel',
+		[placeholder]='placeholder',
+		[size]='size',
+		[variant]='variant',
+		[displayErrorMode]='displayErrorMode',
+		[autoFocusOn]='autoFocusOn',
+		[hideRequiredMarker]='hideRequiredMarker',
+		[required]='isRequired',
+		[readonly]='readonly',
+		[clearable]='!readonly',
+		[phoneOnly]='phoneOnly',
+		[defaultCountryCode]='readonly ? undefined : field.countryCode',
+		[formControl]='formControl',
+		[disableControl]='disabled',
+		[valueControl]='data | clone',
+		(valueControlChange)='onDataChanged( $event )')

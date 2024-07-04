@@ -1,0 +1,55 @@
+@import 'src/scss/partials/variable';
+
+.wgc-search-box {
+	display: flex;
+	flex-direction: column;
+
+	.wgc-search-box__form-field {
+		width: 100%;
+
+		&.wgc-form-field--legacy {
+			&:not(.wgc-form-field--disabled) {
+				&.wgc-form-field--focusing,
+				&:not(.wgc-form-field--empty) {
+					.wgc-form-field__input-container .wgc-form-field__prefix {
+						margin-left: 10px;
+					}
+				}
+
+				.wgc-form-field__input-container .wgc-form-field__prefix {
+					transition: margin-left 100ms ease-in-out;
+					padding-left: 0;
+				}
+			}
+		}
+	}
+
+	.wgc-search-box__avatar {
+		margin-right: 10px;
+		width: 45px;
+		min-width: 45px;
+		max-width: 45px;
+	}
+
+	.wgc-search-box__content {
+		display: flex;
+		flex-direction: column;
+		text-align: left;
+		width: 100%;
+		min-width: 0;
+	}
+
+	.wgc-search-box__title {
+		font-size: 16px;
+	}
+
+	.wgc-search-box__description {
+		color: $color-label;
+		font-weight: $font-weight-regular;
+	}
+
+	.wgc-search-box-item {
+		display: flex;
+		align-items: center;
+	}
+}

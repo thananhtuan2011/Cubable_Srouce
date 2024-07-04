@@ -1,0 +1,50 @@
+@import "src/app/@cub/scss/partials/variable";
+
+:host {
+	.field-view-edit {
+		width: 100%;
+		overflow: hidden;
+	
+		.field-content {
+			position: relative;
+			display: flex;
+			flex-direction: row;
+			gap: 6px;
+	
+			.field-content-item {
+				min-height: 22px;
+				max-height: 300px;
+				display: flex;
+				align-items: center;
+				flex-direction: row;
+				flex-wrap: wrap;
+				gap: 6px;
+			}
+
+			.cub-chip {
+				border: 1px solid $color-material-default;
+			}
+	
+			.field__btn-stick-on-content {
+				visibility: hidden;
+				position: sticky;
+				top: 0;
+				height: fit-content;
+				margin-left: auto;
+				margin-right: 10px;
+			}
+	
+			&:hover {
+				.field__btn-stick-on-content {
+					visibility: visible;
+				}
+			}
+		}
+	}
+
+	::ng-deep {
+		.cub-form-field__input__placeholder {
+			width: 100%;
+		}
+	}
+}

@@ -1,0 +1,28 @@
+{
+	"LABEL": {
+		"ADD_FIELD": "Thêm trường",
+		"CLOSE": "Close",
+		"DELETE": "Xóa",
+		"DELETE_COMMENT": "Xóa bình luận?",
+		"DOWNLOAD_QR": "Tải mã QR xuống",
+		"FIELD_HIDDEN": "{{ count }} trường bị ẩn",
+		"FILL_TEXT": "Nhập văn bản",
+		"FOLLOW": "Theo dõi",
+		"KEEP": "Giữ lại",
+		"LOCK": "Khóa",
+		"PRINT": "In",
+		"SHARE": "Chia sẻ",
+		"SHARE_LINK": "Chia sẻ qua liên kết",
+		"SHARE_QR": "Chia sẻ QR",
+		"UN_NAME": "Chưa đặt tên",
+		"UNDEFINED_NAME": "Không xác định"
+	},
+	"MESSAGE": {
+		"DELETE_COMMENT_CONFIRM": "Bạn có chắc chắn muốn xóa bình luận này không?",
+		"DELETE_ITEM": "Xóa {{ name }} ?",
+		"DELETE_ITEM_PERMANENTLY": "Mục dữ liệu sẽ bị xóa vĩnh viễn",
+		"NO_RESULT_FOUND": "Không tìm thấy kết quả",
+		"RECORD_NOT_AVAILABLE": "Mục dữ liệu hiện không khả dụng",
+		"NOT_ALLOW_PERMISSION": "Bạn không có quyền truy cập Board này. Vui lòng liên hệ Quản trị viên để được cấp quyền."
+	}
+}

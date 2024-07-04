@@ -1,0 +1,62 @@
+.content
+	.layout-row.layout-align-space-between-center.pv-12.ph-20
+		h5.text-truncate.maw-382([title]='form.name | empty')
+			| {{ form.name | empty }}
+
+		cub-tabs([(selectedIndex)]='tabIndex')
+			cub-tab([label]='"BASE.BOARD.FORM.LABEL.CONTENT" | translate')
+			cub-tab([label]='"BASE.BOARD.FORM.LABEL.PREVIEW" | translate')
+			cub-tab([label]='"BASE.BOARD.FORM.LABEL.SETTING" | translate')
+
+		.layout-row.layout-align-start-center.layout-gap-12
+			button(
+				cubBasicButton,
+				sharingForm,
+				icon='share',
+				iconSize='20px',
+				position='start-below',
+				[active]='sharingForm?.isOpened',
+				[context]=`{
+					form: formDetail,
+					hasIFrame: true
+				}`,
+				(closed)='cdRef.markForCheck()')
+				| {{ "BASE.BOARD.FORM.LABEL.SHARE" | translate }}
+			button(
+				cubBasicButton,
+				icon='check-circle',
+				iconSize='20px',
+				[disabled]='!( isChanged && isValid )',
+				(click)='updateForm()')
+				| {{ "BASE.BOARD.FORM.LABEL.SAVE" | translate }}
+			button(
+				cubClearButton,
+				size='20px',
+				(click)='cancel()')
+
+	cub-divider
+
+	.tab-content([id]='"formContent"')
+		ng-container([ngSwitch]='tabIndex')
+			editing(
+				#editing,
+				*ngSwitchCase='contentTab.CONTENT',
+				[form]='formDetail',
+				[formView]='form',
+				[fields]='fields',
+				[showAddedFieldID]='showAddedFieldID',
+				[isValid]='isValid',
+				(formChange)='changeForm( $event )',
+				(fieldChange)='changeField( $event )',
+				(formFieldChange)='changeFormField( $event )',
+				(isValidChange)='isValid = $event')
+			submitting(
+				*ngSwitchCase='contentTab.PREVIEW',
+				[form]='formDetail',
+				[formMode]='previewMode',
+				[boardID]='board.id')
+			setting(
+				*ngSwitchCase='contentTab.SETTING',
+				[form]='formDetail',
+				(formSetting)='formDetail.settings = $event',
+				(isChanged)='isChanged = $event')

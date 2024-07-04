@@ -1,0 +1,42 @@
+:host {
+	display: flex;
+	flex-direction: column;
+	width: 100%;
+	min-width: 0;
+	height: 100%;
+	min-height: 0;
+
+	&::ng-deep {
+		.name-input {
+			.cub-form-field__input {
+				min-width: 280px;
+				min-height: 28px;
+				padding: 0 12px;
+				display: flex;
+				justify-items: center;
+
+				.cub-form-field__input__btn-clear,
+				.cub-form-field__input__content {
+					min-height: 26px;
+					align-self: center;
+
+					input,
+					input ::placeholder {
+						font-size: 20px;
+					}
+				}
+			}
+		}
+	}
+
+	.role-name {
+		&:hover {
+			line-height: 28px;
+			border: 1px solid #363636;
+			border-radius: 8px;
+			background: #fff;
+			padding: 0 12px;
+		}
+	}
+
+}

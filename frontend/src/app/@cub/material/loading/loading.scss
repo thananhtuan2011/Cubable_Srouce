@@ -1,0 +1,11 @@
+@import '../../scss/partials/mixin';
+
+.cub-loading {
+	$self: &;
+
+	@include spin-animation;
+
+	display: flex;
+	width: fit-content;
+	height: fit-content;
+}

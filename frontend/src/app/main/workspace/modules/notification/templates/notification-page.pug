@@ -1,0 +1,69 @@
+mixin title(title)
+	| {{ "NOTIFICATION.LABEL.#{title}"  | translate }}
+
+mixin buttonAction(title, icon, tabType, count)
+	button(
+		cubListItem,
+		[active]=`selectedTab === ${tabType}`,
+		(click)=`onTabChange(${tabType})`)
+		.layout-row.layout-align-space-between-center.flex
+			.layout-row.layout-align-start-center.layout-gap-8
+				cub-icon(
+					size='20px',
+					name=icon)
+				| {{ "NOTIFICATION.LABEL.#{title}" | translate }}
+			cub-badge(
+				inline,
+				*ngIf=`${count}`,
+				[count]=`${count}`)
+
+.sidebar
+	.pv-22.ph-24.layout-row.layout-align-start-center.layout-gap-2
+		cub-icon(
+			size='22px',
+			color='primary',
+			name='bell')
+		h5
+			| {{ "NOTIFICATION.LABEL.NOTIFICATION" | translate }}
+	cub-divider
+	.p-12.full-height
+		cub-list-group.layout-gap-4
+			+buttonAction(
+				'ALL',
+				'document',
+				'TAB_TYPE.ALL',
+				'countBadge?.total')
+			+buttonAction(
+				'UN_READ',
+				'check-circle',
+				'TAB_TYPE.UN_READ',
+				'countBadge?.unRead')
+			+buttonAction(
+				'RELATE_COMMENT',
+				'mention',
+				'TAB_TYPE.RELATE_COMMENT',
+				'countBadge?.relatedComment')
+.content
+	.ph-16.layout-row.layout-align-space-between-center.full-width.h-68
+		h4
+			ng-container([ngSwitch]='selectedTab')
+				ng-container(*ngSwitchCase='TAB_TYPE.ALL')
+					+title('ALL_NOTIFICATION')
+				ng-container(*ngSwitchCase='TAB_TYPE.UN_READ')
+					+title('UN_READ_NOTIFICATION')
+				ng-container(*ngSwitchCase='TAB_TYPE.RELATE_COMMENT')
+					+title('RELATE_NOTIFICATION')
+		button.w-200.h-36(
+			cubButton,
+			leadingIcon='check-circle',
+			leadingIconSize='20px',
+			(click)='markAllAsRead()')
+			| {{ "NOTIFICATION.LABEL.MARK_ALL_AS_READ" | translate }}	
+	cub-divider.full-width
+	.pr-10.layout-column.layout-align-center-center.full-width(
+		*ngIf='notification',
+		[style.overflow]="'hidden'")
+		notification(
+			[notification]='notification',
+			(notificationChecked)='onNotificationChecked( $event )',
+			(notificationLoadMore)='onNotificationLoadMore( $event )')

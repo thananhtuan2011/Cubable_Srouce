@@ -1,0 +1,53 @@
+cub-card(
+	variant='tonal',
+	size='small')
+	cub-card-content
+		.layout-column.layout-gap-12
+			cub-form-field(
+				[label]='"BASE.WORKFLOW.SETUP.LOOP.LABEL.MAX_LOOP" | translate')
+				input(
+					appNumbersOnly,
+					required,
+					autoFocusOn,
+					cubFormFieldInput,
+					min='1',
+					max='100',
+					type='number',
+					[placeholder]='"BASE.WORKFLOW.SETUP.LOOP.PLACEHOLDER.MAX_LOOP" | translate',
+					[formControl]='maxLoopControl',
+					[(valueControl)]='maxLoop',
+					(valueControlChange)='onMaxLoopChanged()')
+				ng-template(
+					cubFormFieldError='max',
+					*ngIf='maxLoopControl?.errors?.max')
+					| {{ "BASE.WORKFLOW.SETUP.LOOP.ERROR.NOT_EXCEED_100" | translate }}
+			.layout-row.layout-align-start-center.layout-gap-8
+				cub-switch(
+					size='large',
+					[label]='"BASE.WORKFLOW.SETUP.LOOP.LABEL.LOOP_EXIT_CONDITION" | translate',
+					[ngModel]='conditionLoop',
+					(ngModelChange)='onChangeCondition( $event )')
+				cub-icon(
+					name='info-circle',
+					color='secondary',
+					size='16px',
+					maxWidth='300px',
+					[cubTooltip]='"BASE.WORKFLOW.SETUP.LOOP.MESSAGE.INFO_LOOP_CONDITION" | translate')
+			single-conditional(
+				*ngIf='conditionLoop',
+				#conditionalComp,
+				[label]='"BASE.WORKFLOW.SETUP.LOOP.LABEL.CONDITION_LIST" | translate',
+				[eventAdvance]='eventAdvance',
+				[boardID]='blockSetup.boardID',
+				[logicalExpression]='settings?.filter?.logicalExpression',
+				[options]='settings?.filter?.options',
+				[logicalOperator]='settings?.filter?.logicalOperator',
+				[conditions]='settings?.filter?.conditions',
+				(optionsChange)='onFilterOptionsChange( $event )',
+				(logicalOperatorChange)='onLogicalOperatorChange( $event )',
+				(logicalExpressionChange)='onLogicalExpressionChange( $event )',
+				(conditionsChange)='onConditionFilterChange( $event )',
+				(conditionalChange)='onSettingChanged()')
+
+			
+

@@ -1,0 +1,6 @@
+wgc-chart-legend(*ngIf='displayLegend && !isEmpty', [chart]='chart')
+canvas(#canvas)
+not-found(
+	mode='error',
+	[debounceTime]='1000',
+	[errorImage]='"assets/images/icons/chart-error.png"')

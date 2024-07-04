@@ -1,0 +1,101 @@
+include ../mixins/mixin.pug
+
+ng-container(*ngIf='$any( data )?.valueType; else elseBlock;')
+	.layout-row.layout-gap-8
+		ng-container([ngSwitch]='$any( data ).valueType')
+			ng-container(*ngSwitchCase='VALUE_TYPE.STATIC')
+				cub-form-field.flex(
+					[label]='innerLabel',
+					[size]='size',
+					[variant]='variant',
+					[displayErrorMode]='displayErrorMode',
+					[autoFocusOn]='autoFocusOn',
+					[hideRequiredMarker]='hideRequiredMarker',
+					[disabled]='disabled',
+					(container.dblclick)='onDblClick( $event, $any( data )?.data )',
+					(container.keydown)='onKeydown( $event, $any( data )?.data )',
+					(container.blur)='formControl.markAsTouched()')
+					ng-container(
+						cubFormFieldPlaceholder,
+						*ngIf='!$any( data )?.data && readonly')
+						| {{ placeholder }}
+					input(
+						cubFormFieldInput,
+						autoFocusOn,
+						type='number',
+						pattern='[0-9]+',
+						*ngIf='isInputting; else elseBlock;',
+						[min]='0',
+						[max]='field.maxPoint',
+						[placeholder]=`
+							placeholder
+								?? ( "FIELD.INPUT.PLACEHOLDER.FILL_RATING" | translate )
+						`,
+						[readonly]='readonly',
+						[clearable]='!readonly',
+						[formControl]='formControl',
+						[disableControl]='disabled',
+						[(valueControl)]='point',
+						(blur)='onBlur( $any( data ).data )')
+					ng-template(#elseBlock)
+						cub-rating(
+							*ngIf='$any( data )?.data || !readonly',
+							[disabled]='disabled',
+							[readonly]='readonly',
+							[range]='field.maxPoint',
+							[formControl]='formControl',
+							[valueControl]='$any( data ).data',
+							(valueControlChange)='onDataChanged( $event )')
+			ng-container(*ngSwitchCase='VALUE_TYPE.DYNAMIC')
+				+formField
+					+dynamicValue()(
+						readonly,
+						(click)='plusButton.open()')
+			ng-container(*ngSwitchCase='VALUE_TYPE.EMPTY')
+				+formField
+					+emptyValue
+		+valueTypeSwitch
+ng-template(#elseBlock)
+	cub-form-field(
+		[label]='innerLabel',
+		[size]='size',
+		[variant]='variant',
+		[displayErrorMode]='displayErrorMode',
+		[autoFocusOn]='autoFocusOn',
+		[hideRequiredMarker]='hideRequiredMarker',
+		[disabled]='disabled',
+		(container.dblclick)='onDblClick( $event, data )',
+		(container.keydown)='onKeydown( $event, data )',
+		(container.blur)='formControl.markAsTouched()')
+		ng-container(
+			cubFormFieldPlaceholder,
+			*ngIf='!data && readonly')
+			| {{ placeholder }}
+		input(
+			cubFormFieldInput,
+			autoFocusOn,
+			type='number',
+			pattern='[0-9]+',
+			*ngIf='isInputting; else elseBlock;',
+			[min]='0',
+			[max]='field.maxPoint',
+			[placeholder]=`
+				placeholder
+					?? ( "FIELD.INPUT.PLACEHOLDER.FILL_RATING" | translate )
+			`,
+			[readonly]='readonly',
+			[clearable]='!readonly',
+			[formControl]='formControl',
+			[disableControl]='disabled',
+			[(valueControl)]='point',
+			(blur)='onBlur( data )')
+		ng-template(#elseBlock)
+			cub-rating(
+				*ngIf='data || !readonly',
+				[disabled]='disabled',
+				[readonly]='readonly',
+				[range]='field.maxPoint',
+				[formControl]='formControl',
+				[valueControl]='data',
+				(valueControlChange)='onDataChanged( $event )')
+

@@ -1,0 +1,32 @@
+{
+	"LABEL": {
+		"ADMIN": "Quản trị viên",
+		"ACTIVATE": "Kích hoạt",
+		"ALL_WORKSPACE_USERS": "Tất cả người dùng thuộc Workspace",
+		"BASE": "Base",
+		"CREATE_BASE": "Tạo Base",
+		"CANCEL": "Hủy",
+		"CLOSE": "Đóng",
+		"DELETE_BASE": "Xóa Base",
+		"DELETE_BASE_USER": "Xóa Base (do chính người dùng tạo ra)",
+		"DEACTIVATE": "Vô hiệu hoá",
+		"GUEST": "Khách",
+		"INVITE": "Mời người dùng",
+		"INVITE_USER_TO_WORKSPACE": "Mời người dùng khác vào workspace",
+		"MEMBER": "Thành viên",
+		"MANAGE_USER_ROLE": "Quản lý người dùng thuộc vai trò này",
+		"OWNER": "Người sỡ hữu Workspace",
+		"ROLE_AND_PERMISSION": "Quản lý vai trò & Phân quyền",
+		"REMOVE_ROLE": "Gỡ bỏ Quản trị viên",
+		"VIEW_ROLE": "Xem quyền",
+		"SEARCH_USER_OR_TEAM": "Thêm người dùng",
+		"YES_DELETE": "Có, xóa",
+		"REMOVE_ACCESS_ROLE": "Gỡ bỏ {{ roleName }}"
+	},
+	"MESSAGE": {
+		"ADMIN_DESCRIPTION": "Có toàn quyền quản trị Workspace",
+		"MEMBER_DESCRIPTION": "Có quyền tạo Base và xoá những Base mà mình tạo ra",
+		"GUEST_DESCRIPTION": "Chỉ cộng tác trên các Base được chia sẻ",
+		"REMOVE_ROLE_CONFIRM": "{{ userName }} này sẽ bị gỡ khỏi {{ roleName }}. Bạn chắc chứ?"
+	}
+}

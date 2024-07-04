@@ -1,0 +1,73 @@
+include ../mixins/mixin.pug
+
+.layout-row.layout-align-start-center.layout-gap-8.layout-wrap.flex
+	ng-container(*ngTemplateOutlet='fieldPicker')
+
+	+comparisonOperator
+
+	ng-container(*ngIf='data?.compareType')
+		ng-container([ngSwitch]='data.compareType')
+			ng-container(*ngSwitchCase='COMPARISON_TYPE.STATIC')
+				cub-form-field.flex.miw-200(
+					displayErrorMode='tooltip')
+					input(
+						cubFormFieldInput,
+						clearable,
+						required,
+						type='number',
+						placeholder='0',
+						#dataInput='cubFormFieldInput',
+						[disableControl]=`
+							error?.field
+								|| ( excludeFields?.isDisable
+									&& ( excludeFieldsLK?.[ field?.id ] ) )`,
+						[formControl]='dataControl',
+						[(valueControl)]='data.number',
+						(valueControlChange)='onDataChange()')
+					ng-container(cubFormFieldSuffix)
+						.text-color-tertiary
+							u
+								| đ
+			ng-container(*ngSwitchCase='COMPARISON_TYPE.AUTO')
+				+comparisonTypeAuto
+
+	ng-container(*ngIf='comparisonRange.has( operator )')
+		form.layout-row.layout-align-start-center.layout-gap-8.layout-wrap(
+			[formGroup]='rangeForm')
+			cub-form-field.w-172(displayErrorMode='tooltip')
+				input(
+					required,
+					cubFormFieldInput,
+					type='number',
+					placeholder='0',
+					formControlName='start',
+					#startDataInput='cubFormFieldInput',
+					[disableControl]=`
+						error?.field
+							|| ( excludeFields?.isDisable
+								&& ( excludeFieldsLK?.[ field?.id ] ) )`,
+					[(valueControl)]='data.start',
+					(valueControlChange)='onRangeDataChange( true )',
+					(blur)='onStartInputBlur()')
+			| -
+			cub-form-field.w-172(displayErrorMode='tooltip')
+				input(
+					required,
+					cubFormFieldInput,
+					type='number',
+					placeholder='0',
+					formControlName='end',
+					#endDataInput='cubFormFieldInput',
+					[disableControl]=`
+						error?.field
+							|| ( excludeFields?.isDisable
+								&& ( excludeFieldsLK?.[ field?.id ] ) )`,
+					[(valueControl)]='data.end',
+					(valueControlChange)='onRangeDataChange()')
+				ng-container(
+					cubFormFieldError,
+					*ngIf='data.end < data.start')
+					| {{ "FIELD.COMPARISON.ERROR.END_NOT_SMALLER_START" | translate }}
+
+	ng-container(*ngIf='operatorHasComparisonType.has( operator )')
+		+comparisonType

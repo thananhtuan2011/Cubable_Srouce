@@ -1,0 +1,49 @@
+include ../file-picker.inside.pug
+
++header
+	| {{ "CUB.LABEL.UPLOAD_FILE" | translate }}
+
+.cub-file-picker-inside__content
+	cub-file-list(
+		*ngIf='pickedFiles?.length; else elseBlock;')
+		cub-file-item(
+			*ngFor='let file of pickedFiles; trackByID',
+			[file]='file',
+			[removable]='!isUploading',
+			(removed)='onFileRemoved( file )')
+			span(
+				error,
+				*ngIf='file.invalid')
+				| {{ "CUB.MESSAGE.FILE_OVER_SIZE" | translate: { size: FILE_SIZE_LIMIT | fileSizeUnit } }}
+	ng-template(#elseBlock)
+		.cub-local-file-picker__dropzone(
+			[class.cub-local-file-picker__dropzone--active]='isFileDropOver',
+			(dragover)='onFileDragOver( $event )',
+			(dragleave)='onFileDragLeave( $event )',
+			(drop)='onFileDropped( $event )')
+			cub-icon(
+				name='paperclip',
+				size='36px',
+				color='tertiary')
+			span
+				| {{ "CUB.LABEL.DRAG_FILE_HERE" | translate }}
+				| {{ "CUB.LABEL.OR" | translate | lowercase }}&nbsp;
+				a((click)='pick()')
+					| {{ "CUB.LABEL.CLICK_TO_UPLOAD" | translate | lowercase }}
+				| &nbsp;({{ "CUB.LABEL.MAXIMUM_FILE_SIZE" | translate: { fileSize: FILE_SIZE_LIMIT | fileSizeUnit } }})
+
+.cub-file-picker-inside__footer
+	div(
+		*ngIf='isUploading; else elseBlock2;')
+		| {{ "CUB.LABEL.UPLOADING_PERCENT" | translate: { percent: uploadingPercent | convertPercent : 0 : true  } }}
+	ng-template(#elseBlock2)
+		+btnPickMore
+	.cub-file-picker-inside__buttons
+		+btnCancel
+		button.cub-file-picker-inside__btn-done(
+			cubButton,
+			[disabled]='isUploading || !validCount',
+			[loading]='isUploading',
+			(click)='upload()')
+			| {{ "CUB.LABEL.UPLOAD" | translate }}
+			| ({{ validCount || 0 }})

@@ -1,0 +1,8 @@
+form(autocomplete='off')
+	emoji-mart(
+		[isNative]='true',
+		[darkMode]='false',
+		[enableSearch]='enableSearch',
+		[showPreview]='false',
+		[i18n]='i18n',
+		(emojiClick)='pickEmoji( $event?.emoji )')

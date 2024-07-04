@@ -1,0 +1,57 @@
+extends patterns/setting.pug
+
+mixin settingHeader(header, disableSave='!isChanged || isSubmitting', disableCancel='!isChanged || isSubmitting', hint)
+	.layout-row.layout-align-start-center
+		.layout-column.flex.mr-10
+			h1.text-nowrap
+				| {{ #{header} }}
+			if hint
+				wgc-truncate.color-label.text-nowrap.mt-5(limitLine='1')
+					| {{ #{hint} }}
+		if block
+			block
+		else
+			button.mr-10(
+				wgcButton,
+				color='primary',
+				[disabled]=disableSave,
+				[loading]='isSubmitting',
+				(click)='save()')
+				| {{ "ACCOUNT.SETTINGS.LABEL.SAVE_CHANGES" | translate }}
+		button(wgcButton, [disabled]=disableCancel, (click)='cancel()')
+			| {{ "ACCOUNT.SETTINGS.LABEL.CANCEL" | translate }}
+
+block header
+	+settingHeader('"ACCOUNT.SETTINGS.LABEL.OVERVIEW" | translate', undefined, '!isInfoChanged || !generalForm?.valid || isSubmitting')
+		button.mr-10(
+			wgcButton,
+			type='submit',
+			color='primary',
+			form='generalForm',
+			[disabled]='!isInfoChanged || !generalForm?.valid || isSubmitting',
+			[loading]='isSubmitting')
+			| {{ "ACCOUNT.SETTINGS.LABEL.SAVE_CHANGES" | translate }}
+
+block content
+	form#generalForm(autocomplete='off', [formGroup]='generalForm', (submit)='save()')
+		.page-content-settings
+			wgc-avatar-picker.mb-30(
+				[label]='"ACCOUNT.SETTINGS.LABEL.AVATAR" | translate',
+				[text]='account?.name',
+				[disabled]='isSubmitting',
+				[photo]='account?.avatar?.photo',
+				[color]='account?.avatar?.color',
+				[icon]='account?.avatar?.icon',
+				[mode]='account?.avatar?.mode || undefined',
+				(picked)='updateAvatar( $event )')
+			wgc-form-field.mb-10([label]='"ACCOUNT.SETTINGS.LABEL.NAME" | translate')
+				input(
+					wgcFormFieldInput,
+					required,
+					[placeholder]='"ACCOUNT.SETTINGS.PLACEHOLDER.TYPE_NAME" | translate',
+					[disableControl]='isSubmitting',
+					[formControl]='generalForm?.controls?.name',
+					[ngModel]='account?.name',
+					(ngModelChange)='updateName( $event )')
+			wgc-form-field([label]='"ACCOUNT.SETTINGS.LABEL.EMAIL_ADDRESS" | translate')
+				input(wgcFormFieldInput, disabled, type='email', [value]='account?.email')

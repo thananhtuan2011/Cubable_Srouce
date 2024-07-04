@@ -1,0 +1,41 @@
+include ../blocks/block-member.partial.pug
+
+wgc-tooltip.wgc-member-tooltip(
+	wgcTooltip,
+	#profileTooltip,
+	minWidth='80px',
+	maxWidth='240px',
+	[color]='"WHITE" | color')
+	.wgc-member-tooltip__name
+		h4(wgcTruncate, limitLine='1')
+			| {{ member?.name | empty }}
+		+userStatus('member?.status')
+	.wgc-member-tooltip__status([ngSwitch]='member?.status')
+		ng-container(*ngSwitchCase='MEMBER_STATUS?.ACTIVE')
+			| {{ "WGC.LABEL.ACTIVE" | translate }}
+		ng-container(*ngSwitchCase='MEMBER_STATUS?.WAITING')
+			| {{ "WGC.LABEL.PENDING" | translate }}
+		ng-container(*ngSwitchCase='MEMBER_STATUS?.INACTIVE')
+			| {{ "WGC.LABEL.INACTIVE" | translate }}
+		ng-container(*ngSwitchDefault)
+			| {{ "WGC.LABEL.UNKNOWN" | translate }}
+	button.wgc-member-tooltip__btn-view-profile(
+		wgcButton,
+		color='primary',
+		size='small',
+		*ngIf='canViewProfile && member?.status !== MEMBER_STATUS?.INACTIVE',
+		(click)='viewProfile( member )')
+		| {{ "WGC.LABEL.VIEW_PROFILE" | translate }}
+
+wgc-avatar.wgc-member__avatar(
+	panelClass='wgc-member',
+	[scrolling$]='scrolling$',
+	[size]='size',
+	[wgcTooltip]='hasViewProfile ? profileTooltip : undefined',
+	[label]='member?.name',
+	[avatar]='member?.avatar')
+ng-container(*ngIf='displayMemberName')
+	wgc-truncate.wgc-member__name(limitLine='1')
+		span([innerHtml]='member?.name | markText : searchBox?.searchQuery : true')
+ng-container(*ngIf='displayMemberStatus')
+	+userStatus('member?.status')

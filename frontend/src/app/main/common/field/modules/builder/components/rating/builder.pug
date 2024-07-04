@@ -1,0 +1,34 @@
+include ../builder.include.pug
+
+ng-template(#settingBlock)
+	cub-dropdown(
+		[clearable]='false',
+		[label]=' "FIELD.BUILDER.LABEL.SCALE" | translate',
+		[(ngModel)]='internalField.maxPoint',
+		(ngModelChange)='onMaxPointChanged( $event )')
+		cub-dropdown-item(
+			*ngFor=`let i of [].constructor( 10 );
+				let idx = index;`,
+			[label]=`
+				( idx + 1 )
+					+ " "
+					+ ( internalField.emoji | emoji )
+			`,
+			[value]='idx + 1')
+
+ng-template(#defaultBlock)
+	rating-field-input(
+		autoFocusOn,
+		[label]='"FIELD.BUILDER.LABEL.DEFAULT_VALUE" | translate',
+		[field]='internalField',
+		[(data)]='initialData',
+		(dataChange)='onInitialDataChanged( $event )')
+
+ng-container(
+	*ngTemplateOutlet=`
+		fieldTemplate;
+		context: {
+			settingBlock,
+			defaultBlock,
+		};
+	`)

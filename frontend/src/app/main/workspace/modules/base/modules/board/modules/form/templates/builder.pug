@@ -1,0 +1,15 @@
+.layout-row.flex(
+	cdkDropListGroup,
+	*ngIf='formDetail')
+	ng-container(*ngIf='tabIndex === contentTab.CONTENT')
+		sidebar(
+			#sidebar,
+			[board]='board',
+			[fields]='fields',
+			[bkFields]='bkFields',
+			[form]='formDetail',
+			[fieldTypeNotSupport]='fieldTypeNotSupport',
+			(fieldsChange)='changeFields( $event )',
+			(formChange)='changeForm( $event )',
+			(showAddedFieldID)='showAddedFieldID = $event')
+	include blocks/block-content.partial.pug

@@ -1,0 +1,152 @@
+@import '../../../scss/partials/variable';
+@import '../../../scss/partials/mixin';
+
+.cub-radio {
+	$self: &;
+
+	display: flex;
+	column-gap: 8px;
+	width: fit-content;
+	height: fit-content;
+
+	cursor: pointer;
+
+	// Size
+	@at-root {
+		&#{ $self }-small {
+			#{ $self }__box {
+				height: 16px;
+				min-height: 16px;
+				max-height: 16px;
+				width: 16px;
+				min-width: 16px;
+				max-width: 16px;
+
+				&:before {
+					height: 8px;
+					min-height: 8px;
+					max-height: 8px;
+					width: 8px;
+					min-width: 8px;
+					max-width: 8px;
+				}
+			}
+		}
+
+		&#{ $self }-large {
+			#{ $self }__box {
+				height: 20px;
+				min-height: 20px;
+				max-height: 20px;
+				width: 20px;
+				min-width: 20px;
+				max-width: 20px;
+
+				&:before {
+					height: 10px;
+					min-height: 10px;
+					max-height: 10px;
+					width: 10px;
+					min-width: 10px;
+					max-width: 10px;
+				}
+			}
+		}
+	}
+
+	// Common states
+	@at-root {
+		&:not([disabled]) {
+			&:active,
+			&:hover,
+			&:focus-visible {
+				#{ $self }__box {
+					border-color: $color-border-quaternary;
+				}
+			}
+		}
+	}
+
+	// Checked state
+	@at-root {
+		&#{ $self }--checked {
+			#{ $self }__box {
+				background-color: color(green, 500);
+
+				&:before {
+					visibility: visible;
+					opacity: 1;
+				}
+			}
+		}
+	}
+
+	// Readonly state
+	@at-root {
+		&[readonly] {
+			cursor: default;
+		}
+	}
+
+	// Disabled state
+	@at-root {
+		&[disabled] {
+			@include cursor-not-allowed;
+			
+			#{ $self }__content{
+				color: $color-text-tertiary;
+			}
+
+			#{ $self }__box {
+				background-color: $color-material-default;
+			}
+		}
+	}
+
+	#{ $self }-wrapper {
+		display: flex;
+		align-items: center;
+		height: 20px;
+		max-height: 20px;
+	}
+
+	#{ $self }__box {
+		@include visible-transition(background-color);
+
+		position: relative;
+
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		border: 1px solid $color-border-primary;
+		border-radius: 50%;
+
+		background-color: $color-white;
+
+		&:before {
+			@include popup-animation;
+
+			content: '';
+
+			display: block;
+			border-radius: 50%;
+			visibility: hidden;
+			opacity: 0;
+
+			background-color: $color-white;
+		}
+	}
+
+	#{ $self }__content {
+		display: flex;
+		flex-direction: column;
+		row-gap: 8px;
+		width: 100%;
+		min-width: 0;
+
+		&:empty,
+		> div:empty {
+			display: none;
+		}
+	}
+}

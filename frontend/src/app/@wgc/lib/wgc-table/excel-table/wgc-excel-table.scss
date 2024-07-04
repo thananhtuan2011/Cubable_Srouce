@@ -1,0 +1,52 @@
+@import 'src/scss/partials/variable';
+
+:host(.wgc-excel-table) {
+	min-width: 100%;
+	border-spacing: 0;
+
+	::ng-deep {
+		th,
+		td {
+			font-weight: $font-weight-semibold;
+			padding: 10px;
+			border: 1px solid $color-border;
+			min-width: 200px;
+			height: 40px;
+			min-height: 40px;
+
+			&[index] {
+				left: 0;
+			}
+		}
+
+		thead th,
+		thead td,
+		tbody td[index] {
+			background-color: $color-secondary;
+			position: sticky;
+			z-index: 1;
+		}
+
+		thead th,
+		thead td {
+			top: 0;
+
+			&[index] {
+				z-index: 2;
+			}
+		}
+
+		tr[invalid] td {
+			border-top-color: $color-danger;
+			border-bottom-color: $color-danger;
+
+			&:first-child {
+				border-left-color: $color-danger;
+			}
+
+			&:last-child {
+				border-right-color: $color-danger;
+			}
+		}
+	}
+}

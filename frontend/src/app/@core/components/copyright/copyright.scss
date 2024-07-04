@@ -1,0 +1,7 @@
+@import 'src/scss/partials/variable';
+
+:host {
+	font-size: 12px;
+	color: $color-text-tertiary;
+	line-height: 16px;
+}

@@ -1,0 +1,24 @@
+@import 'partials/core';
+@import 'partials/variable';
+@import 'partials/mixin';
+@import 'partials/fontface';
+@import 'partials/sprite';
+@import 'partials/reset';
+@import 'partials/form';
+@import 'partials/typography';
+@import 'partials/helper';
+@import 'partials/customize';
+@import 'partials/responsive';
+
+body {
+	$palette-prefix: '--palette-';
+
+	// Append pre-defined colors in $palettes
+	@each $name, $colors in $palettes {
+		@each $tone, $color in $colors {
+			$property: $palette-prefix + $name + '-' + $tone;
+
+			#{ $property }: $color;
+		}
+	}
+}

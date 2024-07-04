@@ -1,0 +1,20 @@
+mixin pane-container
+	.pane-container()&attributes(attributes)
+		block
+
+mixin left-pane
+	.pane.pane-left
+		.pane-content(
+			[style.--pane-width.px]=`
+				layoutProperties.pane.leftWidth`)&attributes(attributes)
+			block
+
+mixin right-pane
+	.pane.pane-right
+		.pane-content(
+			[style.--pane-width.px]=`
+				layoutProperties.pane.rightWidth`,
+			[style.transform]=`"translateX("
+				+ -( virtualScroll.scrollBar.scrollLeft )
+				+ "px)"`)&attributes(attributes)
+			block

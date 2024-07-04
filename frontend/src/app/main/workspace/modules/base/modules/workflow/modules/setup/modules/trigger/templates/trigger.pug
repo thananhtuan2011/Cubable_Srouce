@@ -1,0 +1,44 @@
+mixin setting
+	ng-container([ngSwitch]='type')
+		ng-container(*ngSwitchCase='TRIGGER_TYPE.ROW_CREATED')
+			row-created&attributes(attributes)
+		ng-container(*ngSwitchCase='TRIGGER_TYPE.VALUE_CHANGED')
+			value-changed&attributes(attributes)
+		ng-container(*ngSwitchCase='TRIGGER_TYPE.ROW_DELETED')
+			row-deleted&attributes(attributes)
+		ng-container(*ngSwitchCase='TRIGGER_TYPE.DATE_ARRIVES')
+			date-arrives&attributes(attributes)
+		ng-container(*ngSwitchCase='TRIGGER_TYPE.SCHEDULE')
+			at-scheduled-time&attributes(attributes)
+
+cub-card(
+	variant='tonal',
+	size='small')
+	cub-card-content
+		.layout-column.layout-gap-6
+			.text-color-secondary.ml-12
+				| {{ "BASE.WORKFLOW.SETUP.TRIGGER.LABEL.TRIGGER" | translate }}
+			cub-dropdown(
+				required,
+				#triggerTypePicker,
+				[clearable]='false',
+				[beforeSelectItem]='onBeforeSelectType',
+				[formControl]='typeControl',
+				[valueControl]='type',
+				(valueControlChange)='onTriggerTypeChange( $event )')
+				cub-dropdown-item(
+					*ngFor='let type of triggersType; ngForTrackByValue',
+					[iconColor]='type.iconColor',
+					[icon]='type.icon',
+					[disabled]='!type.addable',
+					[label]='( "BASE.WORKFLOW.SETUP.TRIGGER.LABEL." + type.name ) | translate',
+					[value]='type.value')
+
++setting()(
+	#triggerSetting,
+	[baseID]='baseID',
+	[blockSetup]='$any( blockSetup )',
+	[isEntry]='$any( blockSetup ).isEntry',
+	[(settings)]='settings',
+	(isBoardIDChanged)='isBoardIDChanged.emit()',
+	(settingsChange)='onSettingChange()')

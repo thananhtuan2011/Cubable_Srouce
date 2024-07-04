@@ -1,0 +1,20 @@
+mixin input-box
+	input-box(
+		*ngIf='isInputting',
+		[content]='data',
+		(edited)='onInputBoxEdited( $event )',
+		(input)='onInputBoxInput( $event )',
+		(focus)='onInputBoxFocus( $event )',
+		(blur)='onInputBoxBlur( $event )')&attributes(attributes)
+
+mixin text-box
+	+input-box(
+		type='text')&attributes(attributes)
+
+mixin number-box
+	+input-box(
+		type='number')&attributes(attributes)
+
+mixin hyperlink-box
+	+input-box(
+		type='hyperlink')&attributes(attributes)

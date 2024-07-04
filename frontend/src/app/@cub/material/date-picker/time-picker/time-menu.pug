@@ -1,0 +1,14 @@
+cub-menu(
+	#menu,
+	width='120px',
+	height='215px')
+	cub-menu-content
+		ng-template(cubMenuContent)
+			button(
+				cubMenuItem,
+				*ngFor='let timeGap of TIME_GAPS; trackByIndex',
+				(click)='pickTime( timeGap )')
+				| {{ timeGap.text }}
+
+ng-container(
+	*ngTemplateOutlet='menu.templateRef')

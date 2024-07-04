@@ -1,0 +1,17 @@
+@import 'src/scss/partials/variable';
+@import 'src/scss/partials/mixin';
+
+.wgc-drawer-content {
+	@include scroll;
+	display: flex;
+	flex-direction: column;
+	width: 100%;
+	min-width: 0;
+	height: 100%;
+	min-height: 0;
+	order: 0;
+	padding-top: var(--drawer-content-padding-top, 20px);
+	padding-bottom: var(--drawer-content-padding-bottom, 20px);
+	padding-left: var(--drawer-content-padding-left, 25px);
+	padding-right: var(--drawer-content-padding-right, 25px);
+}

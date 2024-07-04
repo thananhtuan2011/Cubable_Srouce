@@ -1,0 +1,12 @@
+{
+	"LABEL": {
+		"DATA": "Dữ liệu",
+		"DELETE": "Xoá",
+		"FORM": "Biểu mẫu",
+		"REMOVE_DATA_VIEW": "Xoá chế độ xem",
+		"REMOVE_FORM_VIEW": "Xóa biểu mẫu?"
+	},
+	"MESSAGE": {
+		"REMOVE_VIEW_CONFIRM": "<b>{{ view }}</b> sẽ bị xóa vĩnh viễn. Bạn chắc chứ?"
+	}
+}

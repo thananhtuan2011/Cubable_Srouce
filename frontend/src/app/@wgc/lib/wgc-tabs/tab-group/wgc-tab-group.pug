@@ -1,0 +1,36 @@
+.wgc-tab-group__header(
+	wgcScrollBar,
+	detectScroll,
+	#tabGroupHeader,
+	#tabGroupHeaderScroller='detectScroll',
+	#tabGroupHeaderScrollBar='wgcScrollBar',
+	*ngIf='alwaysOnDisplay || items?.length > 1',
+	[class.wgc-tab-group__header--stretch]='stretchTab',
+	(viewPortChanged)='markForCheck()')
+	.wgc-tab-group__header-list
+		ng-container(*ngFor='let item of items; let index = index; let last = last;')
+			.wgc-tab-group__header-item(
+				#tabHeader,
+				[ngClass]='item?.classes',
+				[class.wgc-tab-group__header-item--active]='selectedIndex === index',
+				[class.wgc-tab-group__header-item--disabled]='item?.disabled',
+				(click)='!item?.disabled && select( index )')
+				wgc-icon.wgc-tab-group__header-item-icon(size='20px', *ngIf='item?.icon', [name]='item?.icon')
+				| {{ item?.label }}
+				ng-container(*ngTemplateOutlet='item?.header')
+			wgc-divider.wgc-tab-group__header-vertical-divider(vertical, *ngIf='headerVerticalDivider && !last')
+	wgc-divider.wgc-tab-group__header-horizontal-divider(*ngIf='headerHorizontalDivider')
+	.wgc-tab-group__header-ink-bar(#tabInkBar)
+.wgc-tab-group__content(
+	wgcScrollBar,
+	detectScroll,
+	suppressScrollX,
+	#tabGroupContent,
+	#tabGroupContentScroller='detectScroll',
+	#tabGroupContentScrollBar='wgcScrollBar',
+	*ngIf='!noTabContent',
+	[suppress]='!hasScrollBar',
+	[mode]='scrollBarMode')
+	ng-container(*ngFor='let item of items; let index = index;')
+		ng-container(*ngIf='selectedIndex === index')
+			ng-container(*ngTemplateOutlet='item?.content')

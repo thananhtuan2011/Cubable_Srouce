@@ -1,0 +1,72 @@
+mixin item
+	button(
+		#menuItem,
+		cubMenuItem,
+		leadingIconSize='22px',
+		cubTooltipWidth='260px',
+		cubTooltipMinHeight='196px',
+		[disabled]='unsupportDataTypes.has( menuItem.context?.dataType )',
+		[context]=`item.context || {
+			dataType: item.dataType,
+			label: menuItem.elementRef.nativeElement.innerText,
+		}`,
+		[leadingIcon]='menuItem.context.dataType | fieldMetadata : "avatar"',
+		[cubTooltip]='tooltip',
+		[cubTooltipOpenDelayMs]='null',
+		[cubTooltipCloseDelayMs]='null',
+		[cubTooltipContext]='menuItem.context',
+		(click)=`buildField(
+			menuItem.context.dataType,
+			menuItem.context.label
+		)`)&attributes(attributes)
+		| {{ ( menuItem.context.dataType | fieldMetadata : "label" ) | translate }}
+
+ng-template(
+	#tooltip,
+	let-dataType='dataType')
+	.layout-column.layout-gap-8.pv-6
+		cub-image.brad-4.unscrollable(
+			noLazy,
+			width='236px',
+			height='142px',
+			[src]='dataType | fieldMetadata : "image"')
+		div
+			| {{ ( dataType | fieldMetadata : "description" ) | translate }}
+
+cub-menu(
+	#menu,
+	width='436px',
+	height='416px')
+	cub-menu-header
+		ng-template(cubMenuHeader)
+			cub-search-box(
+				autoFocusOn,
+				[data]='menu.items',
+				[filterPredicate]='filterPredicate')
+	cub-menu-content
+		ng-template(cubMenuContent)
+			ng-container(
+				*ngIf='!!searchBox?.searchQuery; else elseBlock;')
+				cub-menu-group
+					+item()(
+						*ngFor='let item of searchBox.filteredData')
+					ng-container(*ngIf='!searchBox.filteredData?.length')
+						| {{ "FIELD.MESSAGE.NO_RESULT_FOUND" | translate }}
+			ng-template(#elseBlock)
+				cub-menu-group(
+					itemsPerLine='2',
+					[title]='"FIELD.LABEL.BASIC" | translate')
+					+item()(
+						*ngFor='let item of FIELD_LIST.BASIC; trackByProperty: "dataType"')
+				cub-menu-group(
+					itemsPerLine='2',
+					[title]='"FIELD.LABEL.BUSINESS_ESSENTIAL" | translate')
+					+item()(
+						*ngFor='let item of FIELD_LIST.BUSINESS_ESSENTIAL; trackByProperty: "dataType"')
+				cub-menu-group(
+					itemsPerLine='2',
+					[title]='"FIELD.LABEL.ADVANCED" | translate')
+					+item()(
+						*ngFor='let item of FIELD_LIST.ADVANCED; trackByProperty: "dataType"')
+
+ng-container(*ngTemplateOutlet='menu.templateRef')

@@ -1,0 +1,431 @@
+{
+  "$schema": "./node_modules/@angular/cli/lib/config/schema.json",
+  "version": 1,
+  "newProjectRoot": "projects",
+  "projects": {
+    "cubable": {
+      "root": "",
+      "sourceRoot": "src",
+      "projectType": "application",
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-angular:browser",
+          "options": {
+            "outputPath": "dist",
+            "index": "src/index.html",
+            "main": "src/main.ts",
+            "tsConfig": "src/tsconfig.app.json",
+            "webWorkerTsConfig": "src/tsconfig.worker.json",
+            "polyfills": "src/polyfills.ts",
+            "outputHashing": "none",
+            "crossOrigin": "use-credentials",
+            "aot": false,
+            "optimization": false,
+            "sourceMap": true,
+            "namedChunks": false,
+            "extractLicenses": false,
+            "vendorChunk": false,
+            "buildOptimizer": false,
+            "serviceWorker": false,
+            "statsJson": false,
+            "assets": [
+              {
+                "glob": "**/*",
+                "input": "src/app/@cub/assets/",
+                "output": "/assets/@cub/"
+              },
+              {
+                "glob": "**/*",
+                "input": "src/assets/",
+                "output": "/assets/"
+              },
+              {
+                "glob": "favicon.ico",
+                "input": "src/assets/",
+                "output": "/"
+              }
+            ],
+            "styles": [
+              "src/scss/styles.scss",
+              "src/scss/libs.scss"
+            ],
+            "stylePreprocessorOptions": {
+              "includePaths": [
+                "node_modules/"
+              ]
+            },
+            "allowedCommonJsDependencies": [
+              "@editorjs/checklist",
+              "@editorjs/code",
+              "@editorjs/delimiter",
+              "@editorjs/header",
+              "@editorjs/inline-code",
+              "@editorjs/list",
+              "@editorjs/marker",
+              "@editorjs/paragraph",
+              "@editorjs/quote",
+              "@editorjs/raw",
+              "@editorjs/table",
+              "@editorjs/underline",
+              "angular-svg-round-progressbar",
+              "cropperjs",
+              "crypto-js",
+              "editorjs-drag-drop",
+              "editorjs-text-alignment-blocktune",
+              "editorjs-undo",
+              "exceljs",
+              "file-saver",
+              "image-conversion",
+              "lodash",
+              "moment-timezone",
+              "moment",
+              "moment/locale/vi",
+              "quill-magic-url",
+              "quill-table",
+              "quill",
+              "xlsx"
+            ]
+          },
+          "configurations": {
+            "local": {
+              "fileReplacements": [
+                {
+                  "replace": "src/environments/environment.ts",
+                  "with": "src/environments/environment.local.ts"
+                }
+              ]
+            },
+            "hmr": {
+              "fileReplacements": [
+                {
+                  "replace": "src/environments/environment.ts",
+                  "with": "src/environments/environment.hmr.ts"
+                }
+              ]
+            },
+            "aot": {
+              "aot": true
+            },
+            "sw": {
+              "aot": true,
+              "serviceWorker": true,
+              "outputPath": "dist_sw",
+              "fileReplacements": [
+                {
+                  "replace": "src/environments/environment.ts",
+                  "with": "src/environments/environment.sw.ts"
+                }
+              ]
+            },
+            "line1": {
+              "fileReplacements": [
+                {
+                  "replace": "src/environments/environment.ts",
+                  "with": "src/environments/line1/environment.ts"
+                }
+              ]
+            },
+            "line2": {
+              "fileReplacements": [
+                {
+                  "replace": "src/environments/environment.ts",
+                  "with": "src/environments/line2/environment.ts"
+                }
+              ]
+            },
+            "deployment_line1": {
+              "outputHashing": "all",
+              "aot": true,
+              "optimization": true,
+              "sourceMap": false,
+              "namedChunks": true,
+              "extractLicenses": true,
+              "vendorChunk": true,
+              "buildOptimizer": true,
+              "serviceWorker": true,
+              "statsJson": false,
+              "fileReplacements": [
+                {
+                  "replace": "src/environments/environment.ts",
+                  "with": "src/environments/line1/environment.deployment.ts"
+                },
+                {
+                  "replace": "src/environments/hash.ts",
+                  "with": "src/environments/line1/hash.deployment.ts"
+                }
+              ]
+            },
+            "deployment_line2": {
+              "outputHashing": "all",
+              "aot": true,
+              "optimization": true,
+              "sourceMap": false,
+              "namedChunks": true,
+              "extractLicenses": true,
+              "vendorChunk": true,
+              "buildOptimizer": true,
+              "serviceWorker": true,
+              "statsJson": false,
+              "fileReplacements": [
+                {
+                  "replace": "src/environments/environment.ts",
+                  "with": "src/environments/line2/environment.deployment.ts"
+                },
+                {
+                  "replace": "src/environments/hash.ts",
+                  "with": "src/environments/line2/hash.deployment.ts"
+                }
+              ]
+            },
+            "testing_line1": {
+              "outputHashing": "all",
+              "aot": true,
+              "optimization": true,
+              "sourceMap": false,
+              "namedChunks": true,
+              "extractLicenses": true,
+              "vendorChunk": true,
+              "buildOptimizer": true,
+              "serviceWorker": true,
+              "statsJson": false,
+              "fileReplacements": [
+                {
+                  "replace": "src/environments/environment.ts",
+                  "with": "src/environments/line1/environment.testing.ts"
+                },
+                {
+                  "replace": "src/environments/hash.ts",
+                  "with": "src/environments/line1/hash.testing.ts"
+                },
+                {
+                  "replace": "src/app/@guideline/guideline.module.ts",
+                  "with": "src/app/@guideline/guideline.module.exclude.ts"
+                }
+              ]
+            },
+            "testing_line2": {
+              "outputHashing": "all",
+              "aot": true,
+              "optimization": true,
+              "sourceMap": false,
+              "namedChunks": true,
+              "extractLicenses": true,
+              "vendorChunk": true,
+              "buildOptimizer": true,
+              "serviceWorker": true,
+              "statsJson": false,
+              "fileReplacements": [
+                {
+                  "replace": "src/environments/environment.ts",
+                  "with": "src/environments/line2/environment.testing.ts"
+                },
+                {
+                  "replace": "src/environments/hash.ts",
+                  "with": "src/environments/line2/hash.testing.ts"
+                },
+                {
+                  "replace": "src/app/@guideline/guideline.module.ts",
+                  "with": "src/app/@guideline/guideline.module.exclude.ts"
+                }
+              ]
+            },
+            "staging": {
+              "outputHashing": "all",
+              "aot": true,
+              "optimization": true,
+              "sourceMap": false,
+              "namedChunks": true,
+              "extractLicenses": true,
+              "vendorChunk": true,
+              "buildOptimizer": true,
+              "serviceWorker": true,
+              "statsJson": false,
+              "fileReplacements": [
+                {
+                  "replace": "src/environments/environment.ts",
+                  "with": "src/environments/environment.staging.ts"
+                },
+                {
+                  "replace": "src/environments/hash.ts",
+                  "with": "src/environments/hash.staging.ts"
+                },
+                {
+                  "replace": "src/app/@guideline/guideline.module.ts",
+                  "with": "src/app/@guideline/guideline.module.exclude.ts"
+                }
+              ]
+            },
+            "perf": {
+              "outputHashing": "all",
+              "aot": true,
+              "optimization": true,
+              "sourceMap": false,
+              "namedChunks": true,
+              "extractLicenses": true,
+              "vendorChunk": true,
+              "buildOptimizer": true,
+              "serviceWorker": true,
+              "statsJson": false,
+              "fileReplacements": [
+                {
+                  "replace": "src/environments/environment.ts",
+                  "with": "src/environments/environment.perf.ts"
+                },
+                {
+                  "replace": "src/environments/hash.ts",
+                  "with": "src/environments/hash.perf.ts"
+                },
+                {
+                  "replace": "src/app/@guideline/guideline.module.ts",
+                  "with": "src/app/@guideline/guideline.module.exclude.ts"
+                }
+              ]
+            },
+            "beta": {
+              "outputHashing": "all",
+              "aot": true,
+              "optimization": true,
+              "sourceMap": false,
+              "namedChunks": true,
+              "extractLicenses": true,
+              "vendorChunk": true,
+              "buildOptimizer": true,
+              "serviceWorker": true,
+              "statsJson": false,
+              "fileReplacements": [
+                {
+                  "replace": "src/environments/environment.ts",
+                  "with": "src/environments/environment.beta.ts"
+                },
+                {
+                  "replace": "src/environments/hash.ts",
+                  "with": "src/environments/hash.beta.ts"
+                },
+                {
+                  "replace": "src/app/@guideline/guideline.module.ts",
+                  "with": "src/app/@guideline/guideline.module.exclude.ts"
+                }
+              ]
+            },
+            "pre-production": {
+              "outputHashing": "all",
+              "aot": true,
+              "optimization": true,
+              "sourceMap": false,
+              "namedChunks": true,
+              "extractLicenses": true,
+              "vendorChunk": true,
+              "buildOptimizer": true,
+              "serviceWorker": true,
+              "statsJson": false,
+              "fileReplacements": [
+                {
+                  "replace": "src/environments/environment.ts",
+                  "with": "src/environments/environment.pre-production.ts"
+                },
+                {
+                  "replace": "src/environments/hash.ts",
+                  "with": "src/environments/hash.pre-production.ts"
+                },
+                {
+                  "replace": "src/app/@guideline/guideline.module.ts",
+                  "with": "src/app/@guideline/guideline.module.exclude.ts"
+                }
+              ]
+            },
+            "production": {
+              "outputHashing": "all",
+              "aot": true,
+              "optimization": true,
+              "sourceMap": false,
+              "namedChunks": true,
+              "extractLicenses": true,
+              "vendorChunk": true,
+              "buildOptimizer": true,
+              "serviceWorker": true,
+              "statsJson": false,
+              "fileReplacements": [
+                {
+                  "replace": "src/environments/environment.ts",
+                  "with": "src/environments/environment.production.ts"
+                },
+                {
+                  "replace": "src/environments/hash.ts",
+                  "with": "src/environments/hash.production.ts"
+                },
+                {
+                  "replace": "src/app/@guideline/guideline.module.ts",
+                  "with": "src/app/@guideline/guideline.module.exclude.ts"
+                }
+              ],
+              "index": {
+                "input": "src/index.prod.html",
+                "output": "index.html"
+              }
+            }
+          }
+        },
+        "serve": {
+          "builder": "@angular-devkit/build-angular:dev-server",
+          "options": {
+            "browserTarget": "cubable:build",
+            "host": "0.0.0.0",
+            "port": 8000,
+            "open": true
+          },
+          "configurations": {
+            "local": {
+              "browserTarget": "cubable:build:local"
+            },
+            "hmr": {
+              "hmr": true,
+              "browserTarget": "cubable:build:hmr"
+            },
+            "aot": {
+              "browserTarget": "cubable:build:aot"
+            },
+            "sw": {
+              "browserTarget": "cubable:build:sw"
+            },
+            "line1": {
+              "browserTarget": "cubable:build:line1"
+            },
+            "line2": {
+              "browserTarget": "cubable:build:line2"
+            }
+          }
+        },
+        "extract-i18n": {
+          "builder": "@angular-devkit/build-angular:extract-i18n",
+          "options": {
+            "browserTarget": "cubable:build"
+          }
+        },
+        "lint": {
+          "builder": "@angular-eslint/builder:lint",
+          "options": {
+            "lintFilePatterns": [
+              "src/**/*.ts",
+              "src/**/*.html"
+            ]
+          }
+        }
+      }
+    }
+  },
+  "schematics": {
+    "@schematics/angular:component": {
+      "prefix": "app",
+      "style": "scss"
+    },
+    "@schematics/angular:directive": {
+      "prefix": "app"
+    }
+  },
+  "cli": {
+    "analytics": false,
+    "schematicCollections": [
+      "@angular-eslint/schematics"
+    ]
+  }
+}

@@ -1,0 +1,16 @@
+.wgc-emoji-picker__header(*ngIf='mode !== "inline"')
+	.wgc-emoji-picker__header-title
+		| {{ "WGC.PLACEHOLDER.PICK_EMOJI" | translate }}
+	button(
+		wgcBasicButton,
+		icon='close',
+		[wgcTooltip]='"WGC.LABEL.CLOSE" | translate',
+		(click)='close()')
+form(autocomplete='off')
+	emoji-mart.wgc-emoji-picker__mart(
+		[perLine]='perLine',
+		[isNative]='true',
+		[darkMode]='false',
+		[showPreview]='false',
+		[i18n]='i18n',
+		(emojiClick)='pick( $event?.emoji )')

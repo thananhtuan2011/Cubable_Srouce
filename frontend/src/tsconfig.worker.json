@@ -1,0 +1,15 @@
+{
+	"extends": "./tsconfig.app.json",
+	"compilerOptions": {
+		"lib": [
+			"es2018",
+			"dom",
+  		    "dom.iterable",
+			"webworker"
+		],
+		"types": []
+	},
+	"include": [
+	  "**/*.worker.ts"
+	],
+}

@@ -1,0 +1,46 @@
+mixin notification-setting(header, color, settings, disabledSetting)
+	wgc-expansion-panel(expanded, theme='background')&attributes(attributes)
+		wgc-expansion-panel-header([color]=color)
+			| {{ #{header} }}
+		table(wgcTable)
+			thead
+				tr
+					th.w-300(sticky='left', align='left')
+						| {{ "SETTINGS.COMMON.NOTIFICATION.LABEL.NOTIFICATION_RECEIVE" | translate }}
+					th.w-100
+						| {{ "SETTINGS.COMMON.NOTIFICATION.LABEL.EMAIL" | translate }}
+					th.w-100
+						| {{ "SETTINGS.COMMON.NOTIFICATION.LABEL.MOBILE" | translate }}
+					th.w-100
+						| {{ "SETTINGS.COMMON.NOTIFICATION.LABEL.WEB_IN_APP" | translate }}
+					th.w-100
+						| {{ "SETTINGS.COMMON.NOTIFICATION.LABEL.BROWSERS" | translate }}
+			tbody
+				tr(*ngFor=`let setting of ${settings}; trackBy : "notificationFrom" | trackByFn;`)
+					td.w-300(sticky='left', align='left')
+						b(wgcTruncate)
+							| {{ setting?.name | translate }}
+					td
+						wgc-checkbox.margin-auto(
+							color='primary',
+							[disabled]=disabledSetting,
+							[(checked)]='setting.action.mail',
+							(checkedChange)='isChanged = true; markAsChanged();')
+					td
+						wgc-checkbox.margin-auto(
+							disabled,
+							color='primary',
+							[(checked)]='setting.action.mobile',
+							(checkedChange)='isChanged = true; markAsChanged();')
+					td
+						wgc-checkbox.margin-auto(
+							color='primary',
+							[disabled]=disabledSetting,
+							[(checked)]='setting.action.webApp',
+							(checkedChange)='isChanged = true; markAsChanged();')
+					td
+						wgc-checkbox.margin-auto(
+							color='primary',
+							[disabled]=disabledSetting,
+							[(checked)]='setting.action.browsers',
+							(checkedChange)='isChanged = true; markAsChanged();')

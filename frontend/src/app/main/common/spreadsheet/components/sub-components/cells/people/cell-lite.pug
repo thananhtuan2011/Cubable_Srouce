@@ -1,0 +1,9 @@
+.field-cell__block-content.flex
+	cub-chip.layout-row.layout-gap-4(
+		*ngFor='let option of data?.selected; ngForTrackByID',
+		[class.field-cell__block-content--error]='option.error',
+		[hasAvatar]='!option.error')
+		cub-member(
+			avatarSize='small',
+			[hasViewProfile]='false',
+			[member]='option')

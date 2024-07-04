@@ -1,0 +1,89 @@
+$palettes: (
+	red: (
+		500: #f04438,
+		300: #fda29b,
+		200: #fecdca,
+		100: #fee4e2,
+	),
+	orange: (
+		500: #fb6514,
+		300: #feb273,
+		200: #fddcab,
+		100: #ffead5,
+		50: #fff1e3,
+	),
+	yellow: (
+		500: #fdb022,
+		300: #fec84b,
+		200: #fedf89,
+		100: #fef0c7,
+	),
+	yellowGreen: (
+		500: #8fb63e,
+		300: #b0d364,
+		200: #c9eb81,
+		100: #ddf8a5,
+		50: #e5f3c9,
+	),
+	green: (
+		700: #32ad31,
+		500: #53cd52,
+		300: #8ddd8b,
+		200: #b1f2b0,
+		100: #d9f9d9,
+	),
+	peacockBlue: (
+		500: #46b3ba,
+		300: #7de4f2,
+		200: #b9f9fe,
+		100: #daf6f8,
+	),
+	blue: (
+		500: #2e90fa,
+		300: #84caff,
+		200: #b2ddff,
+		100: #e2eef9,
+	),
+	indigo: (
+		700: #3634a3,
+		600: #444ce7,
+		500: #6172f3,
+		300: #a4bcfd,
+		200: #c7d7fe,
+		100: #e0eaff,
+	),
+	pink: (
+		500: #ee4678,
+		300: #faa7c5,
+		200: #fccedc,
+		100: #fce7ef,
+	),
+	purple: (
+		500: #7a5af8,
+		300: #bdb4fe,
+		200: #d9d6fe,
+		100: #ebe9fe,
+	),
+	grey: (
+		500: #667085,
+		300: #d0d5dd,
+		200: #eaecf0,
+		100: #f2f4f7,
+		50: #f9f9fb,
+	),
+);
+
+@function color($color, $tone) {
+	@if map-has-key($palettes, $color) {
+		$color: map-get($palettes, $color);
+
+		@if map-has-key($color, $tone) {
+			$tone: map-get($color, $tone);
+			@return $tone;
+		}
+
+		@return undefined;
+	}
+
+	@return undefined;
+}

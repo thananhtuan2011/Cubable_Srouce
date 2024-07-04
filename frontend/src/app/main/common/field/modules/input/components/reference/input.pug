@@ -1,0 +1,177 @@
+include ../mixins/mixin.pug
+
+ng-container(*ngIf='$any( data )?.valueType; else elseBlock;')
+	.layout-row.layout-gap-8
+		ng-container([ngSwitch]='$any( data ).valueType')
+			ng-container(*ngSwitchCase='VALUE_TYPE.STATIC')
+				ng-container(*ngIf='isFormView; else elseBlock1')
+					cub-dropdown(
+						searchable,
+						[multiple]='field.isMultipleSelect',
+						[ngModel]='$any( data ).data?.value',
+						(ngModelChange)='onPickItem( $event, $any( data ).data )',
+						(opened)='openDropdownItem()')
+						cub-dropdown-item(
+							*ngFor='let item of recordItems; ngForTrackByID',
+							[label]=`
+								item.data
+									?? ( "FIELD.INPUT.LABEL.UN_NAME" | translate )
+							`,
+							[value]='item.id')
+
+				ng-template(#elseBlock1)
+					cub-form-field.flex(
+						#formField,
+						[label]='innerLabel',
+						[size]='size',
+						[variant]='variant',
+						[autoFocusOn]='autoFocusOn',
+						[disabled]='disabled',
+						[displayErrorMode]='displayErrorMode',
+						[hideRequiredMarker]='hideRequiredMarker',
+						[focusing]='expanderRef?.isOpened',
+						(container.click)='onOpenReferenceExpander( false, $any( data ).data )',
+						(container.focus)='onFocus()',
+						(container.blur)='onBlur()')
+						ng-container(
+							cubFormFieldError,
+							*ngIf='errors?.required')
+							| {{ "FIELD.INPUT.MESSAGE.PLEASE_TYPE_VALUE" | translate }}
+						ng-container(
+							cubFormFieldPlaceholder,
+							*ngIf='!$any( data ).data')
+							.layout-row.layout-gap-8.layout-align-space-between-center
+								span
+									| {{ placeholder ?? ( "FIELD.INPUT.PLACEHOLDER.SELECT" | translate ) }}
+								button(
+									cubBasicButton,
+									iconSize='16px',
+									icon='expand',
+									*ngIf='!readonly',
+									(click)=`$event.stopPropagation();
+										formField.focus();
+										onOpenReferenceExpander( true, $any( data ).data )`)
+						.field-view-edit(*ngIf='$any( data ).data')
+							cub-scroll-bar.mah-100(
+								suppressX,
+								detectScroll)
+								.field-content
+									.field-content-item.flex
+										cub-chip.layout-row.layout-gap-4(
+											color="#ffffff",
+											*ngFor='let value of $any( data ).data?.selected; trackByValue')
+											span.text-truncate(
+												[attr.title]='value?.data')
+												ng-container(*ngIf='value?.data; else elseBlock;')
+													| {{ value.data }}
+												ng-template(#elseBlock)
+													| {{ "RECORD.DETAIL.LABEL.NO_NAME" | translate }}
+											button(
+												tabindex='-1',
+												*ngIf=`
+													$any( field ).isMultipleSelect
+													&& !disabled
+													&& !readonly`,
+												(click)=`$event.stopPropagation();
+													formField.focus();
+													onRemoveReferenceItem( value, $any( data ).data )`)
+												cub-icon(
+													name='close',
+													size='12px')
+									.field__btn-stick-on-content
+										button(
+											cubBasicButton,
+											iconSize='16px',
+											icon='expand',
+											(click)=`$event.stopPropagation();
+												formField.focus();
+												onOpenReferenceExpander( true, $any( data ).data )`)
+			ng-container(*ngSwitchCase='VALUE_TYPE.DYNAMIC')
+				+formField
+					+dynamicValue()(
+						readonly,
+						(click)='plusButton.open()')
+			ng-container(*ngSwitchCase='VALUE_TYPE.EMPTY')
+				+formField
+					+emptyValue
+		+valueTypeSwitch
+ng-template(#elseBlock)
+	ng-container(*ngIf='isFormView; else elseBlock1')
+		cub-dropdown(
+			searchable,
+			[multiple]='field.isMultipleSelect',
+			[ngModel]='data?.value',
+			(ngModelChange)='onPickItem( $event, data )',
+			(opened)='openDropdownItem()')
+			cub-dropdown-item(
+				*ngFor='let item of recordItems; ngForTrackByID',
+				[label]='item.data',
+				[value]='item.id')
+
+	ng-template(#elseBlock1)
+		cub-form-field(
+			#formField,
+			[label]='innerLabel',
+			[size]='size',
+			[variant]='variant',
+			[autoFocusOn]='autoFocusOn',
+			[disabled]='disabled',
+			[displayErrorMode]='displayErrorMode',
+			[hideRequiredMarker]='hideRequiredMarker',
+			[focusing]='expanderRef?.isOpened',
+			(container.click)='onOpenReferenceExpander( false, data )',
+			(container.focus)='onFocus()',
+			(container.blur)='onBlur()')
+			ng-container(
+				cubFormFieldError,
+				*ngIf='errors?.required')
+				| {{ "FIELD.INPUT.MESSAGE.PLEASE_TYPE_VALUE" | translate }}
+			ng-container(
+				cubFormFieldPlaceholder,
+				*ngIf='!data')
+				.layout-row.layout-gap-8.layout-align-space-between-center
+					span
+						| {{ placeholder ?? ( "FIELD.INPUT.PLACEHOLDER.SELECT" | translate ) }}
+					button(
+						cubBasicButton,
+						iconSize='16px',
+						icon='expand',
+						*ngIf='!readonly',
+						(click)=`$event.stopPropagation();
+							formField.focus();
+							onOpenReferenceExpander( true, data )`)
+			.field-view-edit(*ngIf='data')
+				cub-scroll-bar.mah-100(
+					suppressX,
+					detectScroll)
+					.field-content
+						.field-content-item.flex
+							cub-chip.layout-row.layout-gap-4(
+								color="#ffffff",
+								*ngFor='let value of data?.selected; trackByValue')
+								span.text-truncate(
+									[attr.title]='value?.data')
+									ng-container(*ngIf='value?.data; else elseBlock;')
+										| {{ value.data }}
+									ng-template(#elseBlock)
+										| {{ "RECORD.DETAIL.LABEL.NO_NAME" | translate }}
+								button(
+									tabindex='-1',
+									*ngIf=`
+										$any( field ).isMultipleSelect
+										&& !disabled
+										&& !readonly`,
+									(click)=`$event.stopPropagation();
+										formField.focus();
+										onRemoveReferenceItem( value, data )`)
+									cub-icon(
+										name='close',
+										size='12px')
+						.field__btn-stick-on-content
+							button(
+								cubBasicButton,
+								iconSize='16px',
+								icon='expand',
+								(click)=`$event.stopPropagation();
+									formField.focus();
+									onOpenReferenceExpander( true, data )`)

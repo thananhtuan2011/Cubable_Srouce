@@ -1,0 +1,22 @@
+.wgc-switch__box
+.wgc-switch__label
+	| {{ label }}
+	ng-container(*ngIf='!label')
+		ng-content
+ng-container(*ngIf='formControl; else elseBlock;')
+	input(
+		ngDefaultControl,
+		type='checkbox',
+		tabindex='-1',
+		[formControl]='formControl',
+		[disableControl]='disableControl',
+		[(ngModel)]='ngModel',
+		(ngModelChange)='ngModelChange?.emit( $event )')
+ng-template(#elseBlock)
+	input(
+		ngDefaultControl,
+		type='checkbox',
+		tabindex='-1',
+		[disabled]='disabled',
+		[(ngModel)]='ngModel',
+		(ngModelChange)='ngModelChange?.emit( $event )')

@@ -1,0 +1,29 @@
+include ../builder.include.pug
+
+ng-template(#settingBlock)
+	currency-format-settings(
+		[(currency)]='internalField.currency',
+		[(format)]='internalField.format',
+		[(decimalPlaces)]='internalField.decimalPlaces')
+	cub-checkbox(
+		[label]='"FIELD.BUILDER.LABEL.ALLOW_NEGATIVE" | translate',
+		[(ngModel)]='internalField.allowNegative')
+
+ng-template(#defaultBlock)
+	currency-field-input(
+		autoFocusOn,
+		[required]='false',
+		[label]='"FIELD.BUILDER.LABEL.DEFAULT_VALUE" | translate',
+		[field]='internalField',
+		[(data)]='initialData',
+		(dataChange)='onInitialDataChanged( $event )')
+
+ng-container(
+	*ngTemplateOutlet=`
+		fieldTemplate;
+		context: {
+			settingBlock,
+			defaultBlock,
+			canSetRequired: true,
+		};
+	`)

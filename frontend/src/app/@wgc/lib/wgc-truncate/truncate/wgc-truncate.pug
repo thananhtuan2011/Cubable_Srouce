@@ -1,0 +1,8 @@
+wgc-tooltip(messageOnly, #tooltip, maxWidth='300px')
+	| {{ internalTooltip }}
+
+p(
+	#wrapperEle,
+	[wgcTooltip]='tooltip',
+	[disabled]='wgcTooltip !== undefined || !internalTooltip?.length')
+	ng-content

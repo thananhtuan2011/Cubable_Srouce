@@ -1,0 +1,36 @@
+@import 'src/scss/partials/variable';
+
+@mixin field-item {
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+	height: 40px;
+	min-height: 40px;
+	max-height: 40px;
+	padding: 10px 8px 10px 12px;
+	border-radius: 8px;
+}
+
+:host {
+	display: flex;
+	flex-direction: row;
+	width: 100%;
+	min-width: 0;
+	height: 100%;
+	min-height: 0;
+
+	.content {
+		display: flex;
+		flex-direction: column;
+		width: 100%;
+		min-width: 0;
+		height: 100%;
+		min-height: 0;
+
+		.tab-content {
+			height: 100%;
+			min-height: 0;
+			overflow: hidden;
+		}
+	}
+}

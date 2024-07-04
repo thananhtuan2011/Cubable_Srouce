@@ -1,0 +1,35 @@
+include ../mixins/mixin.pug
+
+mixin input(data)
+	cub-form-field&attributes(attributes)(
+		displayErrorMode='tooltip')
+		input(
+			cubFormFieldInput,
+			clearable,
+			required,
+			type='number',
+			#numberInput='cubFormFieldInput',
+			[disableControl]='error?.field',
+			[placeholder]='"0123 " + "456 " + "789"',
+			[formControl]='dataControl',
+			[(valueControl)]=`${data}`,
+			(valueControlChange)='onDataChange()')
+
+.layout-row.layout-align-start-center.layout-gap-8.layout-wrap.flex
+	ng-container(*ngTemplateOutlet='fieldPicker')
+
+	+comparisonOperator
+
+	ng-container(*ngIf='$any( data )?.compareType')
+		ng-container([ngSwitch]='$any( data ).compareType')
+			ng-container(*ngSwitchCase='COMPARISON_TYPE.STATIC')
+				+input('$any( data ).text').flex.miw-200
+			ng-container(*ngSwitchCase='COMPARISON_TYPE.AUTO')
+				+comparisonTypeAuto
+
+	ng-container(*ngIf='operator === COMPARISON_OPERATOR.STARTS_WITH\
+		|| operator === COMPARISON_OPERATOR.ENDS_WITH')
+		+input('data').w-172
+
+	ng-container(*ngIf='operatorHasComparisonType.has( operator )')
+		+comparisonType

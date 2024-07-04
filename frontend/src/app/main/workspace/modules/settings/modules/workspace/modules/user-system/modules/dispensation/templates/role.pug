@@ -1,0 +1,105 @@
+mixin role(permission, permissionName)
+	.layout-row.layout-gap-8.ph-8
+		cub-checkbox(
+			disabled,
+			[ngModel]=`role.${permission}`)
+		| {{ "SETTINGS.WORKSPACE.USER_SYSTEM.DISPENSATION.LABEL.#{permissionName}" | translate }}
+
+cub-popup.admin-popup(
+	#adminPopup,
+	width='400px')
+	cub-popup-header
+		ng-template(cubPopupHeader, let-role='role')
+			.layout-row.layout-align-space-between-center
+				h5.text-truncate([title]='role.uniqName ? ( rolesDefault.get( role.uniqName ).name | translate ) : role.name')
+					| {{ role.uniqName ? ( rolesDefault.get( role.uniqName ).name | translate ) : role.name }}
+				button(
+					cubClearButton,
+					size='20px',
+					[cubTooltip]='"SETTINGS.WORKSPACE.USER_SYSTEM.DISPENSATION.LABEL.CLOSE" | translate',
+					(click)='adminPopup.close()')
+	cub-popup-content
+			ng-template(cubPopupContent, let-role='role')
+				.layout-column.layout-gap-16
+					.layout-column.layout-gap-6
+						.text-color-secondary.ph-12
+							| {{ "SETTINGS.WORKSPACE.USER_SYSTEM.DISPENSATION.LABEL.BASE" | translate }}
+						.layout-column.layout-gap-12
+							+role('canCreateBase', 'CREATE_BASE')
+							ng-container(*ngIf='role.uniqName === ROLE_UNIQ_NAME.MEMBER; else elseBlock')
+								+role('canDeleteBase', 'DELETE_BASE_USER')
+							ng-template(#elseBlock)
+								+role('canDeleteBase', 'DELETE_BASE')
+					.layout-column.layout-gap-6
+						.text-color-secondary.ph-12
+							| {{ "SETTINGS.WORKSPACE.USER_SYSTEM.DISPENSATION.LABEL.INVITE" | translate }}
+						.layout-column.layout-gap-12
+							+role('canInviteNewUser', 'INVITE_USER_TO_WORKSPACE')
+h4.p-16
+	| {{ "SETTINGS.WORKSPACE.USER_SYSTEM.DISPENSATION.LABEL.ROLE_AND_PERMISSION" | translate }}
+cub-divider
+cub-scroll-bar(
+	suppressX,
+	*ngIf='roles?.length; else notFound')
+	.layout-column.layout-align-start-center.layout-gap-16.pv-24
+		cub-card.card-content(
+			size='large',
+			*ngFor='let role of roles; ngForTrackByID')
+			cub-card-content
+				.layout-column.layout-gap-16
+					.layout-column.layout-gap-4
+						.layout-row.layout-align-space-between-center
+							.layout-row.layout-align-start-center
+								h4.text-truncate([title]='role.uniqName ? ( rolesDefault.get( role.uniqName ).name | translate ) : role.name')
+									| {{ role.uniqName ? ( rolesDefault.get( role.uniqName ).name | translate ) : role.name }}
+								cub-icon.ml-4(
+									name='lock-on-fill',
+									size='16px',
+									*ngIf=`role.uniqName === ROLE_UNIQ_NAME.ADMIN `)
+							cub-switch(
+								color='primary',
+								size='large',
+								*ngIf=`role.uniqName !== ROLE_UNIQ_NAME.OWNER
+								&& role.uniqName !== ROLE_UNIQ_NAME.ADMIN `,
+								[ngModel]='role.isActive',
+								[cubTooltip]='"SETTINGS.WORKSPACE.USER_SYSTEM.DISPENSATION.LABEL." + ( role.isActive ? "DEACTIVATE" : "ACTIVATE" ) | translate',
+								(ngModelChange)='switchRole( role, $event )',)
+						.text-color-secondary([title]='role.uniqName ? ( rolesDefault.get( role.uniqName ).description | translate ) : role.description')
+							| {{ role.uniqName ? ( rolesDefault.get( role.uniqName ).description | translate ) : role.description }}
+					.layout-row.layout-align-space-between-center
+						cub-member-list(
+							limit='2',
+							width='544px',
+							overlayX='start',
+							[confirmRemovingConfig]=`{
+								title: "SETTINGS.WORKSPACE.USER_SYSTEM.DISPENSATION.LABEL.REMOVE_ACCESS_ROLE",
+								confirmTitle: "SETTINGS.WORKSPACE.USER_SYSTEM.DISPENSATION.MESSAGE.REMOVE_ROLE_CONFIRM",
+								translateParams: { roleName: role.uniqName ? ( rolesDefault.get( role.uniqName ).name | translate ) : role.name }
+							}`,
+							size='medium',
+							avatarSize='large',
+							[viewListTitle]='"SETTINGS.WORKSPACE.USER_SYSTEM.DISPENSATION.LABEL.MANAGE_USER_ROLE" | translate',
+							[placeholder]='"SETTINGS.WORKSPACE.USER_SYSTEM.DISPENSATION.LABEL.SEARCH_USER_OR_TEAM" | translate',
+							[disableClose]='disableClose',
+							[strictDisplay]='false',
+							[users]='users',
+							[teams]='teams',
+							[selectedUserIDs]='role.userIDs',
+							[selectedTeamIDs]='role.teamIDs',
+							[selectedUsers]='role.selectedUsers',
+							[selectedTeams]='role.selectedTeams',
+							(valuesChange)='disableClose = !!$event?.length',
+							(added)='invite( $event, role )',
+							(removed)='remove( $event, role )',
+							(closed)='disableClose = false')
+						button(
+							cubBasicButton,
+							color='blue',
+							[cubPopupTriggerOrigin]='null',
+							[cubPopupTriggerHasBackdrop]='true',
+							[cubPopupTriggerContext]='{ role }',
+							[cubPopupTriggerFor]='adminPopup')
+							| {{ "SETTINGS.WORKSPACE.USER_SYSTEM.DISPENSATION.LABEL.VIEW_ROLE" | translate }}
+ng-template(#notFound)
+	not-found
+			

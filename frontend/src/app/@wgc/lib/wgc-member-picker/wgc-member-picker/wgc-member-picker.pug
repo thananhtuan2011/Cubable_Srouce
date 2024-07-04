@@ -1,0 +1,71 @@
+//- mixin member-actions
+//- 	ng-container(*ngVar='{ isSelectedAll: filteredMembers?.length === ( filteredMembers | filter : "id" : selected )?.length }; let localVar;')
+//- 		button.wgc-member-common-controls__btn-toogle-all(
+//- 			wgcBasicButton,
+//- 			*ngIf='filteredMembers?.length',
+//- 			(click)='localVar?.isSelectedAll ? deselectAllMembers() : selectAllMembers()')
+//- 			| {{ "WGC.LABEL." + ( localVar?.isSelectedAll ? "DESELECT_ALL" : "SELECT_ALL" ) | translate }}
+
+//- mixin member
+//- 	button(wgcMenuItem, [autoClose]='false', (click)='toggleMember( member )')
+//- 		wgc-member(
+//- 			[hasViewProfile]='false',
+//- 			[displayMemberStatus]='true',
+//- 			[scrolling$]='scrolling$',
+//- 			[member]='member',
+//- 			[canViewProfile]='canViewProfile')
+//- 		+btn-view-profile
+//- 		button(
+//- 			wgcBasicButton,
+//- 			wgcMenuItemSuffix,
+//- 			*ngVar='{ isSelected: selected | includes: member?.id }; let localVar;',
+//- 			[icon]='localVar?.isSelected ? "trash" : "circle-plus"',
+//- 			[color]='( localVar?.isSelected ? "DANGER" : "LABEL" ) | color',
+//- 			[wgcTooltip]='"WGC.LABEL." + ( localVar?.isSelected ? "REMOVE" : "ADD" ) | translate')
+
+//- include ../blocks/block-member.partial.pug
+
+//- .wgc-member-picker__header(*ngIf='mode !== "inline"')
+//- 	.wgc-member-picker__header-title
+//- 		| {{ "WGC.PLACEHOLDER.SELECT" | translate }}
+//- 	button(
+//- 		wgcBasicButton,
+//- 		icon='close',
+//- 		[wgcTooltip]='"WGC.LABEL.CLOSE" | translate',
+//- 		(click)='close()')
+//- wgc-tab-group.wgc-member-picker__content(
+//- 	stretch,
+//- 	stretchTab,
+//- 	contentPaddingHorizontal='0',
+//- 	contentPaddingBottom='0',
+//- 	[contentPaddingTop]='availableStatus?.length < 2 ? 0 : 10',
+//- 	[ngSwitch]='true',
+//- 	[hasScrollBar]='false',
+//- 	[(selectedIndex)]='selectedIndex')
+//- 	wgc-tab(
+//- 		*ngSwitchCase='availableStatus | includes : MEMBER_STATUS?.ACTIVE',
+//- 		[label]='"WGC.LABEL.ACTIVE_COUNT" | translate : { count: ( ( _members | filter : "status" : MEMBER_STATUS?.ACTIVE )?.length | commas ) || 0 }')
+//- 		ng-template(wgcTabContent)
+//- 			+members-search-box('_members | filter : "status" : MEMBER_STATUS?.ACTIVE', 'filteredMembers')
+//- 				+member-actions
+//- 			+not-found-members('filteredMembers')
+//- 			+member-lists('useVirtualScroll', 'filteredMembers')
+//- 				+member
+//- 	wgc-tab(
+//- 		*ngSwitchCase='availableStatus | includes : MEMBER_STATUS?.INACTIVE',
+//- 		[label]='"WGC.LABEL.INACTIVE_COUNT" | translate : { count: ( ( _members | filter : "status" : MEMBER_STATUS?.INACTIVE )?.length | commas ) || 0 }')
+//- 		ng-template(wgcTabContent)
+//- 			+members-search-box('_members | filter : "status" : MEMBER_STATUS?.INACTIVE', 'filteredMembers')
+//- 				+member-actions
+//- 			+not-found-members('filteredMembers')
+//- 			+member-lists('useVirtualScroll', 'filteredMembers')
+//- 				+member
+//- 	wgc-tab(
+//- 		*ngSwitchCase='availableStatus | includes : MEMBER_STATUS?.WAITING',
+//- 		[label]='"WGC.LABEL.PENDING_COUNT" | translate : { count: ( ( _members | filter : "status" : MEMBER_STATUS?.WAITING )?.length | commas ) || 0 }')
+//- 		ng-template(wgcTabContent)
+//- 			+members-search-box('_members | filter : "status" : MEMBER_STATUS?.WAITING', 'filteredMembers')
+//- 				+member-actions
+//- 			+not-found-members('filteredMembers')
+//- 			+member-lists('useVirtualScroll', 'filteredMembers')
+//- 				+member

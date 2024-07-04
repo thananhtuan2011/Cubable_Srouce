@@ -1,0 +1,12 @@
+{
+    "LABEL": {
+        "CONDITION_ROW": "Chỉ khi hàng thoả điều kiện",
+        "EVENT_MERGE": "Luồng sẽ tiến hành gộp nhánh và đi tiếp khi",
+        "SET_ADDITIONAL_CONDITIONS": "Đặt điều kiện bổ sung ",
+        "ALL_BRANCHES_COMPLETED": "Tất cả các nhánh được thực hiện xong",
+        "ANY_BRANCHES_COMPLETED": "Một nhánh bất kỳ được thực hiện xong"
+    },
+    "MESSAGE": {
+        "INCOMPLETE_BRANCHES_STOP": "Lúc này, những nhánh chưa được thực hiện xong sẽ dừng lại"
+    }
+}

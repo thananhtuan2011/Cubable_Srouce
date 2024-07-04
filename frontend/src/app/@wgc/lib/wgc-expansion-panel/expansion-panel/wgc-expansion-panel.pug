@@ -1,0 +1,14 @@
+.wgc-expansion-panel__header(
+	[class.wgc-expansion-panel__header--sticky]='expansionPanelHeader?.sticky',
+	[class.wgc-expansion-panel__header--stretch]='expansionPanelHeader?.stretch')
+	.wgc-expansion-panel__header__drag-handle(cdkDragHandle, *ngIf='cdkDrag !== undefined && !cdkDragDisabled')
+		wgc-icon(name='drag', size='20px')
+	.wgc-expansion-panel__header-wrapper((click)='expanded ? collapse() : expand()')
+		wgc-icon.wgc-expansion-panel__header__icon(name='chevron-right')
+		.wgc-expansion-panel__header__content
+			ng-container(*ngTemplateOutlet='expansionPanelHeader?.templateRef')
+.wgc-expansion-panel__content(wgcScrollBar, *ngIf='expanded', [suppress]='!hasScrollBar')
+	.wgc-expansion-panel__content-wrapper
+		ng-container(*ngIf='isRendered')
+			ng-container(*ngTemplateOutlet='expansionPanelContent?.template')
+			ng-content

@@ -1,0 +1,23 @@
+include ../blocks/block-member.partial.pug
+
+cub-avatar.cub-member__avatar(
+	*ngIf='!member.error',
+	panelClass='cub-member',
+	[type]='avatarType',
+	[hasOutline]='hasAvatarOutline',
+	[size]='avatarSize',
+	[label]='member.name',
+	[avatar]='member.avatar')
+.cub-member__data(*ngIf='displayMemberName')
+	.cub-member__name([title]='member.name | empty ')
+		.text-truncate([innerHtml]='member.name | markText : searchQuery : true')
+		.text-color-secondary(
+			*ngIf='member.status === MEMBER_STATUS.INACTIVE && displayMemberStatusHint')
+			| ({{ "CUB.LABEL.INACTIVE" | translate }})
+	.text-truncate.cub-member__role(
+		*ngIf='member.role && displayRoleName',
+		[title]='member.role.name | empty')
+		| {{ member.role.name | empty }}
+
+ng-container(*ngIf='displayMemberStatus')
+	+userStatus('member.status')

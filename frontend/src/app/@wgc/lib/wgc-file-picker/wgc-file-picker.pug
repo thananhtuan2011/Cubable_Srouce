@@ -1,0 +1,82 @@
+//- .wgc-file-picker__header(*ngIf='mode !== "inline"')
+//- 	.wgc-file-picker__header-title
+//- 		| {{ "WGC.LABEL.UPLOAD_FILE" | translate }}
+//- 	button(
+//- 		wgcBasicButton,
+//- 		icon='close',
+//- 		[wgcTooltip]='"WGC.LABEL.CLOSE" | translate',
+//- 		(click)='close()')
+//- .wgc-file-picker__label
+//- 	| {{ "WGC.LABEL.FROM" | translate }}
+//- button.wgc-file-picker__option(wgcBasicButton, [disabled]='isUploading', (click)='filePickerInput?.click()')
+//- 	wgc-icon.wgc-file-picker__option-icon(name='document', size='20px')
+//- 	| {{ "WGC.LABEL.YOUR_COMPUTER" | translate }}
+//- 	| ({{ "WGC.LABEL.MAX" | translate }}: {{ maxFileSize | fileSize }})
+//- button.wgc-file-picker__option(
+//- 	wgcBasicButton,
+//- 	wgcGoogleDrivePicker,
+//- 	*ngIf='cloudStorageConfig?.googleDrive',
+//- 	[disabled]='isUploading',
+//- 	[mimeTypes]='googleDriveMimeTypes',
+//- 	[multiSelect]='multiSelect',
+//- 	(picked)='onGoogleDrivePicked( $event )')
+//- 	img.wgc-file-picker__option-icon(width='20px', height='20px', [lazyLoad]='"assets/images/icons/google-drive.png"')
+//- 	| Google Drive
+//- button.wgc-file-picker__option(
+//- 	wgcBasicButton,
+//- 	wgcDropboxPicker,
+//- 	*ngIf='cloudStorageConfig?.dropbox',
+//- 	[disabled]='isUploading',
+//- 	[extensions]='dropboxExtensions',
+//- 	[multiSelect]='multiSelect',
+//- 	(picked)='onDropboxPicked( $event )')
+//- 	img.wgc-file-picker__option-icon(width='20px', height='20px', [lazyLoad]='"assets/images/icons/dropbox.png"')
+//- 	| Dropbox
+//- button.wgc-file-picker__option(
+//- 	wgcBasicButton,
+//- 	wgcOneDrivePicker,
+//- 	*ngIf='cloudStorageConfig?.oneDrive',
+//- 	[disabled]='isUploading',
+//- 	[extensions]='oneDriveExtensions',
+//- 	[multiSelect]='multiSelect',
+//- 	(picked)='onOneDrivePicked( $event )')
+//- 	img.wgc-file-picker__option-icon(width='20px', height='20px', [lazyLoad]='"assets/images/icons/one-drive.png"')
+//- 	| OneDrive
+//- .wgc-file-picker__label
+//- 	| {{ "WGC.LABEL.OR_DROP_FILE_HERE" | translate }}
+//- .wgc-file-picker__upload-list(*ngIf='uploadingFiles; else elseBlock;')
+//- 	.wgc-file-picker__upload-list-item(*ngFor='let file of uploadingFiles; let index = index;')
+//- 		img.wgc-file-picker__upload-list-item__icon(width='24px', [lazyLoad]='file?.name | fileIcon')
+//- 		.wgc-file-picker__upload-list-item__info
+//- 			wgc-truncate.wgc-file-picker__upload-list-item__info-name(limitLine='1')
+//- 				| {{ file?.name | empty }}
+//- 			.wgc-file-picker__upload-list-item__info-size
+//- 				| {{ file?.size | fileSize }}
+//- 		.wgc-file-picker__upload-list-item__loading
+//- 			ng-container(*ngIf='uploadingFileStates[ index ]?.success === undefined; else elseBlock;')
+//- 				round-progress(
+//- 					[stroke]='1.5',
+//- 					[radius]='11',
+//- 					[color]='"INFO" | color',
+//- 					[background]='"PLACEHOLDER" | color',
+//- 					[current]='uploadingFileStates[ index ]?.loaded || 0',
+//- 					[max]='uploadingFileStates[ index ]?.total || 100')
+//- 			ng-template(#elseBlock)
+//- 				wgc-icon(
+//- 					size='20px',
+//- 					[name]='uploadingFileStates[ index ]?.success ? "check" : "warning"',
+//- 					[color]='( uploadingFileStates[ index ]?.success ? "SUCCESS" : "WARNING" ) | color')
+//- ng-template(#elseBlock)
+//- 	.wgc-file-picker__dropzone(
+//- 		(dragover)='$event?.stopPropagation(); $event?.preventDefault();',
+//- 		(drop)='$event?.preventDefault(); onLocalPicked( $event?.dataTransfer?.files )')
+//- 		wgc-icon(name='cloud-upload', size='48px')
+//- input(
+//- 	#filePickerInput,
+//- 	type='file',
+//- 	tabindex='-1',
+//- 	style='display: none',
+//- 	[disabled]='isUploading',
+//- 	[attr.multiple]='multiSelect || undefined',
+//- 	[attr.accept]='fileAccept',
+//- 	(change)='onLocalPicked( $any( $event?.target )?.files ); filePickerInput.value = "";')

@@ -1,0 +1,108 @@
+.cub-basic-editor-wrapper
+	.cub-basic-editor__toolbar(
+		*ngIf='!noToolbar')
+		.cub-basic-editor__toolbar__left
+			ng-container(*ngIf='!disableFormats')
+				button(
+					cubBasicButton
+					icon='bold',
+					iconSize='20px',
+					[iconColor]=`
+						formatting.bold
+							? "blue"
+							: undefined
+					`,
+					[disabled]='formatting.codeBlock',
+					(click)='formatText( "bold" )')
+				button(
+					cubBasicButton
+					icon='italic',
+					iconSize='20px',
+					[iconColor]=`
+						formatting.italic
+							? "blue"
+							: undefined
+					`,
+					[disabled]='formatting.codeBlock',
+					(click)='formatText( "italic" )')
+				button(
+					cubBasicButton
+					icon='underline',
+					iconSize='20px',
+					[iconColor]=`
+						formatting.underline
+							? "blue"
+							: undefined
+					`,
+					[disabled]='formatting.codeBlock',
+					(click)='formatText( "underline" )')
+				button(
+					cubBasicButton
+					icon='strikethrough',
+					iconSize='20px',
+					[iconColor]=`
+						formatting.strike
+							? "blue"
+							: undefined
+					`,
+					[disabled]='formatting.codeBlock',
+					(click)='formatText( "strike" )')
+				cub-divider(vertical)
+				button(
+					cubBasicButton
+					icon='bullet-list',
+					iconSize='20px',
+					[iconColor]=`
+						formatting.list === "bullet"
+							? "blue"
+							: undefined
+					`,
+					(click)='formatList( "bullet" )')
+				button(
+					cubBasicButton
+					icon='ordered-list',
+					iconSize='20px',
+					[iconColor]=`
+						formatting.list === "ordered"
+							? "blue"
+							: undefined
+					`,
+					(click)='formatList( "ordered" )')
+				button(
+					cubBasicButton
+					icon='quote',
+					iconSize='20px',
+					[iconColor]=`
+						formatting.blockquote
+							? "blue"
+							: undefined
+					`,
+					(click)='formatText( "blockquote" )')
+				cub-divider(vertical)
+				button(
+					cubBasicButton
+					icon='code',
+					iconSize='20px',
+					[iconColor]=`
+						formatting.code
+							? "blue"
+							: undefined
+					`,
+					[disabled]='formatting.codeBlock',
+					(click)='formatText( "code" )')
+				button(
+					cubBasicButton
+					icon='code-block',
+					iconSize='20px',
+					[iconColor]=`
+						formatting.codeBlock
+							? "blue"
+							: undefined
+					`,
+					(click)='formatText( "code-block" )')
+			ng-content(select='[leftToolbar]')
+		.cub-basic-editor__toolbar__right
+			ng-content(select='[rightToolbar]')
+
+	.cub-basic-editor__holder
+		div(#editorHolder)

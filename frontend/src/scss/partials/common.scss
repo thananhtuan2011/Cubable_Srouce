@@ -1,0 +1,32 @@
+.required {
+	&-dot {
+		@include required-dot;
+	}
+
+	&-tag {
+		&:not(:empty) {
+			@include required-tag;
+		}
+
+		&:empty {
+			@include inside-required-tag;
+		}
+	}
+}
+
+.dragging {
+	opacity: .4;
+
+	&-preview {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		position: relative;
+		width: fit-content;
+		padding: 5px 10px;
+		border-radius: 4px;
+		background-color: var(--primary-color, $color-primary);
+		color: $color-white;
+		transition: none !important;
+	}
+}

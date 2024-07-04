@@ -1,0 +1,9 @@
+cub-scroll-bar(
+	cdkScrollable,
+	[suppressX]='suppressScrollX',
+	[suppressY]='suppressScrollY',
+	[mode]='scrollBarMode')
+	.cub-page__header
+		ng-content(select='[cubPageHeader]')
+	.cub-page__content
+		ng-content(select='[cubPageContent]')

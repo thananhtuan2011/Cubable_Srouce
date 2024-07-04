@@ -1,0 +1,8 @@
+div(#ref)
+	ng-content
+ng-container(*ngIf='!ref?.childNodes?.length')
+	i.icon.icon-move
+	.title
+		| {{ "CORE.MESSAGE.NO_DATA" | translate: { name: ( name || ( 'CORE.LABEL.ITEMS' | translate ) ) | lowercase | empty } }}
+	.description
+		| {{ "CORE.MESSAGE.DRAG_DROP_HERE" | translate: { name: ( name || ( 'CORE.LABEL.ITEMS' | translate ) ) | lowercase | empty } }}

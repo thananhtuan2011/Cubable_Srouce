@@ -1,0 +1,11 @@
+.cub-expansion-panel__header(
+	(click)='toggle()')
+	ng-container(
+		*ngTemplateOutlet='expansionPanelHeader.templateRef')
+	cub-icon(
+		size='16px',
+		[name]='expanded ? "chevron-up" : "chevron-down"')
+.cub-expansion-panel__content(
+	[class.hide]='!expanded')
+	ng-container(
+		*ngTemplateOutlet='expansionPanelContent.template')

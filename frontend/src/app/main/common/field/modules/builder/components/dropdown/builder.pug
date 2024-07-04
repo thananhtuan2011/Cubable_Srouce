@@ -1,0 +1,207 @@
+include ../builder.include.pug
+
+ng-template(#tooltip)
+	.layout-column.layout-gap-8.pv-6
+		cub-image(
+			width='276px',
+			height='166px',
+			src='assets/images/field/dropdown-reference-option.webp')
+		div
+			| {{ "FIELD.BUILDER.MESSAGE.DROPDOWN_REFERENCE_OPTION_GUIDE" | translate }}
+
+ng-template(#settingBlock)
+	.layout-column.layout-gap-16
+		.layout-column.layout-gap-8
+			b
+				| {{ "FIELD.BUILDER.LABEL.MANAGE_OPTION" | translate }}
+			.layout-row.layout-gap-16.layout-align-space-between-center
+				cub-radio(
+					[checked]='!internalField?.reference',
+					[onBeforeCheck]='onBeforeChooseManualModeFn',
+					[label]='"FIELD.BUILDER.LABEL.MANUAL_CREATE" | translate',
+					(checkedChange)='manualChecked()')
+				.layout-row.layout-gap-8.layout-align-start-center(
+					cubTooltipWidth='300px',
+					cubTooltipMinHeight='196px',
+					[cubTooltip]='tooltip')
+					cub-radio(
+						[checked]='internalField?.reference',
+						[onBeforeCheck]='onBeforeChooseReferenceModeFn',
+						[label]='"FIELD.BUILDER.LABEL.REFERENCE" | translate',
+						(checkedChange)='referenceChecked()')
+					cub-icon(
+						size='16px',
+						name='info-circle',
+						color='secondary')
+		ng-container(*ngIf='isLoading; else elseBlock;')
+			.layout-row.layout-align-center-start.full-width
+				cub-loading
+		ng-template(#elseBlock)
+			ng-container(
+				*ngIf='!internalField.reference; else elseBlock;')
+				cub-card(variant='tonal')
+					cub-card-content
+						ng-container(
+							*ngIf='isCopying; else elseBlock;')
+							.layout-column.layout-gap-16
+								.layout-row.layout-gap-12.layout-align-start-center
+									button(
+										cubBasicButton,
+										icon='chevron-left',
+										(click)='isCopying = false')
+									span
+										| {{ "FIELD.BUILDER.LABEL.COPY_FROM_OTHER_FIELD" | translate }}
+								cub-dropdown(
+									[ngModel]='boardSelected',
+									[label]='"FIELD.BUILDER.LABEL.CHOOSE_BOARD_HAS_FIELD_TO_COPY" | translate',
+									(ngModelChange)='onBoardChanged( $event, true )')
+									cub-dropdown-item(
+										*ngFor='let board of boards; trackByID',
+										[label]='board.name',
+										[value]='board')
+								cub-dropdown(
+									#fieldDropdown,
+									[class.hide]='!boardSelected',
+									[label]='"FIELD.BUILDER.LABEL.COPY_FROM_FIELD" | translate',
+									[(ngModel)]='fieldSelected')
+									cub-dropdown-item(
+										*ngFor='let field of fields; trackByID',
+										[label]='field.name',
+										[value]='field')
+								.layout-row.layout-align-end
+									button(
+										cubButton='secondary',
+										*ngIf='boardSelected',
+										(click)='copy()')
+										| {{ "FIELD.BUILDER.LABEL.COPY" | translate }}
+						ng-template(#elseBlock)
+							.layout-column.layout-gap-16.flex(
+								cdkDropList,
+								cdkDropListLockAxis='y',
+								(cdkDropListDropped)='onOptionDropped( $event )')
+								cub-scroll-bar.layout-column.layout-gap-16.mah-200(
+									cdkScrollable,
+									*ngIf='internalField.options?.length')
+									.layout-row.layout-gap-8.layout-align-start-center(
+										cdkDrag,
+										*ngFor=`let option of internalField.options;
+											let idx = index;
+											trackByValue`)
+										button(
+											cubBasicButton,
+											cdkDragHandle,
+											icon='drag',
+											iconSize='20px',
+											iconColor='secondary')
+										button(
+											cubBasicButton,
+											iconSize='20px',
+											icon='dropdown-circle-fill',
+											[iconColor]='option.color',
+											[(cubColorPicker)]='option.color')
+										cub-form-field(
+											includeOuterSize,
+											outerClass='flex')
+											input(
+												autoFocusOn,
+												cubFormFieldInput,
+												maxlength='255',
+												#optionNameInput='cubFormFieldInput',
+												[placeholder]='"FIELD.BUILDER.PLACEHOLDER.FILL_OPTION_NAME" | translate',
+												[(ngModel)]='option.name',
+												(keydown.enter)=`
+													optionNameInput.blur();
+													focusNextOption( idx );
+												`)
+										button(
+											cubBasicButton,
+											icon='close',
+											iconSize='20px',
+											iconColor='secondary',
+											(click)='removeOption( option )')
+								.layout-row.layout-align-space-between-center.layout-gap-8
+									button(
+										cubBasicButton,
+										icon='plus-circle',
+										iconSize='16px',
+										(click)='addOption()')
+										| {{ "FIELD.BUILDER.LABEL.ADD_OPTION" | translate }}
+									button(
+										cubBasicButton='secondary',
+										icon='import',
+										iconSize='16px',
+										(click)='copyFromOtherField()')
+										.text-truncate.maw-80(
+											[title]='"FIELD.BUILDER.LABEL.COPY_FROM_OTHER_FIELD" | translate')
+											| {{ "FIELD.BUILDER.LABEL.COPY_FROM_OTHER_FIELD" | translate }}
+			ng-template(#elseBlock)
+				cub-card(variant='tonal')
+					cub-card-content
+						form.layout-column.layout-gap-16(
+							[formGroup]='fieldForm')
+							cub-dropdown(
+								required,
+								formControlName='boardRef',
+								[label]='"FIELD.BUILDER.LABEL.CHOOSE_BOARD_HAS_FIELD_TO_REFERENCE" | translate',
+								[valueControl]='boardSelected || internalField.reference.boardID',
+								(valueControlChange)='onBoardChanged( $event )')
+								cub-dropdown-item(
+									*ngFor='let board of boards; trackByID',
+									[label]='board.name',
+									[value]='board')
+								ng-container(
+									cubDropdownError,
+									*ngIf=`
+										internalField?.reference
+										&& internalField.reference.boardID === null`)
+									| {{ "FIELD.BUILDER.MESSAGE.BOARD_DELETED" | translate }}
+
+							cub-dropdown(
+								required,
+								#fieldDropdown,
+								formControlName='fieldRef',
+								[class.hide]='!( boardSelected || internalField.reference.boardID )',
+								[valueControl]='fieldSelected || internalField.reference.fieldID',
+								[label]='"FIELD.BUILDER.LABEL.REFERENCE_FROM_FIELD" | translate',
+								(valueControlChange)='onFieldChanged( $event )')
+								cub-dropdown-item(
+									*ngFor='let field of fields; trackByID',
+									[label]='field.name',
+									[value]='field')
+								ng-container(
+									cubDropdownError,
+									*ngIf=`
+										internalField?.reference
+										&& internalField.reference.fieldID === null`)
+									| {{ "FIELD.BUILDER.MESSAGE.BOARD_DELETED" | translate }}
+
+		.layout-column.layout-gap-8(*ngIf='internalField')
+			cub-checkbox(
+				[label]='"FIELD.BUILDER.LABEL.ALLOW_MULTIPLE_SELECT" | translate',
+				[onBeforeToggle]='onBeforeToggleFn',
+				[ngModel]='internalField.isMultipleSelect',
+				(ngModelChange)='onMultipleSelectChanged( $event )')
+			cub-checkbox(
+				[label]='"FIELD.BUILDER.LABEL.ALLOW_CREATE_NEW_OPTION" | translate',
+				[disabled]='!!internalField.reference',
+				[(ngModel)]='internalField.allowAddSelections')
+
+ng-template(#defaultBlock)
+	dropdown-field-input(
+		autoFocusOn,
+		*ngIf='internalField',
+		[required]='false',
+		[label]='"FIELD.BUILDER.LABEL.DEFAULT_OPTION" | translate',
+		[field]='internalField',
+		[(data)]='initialData',
+		(dataChange)='onInitialDataChanged( $event )')
+
+ng-container(
+	*ngTemplateOutlet=`
+		fieldTemplate;
+		context: {
+			settingBlock,
+			defaultBlock,
+			canSetRequired: true
+		};
+	`)

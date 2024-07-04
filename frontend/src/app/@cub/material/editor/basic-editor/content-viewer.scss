@@ -1,0 +1,13 @@
+.cub-basic-editor-content-viewer {
+	@import './content.scss';
+
+	.ql-container {
+		.ql-editor {
+			.ql-tag .ql-tag-btn-remove {
+				display: none;
+
+				pointer-events: none;
+			}
+		}
+	}
+}

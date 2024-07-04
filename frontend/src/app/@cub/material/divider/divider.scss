@@ -1,0 +1,21 @@
+@import '../../scss/partials/variable';
+
+.cub-divider {
+	$self: &;
+
+	display: flex;
+
+	background-color: $color-border-primary;
+
+	&:not(#{ $self }-vertical) {
+		height: 1px;
+		min-height: 1px;
+		max-height: 1px;
+	}
+
+	&#{ $self }-vertical {
+		width: 1px;
+		min-width: 1px;
+		max-width: 1px;
+	}
+}

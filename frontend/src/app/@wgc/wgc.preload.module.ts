@@ -1,0 +1,70 @@
+import { NgModule } from '@angular/core';
+
+import { WGCModule } from './wgc.module';
+
+import {
+	WGCActionBoxModule, WGCAvatarModule, WGCAvatarPickerModule,
+	WGCButtonModule, WGCButtonToggleModule,
+	WGCCardModule, WGCChartModule,
+	WGCCheckboxModule, WGCClipboardCopyModule, WGCCodeBlockModule,
+	WGCColorPickerModule, WGCCommentModule,
+	WGCConfirmModule, WGCCropperModule, WGCDatePickerModule,
+	WGCDialogModule, WGCDividerModule, WGCDrawerModule,
+	WGCDropdownModule, WGCEmojiPickerModule,
+	WGCExpansionPanelModule, WGCFilePickerModule, WGCFormFieldModule,
+	WGCIconModule, WGCInlineInputModule,
+	WGCListModule, WGCLoadingModule, WGCMemberPickerModule,
+	WGCMenuModule, WGCPageModule,
+	WGCRadioModule,
+	WGCScrollBarModule, WGCSearchBoxModule, WGCShowMoreModule,
+	WGCSliderModule, WGCSwitchModule, WGCTabsModule,
+	WGCTableModule, WGCTagModule,
+	WGCToastModule, WGCTooltipModule,
+	WGCTruncateModule, WGCMultipleValueInputModule
+} from './lib';
+
+@NgModule({
+	imports: [
+		WGCActionBoxModule, WGCAvatarModule, WGCAvatarPickerModule,
+		WGCButtonModule, WGCButtonToggleModule,
+		WGCCardModule, WGCChartModule,
+		WGCCheckboxModule, WGCClipboardCopyModule, WGCCodeBlockModule,
+		WGCColorPickerModule, WGCCommentModule,
+		WGCConfirmModule, WGCCropperModule, WGCDatePickerModule,
+		WGCDialogModule, WGCDividerModule, WGCDrawerModule,
+		WGCDropdownModule, WGCEmojiPickerModule,
+		WGCExpansionPanelModule, WGCFilePickerModule, WGCFormFieldModule,
+		WGCIconModule, WGCInlineInputModule,
+		WGCListModule, WGCLoadingModule, WGCMemberPickerModule,
+		WGCMenuModule, WGCPageModule,
+		WGCRadioModule,
+		WGCScrollBarModule, WGCSearchBoxModule, WGCShowMoreModule,
+		WGCSliderModule, WGCSwitchModule, WGCTabsModule,
+		WGCTableModule, WGCTagModule,
+		WGCToastModule, WGCTooltipModule,
+		WGCTruncateModule, WGCMultipleValueInputModule,
+	],
+	exports: [
+		WGCActionBoxModule, WGCAvatarModule, WGCAvatarPickerModule,
+		WGCButtonModule, WGCButtonToggleModule,
+		WGCCardModule, WGCChartModule,
+		WGCCheckboxModule, WGCClipboardCopyModule, WGCCodeBlockModule,
+		WGCColorPickerModule, WGCCommentModule,
+		WGCConfirmModule, WGCCropperModule, WGCDatePickerModule,
+		WGCDialogModule, WGCDividerModule, WGCDrawerModule,
+		WGCDropdownModule, WGCEmojiPickerModule,
+		WGCExpansionPanelModule, WGCFilePickerModule, WGCFormFieldModule,
+		WGCIconModule, WGCInlineInputModule,
+		WGCListModule, WGCLoadingModule, WGCMemberPickerModule,
+		WGCMenuModule, WGCPageModule,
+		WGCRadioModule,
+		WGCScrollBarModule, WGCSearchBoxModule, WGCShowMoreModule,
+		WGCSliderModule, WGCSwitchModule, WGCTabsModule,
+		WGCTableModule, WGCTagModule,
+		WGCToastModule, WGCTooltipModule,
+		WGCTruncateModule, WGCMultipleValueInputModule,
+	],
+	declarations: [],
+	providers	: [],
+})
+export class WGCPreloadModule extends WGCModule {}

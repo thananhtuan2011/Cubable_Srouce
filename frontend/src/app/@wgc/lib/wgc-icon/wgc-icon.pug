@@ -1,0 +1,3 @@
+img(*ngIf='isImage; else elseBlock;', [lazyLoad]='name', [attr.width]='size', [attr.height]='size')
+ng-template(#elseBlock)
+	i.icon([ngClass]='"icon-" + name')

@@ -1,0 +1,42 @@
+cub-card(
+	variant='tonal',
+	size='small')
+	cub-card-content
+		.layout-column.layout-gap-12
+			.layout-column.layout-gap-6
+				.text-color-secondary.ml-12
+					| {{ "BASE.WORKFLOW.SETUP.SUB_PROCESS.LABEL.COMPLETE_WHEN" | translate }}
+				cub-dropdown(
+					required,
+					[clearable]='false',
+					[formControl]='completeTypeControl',
+					[valueControl]='completeSetting?.type',
+					(valueControlChange)='onCompleteTypeChange( $event )')
+					cub-dropdown-item(
+						[label]='"BASE.WORKFLOW.SETUP.SUB_PROCESS.LABEL.ALL_ROW_COMPLETE" | translate',
+						[value]='subProcessCompleteType.All')
+					cub-dropdown-item(
+						[description]='"BASE.WORKFLOW.SETUP.SUB_PROCESS.MESSAGE.SOME_ROW_COMPLETE_HINT" | translate',
+						[label]='"BASE.WORKFLOW.SETUP.SUB_PROCESS.LABEL.SOME_ROW_COMPLETE" | translate',
+						[value]='subProcessCompleteType.SomeRow')
+			.complete-condition(
+				*ngIf='completeSetting?.type === subProcessCompleteType.SomeRow')
+				cub-switch(
+					[label]='"BASE.WORKFLOW.SETUP.SUB_PROCESS.LABEL.SET_CONDITION" | translate',
+					[ngModel]='hasCompleteCondition',
+					(ngModelChange)='onToggleSetConditionMode( $event )')
+				single-conditional(
+					#conditionalComp,
+					*ngIf='hasCompleteCondition',
+					[label]='"BASE.WORKFLOW.SETUP.SUB_PROCESS.LABEL.ONLY_ROW_MATCH_CONDITION" | translate',
+					[eventAdvance]='eventAdvance',
+					[boardID]='boardID',
+					[logicalExpression]='completeSetting.filter?.logicalExpression',
+					[options]='completeSetting.filter?.options',
+					[logicalOperator]='completeSetting.filter?.logicalOperator',
+					[conditions]='completeSetting.filter?.conditions',
+					(optionsChange)='onFilterOptionsChange( $event )',
+					(logicalOperatorChange)='onLogicalOperatorChange( $event )',
+					(logicalExpressionChange)='onLogicalExpressionChange( $event )',
+					(conditionsChange)='onConditionFilterChange( $event )',
+					(conditionalChange)='onSettingChanged()')

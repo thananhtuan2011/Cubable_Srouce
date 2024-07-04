@@ -1,0 +1,8 @@
+section.app.flex.layout-column
+	ng-container(*ngIf='isReady; else elseBlock;')
+		ngx-loading-bar([includeSpinner]='false', [color]='workspace?.settings?.primaryColor')
+		//- help-center(*ngIf='account && displayHelpCenter')
+		router-outlet
+	ng-template(#elseBlock)
+		.splash-screen
+			img(width='180px', height='166px', [lazyLoad]='"APP_LOGO_VERTICAL" | environment')

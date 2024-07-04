@@ -1,0 +1,46 @@
+cub-menu(
+	#menu,
+	width='240px',
+	maxHeight='260px')
+	cub-menu-header
+		ng-template(cubMenuHeader)
+			cub-search-box(
+				autoFocusOn,
+				[placeholder]='"SPREADSHEET.PLACEHOLDER.SEARCH_OR_ADD_OPTION" | translate',
+				[data]='options',
+				[(searchQuery)]='searchQuery')
+	cub-menu-content
+		ng-template(cubMenuContent)
+			ng-container(*ngIf='loaded')
+				ng-container(*ngIf=`searchQuery?.length
+					&& !filteredOptions?.length;
+					else elseBlock;`)
+					ng-container(*ngIf=`field.allowAddSelections
+						&& searchQuery?.length <= 255;
+						else elseBlock1`)
+						button(
+							cubMenuItem,
+							(click)='addNewOption()')
+							| {{ "SPREADSHEET.LABEL.ADD_OPTION" | translate }}:
+							b
+								| &nbsp;{{ searchQuery }}
+					ng-template(#elseBlock1)
+						cub-menu-group
+							| {{ "SPREADSHEET.LABEL.NO_RESULT_FOUND" | translate }}
+				ng-template(#elseBlock)
+					ng-container(
+						*ngIf='options?.length; else elseBlock2;')
+						button(
+							cubMenuItem,
+							*ngFor='let option of filteredOptions; trackByValue',
+							[autoClose]='!field.isMultipleSelect',
+							(click)='selectOption( option )')
+							cub-chip([color]='option.color')
+								.text-truncate(
+									[title]='option.name')
+									| {{ option.name }}
+					ng-template(#elseBlock2)
+						cub-menu-group
+							| {{ "SPREADSHEET.MESSAGE.ALL_OPTIONS_WAS_SELECTED" | translate }}
+
+ng-container(*ngTemplateOutlet='menu.templateRef')

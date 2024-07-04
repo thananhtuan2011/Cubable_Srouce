@@ -1,0 +1,60 @@
+@import 'src/scss/partials/variable';
+
+:host {
+	min-width: fit-content;
+}
+
+::ng-deep {
+	.cub-popup.all-view-popup {
+		.cub-popup__content {
+			padding: 20px 14px 20px 8px;
+
+			.view-arrangement-wrapper {
+				display: flex;
+				align-items: center;
+
+				.view-arrangement {
+					width: 100%;
+
+					.item {
+						border-bottom: .5px solid $color-border-primary;
+						padding-bottom: 9px;
+					}
+				}
+
+				&:last-of-type {
+					.item {
+						border-bottom: none;
+						padding-bottom: 10px;
+					}
+				}
+			}
+
+			.view-arrangement-wrapper--active {
+				background-color: $color-material-focus;
+			}
+
+			.cdk-drag.view-arrangement-wrapper {
+				.item-action__flag {
+					display: none !important;
+				}
+
+				.item-action__flag-fill .cub-icon {
+					display: flex !important;
+					color: $color-text-hyperlink !important;
+				}
+
+				&:hover {
+					.item-action__flag {
+						display: flex !important;
+					}
+
+					.item-action__flag:hover .cub-icon,
+					.item-action__flag-active .cub-icon {
+						color: $color-text-hyperlink !important;
+					}
+				}
+			}
+		}
+	}
+}

@@ -1,0 +1,122 @@
+mixin item
+	button.wgc-search-box-item(
+		wgcMenuItem,
+		[focusing]='focusIndex === index',
+		(click)='chooseSuggestItem( $event, index )')
+		img.wgc-search-box__avatar(*ngIf='item[ fieldImage ]', [lazyLoad]='item[ fieldImage ]')
+		wgc-avatar.wgc-search-box__avatar(
+			size='medium',
+			color='auto',
+			*ngIf='item[ fieldAvatar ]',
+			[label]='item[ fieldName ]',
+			[avatar]='item[ fieldAvatar ]')
+		.wgc-search-box__content
+			wgc-truncate.wgc-search-box__title
+				| {{ item[ fieldName ] | empty }}
+			wgc-truncate.wgc-search-box__description
+				| {{ item[ fieldDescription ] | empty }}
+
+wgc-menu.wgc-search-box(
+	#searchBoxMenu,
+	maxHeight='400px',
+	[hasScrollBar]='!useVirtualScroll',
+	[width]='elementRef?.nativeElement?.offsetWidth | unit')
+	wgc-menu-content
+		ng-template(wgcMenuContent)
+			ng-container(*ngIf='suggestionData?.length; else elseBlock;')
+				ng-container(*ngIf='useVirtualScroll; else elseBlock;')
+					cdk-virtual-scroll-viewport(
+						[itemSize]='itemSize',
+						[minBufferPx]='itemSize * 5',
+						[maxBufferPx]='itemSize * 10',
+						[style.height.px]='400')
+						ng-container(*cdkVirtualFor='let item of suggestionData; let index = index; trackBy: searchKey | trackByFn;')
+							+item
+				ng-template(#elseBlock)
+					ng-container(*ngFor='let item of suggestionData; let index = index; trackBy: searchKey | trackByFn;')
+						+item
+			ng-template(#elseBlock)
+				not-found([mode]='searchQuery ? "search" : "empty"')
+
+wgc-form-field.wgc-search-box__form-field(
+	programmatically,
+	originX='start',
+	originY='bottom',
+	overlayX='start',
+	overlayY='top',
+	position='undefined',
+	[offsetY]='formControl ? -20 : 0',
+	[label]='label',
+	[appearance]='appearance',
+	[errorDisplayMode]='errorDisplayMode',
+	[wgcMenuTriggerFor]='searchBoxMenu')
+	ng-container(*ngIf='formControl; else elseBlock;')
+		input(
+			wgcFormFieldInput,
+			clearable,
+			[name]='name',
+			[autoFocusOn]='autoFocusOn',
+			[autoReset]='autoReset',
+			[trim]='trim',
+			[placeholder]='placeholder || ( "WGC.PLACEHOLDER.SEARCH" | translate )',
+			[formControl]='formControl',
+			[disableControl]='disableControl',
+			[readonly]='readonly',
+			[required]='required',
+			[(ngModel)]='ngModel',
+			(ngModelChange)='ngModelChange?.emit( $event )',
+			(keydown.arrowup)='focusPreviousSuggestItem( $event )',
+			(keydown.arrowdown)='focusNextSuggestItem( $event )',
+			(keydown.enter)='chooseSuggestItem( $event, focusIndex )',
+			(keydown)='$event.stopPropagation()',
+			(input)='onInput( $event ); onSearch( $any( $event?.target )?.value );',
+			(focus)='onFocus( $event )',
+			(blur)='onBlur( $event )',
+			(cleared)='onClear( $event )')
+	ng-template(#elseBlock)
+		input(
+			wgcFormFieldInput,
+			clearable,
+			[name]='name',
+			[autoFocusOn]='autoFocusOn',
+			[autoReset]='autoReset',
+			[trim]='trim',
+			[placeholder]='placeholder || ( "WGC.PLACEHOLDER.SEARCH" | translate )',
+			[disabled]='disabled',
+			[readonly]='readonly',
+			[required]='required',
+			[(ngModel)]='ngModel',
+			(ngModelChange)='ngModelChange?.emit( $event )',
+			(keydown.arrowup)='focusPreviousSuggestItem( $event )',
+			(keydown.arrowdown)='focusNextSuggestItem( $event )',
+			(keydown.enter)='chooseSuggestItem( $event, focusIndex )',
+			(keydown)='$event.stopPropagation()',
+			(input)='onInput( $event ); onSearch( $any( $event?.target )?.value )',
+			(focus)='onFocus( $event )',
+			(blur)='onBlur( $event )',
+			(cleared)='onClear( $event )')
+	div(wgcFormFieldPrefix, *ngIf='prefixIcon')
+		button(wgcBasicButton, tabindex='-1', [icon]='prefixIcon', (click)='prefixIconClicked?.emit()')
+	div(wgcFormFieldSuffix, *ngIf='suffixIcon')
+		button(wgcBasicButton, tabindex='-1', [icon]='suffixIcon', (click)='suffixIconClicked?.emit()')
+
+ng-template(
+	#notFoundTemplate,
+	let-name='name',
+	let-size='size',
+	let-debounceTime='debounceTime',
+	let-emptyImage='emptyImage',
+	let-emptyImageSize='emptyImageSize',
+	let-emptyTitle='emptyTitle',
+	let-emptyDescription='emptyDescription',
+	[ngIf]='displayNotFound')
+	not-found(
+		*ngIf='!filteredData?.length',
+		[mode]='searchQuery?.length ? "search" : "empty"',
+		[name]='name || notFoundData?.name',
+		[size]='size || notFoundData?.size',
+		[debounceTime]='debounceTime || notFoundData?.debounceTime || undefined',
+		[emptyImage]='emptyImage || notFoundData?.emptyImage',
+		[emptyImageSize]='emptyImageSize || notFoundData?.emptyImageSize',
+		[emptyTitle]='emptyTitle || notFoundData?.emptyTitle',
+		[emptyDescription]='emptyDescription || notFoundData?.emptyDescription')

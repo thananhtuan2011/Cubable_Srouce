@@ -1,0 +1,163 @@
+cub-menu(
+	#subMenu,
+	width='224px',
+	height='256px')
+	cub-menu-content
+		ng-template(cubMenuContent)
+			.share-menu
+				.layout-column.layout-gap-6
+					span.text-color-secondary.ml-12
+						| {{ "RECORD.DETAIL.LABEL.SHARE_LINK" | translate }}
+					.layout-row.layout-gap-8
+						cub-form-field
+							input(
+								cubFormFieldInput,
+								readonly,
+								[clearable]='false',
+								[ngModel]='publicLink')
+						button.mr-8(
+							cubButton='secondary',
+							icon='copy',
+							iconSize='16px',
+							[disabled]='!publicLink',
+							[cubClipboardCopy]='publicLink')
+				.layout-column.layout-gap-6
+					span.text-color-secondary.ml-12
+						| {{ "RECORD.DETAIL.LABEL.SHARE_QR" | translate }}
+					qrcode(
+						width='116',
+						height='116',
+						[qrdata]='publicLink',
+						[allowEmptyString]='!publicLink',
+						(qrCodeURL)='onChangeQRUrl( $event )')
+				button(
+					cubBasicButton,
+					iconSize='16px',
+					icon='download-circle',
+					[disabled]='!publicLink',
+					(click)='downloadQR()')
+					| {{ "RECORD.DETAIL.LABEL.DOWNLOAD_QR" | translate }}
+
+cub-menu(
+	#dialogActionMenu,
+	width='162px',
+	height='200px')
+	cub-menu-content
+		ng-template(cubMenuContent)
+			button(
+				cubMenuItem,
+				icon='share',
+				iconSize='20px',
+				position='after',
+				trailingIcon='chevron-right',
+				trailingIconColor='tertiary',
+				[autoClose]='false',
+				[pointing]='subMenu.isOpened',
+				[cubSubMenuTriggerFor]='subMenu')
+				| {{ "RECORD.DETAIL.LABEL.SHARE" | translate }}
+			button(
+				cubMenuItem,
+				icon='flag',
+				iconSize='20px',
+				position='after',
+				trailingIcon='info-circle',
+				[autoClose]='false')
+				| {{ "RECORD.DETAIL.LABEL.FOLLOW" | translate }}
+			button(
+				cubMenuItem,
+				icon='print')
+				| {{ "RECORD.DETAIL.LABEL.PRINT" | translate }}
+			button(
+				cubMenuItem,
+				icon='lock-on')
+				| {{ "RECORD.DETAIL.LABEL.LOCK" | translate }}
+			button(
+				cubMenuItem='destructive',
+				icon='trash',
+				(click)='deleteItem()')
+				| {{ "RECORD.DETAIL.LABEL.DELETE" | translate }}
+
+div(cubDialogHeader)
+	.layout-row.layout-align-space-between-center
+		.layout-row.layout-align-start-center.layout-gap-8
+			.layout-row(*ngIf='dialogContext?.itemIDs?.length')
+				button(
+					cubBasicButton,
+					icon='chevron-up',
+					iconSize='20px',
+					[disabled]='rowIndex === 0',
+					(click)='onChangeItem( rowIndex - 1 )')
+				button(
+					cubBasicButton,
+					icon='chevron-down',
+					iconSize='20px',
+					[disabled]='rowIndex === dialogContext?.itemIDs?.length - 1',
+					(click)='onChangeItem( rowIndex + 1 )')
+			h5.text-truncate(
+				[style.maxWidth]='"500px"',
+				[title]='itemName | empty')
+				ng-container(*ngIf='itemName !== undefined; else undefinedName;')
+					ng-container(*ngIf='itemName; else noItemName')
+						| {{ itemName | empty }}
+					ng-template(#noItemName)
+						| {{ "RECORD.DETAIL.LABEL.UN_NAME" | translate }}
+				ng-template(#undefinedName)
+					| {{ "RECORD.DETAIL.LABEL.UNDEFINED_NAME" | translate }}
+		.layout-row.layout-align-start-center.layout-gap-12
+			button(
+				cubBasicButton,
+				iconSize='20px',
+				icon='more-vertical',
+				[cubMenuTriggerFor]='dialogActionMenu')
+			button(
+				cubClearButton,
+				size='20px',
+				[cubTooltip]='"RECORD.DETAIL.LABEL.CLOSE" | translate',
+				(click)='close()')
+div(cubDialogContent)
+	ng-container(
+		*ngIf=`!dialogContext; else elseBlock`)
+		.layout-column.layout-align-center-center.layout-gap-8.flex.full-height
+			cub-icon(
+				size='64px',
+				name='not-allow',
+				color='secondary')
+			.text-center.w-270
+				| {{ "RECORD.DETAIL.MESSAGE.NOT_ALLOW_PERMISSION" | translate }}
+	ng-template(#elseBlock)
+		ng-container(*ngIf='itemDetail')
+			cub-scroll-bar(suppressX)
+				information.pb-40(
+					[itemDetail]='itemDetail',
+					[viewID]='dialogContext.viewID',
+					[boardFields]='boardFields',
+					[itemName]='itemName',
+					[lookupContext]='dialogContext?.lookupContext',
+					[isTopSticky]='isTopSticky',
+					(stickEditorTop)='stickEditorTop( $event )',
+					(isLoaded)='isLoaded = $event')
+				comment(
+					*ngIf='isLoaded',
+					[style.paddingBottom.px]=`
+						isBottomSticky && !commentListHeight
+						? 0
+						: 2*cardPaddingNumber
+					`,
+					[hasCommentPermission]='hasCommentPermission',
+					[editorHeight]='editorHeight',
+					[commentListHeight]='commentListHeight',
+					[isTopSticky]='isTopSticky',
+					[isBottomSticky]='isBottomSticky',
+					[boardID]='itemDetail?.boardID',
+					[recordID]='itemDetail?.id',
+					[users]='users',
+					[user]='user',
+					[boardAvailableUsersFunc]='getBoardAvailableUsers.bind( this )',
+					[userComment]=`
+						{
+							id: user?.id,
+							name: user?.name,
+							avatar: user?.avatar,
+							status: user?.status,
+						}`,
+					(commentsLoaded)='onCommentsLoaded()')

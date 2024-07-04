@@ -1,0 +1,5 @@
+.wgc-radio__circle
+.wgc-radio__label
+	| {{ label }}
+	ng-container(*ngIf='!label')
+		ng-content

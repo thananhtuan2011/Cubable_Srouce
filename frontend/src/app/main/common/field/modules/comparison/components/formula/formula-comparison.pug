@@ -1,0 +1,36 @@
+include ../mixins/mixin.pug
+
+ng-template(#formulaTypePicker)
+	cub-dropdown(
+		autoWidth,
+		required,
+		#formulaTypeDropdown,
+		[menuSize]='{ minWidth: 130 }',
+		[clearable]='false',
+		[displayErrorMode]='ERROR_MODE.Tooltip',
+		[disableControl]='error?.field',
+		[formControl]='formulaTypeControl',
+		[(valueControl)]='data.formulaType',
+		(valueControlChange)='formulaTypeChange()')
+		cub-dropdown-item(
+			*ngFor='let f of formulaTypes; ngForTrackByValue',
+			[label]='f.label | translate | lowercase',
+			[value]='f.value')
+
+ng-container([ngSwitch]='data.formulaType')
+	ng-container(*ngSwitchCase='formulaType.NUMBER')
+		number-comparison(
+			#subComparison,
+			[fieldPicker]='fieldPicker',
+			[formulaTypePicker]='formulaTypePicker',
+			[error]='error',
+			[excludeFields]='excludeFields',
+			[field]='field',
+			[otherFields]='fields | otherFields : field',
+			[eventAdvance]='eventAdvance',
+			[source]='source',
+			[advanceOperators]='advanceOperators',
+			[data]='data',
+			[(operator)]='operator',
+			(operatorChange)='operatorChange.emit( $event )',
+			(dataChange)='onDataChanged( $event )')

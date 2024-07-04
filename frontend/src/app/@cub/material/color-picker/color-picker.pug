@@ -1,0 +1,10 @@
+.cub-color-picker-color-list
+	button.cub-color-picker-color-item(
+		cubBasicButton,
+		iconSize='20px',
+		iconColor='white',
+		*ngFor='let color of ACCENT_COLORS',
+		[style.--item-color]='color',
+		[class.cub-color-picker-color-item--selected]='color === picked',
+		[icon]='color === picked ? "check" : undefined',
+		(click)='pickColor( color )')

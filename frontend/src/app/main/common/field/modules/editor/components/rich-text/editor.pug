@@ -1,0 +1,35 @@
+cub-popup(
+	#popup,
+	draggable,
+	width='800px',
+	height='600px')
+	cub-popup-header
+		ng-template(cubPopupHeader)
+			.layout-row.layout-align-space-between-center.layout-gap-4
+				h5
+					| {{ "FIELD.EDITOR.LABEL.RICH_TEXT" | translate }}
+				button(
+					cubClearButton,
+					size='20px',
+					(click)='popupRef.close()')
+	cub-popup-content
+		ng-template(cubPopupContent)
+			cub-paragraph-editor(
+				autoFocusOn,
+				[data]='data',
+				[raw]='raw',
+				[readonly]='readonly',
+				[placeholder]='"FIELD.EDITOR.PLACEHOLDER.FILL_TEXT" | translate')
+	cub-popup-footer(*ngIf='!readonly')
+		ng-template(cubPopupFooter)
+			.layout-row.layout-align-end.layout-gap-12
+				button.w-80(
+					cubButton='secondary',
+					(click)='cancel()')
+					| {{ "FIELD.EDITOR.LABEL.CANCEL" | translate }}
+				button.w-120(
+					cubButton,
+					(click)='save()')
+					| {{ "FIELD.EDITOR.LABEL.DONE" | translate }}
+
+ng-container(*ngTemplateOutlet='popup.templateRef')

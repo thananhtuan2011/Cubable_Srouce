@@ -1,0 +1,27 @@
+mixin check-icon
+	span.cub-menu-item__check-icon
+		cub-icon(
+			*ngIf='selected',
+			size='20px',
+			name='check')
+
+span.cub-menu-item__left
+	span.cub-menu-item__prefix
+		cub-icon(
+			*ngIf='leadingIcon',
+			[name]='leadingIcon',
+			[color]='leadingIconColor',
+			[size]='leadingIconSize')
+		ng-content(select='[cubMenuItemPrefix]')
+	+check-icon
+span.cub-menu-item__right
+	span.cub-menu-item__content
+		ng-content
+	+check-icon
+	span.cub-menu-item__suffix
+		cub-icon(
+			*ngIf='trailingIcon',
+			[name]='trailingIcon',
+			[color]='trailingIconColor',
+			[size]='trailingIconSize')
+		ng-content(select='[cubMenuItemSuffix]')

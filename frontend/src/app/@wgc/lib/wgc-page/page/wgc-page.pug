@@ -1,0 +1,10 @@
+.wgc-page__header([class.wgc-page__header--has-divider]='pageHeader?.divider')
+	ng-content(select='[wgcPageHeader]')
+.wgc-page__content(
+	wgcScrollBar,
+	detectScroll,
+	[suppressScrollX]='suppressScrollX',
+	[suppressScrollY]='suppressScrollY',
+	[mode]='scrollBarMode',
+	(scrolling)='isScrolling = $event?.scrollTop > 0')
+	ng-content(select='[wgcPageContent]')

@@ -1,0 +1,136 @@
+@import 'src/scss/partials/variable';
+
+.multiple-email-input {
+	$self: &;
+	display: flex;
+	flex-direction: column;
+
+	#{ $self }__box {
+		display: flex;
+		flex-direction: row;
+		flex-wrap: wrap;
+		border-radius: 8px;
+		border: 1px solid color(lightGray, 200);;
+		min-height: 36px;
+		max-height: 104px;
+		background: $color-white;
+
+		&#{ $self }__box--disabled {
+			background: #f2f2f2;
+		}
+
+		&#{ $self }__box--invalid {
+			border-color: $color-destructive;
+			box-shadow: 0 0 0 2px rgba(255, 116, 129, .6), 0 1px 2px 0 rgba(16, 24, 40, .05);
+		}
+
+		&:not(#{ $self }__box--disabled):not(#{ $self }__box--invalid) {
+			&:hover {
+				border-color: $color-border-quaternary;
+			}
+
+			&#{ $self }__box--focusing {
+				border-color: $color-border-focus;
+				box-shadow: 0 0 0 2px rgba(140, 183, 255, .8), 0 1px 2px 0 rgba(16, 24, 40, .05);
+			}
+		}
+
+		&:has(#{ $self }__box-values) {
+			padding: 4px 8px;
+		}
+
+		#{ $self }__box-values {
+			display: flex;
+			flex-direction: row;
+			justify-content: center;
+			align-items: center;
+			gap: 4px;
+			border-radius: 20px;
+			min-height: 26px;
+			background: #f2f2f2;
+			margin: 4px;
+			padding: {
+				right: 8px;
+				left: 8px
+			};
+
+			&#{ $self }__box-values--invalid {
+				border: 1px solid $color-destructive;
+			}
+
+			#{ $self }__box-values__value {
+				color: $color-text-hyperlink;
+				font: {
+					size: 14px;
+					weight: 400,
+				}
+			}
+
+			#{ $self }__box-values__icon-remove {
+				display: flex;
+				flex-direction: column;
+				justify-content: center;
+				padding-top: 3px;
+				cursor: pointer;
+			}
+		}
+
+		#{ $self }__box-input {
+			display: flex;
+			flex: 1;
+			min-width: 100px;
+
+			&#{ $self }__box-input--unfocused {
+				display: none;
+			}
+
+			input {
+				border: none;
+				background: none;
+				margin: 0;
+				width: 100%;
+				min-width: 100%;
+				max-width: 100%;
+				min-height: 18px;
+
+				&.input--has-values {
+					margin: 4px;
+				}
+
+				&:not(.input--has-values) {
+					padding: 8px 12px;
+				}
+			}
+		}
+	}
+
+	#{ $self }__error {
+		display: flex;
+		flex-direction: row;
+		align-items: center;
+		margin: {
+			top: 6px;
+			left: 14px;
+		}
+
+		#{ $self }__error-message {
+			white-space: nowrap;
+			color: color(red, 500);
+			font: {
+				size: 12px;
+				weight: 400,
+			}
+		}
+
+		#{ $self }__error-button {
+			white-space: nowrap;
+			line-height: inherit;
+			color: #0066CC;
+			font: {
+				size: 12px;
+				weight: 400,
+			}
+		}
+	}
+
+}

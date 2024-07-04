@@ -1,0 +1,191 @@
+include ../mixins/pane.include.pug
+
+mixin header-cell-content
+	cub-icon(
+		size='6px',
+		name='./assets/@cub/images/required-symbol.svg',
+		*ngIf='column.field.isRequired')
+	cub-icon(
+		size='16px',
+		*ngIf='headerCell.clientWidth > 150',
+		[name]='column.field.dataType | fieldMetadata : "icon"')
+	.text-truncate.flex(
+		[attr.title]='column.field.name')
+		| {{ column.field.name }}
+	.layout-row.layout-gap-2.layout-align-start-center
+		ng-container(
+			*ngIf='headerCell.clientWidth > 150')
+			cub-icon(
+				name='warning-fill',
+				color='error',
+				size='16px',
+				*ngIf='column.field.isInvalid; else elseBlock;',
+				[cubTooltip]='"SPREADSHEET.MESSAGE.FIELD_UNAVAILABLE" | translate')
+			ng-template(#elseBlock)
+				cub-icon(
+					name='warning-fill',
+					color='warning',
+					size='16px',
+					*ngIf='column.warning',
+					[cubTooltip]='column.warning')
+			cub-icon(
+				name='info-circle-fill',
+				color='secondary',
+				size='16px',
+				maxWidth='300px',
+				*ngIf='column.field.description?.length',
+				[cubTooltip]='column.field.description')
+		button(
+			cubBasicButton,
+			iconSize='13px',
+			*ngIf='isEditorMode',
+			[icon]=`trigger.isOpened
+				&& !trigger.context.isMultiple
+				? "chevron-up"
+				: "chevron-down"`,
+			[disabled]='trigger.context.isMultiple',
+			(click)=`$event.stopPropagation();
+				trigger.open( undefined, { type: $any( "default" ) } );`,
+			(dblclick)='$event.stopPropagation()')
+
+mixin header-cell
+	.header-cell.cell(
+		#headerCell)&attributes(attributes)
+		block
+
+.spreadsheet__header(
+	cdkDropList,
+	cdkDropListSortingDisabled,
+	[cdkDropListAutoScrollStep]='10',
+	(cdkDropListDropped)='onColumnDropped( $event )')
+	ng-template(
+		#headerCellTemplate,
+		let-column='column',
+		let-columnIndex='columnIndex')
+		+header-cell()(
+			#selectableCell,
+			#trigger='cubMenuTriggerFor',
+			mwlResizable,
+			cdkDrag,
+			cdkDragLockAxis='x',
+			cdkDragPreviewClass='column-drag-preview',
+			position='start-below',
+			cubMenuTriggerType='context-menu',
+			[attr.data-column-id]='column.id',
+			[attr.data-column-index]='columnIndex',
+			[style.--cell-width.px]='column.width',
+			[style.zIndex]='displayingColumns.length - columnIndex',
+			[class.cdk-drag-placeholder]='column._isDragging',
+			[class.cell--warning]='column.warning',
+			[class.cell--invalid]='column.field.isInvalid',
+			[class.cell--active]=`
+				hasSelectingColumn
+					&& layoutProperties
+					.column
+					.selection
+					.map
+					.has( columnIndex )
+			`,
+			[class.cell--highlight]='column.highlight',
+			[class.header-cell--grouping]='column.groupingType',
+			[class.header-cell--sorting]='column.sortingType',
+			[class.header-cell--resizing]='column._isResizing',
+			[cdkDragBoundary]='elementRef',
+			[cdkDragDisabled]=`!isEditorMode
+				|| !config.column.arrangeable
+				|| column.field.isPrimary`,
+			[cubMenuTriggerFor]='columnActionMenu',
+			[cubMenuTriggerContext]=`{
+				column,
+				columnIndex,
+				headerCell,
+				trigger,
+				isMultiple: hasSelectingColumn
+					&& layoutProperties.column.selection.map.size > 1,
+			}`,
+			[cubMenuTriggerDisableOpen]='!isEditorMode || trigger.isOpened',
+			(resizing)='onColumnResizing( $event, column, columnIndex )',
+			(resizeEnd)='onColumnResized( $event, column )',
+			(cdkDragStarted)='onColumnDragStarted( $event, column )',
+			(cdkDragEnded)='onColumnDragEnded( $event, column )',
+			(cdkDragMoved)='onColumnDragMoved( $event )',
+			(click)='isEditorMode && selectColumn( $event, columnIndex )',
+			(dblclick)=`isEditorMode
+				&& config.column.manageable
+				&& editColumnFieldProperties( column, $any( headerCell ) )`)
+			.header-cell.cell(
+				#headerCell,
+				*cdkDragPlaceholder,
+				[style.width.px]='column.width',
+				[style.minWidth.px]='column.width',
+				[style.maxWidth.px]='column.width')
+				+header-cell-content
+			.header-cell.cell(
+				#headerCell,
+				*cdkDragPreview,
+				[style.width.px]='column.width',
+				[style.minWidth.px]='column.width',
+				[style.maxWidth.px]='column.width',
+				[style.height.px]='elementRef.nativeElement.clientHeight',
+				[style.minHeight.px]='elementRef.nativeElement.clientHeight',
+				[style.maxHeight.px]='elementRef.nativeElement.clientHeight')
+			+header-cell-content
+			.header-cell__resize-handle(
+				mwlResizeHandle,
+				*ngIf='isEditorMode && config.column.resizable',
+				[resizeEdges]='{ right: config.column.resizable }',
+				[cubTooltip]='"SPREADSHEET.LABEL.RESIZE_COLUMN" | translate',
+				(mousedown)='$event.stopPropagation()',
+				(mousemove)=`layoutProperties.frozenDivider.isHideHeadLine
+					= columnIndex === frozenIndex`,
+				(mouseleave)=`layoutProperties.frozenDivider.isHideHeadLine
+					= false`)
+
+	+left-pane().box.box-left.box--radius.layout-row
+		+header-cell().index-cell
+			.index-cell-wrapper
+				cub-checkbox(
+					#checkbox,
+					*ngIf='canSelectMultipleRows',
+					[cubTooltip]=`
+						"SPREADSHEET.LABEL."
+							+ ( checkbox.value
+								? "DESELECT_ALL"
+								: "SELECT_ALL" ) | translate
+					`,
+					[ngModel]=`
+						selectedRows?.length > 0
+							&& rows?.length > 0
+							&& selectedRows.length === rows.length
+					`,
+					(ngModelChange)=`!$event
+						? deselectAllRows()
+						: selectAllRows()`)
+		ng-container(
+			*ngFor=`let c of leftPaneColumns;
+				trackBy: "column.id" | trackByFn;`)
+			ng-container(
+				*ngTemplateOutlet=`
+					headerCellTemplate;
+					context: {
+						column: c.column,
+						columnIndex: c.index,
+					};`)
+
+	+right-pane().box.box-right.box--radius.layout-row
+		ng-container(
+			*ngFor=`let c of rightPaneColumns;
+				trackBy: "column.id" | trackByFn;`)
+			ng-container(
+				*ngTemplateOutlet=`
+					headerCellTemplate;
+					context: {
+						column: c.column,
+						columnIndex: c.index,
+					};`)
+		+header-cell().header-action-cell.cursor(
+			*ngIf='isEditorMode && config.column.creatable',
+			(click)='openColumnFieldMenu( headerCell, "end-below" )')
+			cub-icon(
+				name='plus-circle',
+				size='18px')

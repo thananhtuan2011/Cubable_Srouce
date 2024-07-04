@@ -1,0 +1,14 @@
+@import '../../../scss/partials/variable';
+
+.cub-drawer-content {
+	$self: &;
+
+	width: 100%;
+	min-width: 0;
+	padding-top: 12px;
+	overflow: hidden;
+
+	background-color: $color-transparent-white-10;
+
+	backdrop-filter: blur(25px);
+}

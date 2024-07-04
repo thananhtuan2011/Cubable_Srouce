@@ -1,0 +1,144 @@
+mixin option
+	.layout-row.layout-align-start-center.layout-gap-8([style.marginTop]='"3px"')
+		cub-icon(
+			cdkDragHandle,
+			name='drag',
+			size='16px',
+			[color]='"LABEL" | color')
+		.index-filter-option
+			.line-height-20
+				ng-container(*ngIf='index < 9; else elseBlock1')
+					| 0{{ index + 1 }}
+				ng-template(#elseBlock1)
+					| {{ index + 1 }}
+	comparison(
+		[fields]='fields',
+		[error]='o.error',
+		[(field)]='o.field',
+		[(fieldID)]='o.fieldID',
+		[(operator)]='o.operator',
+		[(data)]='o.data',
+		(fieldIDChange)='filterChanged( o )',
+		(operatorChange)='onOperatorChange( o )',
+		(dataChange)='onDataChange( o )')
+	button(
+		cubBasicButton,
+		icon='close',
+		iconColor='primary',
+		iconSize='20px',
+		[style.marginTop]='"3px"')&attributes(attributes)
+
+cub-popup(
+	#popup,
+	draggable,
+	width='865px',
+	maxHeight='604px')
+	cub-popup-header
+		ng-template(cubPopupHeader)
+			.layout-row.layout-align-space-between-center
+				h5.text-nowrap
+					| {{ "BASE.BOARD.FILTER.LABEL." + ( isRealtime ? "FILTER" : "FIXED_FILTER" ) | translate }}
+				button(
+					cubClearButton,
+					size='20px',
+					(click)='close()')
+	cub-popup-content
+		ng-template(cubPopupContent)
+			.layout-column.layout-gap-16([class.hide]='!loaded')
+				cub-card(
+					*ngIf='!isRealtime',
+					[style.background]='"blue" | cubPalette : "100"')
+					cub-card-content
+						.line-height-20
+							| {{ "BASE.BOARD.FILTER.MESSAGE.VIEW_FILTER_MESSAGE" | translate }}
+				.layout-column.layout-gap-16(*ngIf='filter?.options?.length; else elseBlock')
+					.layout-row.layout-align-space-between-center
+						.layout-row.layout-align-start-center.layout-gap-6
+							.line-height-20
+								| {{ "BASE.BOARD.FILTER.MESSAGE.APPLY_LOGIC" | translate }}
+							cub-dropdown(
+								autoWidth,
+								size='small',
+								[clearable]='false',
+								[formControl]='logicalOperatorControl',
+								[valueControl]='filter.logicalOperator',
+								(valueControlChange)='onLogicalOperatorChange( $event )')
+								cub-dropdown-item(
+									[label]='"BASE.BOARD.FILTER.LABEL.AND" | translate | uppercase',
+									[value]='LOGICAL_OPERATOR.AND')
+								cub-dropdown-item(
+									[label]='"BASE.BOARD.FILTER.LABEL.OR" | translate | uppercase',
+									[value]='LOGICAL_OPERATOR.OR')
+								cub-dropdown-item(
+									[label]='"BASE.BOARD.FILTER.LABEL.CUSTOM" | translate | uppercase',
+									[value]='LOGICAL_OPERATOR.CUSTOM')
+							.line-height-20
+								| {{ "BASE.BOARD.FILTER.MESSAGE.FOR_CONDITIONS_BELOW" | translate }}
+						button(
+							cubBasicButton='destructive',
+							icon='trash',
+							iconSize='20px',
+							*ngIf='filter.options.length > 1',
+							(click)='removeAllFilterOption()')
+							| {{ "BASE.BOARD.FILTER.LABEL.REMOVE_ALL" | translate }}
+					.layout-column.layout-gap-8(
+						cdkDropList,
+						*ngIf='filter.options.length',
+						[cdkDropListData]='filter.options',
+						(cdkDropListDropped)='onFilterOptionArrange( $event )')
+						.layout-row.layout-align-start-center.layout-gap-8(
+							cdkDrag,
+							[cdkDragData]='o',
+							*ngFor='let o of filter.options | orderBy: [ "+order" ];\
+								let index = index;\
+								ngForTrackByID')
+							div(*cdkDragPlaceholder)
+								.w-802.h-36
+							.drag-condition-preview(*cdkDragPreview)
+								+option
+							+option()(
+								(click)='removeFilterOption( index )')
+				ng-template(#elseBlock)
+					label
+						ng-container(*ngIf='fields?.length; else elseBlock3;')
+							ng-container(*ngIf='isRealtime; else elseBlock2;')
+								| {{ "BASE.BOARD.FILTER.MESSAGE.ALL_FILTER_OPTIONS_REMOVED" | translate }}
+							ng-template(#elseBlock2)
+								| {{ "BASE.BOARD.FILTER.MESSAGE.NOT_HAVE_FILTER_CONDITION" | translate }}
+						ng-template(#elseBlock3)
+							| {{ "BASE.BOARD.FILTER.MESSAGE.NOT_HAVE_FIELDS" | translate }}
+	cub-popup-footer
+		ng-template(cubPopupFooter)
+			ng-container(*ngIf='loaded')
+				ng-container(*ngIf='filter?.logicalOperator === LOGICAL_OPERATOR.CUSTOM')
+					expression-editor(
+						autoFocusOn,
+						[content]='filter.logicalExpression',
+						[options]='filterOptionsAnnotation',
+						(contentChange)='onEditorContentChange()')
+					cub-divider.mt-12.mb-8(
+						[ngStyle]={
+							marginLeft: "-20px",
+							marginRight: "-20px"})
+				.layout-row.layout-align-space-between-center.layout-gap-12
+					button(
+						cubBasicButton,
+						size='large',
+						iconSize='20px',
+						icon='plus-circle',
+						[disabled]='!fields?.length',
+						(click)='addCondition()')
+						.text-nowrap.line-height-20
+							| {{ "BASE.BOARD.FILTER.LABEL.ADD_CONDITION" | translate }}
+					.layout-row.layout-gap-12(*ngIf='!isRealtime')
+						button.w-120(
+							cubButton='secondary',
+							(click)='cancel()')
+							| {{ "BASE.BOARD.FILTER.LABEL.CANCEL" | translate }}
+						button.w-120(
+							cubButton,
+							[disabled]='!canSubmit',
+							(click)='save()')
+							| {{ "BASE.BOARD.FILTER.LABEL.SAVE" | translate }}
+
+ng-template(*ngTemplateOutlet='popup.templateRef')

@@ -1,0 +1,37 @@
+{
+	"LABEL": {
+		"ACCOUNT_SETTINGS": "Account settings",
+		"ANOTHER_DEVICE": "When logging in on another device",
+		"AUTOMATIC_LOGOUT": "Automatic logout",
+		"AVATAR": "Avatar",
+		"BACK": "Back",
+		"BACK_TO_WORKSPACE_LISTING": "Back to workspace listing",
+		"BY_TIME": "At a specific time (on any devices)",
+		"CANCEL": "Cancel",
+		"CHANGE_PASSWORD": "Change password",
+		"CLOSE": "Close",
+		"CLOSE_BROWSER": "When closing current browser (on any devices)",
+		"CONFIRM_NEW_PASSWORD": "Confirm new password",
+		"CURRENT_PASSWORD": "Current password",
+		"EMAIL_ADDRESS": "Email address",
+		"EVERY_DAY": "Everyday (at 4 AM)",
+		"EVERY_MONTH": "Every 30 days (at 4 AM)",
+		"EVERY_WEEK": "Every 7 days (at 4 AM)",
+		"LAST_MODIFIED_TIME": "Last modified time",
+		"NAME": "Name",
+		"NEVER": "Never",
+		"NEW_PASSWORD": "New password",
+		"OVERVIEW": "Overview",
+		"PASSWORD": "Password",
+		"SAVE": "Save",
+		"SAVE_CHANGES": "Save changes",
+		"SECURITY": "Security"
+	},
+	"PLACEHOLDER": {
+		"TYPE_NAME": "Type a name",
+		"TYPE_PASSWORD": "Type a password"
+	},
+	"MESSAGE": {
+		"SET_AUTOMATIC_LOGOUT_TO_PREVENT": "Set automatic logout to prevent unauthorized access in case you forget to log out when using a shared or public device"
+	}
+}

@@ -1,0 +1,179 @@
+$scroll-bar-thumb-size: 4px;
+
+::-webkit-scrollbar {
+	width: $scroll-bar-thumb-size;
+	height: $scroll-bar-thumb-size;
+
+	background-color: $color-transparent;
+}
+
+::-webkit-scrollbar-thumb {
+	border-radius: calc($scroll-bar-thumb-size / 2);
+
+	background-color: $color-transparent-dark-grey-50;
+
+	&:vertical {
+		min-height: $scroll-bar-thumb-size;
+	}
+
+	&:horizontal {
+		min-width: $scroll-bar-thumb-size;
+	}
+}
+
+[scrollBar='true'] {
+	display: flex;
+	flex-direction: column;
+	width: 100%;
+	min-width: 0;
+	max-width: 100%;
+	height: 100%;
+	min-height: 0;
+	max-height: 100%;
+	overflow: var(--scroll-bar-mode, auto) !important;
+
+	&[deepScroll] {
+		scrollbar-width: 0;
+		-ms-overflow-style: none;
+
+		&::-webkit-scrollbar {
+			display: none;
+		}
+	}
+
+	&[fullViewport='true'] {
+		max-width: 100vw;
+		max-height: 100vh;
+	}
+
+	&[suppressX='true'] {
+		overflow-x: hidden !important;
+	}
+
+	&[suppressY='true'] {
+		overflow-y: hidden !important;
+	}
+
+	> * {
+		position: relative;
+
+		flex-shrink: 0;
+	}
+}
+
+.cdk-drag {
+	&:not(.cdk-drag-disabled) {
+		&:not(:has(.cdk-drag-handle)),
+		.cdk-drag-handle {
+			cursor: grab;
+
+			&:active {
+				cursor: grabbing;
+			}
+		}
+	}
+}
+
+.cdk-global-overlay-wrapper,
+.cdk-overlay-container {
+	position: absolute;
+	top: 0;
+	left: 0;
+
+	height: 100%;
+	width: 100%;
+
+	pointer-events: none;
+}
+
+.cdk-global-overlay-wrapper,
+.cdk-overlay-pane {
+	position: absolute;
+	z-index: $z-level-2;
+
+	display: flex;
+
+	&:empty {
+		display: none;
+	}
+}
+
+.cdk-overlay-container {
+	&:empty {
+		display: none;
+	}
+}
+
+.cdk-overlay-backdrop {
+	@include visible-transition(opacity);
+
+	position: fixed;
+	top: 0;
+	bottom: 0;
+	left: 0;
+	right: 0;
+	z-index: $z-level-2;
+
+	visibility: hidden;
+	opacity: 0;
+
+	background-color: $color-transparent-dark-grey-50;
+
+	pointer-events: auto;
+	-webkit-tap-highlight-color: transparent;
+
+	&.cdk-overlay-backdrop-showing {
+		visibility: visible;
+		opacity: 1;
+	}
+
+	&.cdk-overlay-transparent-backdrop,
+	&.cdk-overlay-transparent-backdrop.cdk-overlay-backdrop-showing {
+		opacity: 0;
+	}
+}
+
+.cdk-overlay-connected-position-bounding-box {
+	position: absolute;
+
+	display: flex;
+	flex-direction: column;
+	min-width: 1px;
+	min-height: 1px;
+}
+
+.cdk-overlay-pane {
+	box-sizing: border-box;
+	max-width: 100%;
+	max-height: 100%;
+
+	pointer-events: auto;
+}
+
+.cub-overlay-pane {
+	@include backdrop-blur;
+	@include popup-animation;
+
+	border-radius: 12px;
+	overflow: hidden;
+
+	&.above {
+		margin-bottom: 6px;
+	}
+
+	&.below {
+		margin-top: 6px;
+	}
+
+	&.before {
+		margin-right: 6px;
+	}
+
+	&.after {
+		margin-left: 6px;
+	}
+
+	&.cub-overlay-padding-pane {	
+		padding: 8px;
+	}
+}

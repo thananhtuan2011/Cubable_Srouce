@@ -1,0 +1,34 @@
+.flex.layout-row.layout-gap-6.layout-align-start-start.full-width
+	.field-cell__block-content.flex
+		cub-chip.layout-row.layout-gap-4(
+			*ngFor='let option of selectedOptions$ | async; trackByValue',
+			[color]='option.color')
+			span.text-truncate(
+				[attr.title]='option.name')
+				| {{ option.name | empty }}
+			button(
+				tabindex='-1',
+				*ngIf='!readonly && field.isMultipleSelect',
+				(click)='removeValue( option.value, true )')
+				cub-icon(name='close', size='12px')
+		button(
+			cubBasicButton,
+			icon='plus-circle',
+			iconSize='16px',
+			*ngIf='!readonly && field.isMultipleSelect',
+			(click)='openSelector()')
+	ng-container(
+		*ngIf='field.isMultipleSelect; else elseBlock;')
+		button.field-cell__btn-stick-on-content(
+			cubBasicButton,
+			icon='expand',
+			iconSize='16px',
+			*ngIf='data?.value?.length || expanderRef?.isOpened',
+			(click)='openExpander( $event )')
+	ng-template(#elseBlock)
+		button.field-cell__btn-stick-on-content(
+			cubBasicButton,
+			iconSize='16px',
+			*ngIf='!readonly',
+			[icon]='selectorRef?.isOpened ? "chevron-up" : "chevron-down"',
+			(click)='openSelector()')

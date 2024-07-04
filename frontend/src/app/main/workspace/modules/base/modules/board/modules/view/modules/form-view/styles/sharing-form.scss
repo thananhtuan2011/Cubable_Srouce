@@ -1,0 +1,16 @@
+@import 'src/scss/partials/variable';
+
+::ng-deep {
+	.sharing-form {
+		.qrcode {
+			width: 116px;
+			min-width: 116px;
+			max-width: 116px;
+			height: 116px;
+			min-height: 116px;
+			max-height: 116px;
+			border-radius: 8px;
+			outline: 1px solid $color-border-primary;
+		}
+	}
+}

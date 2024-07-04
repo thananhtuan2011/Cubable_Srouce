@@ -1,0 +1,22 @@
+::ng-deep {
+	.field-input {
+		display: flex;
+		flex-direction: column;
+
+		.cub-basic-editor {
+			.cub-basic-editor__holder {
+				.ql-container {
+					.ql-editor {
+						.ql-tag > span {
+							padding: 1px 8px;
+						}
+					}
+				}
+			}
+		}
+	}
+
+	.cub-menu__dynamic-value {
+		margin: -8px 0;
+	}
+}

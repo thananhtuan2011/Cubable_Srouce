@@ -1,0 +1,88 @@
+div(cubDialogHeader)
+	.layout-row.layout-align-space-between-center
+		.text-semibold.font-size-20.line-height-28(*ngIf='!accessedRole && !isPermissionLayout; else elseBlock')
+			| {{ "BASE.ROLE_PERMISSION.LABEL.ROLE_AND_PERMISSION" | translate }}
+		ng-template(#elseBlock)
+			.flex.layout-row
+				.layout-row.layout-align-start-center
+					button.mb-2.mr-16(
+						*ngIf='isPermissionLayout || accessedRole',
+						(click)='closeAndBack()')
+						cub-icon(name='chevron-left', size='20px', color='primary')
+					ng-container(*ngIf='accessedRole; else elseBlock1;')
+						cub-form-field.name-input(
+							active,
+							*ngIf='isRoleNameChange && !( [ ROLE_UNIQ_NAME?.ADMIN, ROLE_UNIQ_NAME?.MEMBER, ROLE_UNIQ_NAME?.VIEWER ] | includes : accessedRole?.uniqName ); else elseBlock2;')
+							input(
+								autoFocusOn,
+								cubFormFieldInput,
+								clearable,
+								required,
+								[formControl]='nameFormControl',
+								[placeholder]='"BASE.ROLE_PERMISSION.PLACEHOLDER.TYPE_ROLE_NAME" | translate',
+								[ngModel]='accessedRole.name',
+								(ngModelChange)='roleName = $event',
+								(blur)='!nameFormControl.errors && ( isRoleNameChange = false )')
+						ng-template(#elseBlock2)
+							.text-semibold.text-truncate.font-size-20.line-height-30(
+								[class.role-name]='!( [ ROLE_UNIQ_NAME?.ADMIN, ROLE_UNIQ_NAME?.MEMBER, ROLE_UNIQ_NAME?.VIEWER ] | includes : accessedRole?.uniqName )',
+								[title]='accessedRole.name | empty',
+								(click)='isRoleNameChange = true')
+								| {{ accessedRole.name | empty }}
+					ng-template(#elseBlock1)
+						cub-form-field.name-input(
+							active,
+							*ngIf='isRoleNameChange; else elseBlock;')
+							input(
+								autoFocusOn,
+								cubFormFieldInput,
+								clearable,
+								required,
+								[formControl]='nameFormControl',
+								[name]='"BASE.ROLE_PERMISSION.LABEL.NAME" | translate',
+								[(ngModel)]='roleName',
+								[placeholder]='"BASE.ROLE_PERMISSION.PLACEHOLDER.TYPE_ROLE_NAME" | translate',
+								(blur)='!nameFormControl.errors && ( isRoleNameChange = false )')
+						ng-template(#elseBlock)
+							.role-name.text-semibold.text-truncate.font-size-20.line-height-30([title]='roleName | empty', (click)='isRoleNameChange = true')
+								| {{ roleName | empty }}
+		button(
+			cubClearButton,
+			size='24px',
+			[cubTooltip]='"BASE.ROLE_PERMISSION.LABEL.CLOSE" | translate',
+			(click)='closeAndBack( true )')
+div(cubDialogContent)
+	role(
+		*ngIf='!isPermissionLayout && !accessedRole; else elseBlock3;',
+		[roles]='roles',
+		[users]='users',
+		[teams]='teams',
+		[base]='base',
+		[dialogRef]='dialogRef',
+		(accessedRole)='accessPermission( $event )',
+		(rolesChanged)='setCollectionRoleData( $event )')
+	ng-template(#elseBlock3)
+		permission(
+			#permission,
+			[role]='accessedRole',
+			[baseID]='base.id',
+			[users]='users',
+			[accessedBoard]='accessedBoard',
+			(isBoardPermissionTypeChange)='isChanged = $event',
+			(accessedBoardChange)='accessedBoard = $event; bkAccessBoard = $event')
+div(cubDialogFooter)
+	.layout-row.layout-align-end
+		button.w-160.h-40(
+			cubButton,
+			leadingIcon='plus-circle',
+			leadingIconSize='16px',
+			*ngIf='!isPermissionLayout && !accessedRole; else elseBlock4;',
+			(click)='createNewRole()')
+			| {{ "BASE.ROLE_PERMISSION.LABEL.CREATE_ROLE" | translate }}
+		ng-template(#elseBlock4)
+			button.w-160.h-40(
+				cubButton,
+				[loading]='isSubmitting',
+				[disabled]='nameFormControl.invalid && !isChanged || isSubmitting',
+				(click)='save()')
+				| {{ "BASE.ROLE_PERMISSION.LABEL.SAVE" | translate }}

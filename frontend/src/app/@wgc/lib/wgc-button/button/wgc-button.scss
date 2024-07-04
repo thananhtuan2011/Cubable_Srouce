@@ -1,0 +1,157 @@
+@import 'src/scss/partials/variable';
+@import 'src/scss/partials/mixin';
+
+.wgc-button {
+	$self: &;
+	display: flex;
+	cursor: pointer;
+	min-width: fit-content;
+	height: var(--button-size);
+	min-height: var(--button-size);
+	max-height: var(--button-size);
+	font-weight: $font-weight-semibold;
+	color: var(--button-text-color, $color-label);
+	background-color: var(--button-color, $color-default);
+	border: {
+		width: var(--button-border-width, 1px);
+		style: var(--button-border-style, solid);
+		color: var(--button-border-color, $color-default);
+		radius: 8px;
+	};
+
+	// Color state
+	@at-root {
+		&.wgc-primary {
+			background-color: var(--primary-color, $color-primary);
+			border-color: var(--primary-color, $color-primary);
+			color: $color-white;
+
+			&#{ $self }--loading .wgc-loading--dots .wgc-loading-dot {
+				background-color: $color-white;
+			}
+		}
+
+		&.wgc-white {
+			background-color: $color-white;
+			border-color: var(--button-border-color, $color-border);
+			color: var(--button-text-color, $color-text);
+		}
+	}
+
+	// Size state
+	@at-root {
+		&#{ $self }--small {
+			--button-size: 32px !important;
+		}
+
+		&#{ $self }--medium {
+			--button-size: 40px !important;
+		}
+
+		&#{ $self }--large {
+			--button-size: 56px !important;
+		}
+
+		&#{ $self }--xlarge {
+			--button-size: 72px !important;
+		}
+	}
+
+	// Alignment state
+	@at-root {
+		&#{ $self }--left {
+			#{ $self }-wrapper {
+				justify-content: flex-start;
+			}
+		}
+
+		&#{ $self }--center {
+			#{ $self }-wrapper {
+				justify-content: center;
+			}
+		}
+
+		&#{ $self }--right {
+			#{ $self }-wrapper {
+				justify-content: flex-end;
+			}
+		}
+	}
+
+	// Has icon state
+	@at-root {
+		&:not(#{ $self }--has-icon) {
+			#{ $self }-wrapper {
+				min-width: calc(var(--button-size) * 2);
+			}
+		}
+
+		&#{ $self }--has-icon {
+			#{ $self }__content {
+				padding: {
+					left: 5px;
+					right: 5px;
+				};
+			}
+		}
+	}
+
+	// Disabled state
+	@at-root {
+		&:not(#{ $self }--disabled) {
+			&:hover {
+				opacity: .8;
+			}
+
+			&:focus-visible {
+				box-shadow: $box-shadow-focus;
+			}
+		}
+
+		&#{ $self }--disabled {
+			@include cursor-not-allowed;
+			background-color: $color-disabled;
+			border-color: $color-disabled;
+			color: $color-white;
+		}
+	}
+
+	// Loading state
+	@at-root {
+		&#{ $self }--loading {
+			.wgc-loading--dots .wgc-loading-dot {
+				background-color: $color-black;
+			}
+
+			#{ $self }__icon,
+			#{ $self }__content {
+				display: none;
+			}
+		}
+	}
+
+	#{ $self }-wrapper {
+		display: flex;
+		align-items: center;
+		padding: {
+			left: 10px;
+			right: 10px;
+		};
+		width: 100%;
+		height: 100%;
+	}
+
+	#{ $self }__icon {
+		font-size: var(--button-icon-size, calc(var(--button-size) / 2));
+		line-height: var(--button-icon-size, calc(var(--button-size) / 2));
+	}
+
+	#{ $self }__content {
+		display: flex;
+		align-items: center;
+
+		&:empty {
+			display: none;
+		}
+	}
+}

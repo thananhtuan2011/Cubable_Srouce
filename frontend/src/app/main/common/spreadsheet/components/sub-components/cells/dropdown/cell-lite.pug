@@ -1,0 +1,7 @@
+.field-cell__block-content.flex
+	cub-chip.layout-row.layout-gap-4(
+		*ngFor='let option of data?.selected; trackByValue',
+		[color]='option.color')
+		span.text-truncate(
+			[attr.title]='option.name')
+			| {{ option.name | empty }}

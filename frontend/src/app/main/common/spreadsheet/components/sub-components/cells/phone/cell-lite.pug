@@ -1,0 +1,7 @@
+img.w-20.h-20(
+	loading='lazy',
+	*ngIf='data?.countryCode',
+	[src]='data?.countryCode | cubFlagImage')
+
+a.field-cell__text-content(href='#')
+	| {{ data?.phone }}

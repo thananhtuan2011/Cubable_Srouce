@@ -1,0 +1,17 @@
+include ../boxes.include.pug
+
++hyperlink-box()(
+	placeholder='www.cubable.com',
+	[content]='data?.link')
+
+a.field-cell__text-content(
+	target='_blank',
+	*ngIf='data',
+	[href]='data.link | link')
+	| {{ data.text || data.link }}
+button.field-cell__btn-stick-on-content(
+	cubBasicButton,
+	icon='link',
+	iconSize='16px',
+	*ngIf='!readonly',
+	(click)='openLinkEditorPopup()')

@@ -1,0 +1,16 @@
+div(
+	mwlResizable,
+	#resizableElement='mwlResizable',
+	(resizing)='onResizing( $event )')
+	wgc-truncate(limitLine='1')
+		ng-content
+span(
+	mwlResizeHandle,
+	style='position: absolute; top: 0; bottom: 0; right: 0; width: 5px; cursor: col-resize;',
+	[resizableContainer]='resizableElement',
+	[resizeEdges]='{ right: true }')
+span(
+	mwlResizeHandle,
+	style='position: absolute; left: 0; right: 0; bottom: 0; height: 5px; cursor: row-resize;',
+	[resizableContainer]='resizableElement',
+	[resizeEdges]='{ bottom: true }')

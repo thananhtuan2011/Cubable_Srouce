@@ -1,0 +1,6 @@
+.wgc-checkbox__box
+	wgc-icon.wgc-checkbox__icon(name='check', *ngIf='checked')
+.wgc-checkbox__label
+	| {{ label }}
+	ng-container(*ngIf='!label')
+		ng-content

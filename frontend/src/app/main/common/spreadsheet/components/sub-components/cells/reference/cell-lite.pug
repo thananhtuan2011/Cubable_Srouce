@@ -1,0 +1,7 @@
+.field-cell__block-content.flex
+	cub-chip.layout-row.layout-gap-4(
+		*ngFor='let s of data?.selected; ngForTrackByID',
+		[class.field-cell__block-content--error]='s.error')
+		span.text-truncate(
+			[attr.title]='s.data')
+			| {{ s.data || ( "SPREADSHEET.LABEL.UN_NAME" | translate ) }}

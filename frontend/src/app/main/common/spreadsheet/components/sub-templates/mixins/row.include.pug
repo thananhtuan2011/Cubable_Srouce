@@ -1,0 +1,200 @@
+mixin row-cell
+	.row-cell.cell()&attributes(attributes)
+		block
+
+mixin row
+	.row(
+		cubMenuTriggerType='context-menu',
+		[style.--row-height.px]='rowHeight',
+		[class.cdk-drag-placeholder]='draggingRows?.has( row.id )',
+		[class.row--hover]='layoutProperties.row.hoverIndex === rowIndex',
+		[class.row--selecting]='row.selected',
+		[cubMenuTriggerFor]='rowActionMenu',
+		[cubMenuTriggerContext]=`{
+			group,
+			row,
+			rowRawIndex,
+			rowIndex,
+			isMultiple: row.selected,
+		}`,
+		[cubMenuTriggerDisableOpen]='isPickerMode',
+		(mousemove)=`layoutProperties.row.hoverIndex
+			= isMouseHolding
+				? -1
+				: rowIndex`,
+		(mouseleave)='layoutProperties.row.hoverIndex = -1')&attributes(attributes)
+		block
+
+mixin insert-row(isLeftPane)
+	.row.blank-row.cursor(
+		*ngIf='!isPickerMode && config.row.creatable',
+		(click)='createRow()')&attributes(attributes)
+		if isLeftPane
+			+row-cell().index-cell
+				.index-cell-wrapper
+					cub-icon(
+						name='plus-circle',
+						size='18px')
+			+row-cell()(
+				[style.width.%]='100')
+		else
+			+row-cell()(
+				*ngIf='displayingColumns?.length',
+				[style.width.%]='100')
+
+mixin row-cell-template
+	ng-template(
+		#rowCellTemplate,
+		let-primaryColumn='primaryColumn',
+		let-row='row',
+		let-rowIndex='rowIndex',
+		let-column='column',
+		let-columnIndex='columnIndex')
+		+row-cell()(
+			#selectableCell,
+			#selectableRowCell,
+			[attr.data-row-id]='row.id',
+			[attr.data-column-id]='column.id',
+			[attr.data-row-index]='rowIndex',
+			[attr.data-column-index]='columnIndex',
+			[style.--cell-width.px]='column.width',
+			[class.cdk-drag-placeholder]='column._isDragging',
+			[class.cell--active]=`
+				row.selected
+					|| ( hasSelectingCell
+						&& !hasSelectingColumn
+						&& layoutProperties.cell.selection.map.size === 1
+						&& layoutProperties.cell.selection.first.rowIndex === rowIndex )
+					|| layoutProperties.cell.selection?.map.has( rowIndex + "-" + columnIndex )
+					|| layoutProperties.column.selection?.map.has( columnIndex )
+			`,
+			[class.cell--highlight]=`
+				column.highlight
+					|| layoutProperties.cell.searching?.found
+						?.get( row.id )
+						?.has( column.id )
+			`,
+			[class.cell--focusing]=`!!layoutProperties.cell.focusing
+				&& layoutProperties.cell.focusing.rowIndex === rowIndex
+				&& layoutProperties.cell.focusing.columnIndex === columnIndex`,
+			[class.cell--warning]='row.warning?.[ column.id ]',
+			[class.cell--error]=`row.data?.[ column.id ]?.calculated
+				&& row.data?.[ column.id ]?.calculated?.resultType === null`,
+			[class.cell--invalid]=`!!layoutProperties.cell.invalid
+				&& layoutProperties.cell.invalid.rowIndex === rowIndex
+				&& layoutProperties.cell.invalid.columnIndex === columnIndex`,
+			[class.row-cell--selecting]=`hasSelectingCell
+				&& layoutProperties.cell.selection.first.rowIndex === rowIndex
+				&& layoutProperties.cell.selection.first.columnIndex === columnIndex`,
+			(click)='isPickerMode ? toggleRow( row ) : true')
+			ng-container(
+				*ngIf='row.content?.[ column.id ]; else elseBlock;')
+				.field-cell
+					.field-cell__text-content
+						| {{ row.content[ column.id ] }}
+			ng-template(#elseBlock)
+				ng-template(
+					fieldCellFactory,
+					[field]='column.field',
+					[data]='row.data?.[ column.id ]',
+					[context]='{ row, primaryColumn, other: context }',
+					[readonly]=`
+						isPickerMode
+							|| ( layoutProperties.cell.invalid
+								&& layoutProperties.cell.invalid.rowIndex !== rowIndex
+								&& layoutProperties.cell.invalid.columnIndex !== columnIndex )
+							|| ( !column.editable
+								&& row.editable !== true
+								&& row.editable?.[ column.id ] !== true )
+					`,
+					[selecting]=`hasSelectingCell
+						&& layoutProperties.cell.selection.first.rowIndex === rowIndex
+						&& layoutProperties.cell.selection.first.columnIndex === columnIndex`,
+					[otherFields]='fields$',
+					(cellEdited)='onCellEdited( row, column, $event )',
+					(cellValidated)='onCellValidated( row, column, $event )')
+
+mixin row-left-template
+	ng-template(
+		#rowLeftTemplate,
+		let-group='group',
+		let-row='row',
+		let-rowRawIndex='rowRawIndex',
+		let-rowIndex='rowIndex')
+		+row()(
+			cdkDrag,
+			cdkDragLockAxis='y',
+			cdkDragPreviewClass='row-drag-preview',
+			[attr.row-size]='config.row.size',
+			[cdkDragData]='row',
+			[cdkDragDisabled]='isPickerMode || !config.row.arrangeable',
+			(cdkDragStarted)='onRowDragStarted( $event )',
+			(cdkDragMoved)='onRowDragMoved( $event )')
+			div(*cdkDragPreview)
+				cub-chip
+					| {{  "SPREADSHEET.LABEL.ROW_COUNT" | translate: { count: selectedRows?.length || 1 } }}
+			+row-cell().index-cell(
+				[class.cell--active]=`row.selected
+					|| ( hasSelectingCell
+						&& !hasSelectingColumn
+						&& layoutProperties.cell.selection.map.size === 1
+						&& layoutProperties.cell.selection.first.rowIndex === rowIndex )`)
+				.layout-row.layout-align-start-center.h-fit-content
+					.row__drag-handle(
+						cdkDragHandle,
+						*ngIf='!isPickerMode && config.row.arrangeable')
+						cub-icon(
+							name='drag',
+							size='16px')
+					.index-cell-wrapper
+						.row__index-handle(
+							*ngIf='!isPickerMode')
+							| {{ rowIndex + config.row.startIndex + 1 }}
+						.row__select-handle(
+							*ngIf='canSelectRow')
+							cub-checkbox(
+								[ngModel]='row.selected',
+								(ngModelChange)='toggleRow( row )')
+					.row__expand-handle(
+						*ngIf='isEditorMode && config.row.expandable')
+						button(
+							cubBasicButton,
+							icon='expand',
+							iconSize='16px',
+							[cubTooltip]='"SPREADSHEET.LABEL.VIEW_DETAIL" | translate',
+							(click)='expandRow( row )')
+			ng-container(
+				*ngFor=`let c of leftPaneColumns;
+					trackBy: "column.id" | trackByFn;`)
+				ng-container(
+					*ngTemplateOutlet=`
+						rowCellTemplate;
+						context: {
+							row,
+							rowIndex,
+							column: c.column,
+							columnIndex: c.index,
+						};`)
+
+mixin row-right-template
+	ng-template(
+		#rowRightTemplate,
+		let-group='group',
+		let-row='row',
+		let-rowRawIndex='rowRawIndex',
+		let-rowIndex='rowIndex')
+		+row()(
+			[attr.row-size]='config.row.size')
+			ng-container(
+				*ngFor=`let c of rightPaneColumns;
+					trackBy: "column.id" | trackByFn;`)
+				ng-container(
+					*ngTemplateOutlet=`
+						rowCellTemplate;
+						context: {
+							row,
+							rowIndex,
+							column: c.column,
+							columnIndex: c.index,
+							primaryColumn: primaryColumn
+						};`)

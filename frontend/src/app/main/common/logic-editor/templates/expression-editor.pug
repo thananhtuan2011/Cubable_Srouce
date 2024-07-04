@@ -1,0 +1,13 @@
+.logic-editor__editor
+	syntax-editor(
+		[autoFocusOn]='autoFocusOn',
+		[placeholder]='"LOGIC_EDITOR.PLACEHOLDER.TYPE_EXPRESSION_HERE" | translate',
+		[readonly]='readonly',
+		[disabled]='disabled',
+		[highlighters]='highlighters',
+		[(content)]='content',
+		(contentChange)='contentChange.emit( $event )')
+
+.logic-editor__action-bar
+	include ./blocks/block-syntax-checking.partial.pug
+	include ./blocks/block-btn-check-syntax.partial.pug

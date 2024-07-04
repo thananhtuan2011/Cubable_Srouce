@@ -1,0 +1,125 @@
+@import 'src/scss/partials/variable';
+@import 'src/scss/partials/mixin';
+
+.wgc-color-picker {
+	@include scroll;
+	display: flex;
+	flex-direction: column;
+	background-color: $color-white;
+
+	&:not(.wgc-color-picker--inline) {
+		padding: 15px;
+		min-width: 242px;
+		width: 210px;
+		border-radius: 10px;
+		border: solid 1px $color-border;
+		box-shadow: $box-shadow;
+		animation: $popup-animation;
+	}
+
+	.wgc-color-picker__header {
+		display: flex;
+		align-items: center;
+		margin-bottom: 10px;
+
+		.wgc-color-picker__header-title {
+			display: flex;
+			align-items: center;
+			font-size: 16px;
+			font-weight: $font-weight-semibold;
+			margin-right: 5px;
+			width: 100%;
+			min-width: 0;
+		}
+	}
+
+	.wgc-color-picker-list {
+		display: flex;
+		flex-wrap: wrap;
+		margin-bottom: 15px;
+		width: inherit;
+		max-width: 100%;
+	}
+
+	.wgc-color-picker-item {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		cursor: pointer;
+		width: 32px;
+		height: 32px;
+		border-radius: 50%;
+		margin: 5px;
+		transition: all 200ms ease-in-out;
+		background-color: var(--color-picker-item-bg-color, $color-white);
+		border: 1px solid var(--color-picker-item-bg-color, $color-border);
+		color: var(--color-picker-item-color, $color-white);
+
+		&:first-child {
+			border-color: $color-border;
+		}
+
+		&:hover {
+			transform: scale(1.15);
+		}
+
+		&.wgc-color-picker-item--empty-color {
+			border: 1px dashed $color-border-thick;
+		}
+
+		&.wgc-color-picker-item--empty-background {
+			// background-image: url('/assets/images/bg-gradient.png');
+			background-position: center;
+			background-size: cover;
+			background-repeat: no-repeat;
+		}
+	}
+
+	.wgc-color-picker__btn-pick-other {
+		color: $color-label;
+	}
+
+	.wgc-color-picker__other {
+		display: flex;
+		flex-direction: column;
+		width: 100%;
+
+		.wgc-color-picker__other-picker {
+			width: 100%;
+
+			.photoshop-picker,
+			.photoshop-saturation {
+				width: 100% !important;
+			}
+
+			.photoshop-picker {
+				box-shadow: none !important;
+				background-color: $color-white !important;
+
+				.photoshop-head,
+				.photoshop-controls {
+					display: none;
+				}
+
+				.photoshop-saturation,
+				.photoshop-hue {
+					height: 160px;
+					border: none;
+				}
+
+				.photoshop-hue {
+					width: 20px;
+					margin-left: 5px;
+				}
+
+				.photoshop-body {
+					padding: 0;
+				}
+			}
+		}
+
+		.wgc-color-picker__input-label {
+			margin-bottom: 5px;
+		}
+	}
+}

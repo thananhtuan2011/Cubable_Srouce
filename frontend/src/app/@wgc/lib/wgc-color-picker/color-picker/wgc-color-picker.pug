@@ -1,0 +1,54 @@
+mixin input
+	label.wgc-color-picker__input-label
+		| {{ "WGC.LABEL.COLOR_CODE" | translate }}
+	wgc-code-block
+		.mr-10
+			| {{ colorCode }}
+		button(wgcBasicButton, icon='copy', [wgcClipboardCopy]='colorCode')
+
+.wgc-color-picker__header(*ngIf='mode !== "inline"')
+	.wgc-color-picker__header-title
+		ng-container(*ngIf='isPickOther; else elseBlock;')
+			button(
+				wgcBasicButton,
+				icon='chevron-left',
+				[wgcTooltip]='"WGC.LABEL.BACK" | translate',
+				(click)='isPickOther = false')
+			| {{ "WGC.LABEL.PICK_OTHER" | translate }}
+		ng-template(#elseBlock)
+			| {{ "WGC.PLACEHOLDER.PICK_COLOR" | translate }}
+	button(
+		wgcBasicButton,
+		icon='close',
+		[wgcTooltip]='"WGC.LABEL.CLOSE" | translate',
+		(click)='close()')
+
+ng-container(*ngIf='isPickOther; else elseBlock;')
+	.wgc-color-picker__other
+		color-photoshop.wgc-color-picker__other-picker(
+			[color]='pickedColor || {}',
+			(onChange)='pickedColorObj = $event?.color')
+		wgc-tab-group(
+			stretchTab,
+			contentPaddingHorizontal='0',
+			[(selectedIndex)]='selectedTabIndex')
+			wgc-tab(label='Hex')
+				+input
+			wgc-tab(label='RGB')
+				+input
+			wgc-tab(label='HSL')
+				+input
+		button(wgcButton, color='primary', (click)='pick( pickedColorObj?.hex )')
+			| {{ "WGC.LABEL.APPLY" | translate }}
+ng-template(#elseBlock)
+	.wgc-color-picker-list
+		button.wgc-color-picker-item(
+			*ngFor='let color of colors',
+			[style.--color-picker-item-color]='color | contrast',
+			[style.--color-picker-item-bg-color]='color',
+			[class.wgc-color-picker-item--empty-color]='emptyMode === "color" && !color',
+			[class.wgc-color-picker-item--empty-background]='emptyMode === "background" && !color',
+			(click)='pick( color )')
+			wgc-icon(name='check', size='16px', *ngIf='( pickedColor || undefined ) === ( color || undefined )')
+	button.wgc-color-picker__btn-pick-other(wgcBasicButton, icon='pick-color', (click)='isPickOther = true')
+		| {{ "WGC.LABEL.PICK_OTHER" | translate }}

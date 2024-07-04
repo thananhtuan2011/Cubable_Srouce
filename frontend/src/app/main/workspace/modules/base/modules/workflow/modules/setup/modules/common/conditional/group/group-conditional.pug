@@ -1,0 +1,47 @@
+mixin option
+	.layout-column.layout-gap-8.flex
+		.layout-row.layout-align-space-between-center
+			.layout-row.layout-align-start-center.layout-gap-8
+				+drag
+				field-picker(
+					[fields]='fields',
+					[(fieldID)]='o.fieldID',
+					(fieldIDChange)='comparisonFieldChange( o )')
+			+remove&attributes(attributes)
+		.layout-column.layout-gap-8
+			.layout-row.layout-align-start.layout-gap-44
+				.ml-4.mt-8
+					| {{ "BASE.WORKFLOW.SETUP.COMMON.LABEL.FROM" | translate | lowercase }}
+				comparison(
+					groupAble,
+					#sourceComparisonComp,
+					[comparisonModule]='comparisonModule',
+					[fields]='fields',
+					[error]='o.source.error',
+					[advanceOperators]='advanceOperators',
+					[(field)]='o.field',
+					[(fieldID)]='o.fieldID',
+					[(operator)]='o.source.operator',
+					[(data)]='o.source.data',
+					(fieldIDChange)='filterChanged( o, true )',
+					(operatorChange)='filterChanged( o, true )',
+					(dataChange)='filterChanged( o, true )')
+			.layout-row.layout-align-start.layout-gap-24
+				.ml-4.mt-8
+					| {{ "BASE.WORKFLOW.SETUP.COMMON.LABEL.TO" | translate | lowercase }}
+				comparison(
+					groupAble,
+					#destinationComparisonComp,
+					[comparisonModule]='comparisonModule',
+					[fields]='fields',
+					[error]='o.destination.error',
+					[advanceOperators]='advanceOperators',
+					[(field)]='o.field',
+					[(fieldID)]='o.fieldID',
+					[(operator)]='o.destination.operator',
+					[(data)]='o.destination.data',
+					(fieldIDChange)='filterChanged( o )',
+					(operatorChange)='filterChanged( o )',
+					(dataChange)='filterChanged( o )')
+
+include ../conditional-base.pug

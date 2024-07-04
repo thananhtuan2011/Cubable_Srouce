@@ -1,0 +1,59 @@
+@import 'src/scss/partials/variable';
+
+:host {
+	display: flex;
+	flex-wrap: wrap;
+	padding-left: 25px;
+	padding-right: 25px;
+	border-top: 1px solid $color-border;
+	border-bottom: 1px solid $color-border;
+
+	.menu-bar__left,
+	.menu-bar__right {
+		display: flex;
+		min-height: 60px;
+
+		&:empty {
+			display: none;
+		}
+	}
+
+	.menu-bar__left {
+		flex: 1;
+		order: 1;
+		min-width: 300px;
+
+		::ng-deep > * {
+			min-width: 0;
+			max-width: 100%;
+		}
+	}
+
+	.menu-bar__right {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: center;
+		min-width: fit-content;
+		order: 3;
+
+		&:empty + .menu-bar__divider {
+			display: none;
+		}
+
+		::ng-deep > * {
+			margin-top: 10px;
+			margin-bottom: 10px;
+
+			&:not(:last-child) {
+				margin-right: 10px;
+			}
+		}
+	}
+
+	.menu-bar__divider {
+		margin-left: 10px;
+		margin-right: 10px;
+		order: 2;
+		border-right: 1px solid $color-border;
+	}
+}

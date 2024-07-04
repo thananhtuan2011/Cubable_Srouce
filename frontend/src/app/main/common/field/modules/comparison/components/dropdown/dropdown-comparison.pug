@@ -1,0 +1,37 @@
+include ../mixins/mixin.pug
+
+.layout-row.layout-align-start-center.layout-gap-8.layout-wrap.flex
+	ng-container(*ngTemplateOutlet='fieldPicker')
+
+	+comparisonOperator
+
+	ng-container(*ngIf='$any( data )?.compareType')
+		ng-container([ngSwitch]='data.compareType')
+			ng-container(*ngSwitchCase='COMPARISON_TYPE.STATIC')
+				cub-dropdown.flex.miw-200(
+					clearable,
+					searchable,
+					required,
+					singleLine,
+					#dataDropdown,
+					[displayErrorMode]='ERROR_MODE.Tooltip',
+					[disableControl]=`
+						error?.field
+							|| ( excludeFields?.isDisable
+								&& ( excludeFieldsLK?.[ field?.id ] ) )`,
+					[formControl]='dataControl',
+					[multiple]='field?.isMultipleSelect',
+					[placeholder]='"FIELD.COMPARISON.PLACEHOLDER.SELECT_OPTION" | translate',
+					[(valueControl)]='data.value',
+					(valueControlChange)='onDataChange()',
+					(opened)='onDropdownPickerOpened()')
+					cub-dropdown-item(
+						*ngFor='let o of options; ngForTrackByValue',
+						[label]='o.name',
+						[value]='o.value',
+						[color]='o.color')
+			ng-container(*ngSwitchCase='COMPARISON_TYPE.AUTO')
+				+comparisonTypeAuto
+
+	ng-container(*ngIf='operatorHasComparisonType.has( operator )')
+		+comparisonType

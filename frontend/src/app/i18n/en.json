@@ -1,0 +1,12 @@
+{
+	"LABEL": {
+		"CHANGES_NOT_SAVED": "Save changes?",
+		"NO_INTERNET": "No internet connection",
+		"SESSION_EXPIRED": "Session expired"
+	},
+	"MESSAGE": {
+		"ASK_TO_SAVE_CHANGES": "Do you want to save your changes?",
+		"NO_INTERNET": "Check your network settings and try again.",
+		"SESSION_EXPIRED": "Please re-login to renew your session."
+	}
+}

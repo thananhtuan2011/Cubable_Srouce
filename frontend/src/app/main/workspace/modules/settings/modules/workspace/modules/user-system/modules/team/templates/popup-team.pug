@@ -1,0 +1,98 @@
+ng-container(*ngTemplateOutlet='popupCreateTeam.templateRef') 
+
+cub-popup(
+	#popupCreateTeam,
+	width='400px')
+	cub-popup-header
+		ng-template(cubPopupHeader)
+			.layout-row.layout-align-space-between-center.layout-gap-16.flex
+				cub-form-field.full-viewport(
+					displayErrorMode='tooltip')
+					input(
+						cubFormFieldInput,
+						required,
+						autoFocusOn,
+						maxlength='80',
+						trim,
+						[formControl]='teamNameFormControl',
+						[(valueControl)]='team.name')
+					//- TODO check
+					ng-template(
+						cubFormFieldError='duplicateName',
+						*ngIf='teamNameFormControl.errors?.duplicateName')
+						| {{ "SETTINGS.WORKSPACE.USER_SYSTEM.TEAM.MESSAGE.TEAM_NAME_DUPLICATE" | translate }}
+					ng-template(
+						cubFormFieldError='maxlength',
+						*ngIf='teamNameFormControl.errors?.maxlength')
+						| {{ "SETTINGS.WORKSPACE.USER_SYSTEM.TEAM.MESSAGE.TEAM_NAME_MAX_LENGTH" | translate }}
+					ng-template(
+						cubFormFieldError='required',
+						*ngIf='teamNameFormControl.errors?.required')
+						| {{ "SETTINGS.WORKSPACE.USER_SYSTEM.TEAM.MESSAGE.TEAM_NAME_REQUIRED" | translate }}
+				button(
+					cubClearButton,
+					size='20px',
+					[cubTooltip]='"SETTINGS.WORKSPACE.USER_SYSTEM.TEAM.LABEL.CLOSE" | translate',
+					(click)='popupRef.close()')
+	cub-popup-content
+		form.layout-column.layout-gap-16([formGroup]='formTeam')
+			.layout-column.layout-gap-6
+				label.ml-12
+					| {{ "SETTINGS.WORKSPACE.USER_SYSTEM.TEAM.LABEL.TEAM_MEMBERS" | translate }}
+				ng-container(*ngIf='mode === POPUP_MODE.New; else elseBlock;')
+					cub-member-picker(
+						[strictDisplay]='false',
+						[users]='users',
+						[placeholder]='"SETTINGS.WORKSPACE.USER_SYSTEM.TEAM.PLACEHOLDER.FIND_USER" | translate',
+						[(selectedUserIDs)]='team.userIDs')
+				ng-template(#elseBlock)
+					cub-member-list(
+						limit='5',
+						width='360px',
+						overlayX='start',
+						[placeholder]='"SETTINGS.WORKSPACE.USER_SYSTEM.TEAM.PLACEHOLDER.FIND_USER" | translate',
+						[users]='users',
+						[strictDisplay]='false',
+						[hasFooter]='false',
+						[selectedUserIDs]='team.userIDs',
+						(addedUsers)='addedUsers( $event )',
+						(removedUsers)='removedUsers( $event )')
+			cub-dropdown(
+				multiple,
+				ngDefaultControl,
+				formControlName='roleIDs',
+				[clearable]='false',
+				[label]='"SETTINGS.WORKSPACE.USER_SYSTEM.TEAM.LABEL.USER_ROLE_IN_WORKSPACE" | translate',
+				[(valueControl)]='team.roleIDs')
+				cub-dropdown-item(
+					*ngFor='let role of roles; trackByID',
+					[label]='role.uniqName ? ( rolesDefault.get( role.uniqName )?.name | translate ) : role.name',
+					[description]='role?.description || ( rolesDefault.get( role.uniqName )?.description | translate )',
+					[value]='role.id')
+			.layout-column.layout-gap-6
+				.layout-row.layout-align-start-center.layout-gap-8.pl-10
+					label
+						| {{ "SETTINGS.WORKSPACE.USER_SYSTEM.TEAM.LABEL.STATUS" | translate }}
+					cub-icon(
+						name='info-circle',
+						size='16px',
+						cubTooltipWidth='300px',
+						[cubTooltip]='"SETTINGS.WORKSPACE.USER_SYSTEM.TEAM.MESSAGE.INFO_ACTIVE" | translate')
+				cub-switch(
+					size='small',
+					formControlName='isActive',
+					[label]='"SETTINGS.WORKSPACE.USER_SYSTEM.TEAM.LABEL.CHECK_ACTIVE" | translate',
+					[onBeforeSwitch]='onBeforeSwitchModeFn.bind( this, team.isActive )',
+					[(valueControl)]='team.isActive')
+	cub-popup-footer
+		ng-template(cubPopupFooter)
+			.layout-row.layout-gap-12.layout-align-end
+				button.w-80(
+					cubButton='secondary',
+					(click)='popupRef.close()')
+					| {{ "SETTINGS.WORKSPACE.USER_SYSTEM.TEAM.LABEL.CANCEL" | translate }}
+				button.w-120(
+					cubButton,
+					[disabled]='formTeam.invalid',
+					(click)='onSubmit()')
+					| {{ 'SETTINGS.WORKSPACE.USER_SYSTEM.TEAM.LABEL.' + ( mode === POPUP_MODE.New ? 'CREATE' : 'SAVE' ) | translate }}

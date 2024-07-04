@@ -1,0 +1,100 @@
+@import '@ctrl/ngx-emoji-mart/picker';
+@import 'src/scss/partials/variable';
+@import 'src/scss/partials/mixin';
+
+.wgc-emoji-picker {
+	display: flex;
+	flex-direction: column;
+	background-color: $color-white;
+
+	&:not(.wgc-emoji-picker--inline) {
+		padding: 15px;
+		border-radius: 10px;
+		border: solid 1px $color-border;
+		box-shadow: $box-shadow;
+		animation: $popup-animation;
+	}
+
+	.wgc-emoji-picker__header {
+		display: flex;
+		align-items: center;
+		margin-bottom: 10px;
+
+		.wgc-emoji-picker__header-title {
+			display: flex;
+			align-items: center;
+			font-size: 16px;
+			font-weight: $font-weight-semibold;
+			margin-right: 5px;
+			width: 100%;
+			min-width: 0;
+		}
+	}
+
+	.wgc-emoji-picker__mart {
+		.emoji-mart {
+			@include scroll;
+			font-family: $font-family-body;
+			border: none;
+			height: 100%;
+
+			.emoji-mart-anchors,
+			.emoji-mart-search {
+				padding: 0;
+			}
+
+			.emoji-mart-anchors .emoji-mart-anchor {
+				color: $color-text !important;
+
+				.emoji-mart-anchor-bar {
+					background-color: var(--primary-color, $color-primary) !important;
+				}
+			}
+
+			.emoji-mart-search {
+				margin: 10px;
+
+				.emoji-mart-search-icon {
+					left: 15px;
+					top: 16px;
+					padding: 0;
+					width: fit-content;
+
+					svg {
+						width: 16px;
+						height: 16px;
+						fill: $color-text;
+						opacity: 1;
+					}
+				}
+
+				input {
+					height: 48px;
+					border-radius: 6px;
+					border: 1px solid $color-border;
+					padding: 0 10px 0 35px;
+					font-weight: $font-weight-regular;
+					font-size: $font-size-body;
+
+					&:hover {
+						border-color: $color-border-thick;
+					}
+
+					&:focus-visible {
+						border-color: $color-border-super-thick;
+						box-shadow: $box-shadow-focus;
+					}
+
+					&::placeholder {
+						font-weight: $font-weight-regular;
+						color: $color-placeholder;
+					}
+				}
+			}
+		}
+	}
+
+	form {
+		flex: unset;
+	}
+}

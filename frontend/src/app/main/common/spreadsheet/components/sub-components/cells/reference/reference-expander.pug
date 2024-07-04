@@ -1,0 +1,123 @@
+mixin contentWarming(icon, message)
+	.layout-column.layout-align-center-center.layout-gap-8.flex
+		cub-icon(
+			size='64px',
+			name=`${icon}`,
+			color='secondary')
+		.text-center.w-270
+			| {{ "SPREADSHEET.MESSAGE.#{message}" | translate }}
+
+mixin selectedCount
+	label
+		| {{ "SPREADSHEET.LABEL.SELECTED_COUNT" | translate : { count: selectedRecord?.length || 0 } }}
+
+mixin spreadsheetTemp
+	spreadsheet(
+		[config]='config',
+		[columns]='columns',
+		[(rows)]='!isCreate ? filteredRows : newRows')&attributes(attributes)
+		block
+
+cub-popup(
+	#popup,
+	draggable,
+	width='984px',
+	height='552px')
+	cub-popup-header
+		ng-template(cubPopupHeader)
+			.layout-row.layout-align-space-between-center.layout-gap-8
+				.layout-column.flex
+					h5.text-truncate([attr.title]='popupContext.itemName')
+						ng-container(*ngIf='popupContext.itemName !== undefined; else undefinedName')
+							ng-container(*ngIf='popupContext.itemName; else noItemName')
+								| {{ popupContext.itemName | empty }}
+							ng-template(#noItemName)
+								| {{ "SPREADSHEET.LABEL.UN_NAME" | translate }}
+						ng-template(#undefinedName)
+							| {{ "SPREADSHEET.LABEL.UNDEFINED_NAME" | translate }}
+					.layout-row.layout-align-start-center.layout-gap-2
+						label
+							| {{ breadCrumbItems?.baseName | empty }}
+						cub-icon(
+							name='chevron-right',
+							size='16px')
+						label
+							| {{ breadCrumbItems?.boardName | empty }}
+						ng-container(*ngIf='!popupContext?.lookupParams')
+							cub-icon(
+								name='chevron-right',
+								size='16px')
+							| {{ breadCrumbItems?.viewName | empty }}
+				button(
+					cubClearButton,
+					size='20px',
+					(click)='popupRef.close()')
+	cub-popup-content
+		ng-template(cubPopupContent)
+			ng-container(*ngIf='!isCreate; else elseBlock')
+				.layout-row.layout-align-start-center.layout-gap-12.full-width.mb-12
+					cub-search-box.full-width(
+						#searchBox,
+						[placeholder]='"SPREADSHEET.PLACEHOLDER.SEARCH" | translate',
+						(searching)='searchItem( $event )')
+					cub-dropdown.w-260(
+						*ngIf='!popupContext.readonly',
+						[clearable]='false',
+						[ngModel]='selectedFilter',
+						(ngModelChange)='filterItem( $event )')
+						cub-dropdown-item(
+							*ngFor='let filter of selectFilterArray; ngForTrackByID',
+							[label]='filter.label',
+							[value]='filter.id')
+				ng-container(*ngIf='isNoPermission; else elseBlock1')
+					+contentWarming('not-allow', 'NO_PERMISSION_MESSAGE')
+				ng-template(#elseBlock1)
+					+spreadsheetTemp.flex()(
+						*ngIf='isLoadedData; else elseBlock2',
+						(rowSelected)='onRowSelected( $event )')
+						ng-container(
+							*ngIf='searchBox?.searchQuery',
+							emptyBlock)
+							+contentWarming('eyes', 'NOT_FOUND_DATA_MESSAGE')
+					ng-template(#elseBlock2)
+						.flex.layout-row.layout-align-center.full-height
+							cub-loading.layout-column.layout-align-center.full-height
+			ng-template(#elseBlock)
+				+spreadsheetTemp()(
+					(rowAdded)='onRowAdded( $event )',
+					(rowDeleted)='onRowDeleted( $event )')
+	cub-popup-footer
+		ng-template(cubPopupFooter)
+			ng-container(*ngIf='popupContext.readonly; else notReadonly')
+				+selectedCount
+			ng-template(#notReadonly)
+				.layout-row.layout-align-space-between-center
+					button.text-nowrap(
+						cubBasicButton,
+						icon='plus-circle',
+						iconSize='16px',
+						*ngIf='!isCreate && canCreateRecord',
+						(click)='createNewItem()')
+						| {{ "SPREADSHEET.LABEL.CREATE_NEW" | translate }}
+					.layout-row.layout-align-end-center.layout-gap-12.full-width
+						ng-container(*ngIf='!isCreate')
+							+selectedCount
+						button.w-80(
+							cubButton='secondary',
+							(click)='cancel()')
+							| {{ "SPREADSHEET.LABEL.CANCEL" | translate }}
+						ng-container(*ngIf='!isCreate; else elseBlock3')
+							button.w-120(
+								cubButton,
+								type='submit',
+								(click)='addItems()')
+								| {{ "SPREADSHEET.LABEL.CONFIRM" | translate }}
+						ng-template(#elseBlock3)
+							button.w-120(
+								cubButton,
+								type='submit',
+								[loading]='isLoadingCreateItem',
+								(click)='onCreateNewItem()')
+								| {{ "SPREADSHEET.LABEL.CREATE" | translate }}
+
+ng-container(*ngTemplateOutlet='popup.templateRef')

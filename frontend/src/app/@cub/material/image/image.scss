@@ -1,0 +1,41 @@
+@import '../../scss/partials/variable';
+
+.cub-image {
+	$self: &;
+
+	position: relative;
+
+	display: flex;
+	width: auto;
+	max-width: 100%;
+	height: inherit;
+	max-height: 100%;
+
+	&#{ $self }--loading {
+		&:after {
+			content: '';
+
+			position: absolute;
+			left: 50%;
+			top: 50%;
+
+			display: block;
+			max-width: 50px;
+			max-height: 50px;
+
+			background: {
+				color: $color-white;
+				image: var(--preload-image);
+				size: contain;
+				position: center center;
+				repeat: no-repeat;
+			};
+
+			transform: translate(-50%, -50%);
+		}
+	}
+
+	img {
+		width: 100%;
+	}
+}

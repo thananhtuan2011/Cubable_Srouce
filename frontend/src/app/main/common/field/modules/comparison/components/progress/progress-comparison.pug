@@ -1,0 +1,79 @@
+include ../mixins/mixin.pug
+
+.layout-row.layout-align-start-center.layout-gap-8.layout-wrap.flex
+	ng-container(*ngTemplateOutlet='fieldPicker')
+
+	+comparisonOperator
+
+	ng-container(*ngIf='$any( data )?.compareType')
+		ng-container([ngSwitch]='$any( data ).compareType')
+			ng-container(*ngSwitchCase='COMPARISON_TYPE.STATIC')
+				cub-form-field.flex.miw-200(
+					displayErrorMode='tooltip')
+					input(
+						required,
+						cubFormFieldInput,
+						type='number',
+						min='0',
+						placeholder='0',
+						#dataInput='cubFormFieldInput',
+						[disableControl]='error?.field',
+						[clearable]='false',
+						[formControl]='dataControl',
+						[valueControl]='$any( data ).number | convertPercent',
+						(valueControlChange)='onDataChange( $event )')
+					ng-container(cubFormFieldSuffix)
+						.text-color-tertiary
+							| %
+			ng-container(*ngSwitchCase='COMPARISON_TYPE.AUTO')
+				+comparisonTypeAuto
+
+	ng-container(*ngIf='comparisonRange.has( operator )')
+		form.layout-row.layout-align-start-center.layout-gap-8.layout-wrap(
+			[formGroup]='rangeForm')
+			cub-form-field.w-172(displayErrorMode='tooltip')
+				input(
+					cubFormFieldInput,
+					required,
+					type='number',
+					min='0',
+					placeholder='0',
+					formControlName='start',
+					#startDataInput='cubFormFieldInput',
+					[disableControl]=`
+						error?.field
+							|| ( excludeFields?.isDisable
+								&& ( excludeFieldsLK?.[ field?.id ] ) )`,
+					[clearable]='false',
+					[valueControl]='$any( data ).start | convertPercent',
+					(valueControlChange)='onRangeDataChange( $event, true )',
+					(blur)='onStartInputBlur()')
+				.text-color-tertiary
+					| %
+				ng-container(
+					cubFormFieldError,
+					*ngIf='isStartError')
+					| {{ "FIELD.COMPARISON.ERROR.START_NOT_BIGGER_END" | translate }}
+			| -
+			cub-form-field.w-172(displayErrorMode='tooltip')
+				input(
+					cubFormFieldInput,
+					required,
+					type='number',
+					min='0',
+					placeholder='0',
+					formControlName='end',
+					#endDataInput='cubFormFieldInput',
+					[disableControl]='error?.field',
+					[clearable]='false',
+					[valueControl]='$any( data ).end | convertPercent',
+					(valueControlChange)='onRangeDataChange( $event )')
+				.text-color-tertiary
+					| %
+				ng-container(
+					cubFormFieldError,
+					*ngIf='isEndError')
+					| {{ "FIELD.COMPARISON.ERROR.END_NOT_SMALLER_START" | translate }}
+
+	ng-container(*ngIf='operatorHasComparisonType.has( operator )')
+		+comparisonType

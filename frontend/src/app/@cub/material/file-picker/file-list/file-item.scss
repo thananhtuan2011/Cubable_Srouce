@@ -1,0 +1,116 @@
+@import '../../../scss/partials/variable';
+@import '../../../scss/partials/mixin';
+
+.cub-file-item {
+	$self: &;
+
+	width: 32%;
+	min-width: 32%;
+	max-width: 32%;
+	height: 212px;
+	min-height: 212px;
+	max-height: 212px;
+	padding: 4px;
+
+	&:has(#{ $self }__error:not(:empty)) {
+		#{ $self }__image {
+			outline-color: $color-material-destructive-default;
+			box-shadow: $box-shadow-destructive;
+		}
+	}
+
+	#{ $self }__image {
+		position: relative;
+
+		display: flex;
+		height: 142px;
+		min-height: 142px;
+		max-height: 142px;
+		margin-bottom: 4px;
+		border-radius: 4px;
+		overflow: hidden;
+
+		background-color: $color-material-default;
+
+		&:hover {
+			.cub-file-item__actions {
+				visibility: visible;
+				opacity: 1;
+			}
+		}
+
+		#{ $self }__actions {
+			@include visible-transition(opacity);
+
+			position: absolute;
+			inset: 0;
+
+			display: flex;
+			column-gap: 20px;
+			align-items: center;
+			justify-content: center;
+			visibility: hidden;
+			opacity: 0;
+	
+			background: $color-transparent-dark-grey-50;
+			color: white;
+
+			backdrop-filter: blur(2.5px);
+
+			&:empty {
+				display: none;
+			}
+		}
+
+		.cub-file {
+			margin: auto;
+
+			&:not(:has(.cub-file-thumbnail)) {
+				width: 48px;
+				min-width: 48px;
+				max-width: 48px;
+				height: auto;
+				min-height: auto;
+			}
+
+			img {
+				object-fit: cover;
+			}
+		}
+	}
+
+	#{ $self }__name {
+		margin-bottom: 2px;
+
+		span {
+			@include text-truncate-multi-line;
+		}
+	}
+
+	#{ $self }__info {
+		display: flex;
+		column-gap: 12px;
+		font-size: 12px;
+		line-height: 16px;
+
+		#{ $self }__description {
+			@include text-truncate;
+
+			color: $color-text-secondary;
+		}
+
+		#{ $self }__error {
+			@include text-truncate;
+
+			width: 100%;
+			min-width: 0;
+			max-width: 100%;
+
+			color: $color-text-error;
+
+			&:empty {
+				display: none;
+			}
+		}
+	}
+}

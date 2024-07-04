@@ -1,0 +1,39 @@
+ng-template
+	.cub-popup(
+		cdkDrag,
+		cdkDragBoundary='.cdk-overlay-container',
+		cdkDragRootElement='.cub-overlay-pane',
+		[cdkDragDisabled]='!draggable',
+		[style.width]='width',
+		[style.minWidth]='minWidth',
+		[style.maxWidth]='maxWidth',
+		[style.height]='height',
+		[style.minHeight]='minHeight',
+		[style.maxHeight]='maxHeight',
+		[ngClass]='classList')
+		.cub-popup__header(
+			cdkDragHandle,
+			*ngIf='!!popupHeader?.templateRef',
+			[ngClass]='popupHeader.classList')
+			ng-container(
+				*ngTemplateOutlet=`
+					popupHeader.templateRef;
+					context: context;`)
+		.cub-popup__content(
+			cdkScrollable,
+			cubScrollBar,
+			suppressX,
+			*ngIf='!!popupContent?.templateRef',
+			[ngClass]='popupContent.classList',
+			(init)='scrollBar = $event')
+			ng-container(
+				*ngTemplateOutlet=`
+					popupContent.templateRef;
+					context: context;`)
+		.cub-popup__footer(
+			*ngIf='!!popupFooter?.templateRef',
+			[ngClass]='popupFooter.classList')
+			ng-container(
+				*ngTemplateOutlet=`
+					popupFooter.templateRef;
+					context: context;`)

@@ -1,0 +1,34 @@
+@import '../../../scss/partials/variable';
+
+$button-size: var(--clear-button-size, 16px);
+
+.cub-clear-button {
+	$self: &;
+
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	width: $button-size;
+	min-width: $button-size;
+	max-width: $button-size;
+	height: $button-size;
+	min-height: $button-size;
+	max-height: $button-size;
+	border-radius: 50%;
+
+	background-color: $color-transparent-dark-grey-25;
+	color: $color-white;
+
+	font-size: calc($button-size / 1.25);
+
+	// Common states
+	@at-root {
+		&:not(:disabled) {
+			&:active,
+			&:hover,
+			&:focus-visible {
+				background-color: $color-icon-primary;
+			}
+		}
+	}
+}

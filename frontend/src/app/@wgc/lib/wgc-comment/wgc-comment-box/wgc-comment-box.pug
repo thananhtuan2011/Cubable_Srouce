@@ -1,0 +1,244 @@
+//- include ../../wgc-member-picker/blocks/block-member.partial.pug
+
+//- wgc-menu(
+//- 	#mentionMenu,
+//- 	width='300px',
+//- 	maxHeight='500px',
+//- 	[title]='"WGC.LABEL.MENTION" | translate',
+//- 	(opened)='getPeople()')
+//- 	wgc-menu-header
+//- 		ng-template(wgcMenuHeader)
+//- 			wgc-search-box(autoFocusOn, (searching)='getPeople( $event )')
+//- 	wgc-menu-content
+//- 		ng-template(wgcMenuContent)
+//- 			ng-container(*ngIf='!people?.length; else listPeople;')
+//- 				ng-container(*ngTemplateOutlet='searchBox?.notFoundTemplate; context: { name: "WGC.LABEL.MEMBERS" | translate }')
+//- 			ng-template(#listPeople)
+//- 				button(
+//- 					wgcMenuItem,
+//- 					*ngFor='let person of people; trackBy: "id" | trackByFn;',
+//- 					(click)='addMention( person )')
+//- 					wgc-member(
+//- 						[hasViewProfile]='false',
+//- 						[displayMemberStatus]='true',
+//- 						[member]='{ id: person?.id, name: person?.value, avatar: person?.avatar, status: person?.status }')
+
+//- wgc-menu(#emojiMenu, width='470px', [title]='"WGC.LABEL.EMOJI" | translate')
+//- 	wgc-menu-content
+//- 		ng-template(wgcMenuContent)
+//- 			wgc-emoji-picker(mode='inline', (picked)='wgcEditor?.insertText( $event?.native )')
+
+//- wgc-menu(#attachmentMenu, width='300px', [title]='"WGC.LABEL.ATTACHMENT" | translate')
+//- 	wgc-menu-content
+//- 		ng-template(wgcMenuContent)
+//- 			wgc-file-picker(multiSelect, mode='inline', (picked)='onFilePicked( $event )')
+
+//- wgc-menu(#imageMenu, width='300px', [title]='"WGC.LABEL.IMAGE" | translate')
+//- 	wgc-menu-content
+//- 		ng-template(wgcMenuContent)
+//- 			wgc-file-picker(imageOnly, multiSelect, mode='inline', (picked)='onImagePicked( $event )')
+
+//- wgc-menu(
+//- 	#linkMenu,
+//- 	width='300px',
+//- 	[title]='"WGC.LABEL.LINK" | translate',
+//- 	(opened)='isNotSendOnKeyUpEnter = true',
+//- 	(closed)='enableKeyUpEnter()')
+//- 	wgc-menu-content
+//- 		ng-template(wgcMenuContent)
+//- 			form([formGroup]='linkForm', (submit)='insertLink(); linkMenu?.close();')
+//- 				wgc-form-field.mb-10([label]='"WGC.LABEL.LABEL" | translate')
+//- 					input(
+//- 						wgcFormFieldInput,
+//- 						required,
+//- 						autoReset,
+//- 						autoFocusOn,
+//- 						[formControl]='linkForm?.controls?.label',
+//- 						[placeholder]='"WGC.PLACEHOLDER.LINK_LABEL" | translate',
+//- 						[(ngModel)]='link.label')
+//- 				wgc-form-field.mb-10([label]='"WGC.LABEL.LINK" | translate')
+//- 					input(
+//- 						wgcFormFieldInput,
+//- 						required,
+//- 						autoReset,
+//- 						[formControl]='linkForm?.controls?.link',
+//- 						[placeholder]='"WGC.PLACEHOLDER.LINK" | translate',
+//- 						[(ngModel)]='link.link')
+//- 				button(
+//- 					wgcButton,
+//- 					color='primary',
+//- 					type='submit',
+//- 					[disabled]='linkForm?.invalid || !linkFormDirty')
+//- 					| {{ "WGC.LABEL.ADD" | translate }}
+
+//- wgc-editor.wgc-comment-box__editor(
+//- 	resizable,
+//- 	growable,
+//- 	[format]='"object"',
+//- 	[formats]='formats',
+//- 	[modules]='quillModules',
+//- 	[placeholder]='"WGC.PLACEHOLDER.TYPE_YOUR_COMMENT" | translate',
+//- 	(editorCreated)='editor = $event',
+//- 	(contentChanged)='content = $event',
+//- 	(keydown.esc)='$event?.stopPropagation(); cancel();',
+//- 	(keyup.enter)='!isNotSendOnKeyUpEnter && sendComment()')
+
+//- .wgc-comment-box__file-list(*ngIf='images?.length')
+//- 	.wgc-comment-box__file-btn-add(position='above', *ngIf='maxImagePerComment !== 1', [wgcMenuTriggerFor]='imageMenu')
+//- 		wgc-icon(name='image-plus', size='16px', [color]='"LABEL" | color')
+//- 	wgc-scroll-bar.wgc-comment-box__file-list-wrapper(suppressScrollY)
+//- 		.wgc-comment-box__image.wgc-comment-box__file(
+//- 			*ngFor='let image of images; let i = index;',
+//- 			[lazyLoad]='image[ "@previewUrl" ]')
+//- 			button.wgc-comment-box__file-btn-remove(
+//- 				wgcIconButton,
+//- 				circle,
+//- 				icon='close',
+//- 				iconColor='white',
+//- 				size='18px',
+//- 				[color]='"LIGHT_GRAY" | color : 700',
+//- 				(click)='images?.splice( i, 1 )')
+
+//- wgc-divider(*ngIf='attachments?.length && images?.length')
+
+//- .wgc-comment-box__file-list(*ngIf='attachments?.length')
+//- 	.wgc-comment-box__file-btn-add(position='above', *ngIf='maxFilePerComment !== 1', [wgcMenuTriggerFor]='attachmentMenu')
+//- 		wgc-icon(name='attachment', size='16px', [color]='"LABEL" | color')
+//- 	wgc-scroll-bar.wgc-comment-box__file-list-wrapper(suppressScrollY)
+//- 		.wgc-comment-box__attachment.wgc-comment-box__file(*ngFor='let file of attachments; let i = index;')
+//- 			img.wgc-comment-box__attachment__image(width='20px', [src]='file?.name | fileIcon')
+//- 			.wgc-comment-box__attachment__info
+//- 				wgc-truncate.wgc-comment-box__attachment__name(limitLine='1')
+//- 					| {{ file?.name | empty }}
+//- 				.wgc-comment-box__attachment__size
+//- 					| {{ file?.size | fileSize }}
+//- 			button.wgc-comment-box__file-btn-remove(
+//- 				wgcIconButton,
+//- 				circle,
+//- 				icon='close',
+//- 				iconColor='white',
+//- 				size='18px',
+//- 				[color]='"LIGHT_GRAY" | color : 700',
+//- 				(click)='attachments?.splice( i, 1 )')
+
+//- .wgc-comment-box__util
+//- 	button.wgc-comment-box__btn-close(
+//- 		wgcIconButton,
+//- 		circle,
+//- 		icon='close',
+//- 		color='primary',
+//- 		*ngIf='isTypographyFormating',
+//- 		[size]='subEditor ? "20px" : "24px"',
+//- 		[wgcTooltip]='"WGC.LABEL.CLOSE" | translate',
+//- 		(click)='isTypographyFormating = false')
+//- 	.wgc-comment-box__util-left
+//- 		ng-container(*ngIf='!isTypographyFormating; else elseBlock;')
+//- 			button.wgc-comment-box__btn-action(
+//- 				wgcBasicButton,
+//- 				position='above',
+//- 				icon='mention',
+//- 				panelClass='wgc-comment-box',
+//- 				[iconSize]='subEditor ? "20px" : "24px"',
+//- 				[wgcMenuTriggerFor]='mentionMenu',
+//- 				[wgcTooltip]='"WGC.LABEL.MENTION" | translate')
+//- 			button.wgc-comment-box__btn-action(
+//- 				wgcBasicButton,
+//- 				position='above',
+//- 				icon='emoji',
+//- 				[iconSize]='subEditor ? "20px" : "24px"',
+//- 				[wgcMenuTriggerFor]='emojiMenu',
+//- 				[wgcTooltip]='"WGC.LABEL.EMOJI" | translate')
+//- 			button.wgc-comment-box__btn-action(
+//- 				wgcBasicButton,
+//- 				position='above',
+//- 				icon='link',
+//- 				[iconSize]='subEditor ? "20px" : "24px"',
+//- 				[wgcMenuTriggerFor]='linkMenu',
+//- 				[wgcTooltip]='"WGC.LABEL.LINK" | translate')
+//- 			button.wgc-comment-box__btn-action(
+//- 				wgcBasicButton,
+//- 				position='above',
+//- 				icon='attachment',
+//- 				[iconSize]='subEditor ? "20px" : "24px"',
+//- 				*ngIf='!attachments?.length',
+//- 				[wgcMenuTriggerFor]='attachmentMenu',
+//- 				[wgcTooltip]='"WGC.LABEL.ATTACHMENT" | translate')
+//- 			button.wgc-comment-box__btn-action(
+//- 				wgcBasicButton,
+//- 				position='above',
+//- 				*ngIf='!images?.length',
+//- 				icon='image-plus',
+//- 				[iconSize]='subEditor ? "20px" : "24px"',
+//- 				[wgcMenuTriggerFor]='imageMenu',
+//- 				[wgcTooltip]='"WGC.LABEL.IMAGE" | translate')
+//- 			button.wgc-comment-box__btn-action(
+//- 				wgcBasicButton,
+//- 				icon='text-formatting',
+//- 				[iconSize]='subEditor ? "20px" : "24px"',
+//- 				[wgcTooltip]='"WGC.LABEL." + ( isTypographyFormating ? "HIDE_FORMATTING" : "SHOW_FORMATTING" ) | translate',
+//- 				(click)='isTypographyFormating = true')
+//- 		ng-template(#elseBlock)
+//- 			button.wgc-comment-box__btn-action(
+//- 				wgcBasicButton,
+//- 				icon='bold',
+//- 				[iconSize]='subEditor ? "20px" : "24px"',
+//- 				[wgcTooltip]='"WGC.LABEL.BOLD" | translate',
+//- 				(click)='wgcEditor?.setFormat( "bold", !wgcEditor?.hasFormat( "bold" ) )')
+//- 			button.wgc-comment-box__btn-action(
+//- 				wgcBasicButton,
+//- 				icon='italic',
+//- 				[iconSize]='subEditor ? "20px" : "24px"',
+//- 				[wgcTooltip]='"WGC.LABEL.ITALIC" | translate',
+//- 				(click)='wgcEditor?.setFormat( "italic", !wgcEditor?.hasFormat( "italic" ) )')
+//- 			button.wgc-comment-box__btn-action(
+//- 				wgcBasicButton,
+//- 				icon='strikethrough',
+//- 				[iconSize]='subEditor ? "20px" : "24px"',
+//- 				[wgcTooltip]='"WGC.LABEL.STRIKETHROUGH" | translate',
+//- 				(click)='wgcEditor?.setFormat( "strike", !wgcEditor?.hasFormat( "strike" ) )')
+//- 			button.wgc-comment-box__btn-action(
+//- 				wgcBasicButton,
+//- 				icon='underline',
+//- 				[iconSize]='subEditor ? "20px" : "24px"',
+//- 				[wgcTooltip]='"WGC.LABEL.UNDERLINE" | translate',
+//- 				(click)='wgcEditor?.setFormat( "underline", !wgcEditor?.hasFormat( "underline" ) )')
+//- 			button.wgc-comment-box__btn-action(
+//- 				wgcBasicButton,
+//- 				icon='bulleted-list',
+//- 				[iconSize]='subEditor ? "20px" : "24px"',
+//- 				[wgcTooltip]='"WGC.LABEL.BULLETED_LIST" | translate',
+//- 				(click)='wgcEditor?.setFormat( "list", !wgcEditor?.hasFormat( "list" ) ? "bullet" : undefined )')
+//- 			button.wgc-comment-box__btn-action(
+//- 				wgcBasicButton,
+//- 				icon='ordered-list',
+//- 				[iconSize]='subEditor ? "20px" : "24px"',
+//- 				[wgcTooltip]='"WGC.LABEL.ORDERED_LIST" | translate',
+//- 				(click)='wgcEditor?.setFormat( "list", !wgcEditor?.hasFormat( "list" ) ? "ordered" : undefined )')
+//- 			button.wgc-comment-box__btn-action(
+//- 				wgcBasicButton,
+//- 				icon='blockquote',
+//- 				[iconSize]='subEditor ? "20px" : "24px"',
+//- 				[wgcTooltip]='"WGC.LABEL.BLOCKQUOTE" | translate',
+//- 				(click)='wgcEditor?.setFormat( "blockquote", !wgcEditor?.hasFormat( "blockquote" ) )')
+//- 			button.wgc-comment-box__btn-action(
+//- 				wgcBasicButton,
+//- 				icon='code-block',
+//- 				[iconSize]='subEditor ? "20px" : "24px"',
+//- 				[wgcTooltip]='"WGC.LABEL.CODE_BLOCK" | translate',
+//- 				(click)='wgcEditor?.setFormat( "code-block", !wgcEditor?.hasFormat( "code-block" ) )')
+//- 			button.wgc-comment-box__btn-action(
+//- 				wgcBasicButton,
+//- 				icon='code',
+//- 				[iconSize]='subEditor ? "20px" : "24px"',
+//- 				[wgcTooltip]='"WGC.LABEL.CODE" | translate',
+//- 				(click)='wgcEditor?.setFormat( "code", !wgcEditor?.hasFormat( "code" ) )')
+//- 	.wgc-comment-box__util-right
+//- 		button(
+//- 			wgcButton,
+//- 			color='primary',
+//- 			[size]='subEditor ? "32px" : undefined',
+//- 			[disabled]='content?.text?.length < 2 && !attachments?.length && !images?.length',
+//- 			(click)='sendComment()')
+//- 			| {{ "WGC.LABEL." + ( editingComment ? "SAVE" : "SEND" ) | translate }}
+
+//- label(*ngIf='subEditor', [innerHtml]='"WGC.MESSAGE.CANCEL_COMMENT_HINT" | translate | safeHtml')

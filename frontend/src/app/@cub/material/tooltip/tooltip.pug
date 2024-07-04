@@ -1,0 +1,6 @@
+pre(
+	*ngIf='isMessageString; else elseBlock;',
+	[innerHtml]='$any( message ) | safeHtml')
+ng-template(#elseBlock)
+	ng-container(
+		*ngTemplateOutlet='$any( message ); context: context;')

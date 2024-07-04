@@ -1,0 +1,149 @@
+wgc-menu(#monthMenu, height='365px')
+	wgc-menu-content
+		ng-template(wgcMenuContent)
+			button(
+				wgcMenuItem,
+				*ngFor='let month of months; let index = index;',
+				[active]='index === displayingMonth',
+				(click)='displayMonth( undefined, index )')
+				| {{ month }}
+wgc-menu(#yearMenu, height='365px')
+	wgc-menu-content
+		ng-template(wgcMenuContent)
+			button(
+				wgcMenuItem,
+				*ngFor='let index of yearRange',
+				[active]='( currentYear + index ) === displayingYear',
+				(click)='displayMonth( currentYear + index, undefined )')
+				| {{ currentYear + index }}
+wgc-menu(#hourMenu, height='365px')
+	wgc-menu-content
+		ng-template(wgcMenuContent)
+			button(
+				wgcMenuItem,
+				*ngFor='let time of times',
+				(click)='setTime( time?.hour(), time?.minute() )')
+				| {{ time | momentDate : timeFormat }}
+
+.wgc-date-picker__header(*ngIf='mode !== "inline"')
+	.wgc-date-picker__header-title
+		| {{ ( "WGC.PLACEHOLDER." + ( dateRange ? "SELECT_DATE_RANGE" : "PICK_DATE" ) ) | translate }}
+	button(
+		wgcBasicButton,
+		icon='close',
+		[wgcTooltip]='"WGC.LABEL.CLOSE" | translate',
+		(click)='close()')
+
+wgc-form-field.wgc-form-field__date-input(
+	*ngIf='!dateRange',
+	[class.wgc-form-field--invalid]='!dateInputRef?.focusing && dateFormControl?.invalid')
+	input(
+		autoFocusOn,
+		wgcFormFieldInput,
+		#dateInputRef='wgcFormFieldInput',
+		[name]='"WGC.LABEL.DATE" | translate',
+		[placeholder]='dateFormat | lowercase',
+		[formControl]='dateFormControl',
+		(keydown.enter)='formatDateInput()',
+		(blur)='formatDateInput()')
+	div(wgcFormFieldError, *ngIf='!dateInputRef?.focusing')
+		ng-container(*ngIf='dateFormControl?.errors?.incompleteDate')
+			| {{ "WGC.MESSAGE.INCOMPLETE_DATE" | translate }}
+		ng-container(*ngIf='dateFormControl?.errors?.isInvalid')
+			| {{ "WGC.MESSAGE.INVALID_DATE_FORMAT" | translate : { format: dateFormat | lowercase } }}
+		ng-container(*ngIf='dateFormControl?.errors?.nonExisted')
+			| {{ "WGC.MESSAGE.NON_EXISTED_DATE" | translate }}
+		ng-container(*ngIf='dateFormControl?.errors?.isBeforeMinDate')
+			| {{ "WGC.MESSAGE.BEFORE_MIN_DATE" | translate : { date: minDate | momentDate | lowercase } }}
+		ng-container(*ngIf='dateFormControl?.errors?.isAfterMaxDate')
+			| {{ "WGC.MESSAGE.AFTER_MAX_DATE" | translate : { date: maxDate | momentDate | lowercase } }}
+
+.wgc-date-picker__controls
+	button(wgcIconButton, circle, icon='chevron-left', size='small', (click)='displayPreviousMonth()')
+	.wgc-date-picker__month-preview-container
+		button.wgc-date-picker__month-preview(
+			wgcBasicButton,
+			[wgcMenuTriggerFor]='monthMenu')
+			| {{ months[ displayingMonth ] }}
+			wgc-icon([name]='monthMenu?.isOpened ? "chevron-up" : "chevron-down"')
+		button.wgc-date-picker__month-preview(
+			wgcBasicButton,
+			[wgcMenuTriggerFor]='yearMenu')
+			| {{ displayingYear }}
+			wgc-icon([name]='yearMenu?.isOpened ? "chevron-up" : "chevron-down"')
+	button(wgcIconButton, circle, icon='chevron-right', size='small', (click)='displayNextMonth()')
+
+.wgc-date-picker__day-in-week
+	span(*ngFor='let weekday of getWeekdays( weekStart )')
+		| {{ weekday }}
+
+.wgc-date-picker__day-in-month
+	span(
+		*ngFor='let item of dateInMonth; trackBy: "date" | trackByFn; let index = index;',
+		[class.wgc-date-picker__day-in-month--today]='item?.today',
+		[class.wgc-date-picker__day-in-month--picked]='item?.picked',
+		[class.wgc-date-picker__day-in-month--disabled]='item?.disabled',
+		[class.wgc-date-picker__day-in-month--in-range]='item?.inRange',
+		[class.wgc-date-picker__day-in-month--in-range--start]='item?.picked && !dateInMonth[ index - 1 ]?.inRange',
+		[class.wgc-date-picker__day-in-month--in-range--end]='item?.picked && !dateInMonth[ index + 1 ]?.inRange',
+		[attr.data-date]='item?.date',
+		(click)='pickDate( item?.year, item?.month, item?.date )')
+
+ng-container(*ngIf='dateRange; else elseBlock;')
+	wgc-form-field.wgc-date-picker__date-range-input([label]='"WGC.LABEL.FROM" | translate')
+		input(
+			wgcFormFieldInput,
+			readonly,
+			alignment='center',
+			[value]='pickedDate?.[ 0 ] | momentDate | empty')
+	wgc-form-field.wgc-date-picker__date-range-input([label]='"WGC.LABEL.TO" | translate')
+		input(
+			wgcFormFieldInput,
+			readonly,
+			alignment='center',
+			[value]='pickedDate?.[ 1 ] | momentDate | empty')
+
+ng-template(#elseBlock)
+	.wgc-date-picker__time(*ngIf='!dateOnly')
+		wgc-switch(
+			ngDefaultControl,
+			color='primary',
+			[label]='"WGC.LABEL.ADD_TIME" | translate',
+			[(ngModel)]='showTime',
+			(ngModelChange)='$event && setTime( currentMoment?.hour(), currentMoment?.minute() )')
+		wgc-form-field.wgc-date-picker__time-input(
+			*ngIf='showTime',
+			[disabled]='!pickedDate',
+			[wgcMenuTriggerFor]='hourMenu')
+			input(
+				wgcFormFieldInput,
+				alignment='center',
+				convertType='hour-string',
+				[value]='pickedTime | momentDate : timeFormat',
+				(input)='hourMenu?.close()',
+				(converted)='setTime( $event?.hour, $event?.min )')
+
+	wgc-divider.wgc-date-picker__footer-divider
+
+	.wgc-date-picker__preview
+		span.wgc-date-picker__preview-label
+			| {{ "WGC.LABEL.SELECTED_DATE" | translate }}:&nbsp;
+		span
+			| {{ pickedDate | momentDate }}
+			ng-container(*ngIf='showTime && pickedDate')
+				| &nbsp;{{ pickedTime | momentDate : timeFormat }}
+
+	.wgc-date-picker__footer
+		div
+			button(
+				wgcButton,
+				color='primary',
+				[disabled]='!canSave',
+				(click)='save()')
+				| {{ "WGC.LABEL.SAVE" | translate }}
+		div
+			button(
+				wgcButton,
+				[disabled]='!dateInputRef?.value && !showTime',
+				(click)='clear()')
+				| {{ "WGC.LABEL.RESET" | translate }}

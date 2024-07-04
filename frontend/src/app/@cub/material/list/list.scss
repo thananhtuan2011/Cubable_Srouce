@@ -1,0 +1,11 @@
+.cub-list {
+	$self: &;
+
+	display: flex;
+	flex-direction: column;
+	row-gap: 4px;
+
+	&:has(#{ $self }-group) {
+		row-gap: 8px;
+	}
+}

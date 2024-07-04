@@ -1,0 +1,80 @@
+:host(.virtual-scroll) {
+	display: flex;
+	flex-direction: column;
+	height: 100%;
+	min-height: 0;
+	overflow: hidden !important;
+
+	contain: layout style paint;
+
+	&.virtual-scroll--scrolling {
+		.virtual-scroll-overlay {
+			z-index: 9999;
+		}
+	}
+
+	.virtual-scroll-overlay {
+		position: absolute;
+		inset: 0;
+	}
+
+	.virtual-scroll-viewport {
+		position: absolute;
+		inset: 0;
+
+		.virtual-scroll-inner {
+			position: absolute !important;
+			inset: 0 !important;
+			z-index: -9999 !important;
+
+			overflow: hidden !important;
+		}
+
+		.virtual-scroll-track {
+			position: absolute;
+			z-index: 1;
+
+			&.virtual-scroll-horizontal-track {
+				bottom: 0;
+
+				height: 10px;
+
+				.virtual-scroll-thumb {
+					will-change: left;
+				}
+			}
+
+			&.virtual-scroll-vertical-track {
+				right: 0;
+
+				width: 10px;
+
+				.virtual-scroll-thumb {
+					will-change: top;
+				}
+			}
+		}
+
+		.virtual-scroll-thumb {
+			position: relative;
+
+			width: 100%;
+			height: 100%;
+			box-shadow: rgb(255, 255, 255) 0 0 0 1px inset;
+			border-radius: 7px;
+
+			background-color: rgba(0, 0, 0, .28);
+
+			&:hover,
+			&:active {
+				background-color: rgba(0, 0, 0, .4);
+			}
+		}
+	}
+
+	::ng-deep {
+		.cdk-virtual-scrollable {
+			overflow: hidden !important;
+		}
+	}
+}

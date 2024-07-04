@@ -1,0 +1,887 @@
+mixin cubDropdownItem
+	cub-dropdown-item(
+		*ngIf='role.uniqName !== ROLE_UNIQ_NAME.VIEWER',
+		[label]='"BASE.ROLE_PERMISSION.LABEL.FULL_PERMISSION" | translate',
+		[value]='boardPermissionType.FULL_PERMISSION')
+	cub-dropdown-item([label]='"BASE.ROLE_PERMISSION.LABEL.NO_PERMISSION" | translate', [value]='boardPermissionType.NO_PERMISSION')
+	cub-dropdown-item(
+		*ngIf='role.uniqName !== ROLE_UNIQ_NAME.VIEWER',
+		[label]='"BASE.ROLE_PERMISSION.LABEL.CUSTOM_PERMISSION" | translate',
+		[value]='boardPermissionType.CUSTOM')
+	cub-dropdown-item([label]='"BASE.ROLE_PERMISSION.LABEL.VIEW_ONLY" | translate', [value]='boardPermissionType.VIEW_ONLY')
+
+mixin columnActionOption(actionType, type, index)
+	button(
+		cubMenuSelectItem,
+		*ngIf='accessedBoard.permission.type === boardPermissionType.CUSTOM',
+		[selected]=`${actionType} === ACTION_FIELD_MANAGE_TYPE.CAN_EDIT_ALL`,
+		(click)=`fieldActionChange( ACTION_FIELD_MANAGE_TYPE.CAN_EDIT_ALL, ${type}, ${index} ); manageColumnMenu.isOpened && manageColumnMenu.close();`)
+		| {{ "BASE.ROLE_PERMISSION.LABEL.CAN_EDIT_ALL" | translate }}
+	button(
+		cubMenuSelectItem,
+		[selected]=`${actionType} === ACTION_FIELD_MANAGE_TYPE.CAN_VIEW_ALL`,
+		(click)=`fieldActionChange( ACTION_FIELD_MANAGE_TYPE.CAN_VIEW_ALL, ${type}, ${index} ); manageColumnMenu.isOpened && manageColumnMenu.close();`)
+		| {{ "BASE.ROLE_PERMISSION.LABEL.CAN_VIEW_ALL" | translate }}
+	button(
+		cubMenuSelectItem,
+		[selected]=`${actionType} === ACTION_FIELD_MANAGE_TYPE.CUSTOM`,
+		(click)=`fieldActionChange( ACTION_FIELD_MANAGE_TYPE.CUSTOM, ${type}, ${index} ); manageColumnMenu.isOpened && manageColumnMenu.close();`)
+		| {{ "BASE.ROLE_PERMISSION.LABEL.CUSTOM" | translate }}
+
+cub-menu.action-menu(#actionMenu, width='180px')
+	cub-menu-content
+		ng-template(cubMenuContent, let-board='board')
+			button(
+				cubMenuSelectItem,
+				[selected]='board.permission.detail.board.automation === actionType.NONE',
+				(click)='isChangedDetail = true; board.permission.detail.board.automation = actionType.NONE')
+				| {{ "BASE.ROLE_PERMISSION.LABEL.NONE" | translate }}
+			button(
+				cubMenuSelectItem,
+				[selected]='board.permission.detail.board.automation === actionType.CAN_VIEW',
+				(click)='isChangedDetail = true; board.permission.detail.board.automation = actionType.CAN_VIEW')
+				| {{ "BASE.ROLE_PERMISSION.LABEL.CAN_VIEW" | translate }}
+			button(
+				cubMenuSelectItem,
+				*ngIf='board.permission.type === boardPermissionType.CUSTOM',
+				[selected]='board.permission.detail.board.automation === actionType.CAN_EDIT',
+				(click)='isChangedDetail = true; board.permission.detail.board.automation = actionType.CAN_EDIT')
+				| {{ "BASE.ROLE_PERMISSION.LABEL.CAN_EDIT" | translate }}
+
+cub-menu.column-action-menu(#columnActionMenu, width='216px')
+	cub-menu-content
+		ng-template(cubMenuContent, let-type='type', let-index='index')
+			ng-container([ngSwitch]='type')
+				ng-container(*ngSwitchCase='FIELD_MANAGE_TYPE.ALL')
+					+columnActionOption('accessedBoard.permission.detail.field.viewAndEdit?.all?.type', 'type', 'index')
+				ng-container(*ngSwitchCase='FIELD_MANAGE_TYPE.CREATED_BY_THEMSELVES')
+					+columnActionOption('accessedBoard.permission.detail.field.viewAndEdit?.createdByThemselves?.type', 'type', 'index')
+				ng-container(*ngSwitchCase='FIELD_MANAGE_TYPE.ASSIGNED_TO_THEM')
+					+columnActionOption('accessedBoard.permission.detail.field.viewAndEdit?.assignedToThem[ index ]?.type', 'type', 'index')
+
+cub-menu.manage-view-menu(#manageViewMenu, width='274px')
+	cub-menu-content
+		ng-template(cubMenuContent, let-board='board')
+			button(
+				cubMenuSelectItem,
+				[selected]='board.permission.detail.view.manage === viewManageType.ACCESS_VIEW',
+				(click)='isChangedDetail = true; board.permission.detail.view.manage = viewManageType.ACCESS_VIEW')
+				| {{ "BASE.ROLE_PERMISSION.LABEL.ACCESS_VIEW" | translate }}
+			button(
+				cubMenuSelectItem,
+				[selected]='board.permission.detail.view.manage === viewManageType.CREATED_BY_THEMSELVES',
+				(click)='isChangedDetail = true; board.permission.detail.view.manage = viewManageType.CREATED_BY_THEMSELVES')
+				| {{ "BASE.ROLE_PERMISSION.LABEL.VIEW_CREATED_BY_THEMSELVES" | translate }}
+
+cub-menu.access-view-menu(#accessViewMenu, width='274px')
+	cub-menu-content
+		ng-template(cubMenuContent, let-board='board')
+			button(
+				cubMenuSelectItem,
+				[selected]='board.permission.detail.view.access.type === viewAccessType.ALL',
+				(click)='onAccessViewTypeChange( viewAccessType.ALL )')
+				.layout-column
+					| {{ "BASE.ROLE_PERMISSION.LABEL.ALL_VIEWS" | translate }}
+					label
+						| {{ "BASE.ROLE_PERMISSION.LABEL.ALL_VIEW_DESCRIPTION" | translate }}
+			button(
+				cubMenuSelectItem,
+				[selected]='board.permission.detail.view.access.type === viewAccessType.CREATED_BY_THEMSELVES',
+				(click)='onAccessViewTypeChange( viewAccessType.CREATED_BY_THEMSELVES )')
+				| {{ "BASE.ROLE_PERMISSION.LABEL.VIEW_CREATED_BY_THEMSELVES" | translate }}
+			button(
+				cubMenuSelectItem,
+				[selected]='board.permission.detail.view.access.type === viewAccessType.CUSTOM',
+				(click)='onAccessViewTypeChange( viewAccessType.CUSTOM )')
+				.layout-column
+					| {{ "BASE.ROLE_PERMISSION.LABEL.CUSTOM_VIEW" | translate }}
+					label
+						| {{ "BASE.ROLE_PERMISSION.LABEL.CUSTOM_VIEW_DESCRIPTION" | translate }}
+
+cub-menu.manage-row-menu(#manageRowMenu, width='252px')
+
+	- const recordType = 'manageRowMenu.context.board.permission.detail.record.manage.type';
+
+	cub-menu-content
+		ng-template(cubMenuContent, let-board='board')
+			button(cubMenuSelectItem, [selected]=`${recordType} === RECORD_MANAGE_TYPE.NONE`, (click)='recordManageTypeChanged( RECORD_MANAGE_TYPE.NONE )')
+				| {{ "BASE.ROLE_PERMISSION.LABEL.NONE" | translate }}
+			button(cubMenuSelectItem, [selected]=`${recordType} === RECORD_MANAGE_TYPE.ALL`, (click)='recordManageTypeChanged( RECORD_MANAGE_TYPE.ALL )')
+				.layout-column
+					| {{ "BASE.ROLE_PERMISSION.LABEL.ALL_ROWS" | translate }}
+					label
+						| {{ "BASE.ROLE_PERMISSION.LABEL.ALL_ROWS_DESCRIPTION" | translate }}
+			button(cubMenuSelectItem, [selected]=`${recordType} === RECORD_MANAGE_TYPE.CREATED_BY_THEMSELVES`, (click)='recordManageTypeChanged( RECORD_MANAGE_TYPE.CREATED_BY_THEMSELVES)')
+				| {{ "BASE.ROLE_PERMISSION.LABEL.ROWS_CREATED_BY_THEMSELVES" | translate }}
+			button(
+				cubMenuSelectItem,
+				trailingIcon='chevron-right',
+				trailingIconColor='tertiary',
+				[autoClose]='false',
+				[selected]=`${recordType} === RECORD_MANAGE_TYPE.ASSIGNED_TO_THEM`,
+				[cubSubMenuTriggerFor]='recordPeopleFieldMenu',
+				(click)='recordManageTypeChanged( RECORD_MANAGE_TYPE.ASSIGNED_TO_THEM )')
+				| {{ "BASE.ROLE_PERMISSION.LABEL.ROWS_ASSIGNED_TO_THEM" | translate }}
+
+cub-menu(
+	#recordPeopleFieldMenu,
+	width='240px',
+	(opened)='onRecordPeopleFieldMenuOpened( recordPeopleFieldMenu.context?.isDeleteAction )')
+	cub-menu-content
+		ng-template(cubMenuContent, let-isDeleteAction='isDeleteAction')
+			.ml-12.mb-4
+				| {{ "BASE.ROLE_PERMISSION.LABEL." + ( isDeleteAction ? "DELETE_PEOPLE" : "SELECT_PEOPLE" ) | translate }}
+			.mah-200(cubScrollBar, suppressX)
+				button(
+					cubMenuItem,
+					[autoClose]='false')
+					.layout-row.layout-align-start-center.layout-gap-8
+						cub-checkbox([ngModel]='isAllPeopleSelected', (ngModelChange)='changeAllPeopleField( $event )')
+						| {{ "BASE.ROLE_PERMISSION.LABEL.SELECT_ALL" | translate }}
+				ng-container(*ngFor='let peopleField of peopleFields; let index = index; ngForTrackByID')
+					button(
+						cubMenuItem,
+						[autoClose]='false',
+						(click)='changePeopleField( peopleField )')
+						.layout-row.layout-align-start-center.layout-gap-8
+							cub-checkbox(
+								[ngModel]='peopleField.isSelected',
+								(ngModelChange)='changePeopleField( peopleField, true )')
+							cub-icon(
+								size='20px',
+								[name]='peopleField.dataType | fieldMetadata : "icon"')
+							.text-truncate([title]='peopleField.name | empty')
+								| {{ peopleField.name | empty }}
+	cub-menu-footer
+		ng-template(cubMenuFooter, let-board='board')
+			button.full-width(
+				cubButton='primary',
+				*ngIf='recordPeopleFieldMenu.context?.isDeleteAction; else elseBlock;',
+				(click)='removeRowAssignedRowPermission(); recordPeopleFieldMenu.close(); manageRowMenu.close();')
+				| {{ "BASE.ROLE_PERMISSION.LABEL.CONFIRM" | translate }}
+			ng-template(#elseBlock)
+				button.full-width(
+					cubButton='primary',
+					(click)='addRowAssignedRowPermission(); recordPeopleFieldMenu.close(); manageRowMenu.close();')
+					| {{ "BASE.ROLE_PERMISSION.LABEL.CONFIRM" | translate }}
+
+cub-menu(
+	#columnPeopleFieldMenu,
+	width='240px',
+	(opened)='onColumnPeopleFieldMenuOpened( columnPeopleFieldMenu.context?.isDeleteAction )')
+	cub-menu-content
+		ng-template(cubMenuContent, let-isDeleteAction='isDeleteAction')
+			.ml-12.mb-4
+				| {{ "BASE.ROLE_PERMISSION.LABEL." + ( isDeleteAction ? "DELETE_PEOPLE" : "SELECT_PEOPLE" ) | translate }}
+			.mah-200(cubScrollBar, suppressX)
+				button(
+					cubMenuItem,
+					[autoClose]='false')
+					.layout-row.layout-align-start-center.layout-gap-8
+						cub-checkbox([ngModel]='isAllPeopleOfFieldSelected', (ngModelChange)='changeAllPeopleFieldOfField( $event )')
+						| {{ "BASE.ROLE_PERMISSION.LABEL.SELECT_ALL" | translate }}
+				ng-container(*ngFor='let peopleField of peopleFieldsOfField; let index = index; ngForTrackByID')
+					button(
+						cubMenuItem,
+						[autoClose]='false',
+						(click)='changePeopleFieldOfField( peopleField )')
+						.layout-row.layout-align-start-center.layout-gap-8
+							cub-checkbox([ngModel]='peopleField.isSelected', (ngModelChange)='changePeopleFieldOfField( peopleField, true )')
+							cub-icon(
+								size='20px',
+								[name]='peopleField.dataType | fieldMetadata : "icon"')
+							.text-truncate([title]='peopleField.name | empty')
+								| {{ peopleField.name | empty }}
+	cub-menu-footer
+		ng-template(cubMenuFooter)
+			button.full-width(
+				cubButton='primary',
+				*ngIf='columnPeopleFieldMenu.context?.isDeleteAction; else elseBlock;',
+				(click)='removeColumnAssignedRowPermission(); columnPeopleFieldMenu.close(); manageColumnMenu.close();')
+				| {{ "BASE.ROLE_PERMISSION.LABEL.CONFIRM" | translate }}
+			ng-template(#elseBlock)
+				button.full-width(
+					cubButton='primary',
+					(click)='addColumnAssignedRowPermission(); columnPeopleFieldMenu.close(); manageColumnMenu.close();')
+					| {{ "BASE.ROLE_PERMISSION.LABEL.CONFIRM" | translate }}
+
+cub-menu.create-manage-column-menu(#manageColumnMenu, width='240px')
+
+	- const columnType = 'board.permission.detail.field.viewAndEdit.type';
+
+	cub-menu-content
+		ng-template(cubMenuContent, let-board='board')
+			button(
+				cubMenuSelectItem,
+				[selected]=`${columnType} === FIELD_MANAGE_TYPE.NONE`,
+				(click)=`fieldManageTypeChanged( FIELD_MANAGE_TYPE.NONE )`)
+				| {{ "BASE.ROLE_PERMISSION.LABEL.NONE" | translate }}
+			button(
+				cubMenuSelectItem,
+				trailingIcon='chevron-right',
+				trailingIconColor='tertiary',
+				[autoClose]='false',
+				[selected]=`${columnType} === FIELD_MANAGE_TYPE.ALL`,
+				[cubSubMenuTriggerFor]='columnActionMenu',
+				[cubMenuTriggerContext]='{ type: FIELD_MANAGE_TYPE.ALL }')
+				| {{ "BASE.ROLE_PERMISSION.LABEL.ALL_ROWS" | translate }}
+			button(
+				cubMenuSelectItem,
+				trailingIcon='chevron-right',
+				trailingIconColor='tertiary',
+				[autoClose]='false',
+				[selected]=`${columnType} === FIELD_MANAGE_TYPE.CREATED_BY_THEMSELVES`,
+				[cubSubMenuTriggerFor]='columnActionMenu',
+				[cubMenuTriggerContext]='{ type: FIELD_MANAGE_TYPE.CREATED_BY_THEMSELVES }')
+				| {{ "BASE.ROLE_PERMISSION.LABEL.ROWS_CREATED_BY_THEMSELVES" | translate }}
+			button(
+				cubMenuSelectItem,
+				trailingIcon='chevron-right',
+				trailingIconColor='tertiary',
+				[autoClose]='false',
+				[selected]=`${columnType} === FIELD_MANAGE_TYPE.ASSIGNED_TO_THEM`,
+				[cubSubMenuTriggerFor]='columnPeopleFieldMenu',
+				(click)='fieldManageTypeChanged( FIELD_MANAGE_TYPE.ASSIGNED_TO_THEM )')
+				| {{ "BASE.ROLE_PERMISSION.LABEL.ROWS_ASSIGNED_TO_THEM" | translate }}
+
+cub-search-box.mb-14(
+	#searchBox,
+	appearance='legacy',
+	*ngIf='!accessedBoard',
+	(searching)='search( $event )')
+div(
+	cdkScrollable,
+	cubScrollBar,
+	suppressX)
+	.layout-column(*ngIf='!accessedBoard; else elseBlock;')
+		ng-container(*ngIf='role?.permissions?.length; else notFound')
+			ng-container(*ngFor='let board of role.permissions; let last = last; ngForTrackByID')
+				ng-container(*ngIf='board.permission')
+					cub-card.cursor.mh-2(
+						*ngIf=`board.permission.type === boardPermissionType.CUSTOM
+							|| board.permission.type === boardPermissionType.VIEW_ONLY; else elseBlock;`,
+						[class.mb-12]='!last',
+						(click)='onBoardPermissionAccess( board, board.permission.type, true )')
+						cub-card-content
+							.layout-row.layout-align-space-between-center.flex
+								.text-truncate.mr-5([title]='board.boardName | empty')
+									| {{ board.boardName | empty }}
+								.layout-row.layout-align-start-center
+									cub-dropdown.w-140.mr-8(
+										[clearable]='false',
+										[(ngModel)]='board.permission.type',
+										(click)='$event?.stopPropagation()',
+										(ngModelChange)='onBoardPermissionAccess( board, $event )')
+										+cubDropdownItem
+									cub-icon(size='20px', name='chevron-right', color='tertiary')
+					ng-template(#elseBlock)
+						cub-card(
+							[class.mb-12]='!last')
+							cub-card-content
+								.layout-row.layout-align-space-between-center.flex
+									.text-truncate.mr-5([title]='board.boardName | empty')
+										| {{ board.boardName | empty }}
+									cub-dropdown.mr-28.w-140(
+										[clearable]='false',
+										[(ngModel)]='board.permission.type',
+										(ngModelChange)='onBoardPermissionAccess( board, $event )')
+										+cubDropdownItem
+		ng-template(#notFound)
+			not-found
+	ng-template(#elseBlock)
+		.layout-column.full-width.layout-gap-16.pb-2
+			//- .board.layout-column.layout-gap-8
+				.font-size-16.ml-12
+					| {{ "BASE.ROLE_PERMISSION.LABEL.BOARD" | translate }}
+				.option([style.background]='actionMenu.isOpened ? "#E7E7E7" : "white"', (click)='actionMenuTrigger.open()')
+					.layout-row.layout-align-center-center.layout-gap-8
+						cub-icon(name='bolt-circle', size='20px')
+						.layout-column.pv-4
+							| {{ "BASE.ROLE_PERMISSION.LABEL.CONFIG_AUTO" | translate }}
+							label
+								| {{ "BASE.ROLE_PERMISSION.LABEL.CONFIG_AUTO_DESCRIPTION" | translate }}
+					.layout-row.layout-align-center-center.layout-gap-8
+						label
+							| {{ accessedBoard.permission.detail.board.automation | actionPermissionTranslate }}
+						cub-icon(
+							size='20px',
+							color='tertiary',
+							#actionMenuTrigger='cubMenuTriggerFor',
+							[name]='actionMenu?.isOpened ? "chevron-up" : "chevron-down"',
+							[cubMenuTriggerFor]='actionMenu',
+							[cubMenuTriggerContext]='{ board: accessedBoard }')
+
+			- const view = 'accessedBoard.permission.detail.view';
+
+			.view.layout-column.layout-gap-8
+				.font-size-16.ml-12
+					| {{ "BASE.ROLE_PERMISSION.LABEL.VIEW" | translate }}
+				.group
+					.option(*ngIf='accessedBoard.permission.type === boardPermissionType.CUSTOM', (click)=`${view}.create = !${view}.create`)
+						.option-label
+							| {{ "BASE.ROLE_PERMISSION.LABEL.CREATE" | translate }}
+						cub-switch.pv-10(
+							color='primary',
+							size='large',
+							[ngModel]=`${view}.create`,
+							(ngModelChange)='isChangedDetail = true')
+					.option([style.background]='accessViewMenu.isOpened ? "#E7E7E7" : "white"', (click)='accessViewMenuTrigger.open()')
+						.option-label
+							| {{ "BASE.ROLE_PERMISSION.LABEL.ACCESS" | translate }}
+						.layout-row.layout-align-center-center.pv-10.layout-gap-8
+							label
+								| {{ accessedBoard.permission.detail.view.access.type | viewAccessTranslate }}
+							cub-icon(
+								size='20px',
+								color='tertiary',
+								#accessViewMenuTrigger='cubMenuTriggerFor',
+								[name]='accessViewMenu?.isOpened ? "chevron-up" : "chevron-down"',
+								[cubMenuTriggerFor]='accessViewMenu',
+								[cubMenuTriggerContext]='{ board: accessedBoard }')
+					.view-select(*ngIf=`${view}.access.type === viewAccessType.CUSTOM`)
+						.ml-12
+							| {{ "BASE.ROLE_PERMISSION.LABEL.SELECT_VIEW" | translate }}
+						.view-table
+							.layout-row.layout-align-start-center.layout-gap-8.pv-8.cursor((click)='selectAllView()')
+								cub-checkbox(
+									[label]='"BASE.ROLE_PERMISSION.LABEL.SELECT_ALL" | translate',
+									[ngModel]='allViewState',
+									(click)='$event?.stopPropagation(); selectAllView();')
+							cub-divider.ml-24
+							ng-container(*ngFor=`let view of views; let last = last; ngForTrackByID`)
+								.layout-row.layout-align-start-center.layout-gap-8.pv-4.cursor((click)='onViewChange( view )')
+									cub-checkbox([ngModel]='view.isAccess', (click)='$event?.stopPropagation(); onViewChange( view );')
+									ng-container([ngSwitch]='view.type')
+										cub-icon(
+											*ngSwitchCase='VIEW_TYPE.DATA',
+											size='20px',
+											name='grid',
+											[color]='"yellowGreen" | cubPalette : "500"')
+										cub-icon(
+											*ngSwitchCase='VIEW_TYPE.FORM',
+											size='20px',
+											name='form',
+											[color]='"purple" | cubPalette : "500"')
+									.layout-column
+										| {{ view.name | empty }}
+										label
+											| {{ view.createdBy | empty }}
+								cub-divider.ml-52(*ngIf='!last')
+					.option(
+						*ngIf='accessedBoard.permission.type === boardPermissionType.CUSTOM',
+						[style.background]='manageViewMenu.isOpened ? "#E7E7E7" : "white"', (click)='manageViewMenuTrigger.open()')
+						.option-label
+							| {{ "BASE.ROLE_PERMISSION.LABEL.MANAGE" | translate }}
+							label
+								| {{ "BASE.ROLE_PERMISSION.LABEL.MANAGE_VIEW_DESCRIPTION" | translate }}
+						.layout-row.layout-align-center-center.pv-10.layout-gap-8
+							label
+								| {{ accessedBoard.permission.detail.view.manage | viewManageTranslate }}
+							cub-icon(
+								size='20px',
+								color='tertiary',
+								#manageViewMenuTrigger='cubMenuTriggerFor',
+								[name]='manageViewMenu?.isOpened ? "chevron-up" : "chevron-down"',
+								[cubMenuTriggerFor]='manageViewMenu',
+								[cubMenuTriggerContext]='{ board: accessedBoard }')
+
+			- const record = 'accessedBoard.permission.detail.record';
+
+			.row.layout-column.layout-gap-8
+				.font-size-16.ml-12
+					| {{ "BASE.ROLE_PERMISSION.LABEL.ROW" | translate }}
+				.group([class.group-corner-expand]=`${record}.manage.all || ${record}.manage.createdByThemselves || ${record}.manage.assignedToThem?.length > 0`)
+					.option(*ngIf='accessedBoard.permission.type === boardPermissionType.CUSTOM', (click)=`${record}.create = !${record}.create`)
+						.option-label
+							| {{ "BASE.ROLE_PERMISSION.LABEL.CREATE_NEW" | translate }}
+						cub-switch.pv-10(
+							color='primary',
+							size='large',
+							[ngModel]=`${record}.create`,
+							(ngModelChange)='isChangedDetail = true')
+					.option([style.background]='manageRowMenu.isOpened ? "#E7E7E7" : "white"', (click)='manageRowMenuTrigger.open()')
+						.option-label
+							| {{ "BASE.ROLE_PERMISSION.LABEL.MANAGE" | translate }}
+							label
+								| {{ "BASE.ROLE_PERMISSION.LABEL.MANAGE_ROW_DESCRIPTION" | translate }}
+						.layout-row.layout-align-center-center.pv-10.layout-gap-8
+							label(*ngIf=`${record}.manage.type`)
+								| {{ #{record}.manage.type | recordManageTypeTranslate }}
+							cub-icon(
+								size='20px',
+								color='tertiary',
+								#manageRowMenuTrigger='cubMenuTriggerFor',
+								[name]='manageRowMenu?.isOpened ? "chevron-up" : "chevron-down"',
+								[cubMenuTriggerFor]='manageRowMenu',
+								[cubMenuTriggerContext]='{ board: accessedBoard }')
+					ng-container(*ngIf=`${record}.manage.all`)
+						.group
+							.group-list
+
+								- const commentAll = `${record}.manage.all.comment`;
+
+								.option((click)=`${commentAll} = !${commentAll}`)
+									.option-label
+										| {{ "BASE.ROLE_PERMISSION.LABEL.COMMENT" | translate }}
+									cub-switch.pv-10.mr-8(
+										color='primary',
+										size='large',
+										[ngModel]=`${commentAll}`)
+
+								ng-container(*ngIf='accessedBoard.permission.type === boardPermissionType.CUSTOM')
+									cub-divider.full-width
+
+									- const deleteOptionAll = `${record}.manage.all.delete`;
+
+									.option((click)=`${deleteOptionAll} = !${deleteOptionAll}`)
+										.option-label
+											| {{ "BASE.ROLE_PERMISSION.LABEL.DELETE" | translate }}
+										cub-switch.pv-10.mr-8(
+											color='primary',
+											size='large',
+											[ngModel]=`${deleteOptionAll}`)
+									cub-divider.full-width
+
+									- const checkListOptionAll = `${record}.manage.all.editChecklist`;
+
+									.option((click)=`${checkListOptionAll} = !${checkListOptionAll}`)
+										.option-label
+											| {{ "BASE.ROLE_PERMISSION.LABEL.EDIT_CHECKLIST" | translate }}
+										cub-switch.pv-10.mr-8(
+											color='primary',
+											size='large',
+											[ngModel]=`${checkListOptionAll}`)
+									cub-divider.full-width
+
+									- const editDescriptionOptionAll = `${record}.manage.all.editDescription`;
+
+									.option((click)=`${editDescriptionOptionAll} = !${editDescriptionOptionAll}`)
+										.option-label
+											| {{ "BASE.ROLE_PERMISSION.LABEL.EDIT_DESCRIPTION" | translate }}
+										cub-switch.pv-10.mr-8(
+											color='primary',
+											size='large',
+											[ngModel]=`${editDescriptionOptionAll}`)
+									cub-divider.full-width
+
+									- const lockOptionAll = `${record}.manage.all.lock`;
+
+									.option((click)=`${lockOptionAll} = !${lockOptionAll}`)
+										.option-label
+											| {{ "BASE.ROLE_PERMISSION.LABEL.LOCK" | translate }}
+										cub-switch.pv-10.mr-8(
+											color='primary',
+											size='large',
+											[ngModel]=`${lockOptionAll}`)
+					ng-container(*ngIf=`${record}.manage.createdByThemselves`)
+						.group
+							.group-list
+
+								- const comment = `${record}.manage.createdByThemselves.comment`;
+
+								.option((click)=`${comment} = !${comment}`)
+									.option-label
+										| {{ "BASE.ROLE_PERMISSION.LABEL.COMMENT" | translate }}
+									cub-switch.pv-10.mr-8(
+										color='primary',
+										size='large',
+										[ngModel]=`${comment}`)
+
+								ng-container(*ngIf='accessedBoard.permission.type === boardPermissionType.CUSTOM')
+									cub-divider.full-width
+
+									- const deleteOption = `${record}.manage.createdByThemselves.delete`;
+
+									.option((click)=`${deleteOption} = !${deleteOption}`)
+										.option-label
+											| {{ "BASE.ROLE_PERMISSION.LABEL.DELETE" | translate }}
+										cub-switch.pv-10.mr-8(
+											color='primary',
+											size='large',
+											[ngModel]=`${deleteOption}`)
+									cub-divider.full-width
+
+									- const checkListOption = `${record}.manage.createdByThemselves.editChecklist`;
+
+									.option((click)=`${checkListOption} = !${checkListOption}`)
+										.option-label
+											| {{ "BASE.ROLE_PERMISSION.LABEL.EDIT_CHECKLIST" | translate }}
+										cub-switch.pv-10.mr-8(
+											color='primary',
+											size='large',
+											[ngModel]=`${checkListOption}`)
+									cub-divider.full-width
+
+									- const editDescriptionOption = `${record}.manage.createdByThemselves.editDescription`;
+
+									.option((click)=`${editDescriptionOption} = !${editDescriptionOption}`)
+										.option-label
+											| {{ "BASE.ROLE_PERMISSION.LABEL.EDIT_DESCRIPTION" | translate }}
+										cub-switch.pv-10.mr-8(
+											color='primary',
+											size='large',
+											[ngModel]=`${editDescriptionOption}`)
+									cub-divider.full-width
+
+									- const lockOption = `${record}.manage.createdByThemselves.lock`;
+
+									.option((click)=`${lockOption} = !${lockOption}`)
+										.option-label
+											| {{ "BASE.ROLE_PERMISSION.LABEL.LOCK" | translate }}
+										cub-switch.pv-10.mr-8(
+											color='primary',
+											size='large',
+											[ngModel]=`${lockOption}`)
+					ng-container(*ngIf=`${record}.manage.assignedToThem?.length > 0`)
+						.group
+							.layout-column.full-width
+								.mb-4.ml-12
+									| {{ "BASE.ROLE_PERMISSION.LABEL.PEOPLE_FIELD" | translate }}
+								.layout-column.full-width.mb-4(
+									*ngFor=`let rowAssignedToThem of ${record}.manage.assignedToThem; let index = index; let last = last; ngForTrackByID`)
+									.option.full-width([class.remove-border-radius-bottom]='rowAssignedToThem.fieldID === peopleFieldIdOfRecord')
+										.layout-row.layout-align-center-center.flex-1
+											cub-icon.mr-8(
+												size='20px',
+												[name]='peopleFieldsLookup[ rowAssignedToThem.fieldID ].dataType | fieldMetadata : "icon"')
+											.text-truncate([title]='peopleFieldsLookup[ rowAssignedToThem.fieldID ].name | empty')
+												| {{ peopleFieldsLookup[ rowAssignedToThem.fieldID ].name | empty }}
+										cub-icon.layout-row.layout-align-center-center.mr-8.mv-10(
+											size='20px',
+											color='tertiary',
+											[name]='rowAssignedToThem.fieldID === peopleFieldIdOfRecord ? "chevron-up" : "chevron-down"',
+											(click)='peopleFieldIdOfRecord === rowAssignedToThem.fieldID \
+												? peopleFieldIdOfRecord = null \
+												: peopleFieldIdOfRecord = rowAssignedToThem.fieldID')
+									ng-container(*ngIf='rowAssignedToThem.fieldID === peopleFieldIdOfRecord')
+										cub-divider.full-width
+										.option.remove-border-radius-top
+											.layout-column.full-width
+												.layout-row.layout-align-start-center
+													.option-label
+														| {{ "BASE.ROLE_PERMISSION.LABEL.COMMENT" | translate }}
+													cub-switch.pv-10.mr-8(
+														color='primary',
+														size='large',
+														[(ngModel)]='rowAssignedToThem.comment')
+												ng-container(*ngIf='accessedBoard.permission.type === boardPermissionType.CUSTOM')
+													cub-divider.full-width
+													.layout-row.layout-align-start-center
+														.option-label
+															| {{ "BASE.ROLE_PERMISSION.LABEL.DELETE" | translate }}
+														cub-switch.pv-10.mr-8(
+															color='primary',
+															size='large',
+															[(ngModel)]='rowAssignedToThem.delete')
+													cub-divider.full-width
+													.layout-row.layout-align-start-center
+														.option-label
+															| {{ "BASE.ROLE_PERMISSION.LABEL.EDIT_CHECKLIST" | translate }}
+														cub-switch.pv-10.mr-8(
+															color='primary',
+															size='large',
+															[(ngModel)]='rowAssignedToThem.editChecklist')
+													cub-divider.full-width
+													.layout-row.layout-align-start-center
+														.option-label
+															| {{ "BASE.ROLE_PERMISSION.LABEL.EDIT_DESCRIPTION" | translate }}
+														cub-switch.pv-10.mr-8(
+															color='primary',
+															size='large',
+															[(ngModel)]='rowAssignedToThem.editDescription')
+													cub-divider.full-width
+													.layout-row.layout-align-start-center
+														.option-label
+															| {{ "BASE.ROLE_PERMISSION.LABEL.LOCK" | translate }}
+														cub-switch.pv-10.mr-8(
+															color='primary',
+															size='large',
+															[(ngModel)]='rowAssignedToThem.lock')
+							.layout-row.layout-align-space-between-center.full-width
+								button.ml-6.pv-2.ph-4(
+									cubBasicButton,
+									icon='plus-circle',
+									iconSize='20px',
+									[cubMenuTriggerFor]='recordPeopleFieldMenu')
+									| {{ "BASE.ROLE_PERMISSION.LABEL.ADD_PEOPLE_FIELD" | translate }}
+								button.pv-2.ph-4(
+									cubBasicButton='destructive',
+									icon='trash',
+									iconSize='20px',
+									[cubMenuTriggerFor]='recordPeopleFieldMenu',
+									[cubMenuTriggerContext]=`{ isDeleteAction: true }`)
+									| {{ "BASE.ROLE_PERMISSION.LABEL.DELETE" | translate }}
+
+			- const field = 'accessedBoard.permission.detail.field';
+
+			.column.layout-column
+				.font-size-16.mb-8.ml-12
+					| {{ "BASE.ROLE_PERMISSION.LABEL.COLUMN" | translate }}
+				.group([class.group-corner-expand]=`${field}.viewAndEdit.type === FIELD_MANAGE_TYPE.ASSIGNED_TO_THEM\
+					&& ${field}.viewAndEdit.assignedToThem.length > 0`)
+					.option(
+						*ngIf='accessedBoard.permission.type === boardPermissionType.CUSTOM',
+						(click)=`${field}.createAndManage = !${field}.createAndManage`)
+						.option-label
+							| {{ "BASE.ROLE_PERMISSION.LABEL.CREATE_MANAGE" | translate }}
+							label
+								| {{ "BASE.ROLE_PERMISSION.LABEL.CREATE_MANAGE_DESCRIPTION" | translate }}
+						cub-switch.pv-10(
+							color='primary',
+							size='large',
+							[ngModel]=`${field}.createAndManage`)
+					.layout-column.full-width
+						.option(
+							[class.remove-border-radius-bottom]=`isColumnManageShow === true\
+								&& ${field}.viewAndEdit.type !== FIELD_MANAGE_TYPE.ASSIGNED_TO_THEM`,
+							(click)='manageColumnMenuTrigger.open()')
+							.option-label
+								| {{ "BASE.ROLE_PERMISSION.LABEL.VIEW_AND_EDIT_DATA" | translate }}
+							.layout-row.layout-align-center-center.pv-10
+								.option-dropdown(
+									#manageColumnMenuTrigger='cubMenuTriggerFor',
+									[cubMenuTriggerFor]='manageColumnMenu',
+									[cubMenuTriggerContext]='{ board: accessedBoard }',
+									[class.option-dropdown--active]='manageColumnMenu?.isOpened')
+									label([class.mr-8]='false', [class.mr-4]='true')
+										| {{ #{field}.viewAndEdit.type | fieldManageTranslate }}
+										ng-container(*ngIf=`${field}.viewAndEdit?.all`)
+											| &nbsp;/&nbsp;
+											| {{ #{field}.viewAndEdit.all.type | actionFieldManageTranslate }}
+										ng-container(*ngIf=`${field}.viewAndEdit?.createdByThemselves`)
+											| &nbsp;/&nbsp;
+											| {{ #{field}.viewAndEdit.createdByThemselves.type | actionFieldManageTranslate }}
+									cub-icon(size='16px', [name]='manageColumnMenu?.isOpened ? "chevron-up" : "chevron-down"')
+								cub-icon.ml-8(
+									size='20px',
+									color='tertiary',
+									[class.hide]=`( ${field}.viewAndEdit?.all?.type !== ACTION_FIELD_MANAGE_TYPE.CUSTOM )\
+										&& ( ${field}.viewAndEdit?.createdByThemselves?.type !== ACTION_FIELD_MANAGE_TYPE.CUSTOM )`,
+									[name]='!isColumnManageShow ? "chevron-down" : "chevron-up"',
+									(click)='$event?.stopPropagation(); ( isColumnManageShow = !isColumnManageShow )')
+						ng-container(*ngIf=`${field}.viewAndEdit?.type === FIELD_MANAGE_TYPE.ALL\
+							&& ${field}.viewAndEdit?.all?.type === ACTION_FIELD_MANAGE_TYPE.CUSTOM\
+							&& isColumnManageShow`)
+							cub-divider.full-width
+							.option.remove-border-radius-top
+								.layout-column.full-width
+									.layout-row.layout-align-start-center.pt-8.pb-14
+										.option-label
+											| {{ "BASE.ROLE_PERMISSION.LABEL.SELECT_ALL" | translate }}
+										.group-button
+											button.left(
+												[class.red]='isAllFieldNone',
+												(click)=`changeAllFieldsOption( ${field}.viewAndEdit?.all, actionType.NONE )`)
+												.line-height-16
+													| {{ "BASE.ROLE_PERMISSION.LABEL.NONE" | translate }}
+											button(
+												[class.center]='accessedBoard.permission.type === boardPermissionType.CUSTOM',
+												[class.right]='accessedBoard.permission.type !== boardPermissionType.CUSTOM',
+												[class.yellow]='isAllFieldCanView',
+												(click)=`changeAllFieldsOption( ${field}.viewAndEdit?.all, actionType.CAN_VIEW )`)
+												.line-height-16
+													| {{ "BASE.ROLE_PERMISSION.LABEL.VIEW_ACTION" | translate }}
+											button.right(
+												*ngIf='accessedBoard.permission.type === boardPermissionType.CUSTOM',
+												[disabled]='!allFieldCanEdit',
+												[class.green]='isAllFieldCanEdit',
+												(click)=`changeAllFieldsOption( ${field}.viewAndEdit?.all, actionType.CAN_EDIT )`)
+												.line-height-16
+													| {{ "BASE.ROLE_PERMISSION.LABEL.EDIT_ACTION" | translate }}
+									ng-container(*ngFor=`let field of ${field}.viewAndEdit.all.fields; let index = index; let last = last; ngForTrackByID`)
+										.layout-row.layout-align-start-center([class.mb-6]='last')
+											cub-icon.mr-8(
+												size='20px',
+												[name]='fieldsLookup[ field.id ].dataType | fieldMetadata : "icon"')
+											.layout-row.layout-align-space-between-center.full-width
+												.option-label.text-truncate([title]='fieldsLookup[ field.id ].name | empty')
+													| {{ fieldsLookup[ field.id ].name | empty }}
+												.group-button
+													button.left(
+														[class.red]='field.access === actionType.NONE',
+														(click)=`onRowManageFieldChange( ${field}.viewAndEdit.all, index, actionType.NONE )`)
+														.line-height-16
+															| {{ "BASE.ROLE_PERMISSION.LABEL.NONE" | translate }}
+													button(
+														[class.center]='accessedBoard.permission.type === boardPermissionType.CUSTOM',
+														[class.right]='accessedBoard.permission.type !== boardPermissionType.CUSTOM',
+														[class.yellow]='field.access === actionType.CAN_VIEW',
+														(click)=`onRowManageFieldChange( ${field}.viewAndEdit.all, index, actionType.CAN_VIEW )`)
+														.line-height-16
+															| {{ "BASE.ROLE_PERMISSION.LABEL.VIEW_ACTION" | translate }}
+													button.right(
+														*ngIf='accessedBoard.permission.type === boardPermissionType.CUSTOM',
+														[disabled]='FIELD_READONLY.has( fieldsLookup[ field.id ].dataType )',
+														[class.green]='field.access === actionType.CAN_EDIT',
+														(click)=`onRowManageFieldChange( ${field}.viewAndEdit.all, index, actionType.CAN_EDIT )`)
+														.line-height-16
+															| {{ "BASE.ROLE_PERMISSION.LABEL.EDIT_ACTION" | translate }}
+										cub-divider.column-divider.ml-30.mv-10(*ngIf='!last')
+						ng-container(*ngIf=`${field}.viewAndEdit?.type === FIELD_MANAGE_TYPE.CREATED_BY_THEMSELVES\
+							&& ${field}.viewAndEdit?.createdByThemselves?.type === ACTION_FIELD_MANAGE_TYPE.CUSTOM\
+							&& isColumnManageShow`)
+							cub-divider.full-width
+							.option.remove-border-radius-top
+								.layout-column.full-width
+									.layout-row.layout-align-start-center.pt-8.pb-14
+										.option-label
+											| {{ "BASE.ROLE_PERMISSION.LABEL.SELECT_ALL" | translate }}
+										.group-button
+											button.left(
+												[class.red]='isAllFieldNone',
+												(click)=`changeAllFieldsOption( ${field}.viewAndEdit?.createdByThemselves, actionType.NONE )`)
+												.line-height-16
+													| {{ "BASE.ROLE_PERMISSION.LABEL.NONE" | translate }}
+											button(
+												[class.center]='accessedBoard.permission.type === boardPermissionType.CUSTOM',
+												[class.right]='accessedBoard.permission.type !== boardPermissionType.CUSTOM',
+												[class.yellow]='isAllFieldCanView',
+												(click)=`changeAllFieldsOption( ${field}.viewAndEdit?.createdByThemselves, actionType.CAN_VIEW )`)
+												.line-height-16
+													| {{ "BASE.ROLE_PERMISSION.LABEL.VIEW_ACTION" | translate }}
+											button.right(
+												*ngIf='accessedBoard.permission.type === boardPermissionType.CUSTOM',
+												[disabled]='!allFieldCanEdit',
+												[class.green]='isAllFieldCanEdit',
+												(click)=`changeAllFieldsOption( ${field}.viewAndEdit?.createdByThemselves, actionType.CAN_EDIT )`)
+												.line-height-16
+													| {{ "BASE.ROLE_PERMISSION.LABEL.EDIT_ACTION" | translate }}
+									ng-container(*ngFor=`let field of ${field}.viewAndEdit.createdByThemselves.fields; let index = index; let last = last; ngForTrackByID`)
+										.layout-row.layout-align-start-center([class.mb-6]='last')
+											cub-icon.mr-8(
+												size='20px',
+												[name]='fieldsLookup[ field.id ].dataType | fieldMetadata : "icon"')
+											.layout-row.layout-align-space-between-center.full-width
+												.option-label.text-truncate([title]='fieldsLookup[ field.id ].name | empty')
+													| {{ fieldsLookup[ field.id ].name | empty }}
+												.group-button
+													button.left(
+														[class.red]='field.access === actionType.NONE',
+														(click)=`onRowManageFieldChange( ${field}.viewAndEdit.createdByThemselves, index, actionType.NONE )`)
+														.line-height-16
+															| {{ "BASE.ROLE_PERMISSION.LABEL.NONE" | translate }}
+													button(
+														[class.center]='accessedBoard.permission.type === boardPermissionType.CUSTOM',
+														[class.right]='accessedBoard.permission.type !== boardPermissionType.CUSTOM',
+														[class.yellow]='field.access === actionType.CAN_VIEW',
+														(click)=`onRowManageFieldChange( ${field}.viewAndEdit.createdByThemselves, index, actionType.CAN_VIEW )`)
+														.line-height-16
+															| {{ "BASE.ROLE_PERMISSION.LABEL.VIEW_ACTION" | translate }}
+													button.right(
+														*ngIf='accessedBoard.permission.type === boardPermissionType.CUSTOM',
+														[disabled]='FIELD_READONLY.has( fieldsLookup[ field.id ].dataType )',
+														[class.green]='field.access === actionType.CAN_EDIT',
+														(click)=`onRowManageFieldChange( ${field}.viewAndEdit.createdByThemselves, index, actionType.CAN_EDIT )`)
+														.line-height-16
+															| {{ "BASE.ROLE_PERMISSION.LABEL.EDIT_ACTION" | translate }}
+										cub-divider.column-divider.ml-30.mv-10(*ngIf='!last')
+						ng-container(*ngIf=`${field}.viewAndEdit.type === FIELD_MANAGE_TYPE.ASSIGNED_TO_THEM\
+							&& ${field}.viewAndEdit.assignedToThem.length > 0`)
+							.group.mt-8
+								.font-size-13.ml-12
+									| {{ "BASE.ROLE_PERMISSION.LABEL.PEOPLE_FIELD" | translate }}
+								ng-container(*ngFor=`let permission of ${field}.viewAndEdit.assignedToThem; let index = index; ngForTrackByID`)
+									.layout-column.full-width
+										.option([class.remove-border-radius-bottom]='permission.id === peopleFieldIdOfField')
+											.layout-row.layout-align-start-center
+												cub-icon.mr-8(
+													size='20px',
+													[name]='peopleFieldsLookup[ permission.id ].dataType | fieldMetadata : "icon"')
+												.option-label.text-truncate([title]='peopleFieldsLookup[ permission.id ].name | empty')
+													| {{ peopleFieldsLookup[ permission.id ].name | empty }}
+											.layout-row.layout-align-center-center.pv-10
+												.option-dropdown(
+													#columnActionMenuTrigger='cubMenuTriggerFor',
+													[class.option-dropdown--active]='columnActionMenu?.isOpened',
+													[cubMenuTriggerFor]='columnActionMenu',
+													[cubMenuTriggerContext]='{ type: FIELD_MANAGE_TYPE.ASSIGNED_TO_THEM, index }')
+													label([class.mr-8]='false', [class.mr-4]='true')
+														| {{ permission.type | actionFieldManageTranslate }}
+													cub-icon(size='16px', [name]='columnPeopleFieldMenu?.isOpened ? "chevron-up" : "chevron-down"')
+												cub-icon.ml-8(
+													size='20px',
+													color='tertiary',
+													*ngIf='permission.type === ACTION_FIELD_MANAGE_TYPE.CUSTOM',
+													[name]='peopleFieldIdOfField !== permission.id ? "chevron-down" : "chevron-up"',
+													(click)='peopleFieldIdOfField === permission.id\
+														? peopleFieldIdOfField = null\
+														: peopleFieldIdOfField = permission.id')
+										ng-container(*ngIf='permission.type === ACTION_FIELD_MANAGE_TYPE.CUSTOM && peopleFieldIdOfField === permission.id')
+											cub-divider.full-width
+											.option.remove-border-radius-top
+												.layout-column.full-width
+													.layout-row.layout-align-start-center.pt-8.pb-14
+														.option-label
+															| {{ "BASE.ROLE_PERMISSION.LABEL.SELECT_ALL" | translate }}
+														.group-button
+															button.left(
+																[class.red]='isAllFieldNone',
+																(click)=`changeAllFieldsOption( ${field}.viewAndEdit.assignedToThem[ index ], actionType.NONE )`)
+																.line-height-16
+																	| {{ "BASE.ROLE_PERMISSION.LABEL.NONE" | translate }}
+															button(
+																[class.center]='accessedBoard.permission.type === boardPermissionType.CUSTOM',
+																[class.right]='accessedBoard.permission.type !== boardPermissionType.CUSTOM',
+																[class.yellow]='isAllFieldCanView',
+																(click)=`changeAllFieldsOption( ${field}.viewAndEdit.assignedToThem[ index ], actionType.CAN_VIEW )`)
+																.line-height-16
+																	| {{ "BASE.ROLE_PERMISSION.LABEL.VIEW_ACTION" | translate }}
+															button.right(
+																*ngIf='accessedBoard.permission.type === boardPermissionType.CUSTOM',
+																[disabled]='!allFieldCanEdit',
+																[class.green]='isAllFieldCanEdit',
+																(click)=`changeAllFieldsOption( ${field}.viewAndEdit.assignedToThem[ index ], actionType.CAN_EDIT )`)
+																.line-height-16
+																	| {{ "BASE.ROLE_PERMISSION.LABEL.EDIT_ACTION" | translate }}
+													ng-container(*ngFor=`let field of permission.fields; let fieldIndex = index; let last = last; ngForTrackByID`)
+														.layout-row.layout-align-start-center([class.mb-6]='last')
+															cub-icon.mr-8(
+																size='20px',
+																[name]='fieldsLookup[ field.id ].dataType | fieldMetadata : "icon"')
+															.layout-row.layout-align-space-between-center.full-width
+																.option-label.text-truncate([title]='fieldsLookup[ field.id ].name | empty')
+																	| {{ fieldsLookup[ field.id ].name | empty }}
+																.group-button
+																	button.left(
+																		[class.red]='field.access === actionType.NONE',
+																		(click)=`onRowManageFieldChange(
+																			${field}.viewAndEdit.assignedToThem[ index ],
+																			fieldIndex,
+																			actionType.NONE )`)
+																		.line-height-16
+																			| {{ "BASE.ROLE_PERMISSION.LABEL.NONE" | translate }}
+																	button(
+																		[class.center]='accessedBoard.permission.type === boardPermissionType.CUSTOM',
+																		[class.right]='accessedBoard.permission.type !== boardPermissionType.CUSTOM',
+																		[class.yellow]='field.access === actionType.CAN_VIEW',
+																		(click)=`onRowManageFieldChange(
+																			${field}.viewAndEdit.assignedToThem[ index ],
+																			fieldIndex,
+																			actionType.CAN_VIEW )`)
+																		.line-height-16
+																			| {{ "BASE.ROLE_PERMISSION.LABEL.VIEW_ACTION" | translate }}
+																	button.right(
+																		*ngIf='accessedBoard.permission.type === boardPermissionType.CUSTOM',
+																		[disabled]='FIELD_READONLY.has( fieldsLookup[ field.id ].dataType )',
+																		[class.green]='field.access === actionType.CAN_EDIT',
+																		(click)=`onRowManageFieldChange(
+																			${field}.viewAndEdit.assignedToThem[ index ],
+																			fieldIndex,
+																			actionType.CAN_EDIT )`)
+																		.line-height-16
+																			| {{ "BASE.ROLE_PERMISSION.LABEL.EDIT_ACTION" | translate }}
+														cub-divider.column-divider.mv-10.ml-30(*ngIf='!last')
+								.layout-row.layout-align-space-between-center.full-width
+									button.pl-10.pv-2.pr-4(
+										cubBasicButton,
+										icon='plus-circle',
+										iconSize='20px',
+										[cubMenuTriggerFor]='columnPeopleFieldMenu')
+										| {{ "BASE.ROLE_PERMISSION.LABEL.ADD_PEOPLE_FIELD" | translate }}
+									button.pv-2.ph-4(
+										cubBasicButton='destructive',
+										icon='trash',
+										iconSize='20px',
+										[cubMenuTriggerFor]='columnPeopleFieldMenu',
+										[cubMenuTriggerContext]=`{ isDeleteAction: true }`)
+										| {{ "BASE.ROLE_PERMISSION.LABEL.DELETE" | translate }}

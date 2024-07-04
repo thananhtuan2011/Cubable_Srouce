@@ -1,0 +1,58 @@
+{
+	"LABEL": {
+		"ADVANCED": "Nâng cao",
+		"BASIC": "Cơ bản",
+		"BUSINESS_ESSENTIAL": "Dành cho doanh nghiệp"
+	},
+	"MESSAGE": {
+		"NO_RESULT_FOUND": "Không tìm thấy kết quả."
+	},
+	"METADATA": {
+		"LABEL": {
+			"ATTACHMENT": "Tập tin",
+			"CHECKBOX": "Hộp kiểm",
+			"CREATED_BY": "Tạo bởi",
+			"CREATED_TIME": "Tạo lúc",
+			"CURRENCY": "Tiền tệ",
+			"DATE": "Ngày",
+			"DROPDOWN": "Tùy chọn",
+			"EMAIL": "Email",
+			"FORMULA": "Công thức",
+			"LAST_MODIFIED_BY": "Cập nhật lần cuối bởi",
+			"LAST_MODIFIED_TIME": "Cập nhật lần cuối lúc",
+			"LINK": "Liên kết",
+			"LOOKUP": "Tra cứu",
+			"NUMBER": "Số",
+			"PARAGRAPH": "Đoạn văn bản",
+			"PEOPLE": "Nhân sự",
+			"PHONE": "Điện thoại",
+			"PROGRESS": "Tiến độ",
+			"RATING": "Đánh giá",
+			"REFERENCE": "Tham chiếu",
+			"TEXT": "Văn bản"
+		},
+		"DESCRIPTION": {
+			"ATTACHMENT": "Hỗ trợ tải lên tập tin, hình ảnh, video,...",
+			"CHECKBOX": "Đánh dấu và bỏ đánh dấu ",
+			"CREATED_BY": "Người tạo hàng, được ghi nhận bởi hệ thống",
+			"CREATED_TIME": "Thời điểm tạo hàng, được ghi nhận bởi hệ thống",
+			"CURRENCY": "Dùng để thêm các giá trị tiền, cung cấp đa dạng đơn vị tiền tệ",
+			"DATE": "Hiển thị thứ, ngày và giờ",
+			"DROPDOWN": "Một danh sách chứa các tùy chọn. Hỗ trợ chọn một hoặc nhiều tùy chọn cùng lúc",
+			"EMAIL": "Dùng để nhập email cá nhân và doanh nghiệp",
+			"FORMULA": "Tính toán giá trị dựa trên những trường dữ liệu khác trên Board",
+			"LAST_MODIFIED_BY": "Kiểm tra một trường dữ liệu cụ thể được cập nhật bởi ai",
+			"LAST_MODIFIED_TIME": "Kiểm tra một trường dữ liệu cụ thể được cập nhật vào thời gian nào",
+			"LINK": "Liên kết có thể truy cập",
+			"LOOKUP": "Dùng để tra cứu dữ liệu từ Board khác, thông qua trường Tham chiếu hoặc Hiển thị tham chiếu",
+			"NUMBER": "Hỗ trợ định dạng thập phân và số âm",
+			"PARAGRAPH": "Đoạn văn bản dài, hỗ trợ xuống hàng và định dạng văn bản",
+			"PEOPLE": "Chọn người dùng từ những danh sách trong Workspace",
+			"PHONE": "Thiết lập số điện thoại mặc định và mã vùng",
+			"PROGRESS": "Theo dõi tiến độ hoàn thành mục tiêu thông qua thanh tiến trình (%)",
+			"RATING": "Đánh giá trên thang đo từ 1 đến 10",
+			"REFERENCE": "Tham chiếu đến những Mục dữ liệu ở Board khác",
+			"TEXT": "Văn bản ngắn, không hỗ trợ xuống hàng"
+		}
+	}
+}

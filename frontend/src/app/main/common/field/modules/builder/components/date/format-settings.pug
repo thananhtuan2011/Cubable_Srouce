@@ -1,0 +1,44 @@
+.layout-column.layout-gap-16
+	cub-dropdown(
+		[menuSize]='{ maxHeight: 244 }',
+		[label]='"FIELD.BUILDER.LABEL.DISPLAY_DATE_FORMAT" | translate',
+		[clearable]='false',
+		[(ngModel)]='format',
+		(ngModelChange)='formatChange.emit( $event ); onChanges();')
+		cub-dropdown-group(
+			[title]='"FIELD.BUILDER.LABEL.DATE_STRING" | translate')
+			cub-dropdown-item(
+				*ngFor='let format of DATE_FORMATS | slice : 0 : 2',
+				[label]='CURRENT_DATE | dateValue : format',
+				[value]='format')
+		cub-dropdown-group(
+			[title]='"FIELD.BUILDER.LABEL.YEAR_STRING" | translate')
+			cub-dropdown-item(
+				*ngFor='let format of DATE_FORMATS | slice : 2 : 4',
+				[label]='CURRENT_DATE | dateValue : format',
+				[value]='format')
+		cub-dropdown-group(
+			[title]='"FIELD.BUILDER.LABEL.TEXT_MODE" | translate')
+			cub-dropdown-item(
+				*ngFor='let format of DATE_FORMATS | slice : 4',
+				[label]='CURRENT_DATE | dateValue : format',
+				[value]='format')
+	cub-dropdown(
+		[label]='"FIELD.BUILDER.LABEL.DISPLAY_TIME_FORMAT" | translate',
+		[clearable]='false',
+		[(ngModel)]='timeFormat',
+		(ngModelChange)='timeFormatChange.emit( $event ); onChanges();')
+		ng-container(*ngFor='let format of TIME_FORMATS; let idx = index;')
+			ng-container([ngSwitch]='idx')
+				cub-dropdown-item(
+					*ngSwitchCase='0',
+					[label]='"FIELD.BUILDER.LABEL.NOT_DISPLAY_TIME" | translate',
+					[value]='0')
+				cub-dropdown-item(
+					*ngSwitchCase='1',
+					[label]='"FIELD.BUILDER.LABEL.HOUR_COUNT" | translate : { hour: 12 }',
+					[value]='format')
+				cub-dropdown-item(
+					*ngSwitchCase='2',
+					[label]='"FIELD.BUILDER.LABEL.HOUR_COUNT" | translate : { hour: 24 }',
+					[value]='format')

@@ -1,0 +1,25 @@
+include ../builder.include.pug
+
+ng-template(#settingBlock)
+	date-format-settings(
+		[(format)]='internalField.format',
+		[(timeFormat)]='internalField.timeFormat')
+
+ng-template(#defaultBlock)
+	date-field-input(
+		autoFocusOn,
+		[required]='false',
+		[label]='"FIELD.BUILDER.LABEL.DEFAULT_VALUE" | translate',
+		[field]='internalField',
+		[(data)]='initialData',
+		(dataChange)='onInitialDataChanged( $event )')
+
+ng-container(
+	*ngTemplateOutlet=`
+		fieldTemplate;
+		context: {
+			settingBlock,
+			defaultBlock,
+			canSetRequired: true
+		};
+	`)

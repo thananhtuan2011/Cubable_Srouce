@@ -1,0 +1,59 @@
+.cub-basic-editor {
+	$self: &;
+
+	display: flex;
+	flex-direction: column;
+	width: 100%;
+	min-width: 0;
+	max-width: 100%;
+	height: 100%;
+	min-height: 0;
+	max-height: 100%;
+
+	&#{ $self }--no-toolbar {
+		#{ $self }__holder {
+			.ql-container .ql-editor {
+				padding: 0;
+			}
+		}
+	}
+
+	#{ $self }-wrapper {
+		display: flex;
+		flex-direction: column;
+		width: 100%;
+		min-width: 0;
+		max-width: 100%;
+		height: 100%;
+		min-height: 0;
+		max-height: 100%;
+
+		#{ $self }__holder {
+			height: 100%;
+		}
+	}
+
+	#{ $self }__toolbar {
+		display: flex;
+		flex-direction: row;
+		flex-wrap: wrap;
+		justify-content: space-between;
+		column-gap: 6px;
+
+		#{ $self }__toolbar__left,
+		#{ $self }__toolbar__right {
+			display: flex;
+			flex-direction: row;
+			flex-wrap: wrap;
+			column-gap: 6px;
+		}
+
+		#{ $self }__toolbar__right {
+			justify-content: flex-end;
+		}
+	}
+
+	#{ $self }__holder {
+		@import './content.scss';
+	}
+}

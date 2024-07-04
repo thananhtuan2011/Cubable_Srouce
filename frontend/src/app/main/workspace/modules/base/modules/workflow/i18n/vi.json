@@ -1,0 +1,82 @@
+{
+	"LABEL": {
+		"AUTOMATE_WORKFLOW": "Quy trình tự động",
+		"ADD_AUTOMATION_WORKFLOW": "Thêm quy trình tự động",
+		"CLOSE": "Đóng",
+		"SAVE": "Lưu",
+		"TYPE": "Loại",
+		"ALL": "Tất cả",
+		"ACTIVE": "Đang hoạt động",
+		"INACTIVE": "Không hoạt động",
+		"HELP": "Trợ giúp",
+		"USER_GUIDE": "Hướng dẫn sử dụng",
+		"RENAME": "Đổi tên và mô tả",
+		"DUPLICATION": "Tạo bản sao",
+		"VIEW": "Xem thông tin",
+		"DELETE": "Xóa",
+		"ACTIVATE": "Kích hoạt",
+		"DEACTIVATE": "Vô hiệu hóa",
+		"KEEP": "Giữ lại",
+		"CANCEL": "Hủy",
+		"SEE_MORE": "Xem thêm",
+		"HIDE": "Ẩn bớt",
+		"INFO": "Thông tin chi tiết",
+		"CREATOR": "Người tạo: ",
+		"CREATE_AT": "Ngày tạo: ",
+		"HOUR": "Giờ",
+		"MINUTE": "Phút",
+		"DAY": "Ngày",
+		"UPDATER": "Người cập nhật: ",
+		"UPDATED_DATE": "Ngày cập nhật: ",
+		"EVENT": "Sự kiện",
+		"EVENT_NAME": "Sự kiện {{ eventName }}",
+		"NAME": "Tên",
+		"DESCRIPTION": "Mô tả",
+		"DONE": "Xong",
+		"CONFIRM_CANCEL": "Xác nhận hủy",
+		"COPY": "(Bản sao)"
+	},
+	"DESCRIPTION": {
+		"ACTION": {
+			"ALL": "Tất cả người dùng thuộc Base",
+			"DELETE_ROW": "Thì <b>Xóa hàng dữ liệu</b> tại <b>{{ boardName }}</b>",
+			"CREATE_ROW": "Thì <b>Tạo hàng dữ liệu</b> tại <b>{{ boardName }}</b>",
+			"CHANGE_VALUE": "Thì <b>Cập nhật dữ liệu của hàng</b> tại <b>{{ boardName }}</b>",
+			"NOTIFY": "<b>Gửi thông báo</b> cho <b>{{ receivers }}</b>"
+		},
+		"DELAY": "Tạm hoãn {{ quantity }} {{ period }}",
+		"TRIGGER": {
+			"DATE_ARRIVES": "Khi <b>Đến thời điểm kích hoạt hàng loạt dữ liệu</b> ở trường <b>{{ fieldName }}</b> tại <b>{{ boardName }}</b>",
+			"ROW_CREATED": "Khi <b>Hàng dữ liệu được tạo mới</b> tại <b>{{ boardName }}</b>",
+			"VALUE_CHANGED": "Khi <b>Hàng dữ liệu được cập nhật</b> tại <b>{{ boardName }}</b>",
+			"ROW_DELETED": "Khi <b>Hàng dữ liệu bị xóa</b> tại <b>{{ boardName }}</b>",
+			"SCHEDULE_SETTING_DAILY": "Lặp lại <b>hằng ngày</b>, lúc <b>{{ hour }}:{{ minute }}</b>, kể từ ngày <b>{{ dateFrom }}</b>",
+			"SCHEDULE_SETTING_MONTHLY": "Lặp lại <b>hàng tháng</b>, vào ngày <b>{{ selectDayOfMonth }}</b>, lúc <b>{{ hour }}:{{ minute }}</b>, kể từ ngày <b>{{ dateFrom }}",
+			"SCHEDULE_SETTING_NONE": "Chỉ kích hoạt vào ngày <b>{{ date }}</b>, lúc <b>{{ hour }}:{{ minute }}</b>",
+			"SCHEDULE_SETTING_WEEKLY": "Lặp lại <b>hàng tuần</b>, vào thứ <b>{{ selectDayOfWeek }}</b>, lúc <b>{{ hour }}:{{ minute }}</b>, kể từ ngày <b>{{ dateFrom }}",
+			"SCHEDULE_SETTING_YEARLY": "Lặp lại <b>hàng năm</b>, vào ngày <b>{{ selectDayOfMonth }}/{{ selectMonth }}</b>, lúc <b>{{ hour }}:{{ minute }}</b>, kể từ ngày <b>{{ dateFrom }}"
+		},
+		"CONDITION": {
+			"AND": "Và",
+			"APPLIED_CONDITION": "Đang có {{optionsLength}} điều kiện được áp dụng",
+			"CUSTOM": "Tuỳ chỉnh",
+			"OR": "Hoặc"
+		}
+	},
+	"MESSAGE": {
+		"DELETE_AUTOMATION": "Xóa quy trình tự động ?",
+		"LOST_AUTOMATION": "<b>{{ workflowName }}</b> sẽ bị xóa vĩnh viễn. Bạn chắc chứ ?",
+		"DEACTIVATE_AUTOMATION": "Vô hiệu hóa Quy trình tự động?",
+		"DEACTIVATE_CONFIRM": "<b>{{ workflowName }}</b> sẽ tạm thời ngừng hoạt động. Bạn chắc chứ ?",
+		"LOST_PROGRESS": "Bạn sẽ mất tiến trình hiện tại",
+		"WILL_LOST_VALUE": "Bạn có chắc chắn muốn hủy?"
+	},
+	"PLACEHOLDER": {
+		"ENTER_NAME": "Nhập tên",
+		"ENTER_DESCRIPTION": "Nhập mô tả"
+	},
+	"ERROR": {
+		"NOT_EXCEED_100_CHARACTER": "Không vượt quá 100 ký tự",
+		"NOT_EXCEED_1000_CHARACTER": "Không vượt quá 1000 ký tự"
+	}
+}

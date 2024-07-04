@@ -1,0 +1,87 @@
+@import 'src/scss/partials/variable';
+
+.wgc-avatar {
+	$self: &;
+	display: flex;
+	text-align: center;
+	align-items: center;
+	justify-content: center;
+	position: relative;
+	overflow: hidden;
+	height: var(--avatar-size);
+	min-height: var(--avatar-size);
+	max-height: var(--avatar-size);
+	width: var(--size);
+	min-width: var(--avatar-size);
+	max-width: var(--avatar-size);
+	font-size: calc(var(--avatar-size) / 2.5);
+	font-weight: $font-weight-semibold;
+	color: var(--avatar-label-color, $color-white);
+	border-radius: 50%;
+
+	// Pseudo elements
+	@at-root {
+		&:before {
+			content: '';
+			position: absolute;
+			top: .5px;
+			left: .5px;
+			right: .5px;
+			bottom: .5px;
+			background-color: var(--avatar-color, $color-black);
+			border: 1px solid $color-border;
+			border-radius: 50%;
+		}
+	}
+
+	// Color state
+	@at-root {
+		&#{ $self }--auto-color {
+			color: white;
+
+			&:before {
+				background: {
+					// image: url('/assets/images/bg-gradient.png');
+					position: center;
+					size: cover;
+					repeat: no-repeat;
+				};
+			}
+		}
+	}
+
+	// Size state
+	@at-root {
+		&#{ $self }--small {
+			--avatar-size: 32px !important;
+		}
+
+		&#{ $self }--medium {
+			--avatar-size: 40px !important;
+		}
+
+		&#{ $self }--large {
+			--avatar-size: 56px !important;
+		}
+
+		&#{ $self }--xlarge {
+			--avatar-size: 72px !important;
+		}
+	}
+
+	#{ $self }__label {
+		position: relative;
+	}
+
+	#{ $self }__image {
+		position: absolute;
+		top: .5px;
+		left: .5px;
+		right: .5px;
+		bottom: .5px;
+		background-color: $color-white;
+		height: calc(100% - .5px);
+		width: calc(100% - .5px);
+		border-radius: 50%;
+	}
+}

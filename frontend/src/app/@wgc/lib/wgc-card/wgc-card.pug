@@ -1,0 +1,5 @@
+.wgc-card-wrapper(
+	[autoUnhighlight]='autoUnhighlight',
+	[(highlightState)]='highlight',
+	(highlightStateChange)='highlightChange?.emit( $event )')
+	ng-content

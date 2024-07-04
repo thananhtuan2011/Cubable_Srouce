@@ -1,0 +1,9 @@
+.wgc-comment-link(*ngFor='let preview of linkPreviews')
+	img.wgc-comment-link__img(*ngIf='preview?.favicons?.length', [lazyLoad]='preview?.favicons[ 0 ]')
+	.wgc-comment-link__info
+		h4(wgcTruncate, *ngIf='preview?.title')
+			| {{ preview?.title }}
+		label.h6(wgcTruncate, *ngIf='preview?.description')
+			| {{ preview?.description }}
+		a(wgcTruncate, target='_blank', *ngIf='preview?.url', [href]='preview?.url')
+			| {{ preview?.url }}

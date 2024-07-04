@@ -1,0 +1,11 @@
+cub-form-field(
+	[size]='size',
+	[variant]='variant')
+	ng-container(
+		cubFormFieldPlaceholder,
+		*ngIf='!data')
+		| {{ placeholder }}
+	ng-container(
+		cubFormFieldDisplay,
+		*ngIf='data')
+		| {{ data | dateValue : $any( field ).format : $any( field ).timeFormat }}

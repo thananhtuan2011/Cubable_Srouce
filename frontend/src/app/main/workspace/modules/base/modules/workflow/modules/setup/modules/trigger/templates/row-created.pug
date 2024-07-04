@@ -1,0 +1,22 @@
+ng-container(*ngIf='isEntry')
+	include ./blocks/select-board.partial.pug
+
+cub-card(
+	variant='tonal',
+	size='small',
+	*ngIf='settings.boardID')
+	cub-card-content
+		single-conditional(
+			#conditionalComp,
+			[label]='"BASE.WORKFLOW.SETUP.TRIGGER.LABEL.NEW_ROW_CONDITION" | translate',
+			[mustHaveOption]='false',
+			[boardID]='settings.boardID',
+			[logicalExpression]='settings.filter?.logicalExpression',
+			[options]='settings.filter?.options',
+			[logicalOperator]='settings.filter?.logicalOperator',
+			[conditions]='settings.filter?.conditions',
+			(optionsChange)='onFilterOptionsChange( $event )',
+			(logicalOperatorChange)='onLogicalOperatorChange( $event )',
+			(logicalExpressionChange)='onLogicalExpressionChange( $event )',
+			(conditionsChange)='onConditionFilterChange( $event )',
+			(conditionalChange)='onConditionalChange()')

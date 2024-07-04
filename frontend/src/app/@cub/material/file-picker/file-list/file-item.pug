@@ -1,0 +1,47 @@
+.cub-file-item__image
+	cub-file(
+		#cubFile,
+		[file]='file')
+	.cub-file-item__actions
+		button(
+			*ngIf='downloadable',
+			(click)='cubFile.fileObject.download()')
+			cub-icon(
+				name='download-circle',
+				size='24px')
+		button(
+			*ngIf='renamable',
+			(click)='rename( cubFile.fileObject.name )')
+			cub-icon(
+				name='pencil',
+				size='24px')
+		button(
+			*ngIf='removable',
+			(click)='remove()')
+			cub-icon(
+				name='trash',
+				size='24px')
+.cub-file-item__name
+	cub-form-field(
+		#formField,
+		displayErrorMode='tooltip',
+		*ngIf='isRenaming; else elseBlock;')
+		input(
+			cubFormFieldInput,
+			autoFocusOn,
+			required,
+			maxlength='255',
+			[name]='"CUB.LABEL.FILE_NAME" | translate',
+			[(ngModel)]='name',
+			(blur)=`formField.control.valid
+				&& onRenamed( name, cubFile.fileObject.extension )`)
+	ng-template(#elseBlock)
+		span
+			| {{ cubFile.fileObject.name }}
+.cub-file-item__info
+	.cub-file-item__description
+		| {{ ( cubFile.fileObject.description | uppercase ) || ( "CUB.LABEL.UNKNOWN" | translate ) }}
+		| -
+		| {{ cubFile.fileObject.size | fileSizeUnit }}
+	.cub-file-item__error
+		ng-content(select='[error]')

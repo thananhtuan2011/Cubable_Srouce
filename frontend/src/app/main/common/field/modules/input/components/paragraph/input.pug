@@ -1,0 +1,95 @@
+include ../mixins/mixin.pug
+
+ng-container(*ngIf='$any( data )?.valueType; else elseBlock;')
+	.layout-row.layout-gap-8
+		ng-container([ngSwitch]='$any( data ).valueType')
+			ng-container(*ngSwitchCase='VALUE_TYPE.STATIC')
+				cub-form-field.flex(
+					#formField,
+					resizable,
+					[label]='innerLabel',
+					[size]='size',
+					[variant]='variant',
+					[disabled]='disabled',
+					[displayErrorMode]='displayErrorMode',
+					[hideRequiredMarker]='hideRequiredMarker',
+					[focusing]='isRichTextEditorOpened',
+					(container.dblclick)='openEditor( $any( data ).data )',
+					(container.keydown)='onKeydown( $event, $any( data ).data )')
+					textarea(
+						cubFormFieldInput,
+						[rows]='formField.isSmallSize ? 1 : 3',
+						[autoFocusOn]='autoFocusOn',
+						[required]='isRequired',
+						[readonly]=`readonly
+							|| field.isRichTextFormatting`,
+						[clearable]='!readonly',
+						[placeholder]=`
+							placeholder
+								?? ( "FIELD.INPUT.PLACEHOLDER.FILL_TEXT" | translate )
+						`,
+						[formControl]='formControl',
+						[disableControl]='disabled',
+						[valueControl]='$any( data ).data?.text',
+						(valueControlChange)='onTextChanged( $event )')
+					ng-container(
+						cubFormFieldSuffix,
+						*ngIf='field.isRichTextFormatting')
+						button(
+							cubBasicButton,
+							icon='paragraph',
+							iconColor='secondary',
+							[iconSize]=`
+								formField.isSmallSize
+									? "16px"
+									: "20px"
+							`,
+							(click)='openEditor( $any( data ).data )')
+			ng-container(*ngSwitchCase='VALUE_TYPE.DYNAMIC')
+				+formField
+					+dynamicValue
+			ng-container(*ngSwitchCase='VALUE_TYPE.EMPTY')
+				+formField
+					+emptyValue
+		+valueTypeSwitch
+ng-template(#elseBlock)
+	cub-form-field(
+		#formField,
+		resizable,
+		[label]='innerLabel',
+		[size]='size',
+		[variant]='variant',
+		[displayErrorMode]='displayErrorMode',
+		[hideRequiredMarker]='hideRequiredMarker',
+		[focusing]='isRichTextEditorOpened',
+		(container.dblclick)='openEditor( data )',
+		(container.keydown)='onKeydown( $event, data )')
+		textarea(
+			cubFormFieldInput,
+			[rows]='formField.isSmallSize ? 1 : 3',
+			[autoFocusOn]='autoFocusOn',
+			[required]='isRequired',
+			[readonly]=`readonly
+				|| field.isRichTextFormatting`,
+			[clearable]='!readonly',
+			[placeholder]=`
+				placeholder
+					?? ( "FIELD.INPUT.PLACEHOLDER.FILL_TEXT" | translate )
+			`,
+			[formControl]='formControl',
+			[disableControl]='disabled',
+			[valueControl]='data?.text',
+			(valueControlChange)='onTextChanged( $event )')
+		ng-container(
+			cubFormFieldSuffix,
+			*ngIf='field.isRichTextFormatting')
+			button(
+				cubBasicButton,
+				icon='paragraph',
+				iconColor='secondary',
+				[iconSize]=`
+					formField.isSmallSize
+						? "16px"
+						: "20px"
+				`,
+				(click)='openEditor( data )')

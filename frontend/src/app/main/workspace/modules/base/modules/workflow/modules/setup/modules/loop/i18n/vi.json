@@ -1,0 +1,16 @@
+{
+    "LABEL" : {
+        "CONDITION_LIST": "Danh sách điều kiện",
+        "LOOP_EXIT_CONDITION": "Điều kiện thoát vòng lặp",
+        "MAX_LOOP": "Số lần lặp tối đa (không vượt quá 100)"
+    },
+    "MESSAGE": {
+        "INFO_LOOP_CONDITION": "Vòng lặp sẽ lập tức thoát khi điều kiện được thỏa mãn,  ngay cả khi chưa đạt tới số lần lặp tối đa."
+    },
+    "PLACEHOLDER": {
+        "MAX_LOOP": "Số lần lặp tối đa"
+    },
+    "ERROR": {
+        "NOT_EXCEED_100": "Vui lòng nhập giá trị không vượt quá 100"
+    }
+}

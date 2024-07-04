@@ -1,0 +1,17 @@
+@import 'src/app/@cub/scss/partials/variable';
+
+:host {
+	display: flex;
+	flex-direction: column;
+	width: 100%;
+	min-width: 0;
+	height: 100%;
+	min-height: 0;
+	gap: 12px;
+
+	::ng-deep {
+		.logic-editor, .filter-option {
+			background-color: $color-white !important;
+		}
+	}
+}

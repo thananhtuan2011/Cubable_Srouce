@@ -1,0 +1,20 @@
+include ../boxes.include.pug
+
+cub-phone-country-picker(
+	flagOnly,
+	style='display: inherit !important',
+	*ngIf='isShowPhoneCountryPicker || data?.countryCode',
+	[readonly]='readonly',
+	[countryCode]='currentCountryCode',
+	(picked)='onPhoneCountryPicked( $event )',
+	(closed)='onPhoneCountryClosed()')
+
++hyperlink-box()(
+	[placeholder]='currentCountryCode | cubExamplePhoneNumber',
+	[content]='data?.phone')
+
+a.field-cell__text-content(
+	target='_blank',
+	*ngIf='data',
+	[href]='"tel:" + data.phone')
+	| {{ data.phone }}

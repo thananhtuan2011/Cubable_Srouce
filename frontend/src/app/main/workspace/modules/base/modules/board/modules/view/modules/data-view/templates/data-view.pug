@@ -1,0 +1,53 @@
+cub-menu(
+	#shareViewMenu,
+	width='300px')
+	cub-menu-content
+		ng-template(cubMenuContent, let-view='view')
+			.h6.text-color-primary.ml-12.mb-8(cubMenuItem)
+				| {{ "VIEW.COMMON.LABEL.WHO_CAN_ACCESS" | translate }}
+			.layout-column
+				button(
+					cubMenuSelectItem,
+					icon='user',
+					[iconColor]='view.sharingStatus === SHARING_TYPE.MANAGEABLE_ONLY ? "blue" : "primary"',
+					[selected]='view.sharingStatus === SHARING_TYPE.MANAGEABLE_ONLY',
+					(click)='sharedChange.emit({ view, sharingStatus: SHARING_TYPE.MANAGEABLE_ONLY })')
+					.line-height-20
+						| {{ "VIEW.COMMON.LABEL.ONLY_USER_CAN_MANAGE" | translate }}
+				button(
+					cubMenuSelectItem,
+					icon='user-group',
+					[iconColor]='view.sharingStatus === SHARING_TYPE.ACCESSIBLE_ALL ? "blue" : "primary"',
+					[selected]='view.sharingStatus === SHARING_TYPE.ACCESSIBLE_ALL',
+					(click)='sharedChange.emit({ view, sharingStatus: SHARING_TYPE.ACCESSIBLE_ALL })')
+					.line-height-20
+						| {{ "VIEW.COMMON.LABEL.ALL_USER_CAN_ACCESS" | translate }}
+
+include ../../common/templates/more-action-view.pug
+include ../../common/templates/partial-view.pug
+
+ng-container(*ngIf='isFromAllView, else elseBlock')
+	+allView('"data"')
+ng-template(#elseBlock)
+	+tabView('"data"')
+
+//- TODO
++moreActionView('isFromManageTab')
+	button(
+		cubMenuItem,
+		icon='filter-circle',
+		iconSize='20px',
+		(click)='openPopupFilter( moreActionMenu.ref.origin, view, isFromManageTab )')
+		| {{ "BASE.BOARD.DETAIL.VIEW.DATA.LABEL.FILTER" | translate }}
+	button(
+		cubMenuItem,
+		icon='share',
+		iconSize='20px',
+		position='after',
+		trailingIcon='chevron-right',
+		trailingIconColor='tertiary',
+		[autoClose]='false',
+		[pointing]='shareViewMenu.isOpened',
+		[cubSubMenuTriggerFor]='shareViewMenu',
+		[cubMenuTriggerContext]='{ view }')
+		| {{ "VIEW.COMMON.LABEL.SHARING" | translate }}

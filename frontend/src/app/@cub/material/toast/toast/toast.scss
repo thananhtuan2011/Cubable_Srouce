@@ -1,0 +1,37 @@
+@import '../../../scss/partials/variable';
+@import '../../../scss/partials/mixin';
+
+.cub-toast {
+	$self: &;
+
+	@include backdrop-blur;
+	@include popup-animation;
+
+	display: flex;
+	justify-content: center;
+	column-gap: 12px;
+	width: 360px;
+	min-height: 56px;
+	padding: 8px;
+	border-radius: 16px;
+	overflow: hidden;
+
+	#{ $self }__image {
+		padding: {
+			top: 2px;
+			bottom: 2px;
+		};
+	}
+
+	#{ $self }__title {
+		@include text-truncate-multi-line(5);
+
+		width: 100%;
+		min-width: 0;
+		max-width: 100%;
+		margin: {
+			top: auto;
+			bottom: auto;
+		};
+	}
+}

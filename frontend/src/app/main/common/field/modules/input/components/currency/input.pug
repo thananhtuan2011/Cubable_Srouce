@@ -1,0 +1,80 @@
+include ../mixins/mixin.pug
+
+ng-container(*ngIf='$any( data )?.valueType; else elseBlock;')
+	.layout-row.layout-gap-8
+		ng-container([ngSwitch]='$any( data ).valueType')
+			ng-container(*ngSwitchCase='VALUE_TYPE.STATIC')
+				cub-form-field.flex(
+					[label]='innerLabel',
+					[size]='size',
+					[variant]='variant',
+					[disabled]='disabled',
+					[displayErrorMode]='displayErrorMode',
+					[hideRequiredMarker]='hideRequiredMarker')
+					ng-container(
+						cubFormFieldSuffix,
+						*ngIf=`
+							input?.isFocused
+							&& field.currency
+							&& !readonly`)
+						.text-color-tertiary
+							| {{ field.currency }}
+					ng-container(
+						cubFormFieldDisplay,
+						*ngIf=`$any( data ).data`)
+						| {{ +$any( data ).data | currencyValue : field.currency : field.format : field.decimalPlaces }}
+					input(
+						#input='cubFormFieldInput',
+						cubFormFieldInput,
+						type='number',
+						[min]='field.allowNegative ? undefined : 0',
+						[placeholder]='placeholder ?? "0"',
+						[autoFocusOn]='autoFocusOn',
+						[required]='isRequired',
+						[readonly]='readonly',
+						[clearable]='!readonly',
+						[formControl]='formControl',
+						[disableControl]='disabled',
+						[valueControl]='$any( data ).data',
+						(valueControlChange)='onDataChanged( $event )')
+			ng-container(*ngSwitchCase='VALUE_TYPE.DYNAMIC')
+				+formField
+					+dynamicValue()(
+						readonly,
+						(click)='plusButton.open()')
+			ng-container(*ngSwitchCase='VALUE_TYPE.EMPTY')
+				+formField
+					+emptyValue
+		+valueTypeSwitch
+ng-template(#elseBlock)
+	cub-form-field(
+		[label]='innerLabel',
+		[size]='size',
+		[variant]='variant',
+		[displayErrorMode]='displayErrorMode',
+		[hideRequiredMarker]='hideRequiredMarker')
+		input(
+			#input='cubFormFieldInput',
+			cubFormFieldInput,
+			type='number',
+			[min]='field.allowNegative ? undefined : 0',
+			[placeholder]='placeholder ?? "0"',
+			[autoFocusOn]='autoFocusOn',
+			[required]='isRequired',
+			[readonly]='readonly',
+			[clearable]='!readonly',
+			[formControl]='formControl',
+			[disableControl]='disabled',
+			[valueControl]='data',
+			(valueControlChange)='onDataChanged( $event )')
+		ng-container(
+			cubFormFieldSuffix,
+			*ngIf=`input.isFocused
+				&& field.currency
+				&& !readonly`)
+			.text-color-tertiary
+				| {{ field.currency }}
+		ng-container(
+			cubFormFieldDisplay,
+			*ngIf='data')
+			| {{ +data | currencyValue : field.currency : field.format : field.decimalPlaces }}

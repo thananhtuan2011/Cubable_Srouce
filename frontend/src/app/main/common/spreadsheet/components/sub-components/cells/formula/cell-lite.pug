@@ -1,0 +1,5 @@
+include mixin.pug
+
+.field-cell__text-content
+	ng-container(*ngIf='data')
+		+formulaCell('data.calculated', '$any( data.params.resultFormatConfig )?', 'data.params.resultFormatType')

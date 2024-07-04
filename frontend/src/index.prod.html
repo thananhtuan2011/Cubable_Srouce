@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<base href="/">
+		<title>Cubable</title>
+		<meta http-equiv="Cache-control" content="no-cache, no-store, must-revalidate">
+		<meta http-equiv="Pragma" content="no-cache">
+		<meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0">
+		<meta name="description" content="Make future now">
+		<meta property="og:url" content="/">
+		<meta property="og:type" content="website">
+		<meta property="og:site_name" content="app.cubable.com">
+		<meta property="og:title" content="Cubable">
+		<meta property="og:description" content="Make future now">
+		<meta property="og:image" content="https://app.cubable.com/assets/images/logos/logo-horizontal.svg">
+		<link rel="canonical" href="https://app.cubable.com">
+		<link rel="icon" type="image/x-icon" href="https://app.cubable.com/assets/favicon.ico">
+		<link rel="preload" as="font" href="assets/@cub/fonts/icomoon/icomoon.ttf?u8451q" crossorigin="anonymous">
+		<link rel="preload" as="font" href="assets/@cub/fonts/icomoon/icomoon.woff?u8451q" crossorigin="anonymous">
+		<link rel="stylesheet" href="assets/@cub/fonts/icomoon/icomoon.css?u8451q">
+		<link rel="stylesheet" href="assets/@cub/fonts/HelveticaNowDisplay/HelveticaNowDisplay.css">
+		<style type="text/css">
+			@keyframes flash {
+				0% { opacity: 1; }
+				50% { opacity: .1; }
+				100% { opacity: 1; }
+			}
+
+			.splash-screen {
+				position: fixed;
+				z-index: 2;
+
+				display: flex;
+				flex-direction: column;
+				align-items: center;
+				justify-content: center;
+				width: 100%;
+				min-width: 0;
+				max-width: 100vw;
+				height: 100%;
+				min-height: 0;
+				max-height: 100vh;
+			}
+
+			.splash-screen img {
+				animation: flash 2s infinite;
+			}
+
+			app[ng-version] + .splash-screen {
+				display: none !important;
+			}
+		</style>
+		<!-- Google Tag Manager -->
+		<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+		new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+		j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+		'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+		})(window,document,'script','dataLayer','GTM-W5VCDN8');</script>
+		<!-- End Google Tag Manager -->
+		<!-- Meta Pixel Code -->
+		<script>
+			!function(f,b,e,v,n,t,s)
+			{if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+			n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+			if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+			n.queue=[];t=b.createElement(e);t.async=!0;
+			t.src=v;s=b.getElementsByTagName(e)[0];
+			s.parentNode.insertBefore(t,s)}(window, document,'script',
+			'https://connect.facebook.net/en_US/fbevents.js');
+			fbq('init', '3611774102477375');
+			fbq('track', 'PageView');
+		</script>
+		<!-- End Meta Pixel Code -->
+	</head>
+	<body style="position: relative">
+		<app></app>
+		<div class="splash-screen">
+			<img src="assets/images/logos/logo-vertical.svg" width="180px" height="166px">
+		</div>
+		<!-- Google Tag Manager (noscript) -->
+		<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-W5VCDN8"
+		height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+		<!-- End Google Tag Manager (noscript) -->
+		<!-- Meta Pixel Code (noscript) -->
+		<noscript><img height="1" width="1" style="display:none"
+			src="https://www.facebook.com/tr?id=3611774102477375&ev=PageView&noscript=1"
+		/></noscript>
+		<!-- End Meta Pixel Code (noscript) -->
+	</body>
+</html>

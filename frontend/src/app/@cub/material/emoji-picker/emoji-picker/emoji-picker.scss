@@ -1,0 +1,37 @@
+@import '@ctrl/ngx-emoji-mart/picker';
+@import '../../../scss/partials/variable';
+
+.cub-emoji-picker {
+	$self: &;
+
+	display: block;
+	border-radius: 8px;
+
+	background-color: $color-white;
+
+	form {
+		flex: unset;
+	}
+
+	.emoji-mart {
+		height: 100%;
+		border: none;
+
+		font-family: $font-family-default;
+		font-size: $font-size-default;
+
+		.emoji-mart-anchors {
+			padding: 0;
+
+			.emoji-mart-anchor {
+				color: $color-text-primary !important;
+
+				.emoji-mart-anchor-bar {
+					border-radius: 100px;
+
+					background-color: $color-icon-primary !important;
+				}
+			}
+		}
+	}
+}

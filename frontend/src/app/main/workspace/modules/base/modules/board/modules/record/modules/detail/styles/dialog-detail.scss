@@ -1,0 +1,42 @@
+@import 'src/scss/partials/variable';
+
+:host {
+	display: flex;
+	flex-direction: column;
+	width: 100%;
+	min-width: 0;
+	height: 100%;
+	min-height: 0;
+
+	[cubDialogHeader] {
+		padding: 12px 20px;
+	}
+
+	[cubDialogContent] {
+		background-color: $color-white;
+	}
+}
+
+::ng-deep {
+	.share-menu {
+		display: flex;
+		flex-direction: column;
+		gap: 8px;
+		height: 100%;
+		padding: 8px 0 8px 12px;
+		border-radius: 8px;
+		
+		background-color: $color-white;
+	}
+
+	.qrcode {
+		width: 116px;
+		min-width: 116px;
+		max-width: 116px;
+		height: 116px;
+		min-height: 116px;
+		max-height: 116px;
+		border-radius: 8px;
+		outline: 1px solid $color-border-primary;
+	}
+}

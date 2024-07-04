@@ -1,0 +1,195 @@
+mixin content
+	.layout.layout-column(
+		[ngStyle]=`{
+			'max-width.px'
+			: step == SIGNIN_STEP.workspace
+				? 512
+				: '376' }`)
+		.layout-column.layout-align-start-center.layout-gap-20.full-width
+			ng-container(*ngIf='!step, else elseBlock')
+				.mih-470
+					cub-loading.margin-auto
+			ng-template(#elseBlock)
+				ng-container([ngSwitch]='step')
+					ng-container(*ngSwitchCase='SIGNIN_STEP.signin')
+						h2
+							| {{ existAccount ? ('AUTH.LABEL.ACCOUNT_EXISTS' | translate) : ('AUTH.LABEL.SIGN_IN' | translate) }}
+						form.layout-column.layout-gap-16.full-width(
+							autocomplete='on',
+							[formGroup]='signInForm',
+							(submit)='!acceptToken ? signin() : acceptWorkspace()')
+							ng-container(*ngIf="existAccount else elseExistAccount")
+								span(
+									[innerHtml]="'AUTH.MESSAGE.EMAIL_EXISTS' | translate : { email: existAccount}")
+							ng-template(#elseExistAccount)
+								cub-form-field(
+									hideRequiredMarker,
+									[label]='"AUTH.LABEL.EMAIL" | translate')
+									input(
+										cubFormFieldInput,
+										clearable,
+										autoFocusOn,
+										type='email',
+										formControlName='email',
+										[placeholder]='"AUTH.PLACEHOLDER.TYPE_EMAIL" | translate',
+										[(valueControl)]='account.email',
+										(valueControlChange)='changeValue()')
+									ng-container(
+										cubFormFieldError,
+										*ngIf='isEmailPasswordIncorrect')
+							cub-form-field(
+								hideRequiredMarker,
+								[label]='"AUTH.LABEL.PASSWORD" | translate')
+								input(
+									autoFocusOn,
+									cubFormFieldInput,
+									formControlName='password',
+									[clearable]='false',
+									[type]='hiddenPassword ? "text" : "password"',
+									[placeholder]='"AUTH.PLACEHOLDER.TYPE_PASSWORD" | translate',
+									[(valueControl)]='account.password',
+									(valueControlChange)='changeValue()')
+								ng-container(cubFormFieldSuffix)
+									button(
+										cubBasicButton,
+										iconSize='16px',
+										iconColor='secondary',
+										[icon]='hiddenPassword ? "eye" : "eye-slash"',
+										(click)='hiddenPassword = !hiddenPassword')
+								ng-container(
+									cubFormFieldError,
+									*ngIf='isEmailPasswordIncorrect')
+									| {{ "AUTH.MESSAGE.ACCOUNT_OR_PASSWORD_INVALID" | translate }}
+							button.full-width(
+								cubButton='primary'
+								type='submit',
+								size='large',
+								[loading]='isSubmitting',
+								[disabled]=`signInForm?.invalid
+									|| isEmailPasswordIncorrect
+									|| isSubmitting
+									|| isGoogleSubmitting
+									|| isMicrosoftSubmitting`)
+								| {{ "AUTH.LABEL.SIGN_IN" | translate }}
+						.layout-column.layout-align-start-center.full-viewport-horizontal.layout-gap-8
+							.layout-row.full-width.layout-align-center-center
+								cub-divider.full-width(horizontal)
+								.continue-with
+									| {{ "AUTH.LABEL.OR_CONTINUE_WITH" | translate}}
+								cub-divider.full-width(horizontal)
+							.button-login
+								button.flex-50(
+									cubButton='secondary',
+									icon='assets/images/icons/google.webp',
+									iconSize='16px',
+									[loading]='isGoogleSubmitting',
+									[disabled]='isSubmitting || isGoogleSubmitting || isMicrosoftSubmitting',
+									(click)='signInByGoogle()')
+									| {{ "AUTH.LABEL.SIGN_IN_WITH_GOOGLE" | translate }}
+								button.flex-50(
+									cubButton='secondary',
+									icon='assets/images/icons/microsoft.webp',
+									iconSize='16px',
+									[loading]='isMicrosoftSubmitting',
+									[disabled]='isSubmitting || isGoogleSubmitting || isMicrosoftSubmitting',
+									(click)='signInByMicrosoft()')
+									| {{ "AUTH.LABEL.SIGN_IN_WITH_MICROSOFT" | translate }}
+						.layout-column.layout-gap-8.text-center
+							span
+								| {{ "AUTH.LABEL.FORGOT_YOUR_PASSWORD" | translate }}&nbsp;
+								a.text-semibold(
+									(click)='stateNavigate([ PATH?.RESET_PASSWORD ])')
+									| {{ "AUTH.LABEL.RESET_PASSWORD" | translate }}
+							span
+								| {{ existAccount ? ('AUTH.LABEL.NOT_YOUR_EMAIL' | translate) : ('AUTH.LABEL.NO_ACCOUNT' | translate) }}&nbsp;
+								a.text-semibold(
+									(click)='stateNavigate([ PATH?.SIGNUP ])')
+									| {{ existAccount ? ('AUTH.LABEL.GO_BACK' | translate) : ("AUTH.LABEL.SIGN_UP" | translate) }}
+					ng-container(*ngSwitchCase='SIGNIN_STEP.direct')
+						auto-access-workspace(
+							[title]='"AUTH.LABEL.WAIT_A_MOMENT" | translate ',
+							[workspace]='recentWorkspace',
+							(switchWorkspace)='switchWorkspace()',
+							(redirected)='accessWorkspace()')
+					ng-container(*ngSwitchCase='SIGNIN_STEP.workspace')
+						h2
+							| {{ "AUTH.LABEL.SELECT_WORKSPACE" | translate }}
+						ng-container(*ngIf='!workspaces?.length')
+							| {{ "AUTH.MESSAGE.NO_WORKSPACE" | translate }}
+						ng-container(*ngIf='loaded; else loadingTemplate;')
+							cub-scroll-bar.workspace-list(
+								suppressX,
+								detectScroll)
+								.new-workspace-item.workspace(
+									[class.full-width]='!workspaces?.length',
+									(click)='createWorkspace()')
+									.layout-row.layout-align-start-center
+										cub-icon(name='plus', size='16px', color='secondary')
+										.text-semibold.cursor
+											| {{ "AUTH.LABEL.CREATE_NEW_WORKSPACE" | translate }}
+								ng-container(*ngFor='let workspace of workspaces ; ngForTrackByID')
+									.workspace(
+										[class.workspace-item]='itemSelectedID !== workspace.id',
+										[class.workspace-item--selected]='itemSelectedID === workspace.id',
+										[class.workspace-item--fade]='itemFadeID === workspace.id',
+										(click)=`
+											workspace.joined
+												? accessWorkspace( workspace?.id )
+												: ( itemSelectedID !== workspace.id )
+													&& focusInvitation( workspace )`)
+										.workspace-item__content
+											.workspace-icon(
+												[class.workspace-small-icon]='!workspace.joined',
+												[style.background]='workspace?.parsedColor')
+												| {{ workspace?.parsedLabel | empty }}
+											.layout-row.layout-align-start-center.flex
+												.layout-column.flex
+													cub-chip.selected-hide.mb-2(
+														[color]='"indigo" | cubPalette : "600"',
+														*ngIf='!workspace.joined')
+														| {{ "AUTH.LABEL.INVITATION_COMING" | translate }}
+													.text-truncate.text-semibold.maw-136(
+														[title]='workspace?.name | empty')
+														| {{ workspace?.name | empty }}
+													h6.text-truncate.text-color-secondary.maw-136(
+														[title]='workspace?.id | empty')
+														| ID:&nbsp;
+														| {{ workspace?.id | empty }}
+												button.selected-show.remove-button(
+													cubClearButton,
+													size='20px',
+													*ngIf='!workspace.joined',
+													(click)=`
+														$event?.stopPropagation();
+														focusInvitation( workspace, true );`)
+												cub-icon.selected-hide(
+													size='20px',
+													color='secondary',
+													name='chevron-right',
+													[class.d-flex]='workspace.joined')
+										.workspace-item__action(*ngIf='!workspace.joined')
+											button.flex(
+												cubButton='secondary',
+												size='x-small',
+												(click)=`
+													$event.stopPropagation();
+													rejectWorkspace( workspace );`)
+												| {{ "AUTH.LABEL.REJECT" | translate }}
+											button.flex(
+												cubButton='primary',
+												size='x-small',
+												(click)=`
+													$event.stopPropagation();
+													directAcceptWorkspace( workspace );`)
+												| {{ "AUTH.LABEL.ACCEPT" | translate }}
+							span.text-semibold.text-center.mt-16
+								| {{ "AUTH.MESSAGE.SIGN_IN_WITH_ANOTHER_ACCOUNT" | translate }}&nbsp;
+								a((click)='stateNavigate([ PATH?.SIGN_OUT ])')
+									| {{ "AUTH.LABEL.SIGN_OUT" | translate }}
+						ng-template(#loadingTemplate)
+							.mih-350
+								cub-loading.margin-auto
+ng-container(*ngIf='step === SIGNIN_STEP.collect, else elseBlock')
+	general-info([isFromSignUp]='isFromSignUp', (nextStep)='afterCollectInfo()')
+ng-template(#elseBlock)
+	include patterns/auth.pug

@@ -1,0 +1,144 @@
+cub-menu(
+	#baseSettingsMenu,
+	width='320px')
+	cub-menu-header
+		ng-template(cubMenuHeader)
+			cub-form-field(active)
+				input(
+					cubFormFieldInput,
+					clearable,
+					required,
+					[name]='"BASE.LABEL.NAME" | translate',
+					[ngModel]='base.name',
+					[formControl]='baseNameFormControl',
+					[placeholder]='"BASE.PLACEHOLDER.TYPE_BASE_NAME" | translate',
+					(ngModelChange)='newBaseName = $event',
+					(keydown.enter)='renameBase()',
+					(blur)='renameBase()')
+	cub-menu-content
+		ng-template(cubMenuContent)
+			cub-menu-group
+				button(
+					cubMenuItem,
+					icon='user-group-fill',
+					iconColor='primary',
+					(click)='baseExpandService.openDialogRolePermission()')
+					| {{ "BASE.LABEL.ROLE_PERMISSION" | translate }}
+				button(
+					cubMenuItem,
+					icon='bolt-circle',
+					iconColor='primary',
+					(click)='baseExpandService.openDialogWorkflow()')
+					| {{ "BASE.LABEL.AUTOMATE_WORKFLOW" | translate }}
+			cub-menu-group
+				button(
+					cubMenuItem='destructive',
+					icon='trash',
+					(click)='deleteBase()')
+					| {{ "BASE.LABEL.DELETE" | translate }}
+
+cub-popup(
+	#sharePopup,
+	width='568px',
+	(opened)='openSharePopup()',
+	(closed)='closeSharePopup()')
+	ng-container(*ngIf='loadedRole; else notFound;')
+		cub-popup-header
+			ng-template(cubPopupHeader)
+				.layout-row.layout-align-space-between-center.full-width
+					h5
+						| {{ "BASE.LABEL.SHARE" | translate }}
+					button(
+						cubClearButton,
+						size='24px',
+						[cubTooltip]='"BASE.LABEL.CLOSE" | translate',
+						(click)='sharePopup?.close()')
+		cub-popup-content
+			ng-template(cubPopupContent)
+				.layout-row.layout-gap-8.full-width
+					cub-member-picker.full-width(
+						autoFocusOn,
+						limit='3',
+						[strictDisplay]='false',
+						[placeholder]='"BASE.PLACEHOLDER.FIND_USER_TEAM" | translate',
+						[users]='users',
+						[teams]='teams',
+						[selectedUsers]='selectedUsers',
+						[selectedTeams]='selectedTeams',
+						[selectedUserIDs]='availableSelectedUserIDs',
+						[selectedTeamIDs]='availableSelectedTeamIDs',
+						(addedUsers)='addedUsers( $event )',
+						(addedTeams)='addedTeams( $event )',
+						(removedUsers)='removedUsers( $event )',
+						(removedTeams)='removedTeams( $event )')
+					cub-dropdown.base-role-dropdown.w-120(
+						[clearable]='false',
+						[(ngModel)]='roleIDSelected')
+						cub-dropdown-item(
+							*ngFor='let role of roles; ngForTrackByID',
+							[label]='role.name',
+							[description]='role.description',
+							[value]='role.id')
+		cub-popup-footer
+			ng-template(cubPopupFooter)
+				.layout-row.layout-align-space-between-center
+					cub-member-list(
+						limit='3',
+						width='360px',
+						overlayX='start',
+						buttonDiscardTitle='BASE.LABEL.CANCEL',
+						buttonApplyTitle='BASE.LABEL.CONFIRM_REMOVE',
+						[confirmRemovingConfig]=`{
+							title: "BASE.LABEL.REMOVE_ACCESS_ROLE",
+							confirmTitle: "BASE.MESSAGE.REMOVE_ACCESS_ROLE_CONFIRM",
+						}`,
+						[viewListTitle]='"BASE.LABEL.MANAGE_MEMBER_CAN_ACCESS" | translate',
+						[strictDisplay]='false',
+						[canAdd]='false',
+						[selectedUsers]='selectedUsers',
+						[selectedTeams]='selectedTeams',
+						[selectedUserIDs]='availableSelectedUserIDs',
+						[selectedTeamIDs]='availableSelectedTeamIDs',
+						(removed)='remove( $event )')
+					.layout-row.layout-align-start-center-center.layout-gap-12
+						button.w-124(
+							cubButton='secondary',
+							[disabled]='isSubmitting',
+							(click)='sharePopup?.close()')
+							| {{ "BASE.LABEL.CANCEL" | translate }}
+						button.w-160(
+							cubButton,
+							[loading]='isSubmitting',
+							(click)='invite()')
+							| {{ "BASE.LABEL.DONE" | translate }}
+	ng-template(#notFound)
+		cub-popup-content
+			ng-template(cubPopupContent)
+				not-found
+
+ng-template(#contentTmp)
+	ng-container(*ngIf='base.isAdmin; else elseBlock;')
+		button(
+			cubBasicButton,
+			[cubMenuTriggerFor]='baseSettingsMenu')
+			.layout-row.layout-align-start-center.layout-gap-8(
+				[cubTooltip]='"BASE.LABEL.OTHER_SETTINGS" | translate')
+				h4.text.text-truncate(
+					[style.maxWidth]='"500px"',
+					[title]='base.name | empty')
+					| {{ base.name | empty }}
+				cub-icon(
+					size='20px',
+					[name]='baseSettingsMenu.isOpened ? "chevron-up" : "chevron-down"',
+					[color]='"LABEL" | color')
+		button.h-32(
+			cubButton='secondary',
+			[cubPopupTriggerDisableClose]='isChanged',
+			[cubPopupTriggerFor]='sharePopup')
+			.semibold
+				| {{ "BASE.LABEL.SHARE" | translate }}
+	ng-template(#elseBlock)
+		h4.text.text-truncate([style.maxWidth]='"500px"', [title]='base.name | empty')
+			| {{ base.name | empty }}
+
+board(*ngIf='base', [base]='base')

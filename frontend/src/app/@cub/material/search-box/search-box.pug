@@ -1,0 +1,50 @@
+cub-form-field(
+	#formField,
+	[label]='label',
+	[description]='description',
+	[helpText]='helpText',
+	[size]='size',
+	[variant]='variant',
+	[autoWidth]='autoWidth',
+	[includeOuterSize]='includeOuterSize')
+	ng-container(cubFormFieldPrefix)
+		cub-icon(
+			name='search',
+			[size]=`
+				formField.isSmallSize
+					? "16px"
+					: "20px"
+			`)
+	input(
+		cubFormFieldInput,
+		[name]='name || label',
+		[placeholder]='placeholder || ( "CUB.PLACEHOLDER.SEARCH" | translate )',
+		[autoFocusOn]='autoFocusOn',
+		[autoReset]='autoReset',
+		[disabled]='disabled',
+		[readonly]='readonly',
+		[clearable]='clearable',
+		[ngModel]='searchQuery',
+		(ngModelChange)='onSearch( $event )',
+		(focus)='onFocus( $event )',
+		(blur)='onBlur( $event )',
+		(keydown.enter)='searchNext()')
+	.cub-search-box__info(
+		cubFormFieldSuffix,
+		*ngIf='searchInfo')
+		div
+			| {{ searchInfo.current || 0 }}
+			| /
+			| {{ searchInfo.total || 0 }}
+		cub-divider(vertical)
+		button(
+			cubBasicButton,
+			icon='chevron-up',
+			[disabled]='searchInfo.total === 0',
+			(click)='searchPrevious()')
+		cub-divider(vertical)
+		button(
+			cubBasicButton,
+			icon='chevron-down',
+			[disabled]='searchInfo.total === 0',
+			(click)='searchNext()')

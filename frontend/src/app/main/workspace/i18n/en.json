@@ -1,0 +1,27 @@
+{
+	"LABEL": {
+		"ACCOUNT": "Account",
+		"BACK": "Back",
+		"CLOSE": "Close",
+		"DONE": "Done",
+		"EDIT": "Edit",
+		"SAVE": "Save",
+		"WORKSPACE_ACCENT_COLOR": "Workspace accent color",
+		"WORKSPACE_ID": "Workspace ID",
+		"WORKSPACE_NAME": "Workspace name"
+	},
+	"PLACEHOLDER": {
+		"MY_WORKSPACE_ID": "my-workspace-id",
+		"TYPE_WORKSPACE_NAME": "Type a workspace name"
+	},
+	"MESSAGE": {
+		"CREATE_A_WORKSPACE": "Create a workspace",
+		"CREATE_A_WORKSPACE_DESCRIPTION": "In Cubable, everything happens in workspace such as write, plan, track, collaborate, give permission, and mores.",
+		"LOADING_WORKSPACE": "Loading workspace...",
+		"SETTING_UP_HEADER_DESCRIPTION": "We need the informations to personalise the onboarding proccess",
+		"SETTING_UP_HEADER_WORKSPACE_TITLE": "Tell us about your workspace",
+		"WORKSPACE_ID_HINT": "ID can only contain lowercase letters, numbers and \"-\"",
+		"WORKSPACE_ID_PERMANENT": "Workspace ID is permanent and cannot be edited later.",
+		"WORKSPACE_ID_UNAVAILABLE": "This workspace ID already exits."
+	}
+}

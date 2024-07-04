@@ -1,0 +1,33 @@
+ng-template(#content)
+	ng-container(*ngIf='lazyContent?.templateRef; else elseBlock;')
+		ng-container(*ngTemplateOutlet='lazyContent?.templateRef')
+	ng-template(#elseBlock)
+		ng-content
+
+.wgc-drawer__slider(
+	[ngClass]='{\
+		"wgc-drawer__slider--floating": isDrawerFloating,\
+		"wgc-drawer__slider--opened": opened || isHovering,\
+		"wgc-drawer__slider--sliding": isSliding\
+	}')
+	.wgc-drawer__slider__content-wrapper(
+		[@slide]='opened || isHovering ? "opened" : "closed"',
+		(@slide.start)='isSliding = true',
+		(@slide.done)='isSliding = false')
+		.wgc-drawer__slider__content
+			ng-container(*ngIf='isRendered')
+				ng-container(*ngTemplateOutlet='content')
+	.wgc-drawer__slider__divider
+		button.wgc-drawer__slider__divider-btn-toggle(
+			wgcIconButton,
+			circle,
+			size='24px',
+			iconSize='18px',
+			[iconColor]='"LABEL" | color',
+			[color]='bgColor || ( "WHITE" | color )',
+			[wgcTooltip]='( "WGC.LABEL." + ( opened ? "COLLAPSE" : "EXPAND" ) ) | translate',
+			[position]='position === "left" ? "after" : "before"',
+			[icon]='opened ? ( position === "left" ? "minimize-left" : "minimize-right" ) : ( position === "left" ? "minimize-right" : "minimize-left" )',
+			(click)='toggle()')
+		.wgc-drawer__slider__divider-label(*ngIf='label')
+			| {{ label }}

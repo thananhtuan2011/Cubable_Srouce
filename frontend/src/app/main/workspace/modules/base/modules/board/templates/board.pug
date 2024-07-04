@@ -1,0 +1,104 @@
+cub-menu(
+	#boardActionMenu,
+	width='240px',
+	(closed)='onBoardActionMenuClosed( boardActionMenu.context.board )')
+	cub-menu-header
+		ng-template(cubMenuHeader)
+			cub-form-field(active)
+				input(
+					cubFormFieldInput,
+					clearable,
+					required,
+					autoFocusOn,
+					[name]='"BASE.BOARD.LABEL.NAME" | translate',
+					[formControl]='boardNameFormControl',
+					[ngModel]='boardActionMenu.context.board.name',
+					[placeholder]='"BASE.BOARD.PLACEHOLDER.TYPE_BOARD_NAME" | translate',
+					(keydown.enter)='updateBoardName( boardActionMenu.context.board )',
+					(blur)='updateBoardName( boardActionMenu.context.board )',
+					(ngModelChange)='boardName = $event')
+	cub-menu-content
+		ng-template(
+			cubMenuContent,
+			let-board='board')
+			cub-menu-group
+				//- button(
+				//- 	cubMenuItem,
+				//- 	icon='duplicate',
+				//- 	(click)='duplicate( board )')
+				//- 	| {{ "BASE.BOARD.LABEL.DUPLICATE" | translate }}
+				button(
+					cubMenuItem,
+					icon='import',
+					(click)='openPopupImport()')
+					| {{ "BASE.BOARD.LABEL.IMPORT_DATA" | translate }}				
+			cub-menu-group
+				button(
+					cubMenuItem='destructive',
+					icon='trash',
+					(click)='deleteBoard( board )')
+					| {{ "BASE.BOARD.LABEL.DELETE" | translate }}
+
+cub-drawer-container
+	cub-drawer.pt-12(
+		#drawer,
+		width='250px',
+		[(opened)]='isDrawerOpen')
+		.layout-row.layout-align-start-center.layout-gap-4.mb-16
+			cub-search-box.flex(
+				#boardSearchBox,
+				appearance='legacy',
+				[data]='boards',
+				(filtered)='filteredBoards = $event')
+			button(
+				cubBasicButton,
+				icon='chevron-double-left',
+				iconColor='primary',
+				iconSize='24px',
+				[cubTooltip]='"BASE.BOARD.LABEL.COLLAPSE" | translate',
+				(click)='drawer?.close()')
+		ng-container(*ngIf='filteredBoards?.length || ( !filteredBoards?.length && !boardSearchBox.searchQuery ); else elseBlock')
+			cub-scroll-bar(suppressX, detectScroll, *ngIf='filteredBoards?.length')
+				cub-list
+					cub-list-group.layout-gap-4
+						button.item(
+							cubListItem,
+							*ngFor='let board of filteredBoards; ngForTrackByID',
+							[active]='board.id === activeBoard?.id',
+							[class.item--focusing]='board.focusing',
+							[title]='board.name | empty',
+							(click)='changeBoard( board )')
+							.layout-row.layout-align-space-between-center.layout-gap-8.flex
+								.text-left.text-truncate-multi-line([style.--truncate-line]='2')
+									| {{ board.name | empty }}
+								button.more-action-button(
+									cubFloatingButton,
+									icon='more-vertical',
+									*ngIf='base.isAdmin',
+									[disabled]='!board.id',
+									[cubTooltip]='"BASE.BOARD.LABEL.MORE_ACTION" | translate',
+									[cubMenuTriggerFor]='boardActionMenu',
+									[cubMenuTriggerContext]='{ board }',
+									(click)='$event.stopPropagation(); board.focusing = true;')
+			ng-container(*ngIf='base.isAdmin')
+				cub-divider.new-board-button__divider(*ngIf='scroller?.scrollableY')
+				.new-board-button((click)='create()', [class.mb-32]='scroller?.scrollableY')
+					.text-color-secondary
+						button.layout-row.layout-align-start-center.layout-gap-4
+							cub-icon(name='plus', size='16px', color='secondary')
+							.text-color-secondary.text-semibold.text-nowrap.line-height-20
+								| {{ "BASE.BOARD.LABEL.CREATE_NEW" | translate }}
+		ng-template(#elseBlock)
+			not-found
+	cub-drawer-content
+		ng-container(*ngIf='activeBoard; else notFound;')
+			.block-background-color
+			detail(
+				[isDrawerOpen]='isDrawerOpen',
+				[baseID]='base.id',
+				[boardID]='activeBoard.id',
+				[boards]='boards',
+				(boardChange)='changeBoard( $event )')
+		ng-template(#notFound)
+			not-found
+

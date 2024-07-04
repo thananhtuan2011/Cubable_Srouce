@@ -1,0 +1,13 @@
+cub-tabs.mh-16.mt-16(
+	[(selectedIndex)]='selectedIndex')
+	cub-tab([label]='"SETTINGS.WORKSPACE.USER_SYSTEM.LABEL.USER" | translate')
+	cub-tab([label]='"SETTINGS.WORKSPACE.USER_SYSTEM.LABEL.TEAM" | translate')
+	cub-tab([label]='"SETTINGS.WORKSPACE.USER_SYSTEM.LABEL.ROLE_AND_PERMISSION" | translate')
+cub-divider
+ng-container([ngSwitch]='selectedIndex')
+	ng-container(*ngSwitchCase='TABS.USER')
+		user
+	ng-container(*ngSwitchCase='TABS.TEAM')
+		team
+	ng-container(*ngSwitchCase='TABS.ROLE_PERMISSION')
+		role

@@ -1,0 +1,28 @@
+cub-menu(
+	#countryMenu,
+	minWidth='240px',
+	maxHeight='300px')
+	cub-menu-header
+		ng-template(cubMenuHeader)
+			cub-search-box(
+				autoFocusOn,
+				[data]='PHONE_COUNTRIES',
+				[filterPredicate]='filterPredicate')
+	cub-menu-content
+		ng-template(cubMenuContent)
+			button(
+				cubMenuSelectItem,
+				*ngFor=`
+					let pC of searchBox?.filteredData;
+					trackByProperty: "code"
+				`,
+				[selected]='countryCode === pC.code',
+				(click)='changeCountryCode( pC )')
+				ng-container(cubMenuItemPrefix)
+					cub-image(
+						width='26px',
+						height='26px',
+						[src]='pC.code | cubFlagImage')
+				div
+					| {{ pC.name }}
+					| (+{{ pC.dialCode }})

@@ -1,0 +1,40 @@
+.layout-row.layout-align-start-center.layout-gap-16
+	.layout-row.layout-algin-start-center.layout-gap-4.w-142.pv-4.ph-6(
+		[ngClass]='{ "ml-10": !field.isRequired }')
+		.text-color-error(*ngIf='field.isRequired')
+			| *
+		cub-icon(
+			size='20px',
+			[name]='( field.dataType | fieldMetadata ).icon')
+		.text-truncate(
+			[title]='field.name | empty')
+			| {{ field.name | empty }}
+		cub-icon(
+			name='info-circle-fill',
+			size='20px',
+			maxWidth='300px',
+			color='secondary',
+			*ngIf='field.description?.length',
+			[cubTooltip]='field.description')
+	.pv-4.ph-12.flex(
+		[ngClass]='{ "ml-10": field.isRequired }')
+		ng-container([ngSwitch]='field.dataType')
+			ng-template(
+				fieldInputFactory,
+				size='small',
+				variant='filled',
+				displayErrorMode='tooltip',
+				[placeholder]=`
+					!editable
+					&& cellValue === undefined
+						? "--"
+						: !editable
+							? ""
+							: undefined`,
+				[metadata]='metadata',
+				[label]='null',
+				[required]='field.isRequired',
+				[readonly]='!editable',
+				[field]='field',
+				[data]='cellValue',
+				(changed)='onCellDataEdited( $event )')

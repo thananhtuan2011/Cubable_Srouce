@@ -1,0 +1,15 @@
+mixin recordDisplay
+	ng-container([ngSwitch]='displayBy')
+		record-spreadsheet(
+			*ngSwitchCase='DISPLAY_TYPE.SPREADSHEET')&attributes(attributes)
+
+ng-container(*ngIf='viewLayout')
+	.layout-row.layout-wrap.layout-align-start-center.layout-gap-12.ph-16.pv-12.mb-4
+		ng-container(*ngTemplateOutlet='recordDisplay?.displaySettingsTemplate')
+
+	+recordDisplay()(
+		#recordDisplay,
+		[board]='board',
+		[view]='view',
+		[context]='context',
+		[(viewLayout)]='viewLayout')

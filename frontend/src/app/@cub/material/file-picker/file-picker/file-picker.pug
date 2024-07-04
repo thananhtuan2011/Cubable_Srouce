@@ -1,0 +1,85 @@
+mixin left-block
+	cub-list
+		button(
+			cubListItem,
+			[active]='source === CUBFileSource.Local',
+			(click)='selectPicker( CUBFileSource.Local )')
+			cub-icon(
+				name='computer-fill',
+				size='20px')
+			span
+				| {{ "CUB.LABEL.FROM_COMPUTER" | translate }}
+		button(
+			cubListItem,
+			[active]='source === CUBFileSource.GoogleDrive',
+			(click)='selectPicker( CUBFileSource.GoogleDrive )')
+			cub-icon(
+				name='./assets/@cub/images/icons/google-drive.svg',
+				size='20px')
+			span
+				| {{ CUBFileSource.GoogleDrive }}
+		button(
+			cubListItem,
+			[active]='source === CUBFileSource.OneDrive',
+			(click)='selectPicker( CUBFileSource.OneDrive )')
+			cub-icon(
+				name='./assets/@cub/images/icons/one-drive.svg',
+				size='20px')
+			span
+				| {{ CUBFileSource.OneDrive }}
+		button(
+			cubListItem,
+			[active]='source === CUBFileSource.Dropbox',
+			(click)='selectPicker( CUBFileSource.Dropbox )')
+			cub-icon(
+				name='./assets/@cub/images/icons/dropbox.svg',
+				size='20px')
+			span
+				| {{ CUBFileSource.Dropbox }}
+
+mixin right-block
+	ng-container([ngSwitch]='source')
+		cub-local-file-picker(
+			*ngSwitchCase='CUBFileSource.Local',
+			[authorizedKey]='authorizedKey',
+			[fileAccept]='fileAccept',
+			[imageOnly]='imageOnly',
+			[multiSelect]='multiSelect',
+			(picked)='onPicked( $event )',
+			(cancelled)='onCancelled()')
+		cub-google-drive-file-picker(
+			*ngSwitchCase='CUBFileSource.GoogleDrive',
+			[fileAccept]='fileAccept',
+			[imageOnly]='imageOnly',
+			[multiSelect]='multiSelect',
+			(picked)='onPicked( $event )',
+			(cancelled)='onCancelled()')
+		cub-one-drive-file-picker(
+			*ngSwitchCase='CUBFileSource.OneDrive',
+			[fileAccept]='fileAccept',
+			[imageOnly]='imageOnly',
+			[multiSelect]='multiSelect',
+			(picked)='onPicked( $event )',
+			(cancelled)='onCancelled()')
+		cub-dropbox-file-picker(
+			*ngSwitchCase='CUBFileSource.Dropbox',
+			[fileAccept]='fileAccept',
+			[imageOnly]='imageOnly',
+			[multiSelect]='multiSelect',
+			(picked)='onPicked( $event )',
+			(cancelled)='onCancelled()')
+
+cub-popup(
+	#popup,
+	draggable,
+	width='864px',
+	height='552px')
+	cub-popup-content
+		ng-template(cubPopupContent)
+			.cub-file-picker-wrapper
+				.cub-file-picker__left
+					+left-block
+				.cub-file-picker__right
+					+right-block
+
+ng-template(*ngTemplateOutlet='popup.templateRef')

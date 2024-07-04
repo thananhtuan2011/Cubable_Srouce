@@ -1,0 +1,59 @@
+cub-menu(
+	#moreActionMenu,
+	width='240px')
+	cub-menu-content
+		ng-template(cubMenuContent)
+			button(
+				cubMenuItem,
+				icon='check-circle',
+				(click)='markAllAsRead()')
+				| {{ "NOTIFICATION.LABEL.MARK_ALL_AS_READ" | translate }}
+
+div(cubDialogHeader)
+	.layout-row.layout-align-space-between-center
+		.layout-row.layout-align-start-center.layout-gap-8
+			h5
+				| {{ "NOTIFICATION.LABEL.NOTIFICATION" | translate }}
+		.layout-row.layout-align-start-center.layout-gap-12
+			button(
+				cubBasicButton,
+				iconSize='20px',
+				icon='external',
+				[cubTooltip]='"NOTIFICATION.LABEL.EXPAND_NOTIFICATION" | translate',
+				(click)='openNotificationPage()')
+			button(
+				cubClearButton,
+				size='20px',
+				[cubTooltip]='"NOTIFICATION.LABEL.CLOSE" | translate',
+				(click)='close()')
+div(
+	cubDialogContent,
+	[style.padding]='"0px"',
+	[style.backgroundColor]='"WHITE" | color')
+	.layout-column.full-height
+		.layout-row.layout-align-space-between-center.ph-20
+			cub-tabs(
+				alignment,
+				(selectedIndexChange)='onTabChange( $event )')
+				cub-tab
+					ng-template(cubTabHeader)
+						| {{ "NOTIFICATION.LABEL.ALL" | translate }}
+				cub-tab
+					ng-template(cubTabHeader)
+						| {{ "NOTIFICATION.LABEL.UN_READ" | translate }}
+				cub-tab
+					ng-template(cubTabHeader)
+						| {{ "NOTIFICATION.LABEL.RELATE_COMMENT" | translate }}
+			button(
+				cubBasicButton,
+				iconSize='20px',
+				icon='more-vertical',
+				[cubMenuTriggerFor]='moreActionMenu')
+		cub-divider
+		.pl-20.pr-10.full-height(
+			*ngIf='notification',
+			[style.overflow]="'hidden'")
+			notification(
+				[notification]='notification',
+				(notificationChecked)='onNotificationChecked( $event )',
+				(notificationLoadMore)='onNotificationLoadMore( $event )')

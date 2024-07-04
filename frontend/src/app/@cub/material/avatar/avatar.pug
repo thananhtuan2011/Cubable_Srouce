@@ -1,0 +1,22 @@
+.cub-avatar__label(#ref)
+	ng-content
+ng-container(*ngIf='!ref?.childNodes?.length')
+	ng-template(#labelTemp)
+		.cub-avatar__label
+			ng-container(*ngIf='isIconMode( avatar?.mode ) && avatar?.icon; else elseBlock;')
+				cub-icon(
+					[name]='avatar?.icon.name',
+					[color]='avatar?.icon.color',
+					[size]='iconSize')
+			ng-template(#elseBlock)
+				.cub-avatar__label-text
+					| {{ avatar?.label?.text || parsedLabel }}
+	ng-container(*ngIf='( isAutoMode( avatar?.mode )\
+		|| isPhotoMode( avatar?.mode ) )\
+		&& ( isPhotoLoaded$ | async ); else labelTemp;')
+		ng-container(*ngIf='lazy; else elseBlock;')
+			cub-image.cub-avatar__image(
+				[defaultImage]='defaultPhoto || "assets/images/loading.gif"',
+				[errorImage]='errorPhoto || avatar?.photo')
+		ng-template(#elseBlock)
+			img.cub-avatar__image([src]='avatar?.photo')

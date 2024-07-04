@@ -1,0 +1,98 @@
+mixin item-label
+	ng-container(*ngIf='searchBox; else elseBlock;')
+		span([innerHtml]='item?.label | markText : searchBox?.searchQuery : true')
+	ng-template(#elseBlock)
+		span([innerHtml]='item?.label')
+
+mixin item-content
+	wgc-icon.wgc-list-item__drag-handle(
+		cdkDragHandle,
+		name='drag',
+		size='20px',
+		*ngIf='item?.draggable && !item?.disabled',
+		[class.wgc-list-item__drag-handle--hidden]='!item?.draggable')
+	.wgc-list-item__content(
+		[autoUnhighlight]='item?.autoUnhighlight || item?.isDropped',
+		[highlightDisabled]='item?.disabled',
+		[highlightState]='item?.highlight || item?.isDropped',
+		(highlightStateChange)='item?.onHighlightStateChange( $event )',
+		(click)='item?.click( $event )')
+		.wgc-list-item__content-wrapper
+			wgc-color-dot.wgc-list-item__content-color-dot(
+				*ngIf='displayColorDot',
+				[viewOnly]='item?.readonly',
+				[(color)]='item.dotColor',
+				(colorChange)='item?.dotColorChange?.emit( $event )')
+			.wgc-list-item__content-label(*ngIf='item?.label')
+				wgc-icon.wgc-list-item__content-icon(size='20px', *ngIf='item?.icon', [name]='item?.icon')
+				wgc-inline-input(
+					ngDefaultControl,
+					[name]='name || ( "WGC.LABEL.LABEL" | translate )',
+					[placeholder]='placeholder || ( "WGC.PLACEHOLDER.TYPE_LABEL" | translate )',
+					[formControl]='formControl',
+					[ngModel]='item?.label',
+					[(editing)]='item.isEditing',
+					(ngModelChange)='item?.labelChange?.emit( $event )',
+					(editingChange)='item?.editing?.emit( $event )',
+					(saved)='item?.save( $event )',
+					(cancelled)='item?.cancel( $event )')
+					ng-container(*ngIf='item?.truncate; else elseBlock;')
+						wgc-truncate([limitLine]='item?.truncateLimitLine')
+							+item-label
+					ng-template(#elseBlock)
+						+item-label
+			ng-container(*ngTemplateOutlet='item?.templateRef')
+		.wgc-list-item__content-description(*ngIf='item?.description')
+			ng-container(*ngIf='item?.truncate; else elseBlock;')
+				wgc-truncate([limitLine]='item?.truncateLimitLine')
+					| {{ item?.description }}
+			ng-template(#elseBlock)
+				| {{ item?.description }}
+
+.wgc-list-wrapper(
+	wgcScrollBar,
+	suppressScrollX,
+	detectScroll,
+	[suppress]='!hasScrollBar',
+	[mode]='scrollBarMode',
+	[reachBottomBuffer]='itemSize * loadMoreBuffer',
+	(scrollReachBottom)='loadMore?.emit( !!$event )',
+	(viewPortChanged)='!scroller?.scrollableY && scroller?.triggerScroll()')
+	div(
+		wgcScrollBarViewPort,
+		cdkDropList,
+		[cdkDropListData]='items',
+		(cdkDropListDropped)='onDropped( $event )')
+		.wgc-list-item(
+			cdkDrag,
+			wgcScrollBarViewPortItem,
+			cdkDragLockAxis='y',
+			#viewPortItem='wgcScrollBarViewPortItem',
+			*ngFor='let item of items | orderBy: [ "+order" ]; trackBy: "id" | trackByFn;',
+			[ngClass]='item?.classes',
+			[style.minHeight.px]='itemSize',
+			[class.wgc-list-item--active]='item?.active',
+			[class.wgc-list-item--disabled]='item?.disabled',
+			[class.wgc-list-item--focusing]='item?.focusing',
+			[class.wgc-list-item--hovering]='item?.hovering',
+			[class.wgc-list-item--dragging]='item?.dragging',
+			[cdkDragDisabled]='!item?.draggable || item?.disabled',
+			(cdkDragStarted)='item.dragging = true',
+			(cdkDragEnded)='item.dragging = false',
+			(mouseenter)='item.hovering = true',
+			(mouseleave)='item.hovering = false')
+			ng-container(*ngIf='hasScrollBar; else elseBlock;')
+				ng-container(*ngCacheIf='skipCheckInViewPort || viewPortItem?.isInViewPort; else elseBlock;')
+					+item-content
+				ng-template(#elseBlock)
+					.wgc-list-item__content
+						.wgc-list-item__content-wrapper
+							.wgc-list-item__content-label
+								wgc-icon.wgc-list-item__content-icon(size='20px', *ngIf='item?.icon', [name]='item?.icon')
+								ng-container(*ngIf='item?.truncate; else elseBlock;')
+									wgc-truncate([limitLine]='item?.truncateLimitLine')
+										+item-label
+								ng-template(#elseBlock)
+									+item-label
+			ng-template(#elseBlock)
+				+item-content

@@ -1,0 +1,84 @@
+@import 'src/app/@cub/scss/partials/variable';
+
+:host {
+	display: flex;
+	width: 100%;
+	min-width: 0;
+	height: 100%;
+	min-height: 0;
+
+	background-color: $color-material-background;
+
+	&:has(.cub-divider.new-board-button__divider) {
+		.item:last-child {
+			margin-bottom: 10px;
+		}
+	}
+
+	.item {
+		min-height: 42px;
+		align-items: center;
+
+		&:focus-visible,
+		&:hover,
+		&.item--focusing {
+			background-color: $color-material-focus;
+
+			.more-action-button {
+				opacity: 1;
+				display: block;
+			}
+		}
+
+		.more-action-button {
+			opacity: 0;
+			display: none;
+		}
+	}
+
+	cub-scroll-bar {
+		height: fit-content;
+	}
+
+	.cub-divider.new-board-button__divider {
+		margin: {
+			right: -8px;
+			left: -12px;
+			bottom: 6px;
+		};
+	}
+
+	.new-board-button {
+		display: flex;
+		justify-content: flex-start;
+		width: 100%;
+		border-radius: 8px;
+		border: none;
+		padding: 8px 8px 8px 16px;
+		margin-top: 4px;
+
+		cursor: pointer;
+
+		&:hover {
+			background-color: $color-material-focus;
+		}
+	}
+
+	.block-background-color {
+		position: absolute;
+		height: 320px;
+		width: 100%;
+		border-radius: 24px 0 0;
+		background: linear-gradient(91deg, #3dbca5 -1.64%, #4612b1 100.37%);
+	}
+
+	&::ng-deep {
+		.cub-drawer-container .cub-drawer-content {
+			backdrop-filter: unset;
+			padding: {
+				left: 0 !important;
+				top: 0;
+			}
+		}
+	}
+}

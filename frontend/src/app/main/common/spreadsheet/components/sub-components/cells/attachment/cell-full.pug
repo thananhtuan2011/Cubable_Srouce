@@ -1,0 +1,23 @@
+button(
+	cubBasicButton,
+	icon='plus-circle',
+	iconSize='16px',
+	*ngIf='!readonly',
+	(click)='pickFile()')
+ng-container(
+	*ngIf='data?.length')
+	.layout-row.layout-gap-6.full-height.unscrollable
+		cub-file.clickable(
+			showNameOnTooltip,
+			*ngFor=`
+				let file of data;
+				index as idx;
+				trackByID
+			`,
+			[file]='file',
+			(click)='previewFile( idx )')
+	button.field-cell__btn-stick-on-content(
+		cubBasicButton,
+		icon='expand',
+		iconSize='16px',
+		(click)='manageFiles()')

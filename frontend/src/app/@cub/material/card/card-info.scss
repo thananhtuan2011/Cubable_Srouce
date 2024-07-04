@@ -1,0 +1,53 @@
+@import '../../scss/partials/variable';
+@import '../../scss/partials/mixin';
+
+.cub-card-info {
+	$self: &;
+
+	display: flex;
+	align-items: center;
+	padding: 8px 16px;
+
+	border-bottom-left-radius: 12px;
+	border-bottom-right-radius: 12px;
+
+	background-color: $color-transparent-dark-grey-5;
+
+	word-break: break-word;
+
+	backdrop-filter: blur(12.5px);
+
+	#{ $self }__leading-icon {
+		margin-right: 8px;
+	}
+
+	#{ $self }__trailing-icon {
+		margin-left: 8px;
+	}
+
+	#{ $self }__content {
+		width: 100%;
+		min-width: 0;
+		max-width: 100%;
+
+		#{ $self }__title,
+		#{ $self }__description {
+			@include text-truncate;
+
+			&:empty {
+				display: none;
+			}
+		}
+
+		#{ $self }__title {
+			font-weight: $font-weight-semibold;
+		}
+
+		#{ $self }__description {
+			color: $color-text-secondary;
+
+			font-size: 12px;
+			line-height: 16px;
+		}
+	}
+}

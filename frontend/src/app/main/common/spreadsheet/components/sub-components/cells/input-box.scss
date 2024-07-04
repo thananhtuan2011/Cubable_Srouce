@@ -1,0 +1,38 @@
+@import 'src/app/@cub/scss/partials/variable';
+
+:host {
+	display: block;
+	width: 100%;
+	min-width: 0;
+	max-width: 100%;
+
+	&:empty {
+		&[placeholder] {
+			&:before {
+				content: attr(placeholder);
+
+				display: block;
+
+				color: $color-text-tertiary;
+
+				font-size: 11px;
+				font-style: italic;
+				font-weight: 400;
+				line-height: 20px;
+			}
+		}
+	}
+
+	&[type='hyperlink'] {
+		color: $color-text-blue;
+	}
+
+	&[type='number'] {
+		width: fit-content;
+		min-width: 100%;
+		max-width: none;
+
+		text-align: right;
+		white-space: nowrap;
+	}
+}

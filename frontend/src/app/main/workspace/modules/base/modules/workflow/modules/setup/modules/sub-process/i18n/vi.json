@@ -1,0 +1,21 @@
+{
+	"LABEL": {
+		"SELECT_ROW": "Chọn hàng",
+		"AT": "Tại",
+		"ROW_MATCH_CONDITION": "Hàng dữ liệu khác thoả điều kiện",
+		"CONDITION_LIST": "Danh sách điều kiện",
+		"CHANGE": "Thay đổi",
+		"SET_CONDITION": "Đặt điều kiện bổ sung ",
+		"CHANGE_EVENT": "Thay đổi sự kiện",
+		"COMPLETE_WHEN": "Quy trình phụ được hoàn thành khi",
+		"ALL_ROW_COMPLETE": "Tất cả các hàng con thực hiện xong quy trình phụ",
+		"SOME_ROW_COMPLETE": "Một hàng con bất kỳ thực hiện xong quy trình phụ",
+		"ROW_FROM_EVENT": "Hàng từ {{ eventName }}",
+		"ONLY_ROW_MATCH_CONDITION": "Chỉ khi hàng thoả điều kiện"
+	},
+	"MESSAGE": {
+		"SOME_ROW_COMPLETE_HINT": "Lúc này, những hàng con chưa thực hiện xong sẽ dừng chạy",
+		"CHANGE_EVENT": "Thay đổi này sẽ làm vô hiệu hóa những cấu hình hiện tại và ảnh hưởng đến khả năng hoạt động của những sự kiện liên quan. Bạn chắc chứ?",
+		"ROW_RECORD_OF": "Hàng dữ liệu thuộc"
+	}
+}

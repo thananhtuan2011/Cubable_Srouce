@@ -1,0 +1,35 @@
+.flex.layout-row.layout-gap-6.layout-align-start-start.full-width
+	.field-cell__block-content.flex
+		cub-chip.layout-row.layout-gap-4(
+			*ngFor='let option of selectedOptions$ | async; ngForTrackByID',
+			[class.field-cell__block-content--error]='option.error',
+			[hasAvatar]='!option.error')
+			cub-member(
+				avatarSize='small',
+				[hasViewProfile]='false',
+				[member]='option')
+			button(
+				tabindex='-1',
+				*ngIf='!readonly && field.isMultipleSelect',
+				(click)='$event.stopPropagation(); removeValue( option );')
+				cub-icon(name='close', size='12px')
+		button(
+			cubBasicButton,
+			icon='plus-circle',
+			iconSize='16px',
+			*ngIf='!readonly && field.isMultipleSelect',
+			(click)='$event.stopPropagation(); openOptionPicker();')
+	ng-container(*ngIf='field.isMultipleSelect; else elseBlock;')
+		button.field-cell__btn-stick-on-content(
+			cubBasicButton,
+			icon='expand',
+			iconSize='16px',
+			*ngIf='!readonly && data?.selected.length > 0',
+			(click)='$event.stopPropagation(); openPeoplePopup( $event );')
+	ng-template(#elseBlock)
+		button.field-cell__btn-stick-on-content(
+			cubBasicButton,
+			iconSize='16px',
+			icon='chevron-down',
+			*ngIf='!readonly',
+			(click)='$event.stopPropagation(); openOptionPicker();')

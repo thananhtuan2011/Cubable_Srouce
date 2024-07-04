@@ -1,0 +1,12 @@
+mixin toggleButton
+	.cub-show-more__btn-toggle(
+		*ngIf='isHidden || opened',
+		(click)='toggle()')
+		| {{ "CUB.LABEL.SHOW_" + ( opened ? "LESS" : "MORE" ) | translate }}
+
+.cub-show-more__content(
+	#showMoreContent,
+	[class.cub-show-more__content--full]='opened')
+	ng-content
+ng-container(*ngIf='variant === variantType.BreakLine')
+	+toggleButton

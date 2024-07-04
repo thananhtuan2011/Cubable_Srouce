@@ -1,0 +1,24 @@
+.wgc-truncate {
+	&:empty,
+	&.wgc-truncate--empty {
+		display: none;
+	}
+
+	&:not(.wgc-truncate--disabled) {
+		&.wgc-truncate--single-line {
+			> p {
+				word-break: break-all;
+			}
+		}
+
+		> p {
+			overflow: hidden;
+			white-space: pre-line;
+			word-break: break-word;
+			display: -webkit-box;
+			-webkit-box-orient: vertical;
+			-webkit-line-clamp: var(--truncate-line, 2);
+			margin: 0;
+		}
+	}
+}

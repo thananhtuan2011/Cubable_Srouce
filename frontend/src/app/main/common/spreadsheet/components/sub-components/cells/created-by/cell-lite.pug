@@ -1,0 +1,5 @@
+cub-chip(hasAvatar, *ngIf='data')
+	cub-member(
+		avatarSize='small',
+		[hasViewProfile]='false',
+		[member]='data.selected?.[ 0 ]')

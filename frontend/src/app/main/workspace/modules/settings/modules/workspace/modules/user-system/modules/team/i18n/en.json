@@ -1,0 +1,35 @@
+{
+	"LABEL": {
+		"ACTIVATE": "Activate",
+		"ACTIVE": "Active",
+		"ADD_MEMBER": "Add member",
+		"AVATAR": "Avatar",
+		"CLOSE": "Close",
+		"CREATE": "Create",
+		"CREATE_NEW_TEAM": "Create new team",
+		"DEACTIVATE": "Deactivate",
+		"DEACTIVATE_TEAM": "Deactivate team",
+		"DELETE": "Delete",
+		"DELETE_TEAM": "Delete team",
+		"EDIT": "Edit",
+		"INACTIVE": "Inactive",
+		"MORE_ACTIONS": "More actions",
+		"NAME": "Name",
+		"SAVE": "Save",
+		"SEARCH": "Search",
+		"SORT_DOWN": "Sort down",
+		"SORT_UP": "Sort up",
+		"STATUS": "Status",
+		"TEAM_MEMBERS": "Team members",
+		"TEAM_SELECTED_COUNT": "{{ count }} selected",
+		"UNSORT_DOWN": "Unsort down",
+		"UNSORT_UP": "Unsort up"
+	},
+	"PLACEHOLDER": {
+		"TYPE_NAME": "Type a name"
+	},
+	"MESSAGE": {
+		"DEACTIVATE_TEAM_CONFIRM": "This may temporarily affect the accessibility of team members to a few boards. Are you sure?",
+		"DELETE_TEAM_CONFIRM": "This may temporarily remove the accessibility of team members to a few boards. Are you sure?"
+	}
+}

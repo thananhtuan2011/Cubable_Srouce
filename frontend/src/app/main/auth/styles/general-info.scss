@@ -1,0 +1,98 @@
+@import 'src/scss/partials/variable';
+
+:host {
+	display: flex;
+	flex-direction: column;
+	width: 100%;
+	min-width: 0;
+	max-width: 100vw;
+	height: 100%;
+	min-height: 0;
+	max-height: 100vh;
+
+	.background-image {
+		&::before {
+			content: '';
+			position: absolute;
+			top: 0;
+			left: 0;
+			width: 100%;
+			height: 100%;
+			backdrop-filter: blur(3px);
+			background-color: rgba(36, 36, 38, .5);
+			z-index: 2;
+		}
+
+		.image {
+			background-image: url('/assets/images/bg-board.webp');
+			background-size: cover;
+			background-repeat: no-repeat;
+			height: 100vh;
+			width: 100vw;
+			z-index: 1;
+		}
+	}
+
+	.layout {
+		padding: 30px 30px 0;
+		border-radius: 20px;
+		border: solid 1px $color-border;
+		background-color: $color-white;
+		width: 700px;
+		align-items: start;
+		overflow: hidden;
+
+		.content {
+			flex: 1 1 auto;
+			width: 100%;
+			align-items: start;
+
+			.title {
+				font: {
+					size: 24px;
+					weight: $font-weight-semibold;
+				};
+			}
+
+			.detail-title {
+				font: {
+					size: 20px;
+					weight: $font-weight-semibold;
+				};
+			}
+
+			form {
+				overflow: auto;
+				max-height: 50vh;
+			}
+		}
+	}
+
+	&::ng-deep {
+		.wgc-form-field {
+			&.wgc-form-field--valid:not(.wgc-form-field--pristine) {
+				.wgc-form-field__input-container {
+					border: 2.5px solid color(indigo, 700);
+
+					.wgc-form-field__input {
+						input {
+							color: color(indigo, 700);
+						}
+					}
+				}
+			}
+
+			&.wgc-form-field--invalid:not(.wgc-form-field--untouched) {
+				.wgc-form-field__input-container {
+					border: 2.5px solid color(red, 700);
+
+					.wgc-form-field__input {
+						input::placeholder {
+							color: color(red, 700);
+						}
+					}
+				}
+			}
+		}
+	}
+}

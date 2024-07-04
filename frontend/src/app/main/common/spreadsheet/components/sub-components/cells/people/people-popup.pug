@@ -1,0 +1,41 @@
+cub-popup(#popup, width='500px')
+	cub-popup-header
+		ng-template(cubPopupHeader)
+			.layout-row.layout-align-space-between-center
+				.layout-row.layout-align-start-center.layout-gap-8
+					cub-icon(
+						size='16px',
+						[name]='field.dataType | fieldMetadata : "icon"')
+					| {{ field.name }}
+				button(
+					cubClearButton,
+					size='20px',
+					(click)='close()')
+	cub-popup-content
+		ng-template(cubPopupContent)
+			.layout-column.layout-gap-12
+				.layout-row.layout-gap-6.layout-wrap
+					cub-chip.layout-row.layout-gap-4(
+						hasAvatar,
+						*ngFor='let option of selectedOptions$ | async; ngForTrackByID')
+						cub-avatar(
+							size='small',
+							panelClass='cub-member',
+							[label]='option.name',
+							[avatar]='option.avatar')
+						span.text-truncate(
+							[attr.title]='option.name')
+							| {{ option.name }}
+						button(
+							*ngIf='!readonly',
+							(click)='removeOption( option )')
+							cub-icon(name='close', size='12px')
+				button(
+					cubBasicButton,
+					icon='plus-circle',
+					iconSize='16px',
+					*ngIf='!readonly',
+					(click)='openOptionPicker( $event )')
+					| {{ "SPREADSHEET.LABEL.ADD_MORE" | translate }}
+
+ng-container(*ngTemplateOutlet='popup.templateRef')

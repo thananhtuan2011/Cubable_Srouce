@@ -1,0 +1,34 @@
+:host {
+	[wgcDialogContent] {
+		padding: 0;
+
+		.wgc-dialog-reaction__search-box {
+			padding: 0 20px;
+			margin-top: 15px;
+			margin-bottom: 5px;
+		}
+
+		.wgc-dialog-reaction__item-list {
+			padding: 0 30px 10px;
+
+			.wgc-dialog-reaction__item {
+				padding: 10px 0;
+				display: flex;
+				align-items: center;
+
+				.wgc-dialog-reaction__item__name {
+					display: flex;
+					flex-grow: 1;
+					margin-right: 5px;
+				}
+
+				.wgc-dialog-reaction__item__icon {
+					border-radius: 20px;
+					width: 24px;
+					height: 24px;
+					margin-left: 10px;
+				}
+			}
+		}
+	}
+}

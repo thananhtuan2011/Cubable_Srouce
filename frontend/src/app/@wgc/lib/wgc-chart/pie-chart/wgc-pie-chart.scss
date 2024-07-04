@@ -1,0 +1,37 @@
+.wgc-pie-chart {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	position: relative;
+	width: var(--pie-chart-size, 100%);
+	min-width: 0;
+	height: var(--pie-chart-size, 100%);
+	min-height: 0;
+
+	&.wgc-pie-chart--empty {
+		canvas {
+			display: none !important;
+		}
+	}
+
+	&:not(.wgc-pie-chart--empty) {
+		not-found {
+			display: none !important;
+		}
+	}
+
+	canvas {
+		max-width: 100%;
+		max-height: 80%;
+		align-self: center;
+	}
+
+	not-found {
+		width: 100%;
+		min-width: 0;
+		height: 100%;
+		min-height: 0;
+		margin-top: 50px;
+	}
+}

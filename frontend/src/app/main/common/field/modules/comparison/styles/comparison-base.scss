@@ -1,0 +1,30 @@
+@import 'src/app/@cub/scss/partials/variable';
+
+:host {
+	display: flex;
+	width: 100%;
+	min-width: 0;
+	height: 100%;
+	min-height: 0;
+}
+
+.event-fields__empty {
+	display: flex;
+	align-items: center;
+	width: 100%;
+	min-width: 0;
+	height: 40px;
+	min-height: 40px;
+	max-height: 40px;
+	border-radius: 8px;
+	padding-left: 12px;
+	padding-right: 12px;
+
+	background-color: white;
+}
+
+::ng-deep {
+	.cub-menu__comparison-advance {
+		margin: -8px 0;
+	}
+}

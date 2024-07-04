@@ -1,0 +1,10 @@
+ng-container(*ngIf='isFormBuilder; else internal;')
+	builder(
+		[board]='board',
+		[form]='form',
+		(isInternalFormChange)='isFormBuilder = false')
+ng-template(#internal)
+	internal.mt-16(
+		[form]='form',
+		[boardID]='board.id',
+		(formBuilderChange)='isFormBuilder = true')

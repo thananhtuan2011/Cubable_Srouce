@@ -1,0 +1,44 @@
+mixin input
+	input(
+		autoFocusOn,
+		autoReset,
+		wgcFormFieldInput,
+		#input='wgcFormFieldInput',
+		[style.width.ch]='input?.value?.length || value?.length || placeholder?.length || undefined',
+		[trim]='trim',
+		[name]='name',
+		[placeholder]='placeholder',
+		[(ngModel)]='value',
+		(keydown)='$event?.stopPropagation()',
+		(keyup)='$event?.stopPropagation()',
+		(keyup.enter)='onSave()',
+		(keyup.esc)='onCancel()',
+		(blur)='onAutoSave()')&attributes(attributes)
+
+ng-container(*ngIf='editing && !disabled; else elseBlock;')
+	ng-container(*ngIf='validation; else elseBlock;')
+		wgc-tooltip(
+			messageOnly,
+			#errorTooltipCmp,
+			maxWidth='300px',
+			[color]='"DANGER" | color')
+			div(
+				*ngFor='let error of formControl?.errors | controlErrors : ( name || ( "WGC.LABEL.INPUT" | translate ) ) : multiErrors',
+				[innerHtml]='error')
+		div(
+			programmatically,
+			style='width: -webkit-fill-available',
+			position='below',
+			originX='start',
+			overlayX='start',
+			#errorTooltip='wgcTooltip',
+			[panelClass]='null',
+			[disabled]='!formControl?.touched || !input?.focusing',
+			[wgcTooltip]='errorTooltipCmp')
+			+input()(
+				[formControl]='formControl',
+				(focus)='formControl?.updateValueAndValidity({ emitEvent: true })')
+	ng-template(#elseBlock)
+		+input
+ng-template(#elseBlock)
+	ng-content

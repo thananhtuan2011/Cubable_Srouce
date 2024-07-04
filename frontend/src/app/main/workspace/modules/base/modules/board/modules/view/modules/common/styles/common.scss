@@ -1,0 +1,31 @@
+@import 'src/scss/partials/variable';
+
+:host {
+	&::ng-deep {
+		.view-name-input {
+			margin-left: 8px;
+
+			.cub-form-field__input {
+				width: 140px;
+				height: 20px;
+				min-height: 20px;
+				padding: 0 12px;
+				border-radius: 4px;
+
+				input {
+					font-size: 13px;
+					min-height: 18px;
+				}
+
+				.cub-form-field__input__suffix {
+					height: 18px;
+				}
+			}
+		}
+	}
+
+	.view-name {
+		line-height: 20px;
+		flex-grow: 1;
+	}
+}

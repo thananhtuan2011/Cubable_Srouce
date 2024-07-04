@@ -1,0 +1,41 @@
+{
+	"LABEL": {
+		"ADD_ATTACHMENT": "Thêm tập tin",
+		"REMOVE": "Xóa",
+		"UN_NAME": "Chưa đặt tên",
+		"ERROR": "Lỗi",
+		"STATIC_VALUE": "Giá trị tĩnh",
+		"EMPTY_VALUE": "Giá trị trống",
+		"DYNAMIC_VALUE": "Giá trị động",
+		"NO_NAME": "Không có tên",
+		"FIELD": "Trường dữ liệu",
+		"DATA_ON_SAME_ROW": "Dữ liệu trên cùng hàng",
+		"ROW_FROM_EVENT_BEFORE": "Hàng dữ liệu từ sự kiện trước đó",
+		"ROW_FROM_EVENT": "Hàng kết quả từ {{ eventName }}",
+		"SELECT_DYNAMIC": "Chọn...",
+		"NO_FIELDS": "Không có trường dữ liệu nào",
+		"USE_DATA_FROM": "Sử dụng dữ liệu từ..."
+	},
+	"MESSAGE": {
+		"EQUAL": "Gán giá trị bằng giá trị hiện tại",
+		"PLUS": "Gán giá trị bằng:\nGiá trị hiện tại + Giá trị động được chọn",
+		"MINUS": "Gán giá trị bằng:\nGiá trị hiện tại - Giá trị động được chọn",
+		"MULTIPLY": "Gán giá trị bằng:\nGiá trị hiện tại × Giá trị động được chọn",
+		"DIVIDE": "Gán giá trị bằng:\nGiá trị hiện tại ÷ Giá trị động được chọn",
+		"FORMULA_EMPTY": "Đây là kết quả của Công thức mặc định. Người dùng không thể nhập liệu thủ công",
+		"PLEASE_TYPE_VALUE": "Vui lòng nhập giá trị"
+	},
+	"PLACEHOLDER": {
+		"EMPTY_VALUE": "Giá trị trống",
+		"FILL_FORMULA": "Nhập công thức",
+		"FILL_PROGRESS": "Nhập tiến độ",
+		"FILL_RATING": "Nhập đánh giá",
+		"FILL_TEXT": "Nhập văn bản",
+		"SELECT": "Lựa chọn",
+		"SELECT_VALUE": "Chọn giá trị",
+		"INPUT_OR_SELECT_VALUE": "Nhập hoặc chọn giá trị"
+	},
+	"ERROR": {
+		"INPUT_OR_SELECT_VALUE": "Vui lòng nhập hoặc chọn giá trị"
+	}
+}

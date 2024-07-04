@@ -1,0 +1,228 @@
+//- .maw-300(
+//- 	#group='fieldInputGroup',
+//- 	fieldInputGroup,
+//- 	(dataChange)='console.log( "Group data change", $event )',
+//- 	(submit)='console.log( "Group submit", $event )',
+//- 	(validate)='console.log( "Group validate", $event )')
+//- 	.layout-row.layout-gap-10.m-20
+//- 		button(
+//- 			cubButton,
+//- 			[disabled]='group.invalid',
+//- 			(click)='group.submit( false )')
+//- 			| Submit
+//- 		button(
+//- 			cubButton='secondary',
+//- 			(click)='group.validate( false )')
+//- 			| Validate
+//- 		button(
+//- 			cubButton='secondary',
+//- 			(click)='group.reset( false )')
+//- 			| Reset
+//- 	.m-20(
+//- 		*ngFor='let c of columns')
+//- 		ng-template(
+//- 			fieldInputFactory,
+//- 			size='small',
+//- 			variant='filled',
+//- 			displayErrorMode='tooltip',
+//- 			[field]='c.field',
+//- 			[data]='rows[ 0 ].data[ c.id ]',
+//- 			[metadata]='{ "5": { singleLine: true } }',
+//- 			(dataChange)='console.log( "Data change", $event, group.get( c.field.id ) )',
+//- 			(changed)='console.log( "Changed", $event )',
+//- 			(validate)='console.log( "Validate", $event )')
+
+cub-menu(
+	#generateRowMenu,
+	minWidth='100px')
+	cub-menu-content
+		ng-template(cubMenuContent)
+			button(
+				cubMenuSelectItem,
+				*ngFor='let num of [ 10, 50, 100, 500, 1000, 10000, 100000 ]',
+				[selected]='rows.length === num',
+				(click)='generateRow( num )')
+				| {{ num }}
+
+cub-menu(
+	#rowSizeMenu,
+	minWidth='100px')
+	cub-menu-content
+		ng-template(cubMenuContent)
+			button(
+				cubMenuSelectItem,
+				*ngFor='let rowSize of ROW_SIZES',
+				[selected]='config.row.size === rowSize',
+				(click)='spreadsheet.setRowSize( rowSize )')
+				| {{ rowSize }}
+
+cub-popup(
+	#groupPopup,
+	minWidth='460px',
+	maxHeight='500px')
+	cub-popup-content
+		//- ng-template(cubPopupContent)
+		.layout-column.layout-gap-16(
+			*ngVar='{ groupingColumns: [{ column: undefined, sortType: 0, isNew: true }] }; let localVar;')
+			.layout-row.layout-gap-12.layout-align-start-center(
+				*ngFor='let gc of localVar.groupingColumns; index as index;')
+				cub-dropdown.w-150(
+					required,
+					[ngModel]='gc.column',
+					(ngModelChange)='spreadsheet.groupByColumn( $event, gc.sortType ? "desc" : "asc", gc.column ); gc.column = $event; localVar.groupingColumns.length < 3 && gc.isNew && localVar.groupingColumns.push({ column: undefined, sortType: 0, isNew: true }); gc.isNew = false;')
+					cub-dropdown-item(
+						*ngFor='let column of spreadsheet.getGroupableColumns( gc.column ); trackByID',
+						[label]='column.field.name',
+						[value]='column')
+				ng-container(*ngIf='gc.column')
+					cub-button-toggle.flex(
+						[selectedIndex]='gc.sortType',
+						(selectedIndexChange)='spreadsheet.groupByColumn( gc.column, $event ? "desc" : "asc" ); gc.sortType = $event;')
+						button(cubButtonToggleItem)
+							| A -> Z
+						button(cubButtonToggleItem)
+							| Z -> A
+					button(
+						cubBasicButton,
+						type='destructive',
+						icon='trash',
+						(click)='spreadsheet.ungroupByColumn( gc.column ); localVar.groupingColumns.splice( index, 1 ); !localVar.groupingColumns[ localVar.groupingColumns.length - 1 ]?.isNew && localVar.groupingColumns.push({ column: undefined, sortType: 0, isNew: true });')
+
+cub-popup(
+	#sortPopup,
+	minWidth='460px',
+	maxHeight='500px')
+	cub-popup-content
+		//- ng-template(cubPopupContent)
+		.layout-column.layout-gap-16(
+			*ngVar='{ sortingColumns: [{ column: undefined, sortType: 0, isNew: true }] }; let localVar;')
+			.layout-row.layout-gap-12.layout-align-start-center(
+				*ngFor='let gc of localVar.sortingColumns; index as index;')
+				cub-dropdown.w-150(
+					required,
+					[ngModel]='gc.column',
+					(ngModelChange)='spreadsheet.sortByColumn( $event, gc.sortType ? "desc" : "asc", gc.column ); gc.column = $event; gc.isNew && localVar.sortingColumns.push({ column: undefined, sortType: 0, isNew: true }); gc.isNew = false;')
+					cub-dropdown-item(
+						*ngFor='let column of spreadsheet.getSortableColumns( gc.column ); trackByID',
+						[label]='column.field.name',
+						[value]='column')
+				ng-container(*ngIf='gc.column')
+					cub-button-toggle.flex(
+						[selectedIndex]='gc.sortType',
+						(selectedIndexChange)='spreadsheet.sortByColumn( gc.column, $event ? "desc" : "asc" ); gc.sortType = $event;')
+						button(cubButtonToggleItem)
+							| A -> Z
+						button(cubButtonToggleItem)
+							| Z -> A
+					button(
+						cubBasicButton,
+						type='destructive',
+						icon='trash',
+						(click)='spreadsheet.unsortByColumn( gc.column ); localVar.sortingColumns.splice( index, 1 ); !localVar.sortingColumns[ localVar.sortingColumns.length - 1 ]?.isNew && localVar.sortingColumns.push({ column: undefined, sortType: 0, isNew: true });')
+
+cub-menu(
+	#customizeMenu,
+	minWidth='300px',
+	maxHeight='500px')
+	cub-menu-content
+		ng-template(cubMenuContent)
+			button(
+				cubMenuItem,
+				*ngFor='let column of spreadsheet.columns; trackByID',
+				[leadingIcon]='column.field.icon',
+				[autoClose]='false')
+				| {{ column.field.name }}
+				ng-container(cubMenuItemSuffix)
+					button(
+						cubBasicButton,
+						iconSize='18px',
+						[icon]='column.hidden ? "eye-slash" : "eye"',
+						(click)='column.hidden ? spreadsheet.unhideColumn( column ) : spreadsheet.hideColumn( column )')
+
+cub-popup(
+	#searchPopup,
+	width='300px',
+	(closed)='spreadsheet.search( null )')
+	cub-popup-content
+		ng-template(cubPopupContent)
+			cub-search-box(
+				autoFocusOn,
+				[searchInfo]='spreadsheet.searchInfo',
+				(searchPrevious)='spreadsheet.searchPrevious( $event )',
+				(searchNext)='spreadsheet.searchNext( $event )',
+				(searching)='spreadsheet.search( $event )')
+
+.layout-column.layout-gap-30.flex.p-20
+	.layout-row.layout-gap-12
+		button(
+			cubButton='secondary',
+			(click)='spreadsheet.addRow()')
+			| Add row
+		button(
+			cubButton='secondary',
+			[cubMenuTriggerFor]='generateRowMenu')
+			| Generate row
+		button(
+			cubButton='secondary',
+			[cubMenuTriggerFor]='rowSizeMenu')
+			| Row size
+		button(
+			cubButton='secondary',
+			[cubPopupTriggerFor]='groupPopup')
+			| Group
+		button(
+			cubButton='secondary',
+			[cubPopupTriggerFor]='sortPopup')
+			| Sort
+		button(
+			cubButton='secondary',
+			[cubMenuTriggerFor]='customizeMenu')
+			| Customize
+		button(
+			cubButton='secondary',
+			[cubPopupTriggerFor]='searchPopup')
+			| Search
+
+	spreadsheet(
+		[config]='config',
+		[columns]='columns',
+		[rows]='rows',
+		(columnAdded)='console.log( "Column Added", $event )',
+		(columnCalculated)='console.log( "Column Calculated", $event )',
+		(columnDeleted)='console.log( "Column Deleted", $event )',
+		(columnDuplicated)='console.log( "Column Duplicated", $event )',
+		(columnFieldEdited)='console.log( "Column Field Edited", $event )',
+		(columnFreezed)='console.log( "Column Freezed", $event )',
+		(columnGrouped)='console.log( "Column Grouped", $event )',
+		(columnHidden)='console.log( "Column Hidden", $event )',
+		(columnInserted)='console.log( "Column Inserted", $event )',
+		(columnMoved)='console.log( "Column Moved", $event )',
+		(columnResized)='console.log( "Column Resized", $event )',
+		(columnSelected)='console.log( "Column Selected", $event )',
+		(columnSorted)='console.log( "Column Sorted", $event )',
+		(columnUncalculated)='console.log( "Column uncalculated", $event )',
+		(columnUngrouped)='console.log( "Column Ungrouped", $event )',
+		(columnUnhidden)='console.log( "Column Unhidden", $event )',
+		(columnUnsorted)='console.log( "Column Unsorted", $event )',
+		(rowAdded)='console.log( "Row Added", $event )',
+		(rowDeleted)='console.log( "Row Deleted", $event )',
+		(rowDuplicated)='console.log( "Row Duplicated", $event )',
+		(rowExpanded)='console.log( "Row Expanded", $event )',
+		(rowInserted)='console.log( "Row Inserted", $event )',
+		(rowMoved)='console.log( "Row Moved", $event )',
+		(rowSelected)='console.log( "Row Selected", $event )',
+		(cellDataEdited)='console.log( "Cell Data Edited", $event )',
+		(cellSelected)='console.log( "Cell Selected", $event )',
+		(actionClicked)='console.log( "Action Clicked", $event )',
+		(searching)='console.log( "Searching", $event )')
+		ng-container(emptyBlock)
+			.layout-column.layout-gap-16.layout-align-center-center
+				.layout-column.layout-gap-8.layout-align-center-center
+					cub-icon(
+						name='warning',
+						color='secondary',
+						size='64px')
+					.w-200.text-center
+						| Không có mục dữ liệu nào thỏa mãn điều kiện của bộ lọc
+				button(cubButton)
+					| Chỉnh lại bộ lọc

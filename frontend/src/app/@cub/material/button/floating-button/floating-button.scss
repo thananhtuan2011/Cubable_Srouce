@@ -1,0 +1,54 @@
+@import '../../../scss/partials/variable';
+
+.cub-floating-button {
+	$self: &;
+
+	display: flex;
+	width: fit-content;
+	padding: 4px 8px;
+	border-radius: 8px;
+
+	background-color: $color-transparent-dark-grey-50;
+	color: $color-white;
+
+	backdrop-filter: blur(2.5px);
+
+	&:has(#{ $self }__content:empty) {
+		padding: 4px;
+		border-radius: 4px;
+	}
+
+	// Common states
+	@at-root {
+		&:not(:disabled) {
+			&:active,
+			&:hover,
+			&:focus-visible {
+				background-color: $color-transparent-dark-grey-75;
+			}
+		}
+	}
+
+	#{ $self }-wrapper {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		column-gap: 4px;
+		height: 100%;
+		width: 100%;
+	}
+
+	#{ $self }__icon {
+		font-size: 16px;
+		line-height: 16px;
+	}
+
+	#{ $self }__content {
+		display: flex;
+		align-items: center;
+
+		&:empty {
+			display: none;
+		}
+	}
+}

@@ -1,0 +1,15 @@
+ng-template(#temp)
+	.wgc-color-dot-wrapper
+		ng-content
+
+ng-container(*ngIf='viewOnly; else elseBlock;')
+	ng-container(*ngTemplateOutlet='temp')
+ng-template(#elseBlock)
+	button(
+		wgcBasicButton,
+		wgcColorPicker,
+		[wgcTooltip]='"WGC.LABEL.PICK_COLOR" | translate',
+		[pickedColor]='color',
+		(picked)='onColorPicked( $event )',
+		(click)='!viewOnly && $event?.stopPropagation()')
+		ng-container(*ngTemplateOutlet='temp')

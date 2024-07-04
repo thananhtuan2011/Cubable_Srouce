@@ -1,0 +1,34 @@
+.layout-row.layout-align-start-center
+	.layout-column.full-width.full-height
+		a.mt-32.ml-32(href='/')
+			img(width='111px', height='28px',
+			[lazyLoad]='"APP_LOGO_HORIZONTAL" | environment')
+		.layout.layout-column
+			.layout-column.layout-align-start-center.layout-gap-20.full-width
+				h2
+					| {{ "WORKSPACE.MESSAGE.SETTING_UP_NEW_WORKSPACE" | translate }}
+				form.layout-column.layout-gap-16.full-width(
+					[formGroup]='workspaceForm',
+					(submit)='createWorkspace()')
+					cub-form-field([label]='"WORKSPACE.LABEL.WORKSPACE_NAME" | translate')
+						input(
+							cubFormFieldInput,
+							autoFocusOn,
+							clearable,
+							trim,
+							formControlName='name',
+							[placeholder]='"WORKSPACE.PLACEHOLDER.TYPE_WORKSPACE_NAME" | translate',
+							[disableControl]='isSubmitting',
+							[(valueControl)]='workspace.name')
+					button.full-width(
+						cubButton='primary'
+						type='submit',
+						size='large',
+						[disabled]='workspaceForm?.invalid || isSubmitting',
+						[loading]='isSubmitting')
+						| {{ "WORKSPACE.LABEL.CREATE_NEW_WORKSPACE" | translate }}
+				a(routerLink='..')
+					| {{ "WORKSPACE.LABEL.GO_BACK" | translate }}
+		.layout-row.mb-16
+			copyright.full-width.text-center
+	.background-image

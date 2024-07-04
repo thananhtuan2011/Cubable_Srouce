@@ -1,0 +1,16 @@
+:host {
+	display: flex;
+	// flex-direction: column;
+	width: 100%;
+	min-width: 0;
+	height: 100%;
+	min-height: 0;
+}
+
+::ng-deep {
+	.base-role-dropdown {
+		.cub-form-field .cub-form-field__input .cub-form-field__input__btn-clear.cub-form-field__input__btn-clear--hidden {
+			display: none;
+		}
+	}
+}

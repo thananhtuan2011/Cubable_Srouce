@@ -1,0 +1,30 @@
+.layout-row.full-viewport
+	.w-310.pv-20.ph-25
+		.layout-row.layout-align-start-center.mb-20
+			button.mr-10(
+				wgcIconButton,
+				icon='chevron-left',
+				position='after',
+				[wgcTooltip]='"ACCOUNT.SETTINGS.LABEL." + ( authService.isWorkspaceAccessed ? "BACK" : "BACK_TO_WORKSPACE_LISTING" ) | translate',
+				(click)='back()')
+			h3
+				| {{ "ACCOUNT.SETTINGS.LABEL.ACCOUNT_SETTINGS" | translate }}
+		wgc-search-box.mb-20(
+			displayNotFound,
+			#searchBox,
+			searchKey='label',
+			[data]='compTemplatesArr')
+		wgc-list([activeColor]='"DEFAULT" | color')
+			wgc-list-item.mv-5(
+				*ngFor='let compTemplate of searchBox?.filteredData',
+				[icon]='compTemplate?.icon',
+				[label]='compTemplate?.label | markText : searchBox?.searchQuery : true',
+				[active]='currentCompTemplate === compTemplate',
+				(click)='selectCompTemplate( compTemplate )')
+	wgc-divider(vertical)
+	ng-container(*ngTemplateOutlet='currentCompTemplate')
+
+ng-template(#compTemplate, icon='user', labelTranslationKey='ACCOUNT.SETTINGS.LABEL.OVERVIEW')
+	general(#compChild)
+ng-template(#compTemplate, icon='lock-on', labelTranslationKey='ACCOUNT.SETTINGS.LABEL.SECURITY')
+	security(#compChild)

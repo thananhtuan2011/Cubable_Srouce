@@ -1,0 +1,20 @@
+mixin newViewMenu(createFunc)
+	cub-menu(
+		#newViewMenu,
+		width='240px')
+		cub-menu-content
+			ng-template(cubMenuContent)
+				button(
+					cubMenuItem,
+					icon='grid',
+					iconSize='20px',
+					[iconColor]='"yellowGreen" | cubPalette : "500"',
+					(click)=`${createFunc}( VIEW_TYPE.DATA)`)
+					| {{ "BASE.BOARD.VIEW.LABEL.DATA" | translate }}
+				button(
+					cubMenuItem,
+					icon='form',
+					iconSize='20px',
+					[iconColor]='"purple" | cubPalette : "500"',
+					(click)=`${createFunc}( VIEW_TYPE.FORM )`)
+					| {{ "BASE.BOARD.VIEW.LABEL.FORM" | translate }}

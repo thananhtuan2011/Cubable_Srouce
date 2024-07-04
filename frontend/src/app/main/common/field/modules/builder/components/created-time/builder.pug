@@ -1,0 +1,9 @@
+include ../builder.include.pug
+
+ng-template(#settingBlock)
+	date-format-settings(
+		[(format)]='internalField.format',
+		[(timeFormat)]='internalField.timeFormat')
+
+ng-container(
+	*ngTemplateOutlet='fieldTemplate; context: { settingBlock };')

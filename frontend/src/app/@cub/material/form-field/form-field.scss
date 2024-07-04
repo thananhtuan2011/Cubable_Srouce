@@ -1,0 +1,305 @@
+@import '../../scss/partials/variable';
+@import '../../scss/partials/mixin';
+
+.cub-form-field {
+	$self: &;
+	$input-directive: [cubFormFieldInput];
+	$input-unfocus: ":not(:focus):not(:focus-within):not(#{ $self }__input--focusing):not(:has(#{ $input-directive }:focus-within))";
+
+	display: flex;
+	flex-direction: column;
+	row-gap: 6px;
+
+	// Size
+	@at-root {
+		&#{ $self }--small {
+			#{ $self }__input {
+				min-height: 28px;
+				padding: 4px 8px;
+				border-radius: 6px;
+			}
+		}
+
+		&#{ $self }--large {
+			#{ $self }__input {
+				min-height: 36px;
+				padding: 8px 12px;
+				border-radius: 8px;
+			}
+		}
+
+		&#{ $self }--auto-width,
+		&#{ $self }--auto-width #{ $self }__input {
+			width: fit-content;
+			max-width: fit-content;
+		}
+
+		&#{ $self }--resizable {
+			#{ $self }__input {
+				position: relative;
+	
+				overflow: auto;
+	
+				resize: vertical;
+	
+				&::-webkit-resizer {
+					margin-right: 4px;
+					margin-bottom: 4px;
+				}
+	
+				&:after {
+					content: '';
+	
+					position: absolute;
+					right: 4px;
+					bottom: 4px;
+	
+					display: block;
+					width: 7px;
+					height: 7px;
+	
+					background-image: url('/assets/@cub/images/resize-symbol.svg');
+				}
+			}
+		}
+	}
+
+	// Variant
+	@at-root {
+		&#{ $self }--outlined {
+			&:not(#{ $self }--disabled) {
+				#{ $self }__input {	
+					&:hover#{ $input-unfocus } {
+						outline-color: $color-border-quaternary;
+					}
+				}
+			}
+
+			#{ $self }__input {
+				outline-color: $color-border-primary;
+			}
+		}
+
+		&#{ $self }--filled {
+			&:not(#{ $self }--disabled) {
+				#{ $self }__input {
+					&:hover#{ $input-unfocus } {
+						background-color: $color-material-default;
+					}
+
+					&:active,
+					&:focus,
+					&:focus-within,
+					&#{ $self }__input--active,
+					&#{ $self }__input--focusing,
+					&:has(#{ $input-directive }:active),
+					&:has(#{ $input-directive }:focus-within) {
+						background-color: $color-white;
+					}
+				}
+			}
+		}
+	}
+
+	// Common states
+	@at-root {
+		&:not(#{ $self }--disabled) {
+			#{ $self }__input {
+				&:active,
+				&#{ $self }__input--active,
+				&:has(#{ $input-directive }:active) {
+					outline-color: $color-border-tertiary;
+				}
+
+				&:focus,
+				&:focus-within,
+				&#{ $self }__input--focusing,
+				&:has(#{ $input-directive }:focus-within) {
+					outline-color: $color-border-focus;
+					box-shadow: $box-shadow-primary;
+
+					#{ $self }__input__content {
+						#{ $self }__input__display-layer {
+							display: none;
+						}
+					}
+				}
+
+				&#{ $input-unfocus } {
+					#{ $self }__input__btn-clear {
+						display: none;
+					}
+				}
+			}
+		}
+	}
+
+	// Error state
+	@at-root {
+		&:not(#{ $self }--disabled) {
+			&#{ $self }--erroring {
+				#{ $self }__input {
+					outline-color: $color-material-destructive-default !important;
+					box-shadow: $box-shadow-destructive !important;
+
+					background-color: $color-white !important;
+				}
+			}
+		}
+	}
+
+	// Disabled state
+	@at-root {
+		&#{ $self }--disabled {
+			#{ $self }__input {
+				@include cursor-not-allowed;
+
+				background-color: $color-material-default;
+				color: $color-text-tertiary;
+			}
+		}
+	}
+
+	#{ $self }__label {
+		display: flex;
+		align-items: center;
+		column-gap: 6px;
+		padding: {
+			left: 12px;
+			right: 12px;
+		};
+
+		&:empty,
+		&:has(label:empty) {
+			display: none;
+		}
+	}
+
+	#{ $self }__input {
+		display: flex;
+		align-items: flex-start;
+		column-gap: 6px;
+		outline: 1px solid transparent;
+
+		background-color: $color-white;
+
+		#{ $self }__input__prefix,
+		#{ $self }__input__suffix,
+		#{ $self }__input__btn-clear {
+			display: flex;
+			align-items: center;
+			column-gap: 6px;
+			height: 20px;
+			max-height: 20px;
+		}
+
+		#{ $self }__input__prefix,
+		#{ $self }__input__suffix {
+			&:empty {
+				display: none;
+			}
+		}
+
+		#{ $self }__input__content {
+			position: relative;
+
+			display: flex;
+			column-gap: 6px;
+			width: 100%;
+			min-width: 0;
+			max-width: 100%;
+			height: 100%;
+			min-height: 0;
+			max-height: 100%;
+			overflow: auto;
+
+			background-color: inherit;
+
+			-ms-overflow-style: none;
+			scrollbar-width: 0;
+
+			&::-webkit-scrollbar {
+				display: none;
+			}
+
+			#{ $self }__input__placeholder,
+			#{ $self }__input__display-layer {
+				&:empty {
+					display: none;
+				}
+			}
+
+			#{ $self }__input__placeholder {
+				color: $color-text-tertiary;
+			}
+
+			#{ $self }__input__display-layer {
+				@include text-truncate;
+
+				position: absolute;
+				inset: 0;
+				z-index: 1;
+
+				line-height: 20px;
+				appearance: textfield;
+
+				background-color: inherit;
+			}
+		}
+
+		#{ $input-directive } {
+			width: 100%;
+			min-width: 0;
+			max-width: 100%;
+			min-height: 20px;
+			padding: 0;
+			border: none;
+
+			background: none;
+
+			&::placeholder {
+				color: $color-text-tertiary;
+			}
+
+			&[type='url'] {
+				color: $color-text-blue;
+			}
+		}
+
+		textarea#{ $input-directive } {
+			height: 100%;
+			max-height: 100%;
+			padding: {
+				top: 2px;
+				bottom: 2px;
+			};
+
+			resize: none;
+		}
+	}
+
+	#{ $self }__help-text,
+	#{ $self }__error {
+		padding: {
+			left: 12px;
+			right: 12px;
+		};
+
+		font-size: 12px;
+		line-height: 16px;
+
+		&:empty {
+			display: none;
+		}
+	}
+
+	#{ $self }__help-text {
+		color: $color-text-tertiary;
+
+		font-style: italic;
+	}
+
+	#{ $self }__error {
+		color: $color-text-error;
+	}
+}

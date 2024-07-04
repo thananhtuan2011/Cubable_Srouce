@@ -1,0 +1,109 @@
+.flex.layout-column.layout-align-start-center
+	.background-image.pos-fixed.d-inline-block
+		.image.d-block.pos-relative
+	.layout.pos-relative.layout-column.margin-auto.h-fit-content
+		a.mb-10(href='/')
+			img(width='33px', height='36px', [lazyLoad]='"APP_LOGO" | environment')
+		.content.layout-column
+			.title.mb-10
+				| {{ "AUTH.MESSAGE.GREETING" | translate : { name: ( account?.name | empty ) } }}
+				br
+				| {{ "AUTH.MESSAGE.COLLECT_INFORMATION_TITLE" | translate }}
+			.layout-row.layout-align-center-center.layout-wrap.color-label.mb-30
+				| {{ "AUTH.MESSAGE.COLLECT_INFORMATION_DESCRIPTION" | translate }}
+			form#collectForm.flex-nogrow.full-width(
+				[formGroup]='collectForm',
+				(submit)='submitInformation()')
+				.detail-title.mb-35
+					| {{ "AUTH.MESSAGE.ROLE_TITLE" | translate }}
+				.layout-row.layout-wrap.layout-align-start-start.full-width.mb-10
+					.mr-10.mt-10
+						| {{ "AUTH.MESSAGE.I_AM" | translate }}
+					wgc-dropdown.flex-35.mr-10(
+						ngDefaultControl,
+						[canSetNone]='false',
+						[placeholder]='(isFromSignUp ? "* " : "") + ("AUTH.PLACEHOLDER.SELECT_ROLE" | translate)',
+						[formControl]='collectForm?.controls?.role',
+						[disableControl]='isSubmitting')
+						wgc-dropdown-item(
+							*ngFor='let role of roles; let first = first',
+							[label]='role?.name',
+							[value]='role?.value')
+					.mr-10.mt-10
+						| {{ "AUTH.MESSAGE.OF" | translate | lowercase }}
+					wgc-dropdown.flex-40.mr-10(
+						ngDefaultControl,
+						[canSetNone]='false',
+						[placeholder]='(isFromSignUp ? "* " : "") + ("AUTH.PLACEHOLDER.SELECT_TEAM" | translate)',
+						[formControl]='collectForm?.controls?.team',
+						[disableControl]='isSubmitting',
+						(changed)='onTeamSelected( $event )')
+						wgc-dropdown-item(
+							*ngFor='let team of teams; let first = first',
+							[label]='team?.name',
+							[value]='team?.value')
+				.layout-row.layout-wrap.layout-align-start-start.full-width
+					.mr-10.mt-10
+						| {{ "AUTH.MESSAGE.USE_FOR" | translate }}
+					wgc-dropdown.flex-50.mr-10(
+						ngDefaultControl,
+						multiple,
+						[canSetNone]='false',
+						[placeholder]='(isFromSignUp ? "* " : "") + ("AUTH.PLACEHOLDER.SELECT_OPTION" | translate)',
+						[formControl]='collectForm?.controls?.needing',
+						[disableControl]='isSubmitting')
+						wgc-dropdown-item(
+							*ngFor='let needing of needings; let first = first',
+							[label]='needing?.name',
+							[value]='needing?.value')
+				wgc-divider.flex.mv-20
+				.detail-title.mb-35
+					| {{ "AUTH.MESSAGE.COMPANY_TITLE" | translate }}
+				.layout-row.layout-wrap.layout-align-start-start.full-width.mb-10
+					.mr-10.mt-10
+						| {{ "AUTH.MESSAGE.MY_COMPANY" | translate }}
+					wgc-dropdown.flex-45.mr-10(
+						ngDefaultControl,
+						[canSetNone]='false',
+						[placeholder]='(isFromSignUp ? "* " : "") + ("AUTH.PLACEHOLDER.SELECT_SIZE" | translate)',
+						[formControl]='collectForm?.controls?.size',
+						[disableControl]='isSubmitting')
+						wgc-dropdown-item(
+							*ngFor='let size of sizes; let first = first',
+							[label]='size?.name',
+							[value]='size?.value')
+					.mt-10
+						| {{ "AUTH.MESSAGE.EMPLOYEES" | translate | lowercase }}
+				.layout-row.layout-wrap.layout-align-start-start.full-width.mb-30
+					.mr-10.mt-10
+						| {{ "AUTH.MESSAGE.WE_WORK" | translate }}
+					wgc-dropdown.flex-50.mr-10(
+						ngDefaultControl,
+						[canSetNone]='false',
+						[placeholder]='(isFromSignUp ? "* " : "") + ("AUTH.PLACEHOLDER.SELECT_INDUSTRY" | translate)',
+						[formControl]='collectForm?.controls?.industry',
+						[disableControl]='isSubmitting')
+						wgc-dropdown-item(
+							*ngFor='let industry of industries; let first = first',
+							[label]='industry?.name',
+							[value]='industry?.value')
+					.mt-10
+						| {{ "AUTH.MESSAGE.INDUSTRY" | translate | lowercase }}
+			.layout-row.layout-align-end-end.full-width.mb-30
+				button.mr-20(
+					wgcButton,
+					size='48px',
+					*ngIf='!isFromSignUp',
+					[disabled]='isSubmitting',
+					(click)='nextStep.emit()')
+					| {{ "AUTH.LABEL.SKIP" | translate }}
+				button(
+					wgcButton,
+					form='collectForm',
+					type='submit',
+					color='primary',
+					size='48px',
+					[disabled]='isSubmitting || collectForm?.invalid',
+					[loading]='isSubmitting')
+					| {{ "AUTH.LABEL.NEXT" | translate }}
+	//- language-selection.layout-row.layout-align-end-end.full-width.pos-sticky.p-20

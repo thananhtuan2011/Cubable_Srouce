@@ -1,0 +1,10 @@
+.wgc-show-more-wrapper
+	.wgc-show-more__content(#showMoreContent)
+		ng-content
+	.wgc-show-more__cut-off(*ngIf='!opened && isHidden')
+button.wgc-show-more__btn-toggle(
+	wgcBasicButton,
+	*ngIf='isHidden',
+	[icon]='opened ? "double-chevron-up" : "double-chevron-down"',
+	(click)='toggle()')
+	| {{ "WGC.LABEL.SHOW_" + ( opened ? "LESS" : "MORE" ) | translate }}

@@ -1,0 +1,40 @@
+mixin setting
+	ng-container([ngSwitch]='type')
+		ng-container(*ngSwitchCase='ACTION_TYPE.NOTIFY')
+			notify&attributes(attributes)
+		ng-container(*ngSwitchCase='ACTION_TYPE.CHANGE_VALUE')
+			change-value&attributes(attributes)
+		ng-container(*ngSwitchCase='ACTION_TYPE.CREATE_ROW')
+			create-row&attributes(attributes)
+		ng-container(*ngSwitchCase='ACTION_TYPE.DELETE_ROW')
+			delete-row&attributes(attributes)
+cub-card(
+	variant='tonal',
+	size='small')
+	cub-card-content
+		.layout-column.layout-gap-6
+			.text-color-secondary.ml-12
+				| {{ "BASE.WORKFLOW.SETUP.ACTION.LABEL.ACTION" | translate }}
+			cub-dropdown(
+				required,
+				#actionTypePicker,
+				[clearable]='false',
+				[beforeSelectItem]='onBeforeSelectType',
+				[formControl]='typeControl',
+				[valueControl]='type',
+				(valueControlChange)='onActionTypeChange( $event )')
+				//- [disabled]='!type.addable', TEMP remove
+				cub-dropdown-item(
+					*ngFor='let type of actionsType; ngForTrackByValue',
+					[iconColor]='type.iconColor',
+					[icon]='type.icon',
+					[label]='( "BASE.WORKFLOW.SETUP.ACTION.LABEL." + type.name ) | translate',
+					[value]='type.value')
+
++setting()(
+	#actionSetting,
+	[baseID]='baseID',
+	[blockSetup]='blockSetup',
+	[boardsLk]='boardsLk',
+	[(settings)]='settings',
+	(settingsChange)='onSettingChange()')

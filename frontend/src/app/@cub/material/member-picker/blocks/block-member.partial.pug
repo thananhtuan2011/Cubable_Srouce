@@ -1,0 +1,69 @@
+//- mixin notFoundMembers(filteredData)
+//- 	ng-container(*ngTemplateOutlet='searchBox?.notFoundTemplate; context: { name: "CUB.LABEL.MEMBERS" | translate };')
+
+mixin userStatusImage(img)
+	cub-image.cub-member-common__user-status(
+		width='20px',
+		height='20px',
+		[src]=`"assets/images/icons/${img}.webp"`)
+
+mixin userStatus(status)
+	ng-container([ngSwitch]=`${status}`)
+		ng-container(*ngSwitchCase='MEMBER_STATUS.ACTIVE')
+			+userStatusImage("status-active")
+		ng-container(*ngSwitchCase='MEMBER_STATUS.WAITING')
+			+userStatusImage("status-pending")
+		ng-container(*ngSwitchCase='MEMBER_STATUS.INACTIVE')
+			+userStatusImage("status-inactive")
+
+mixin multipleInput
+	.cub-member(cubMenuTriggerType='fit-menu')&attributes(attributes)
+		cub-scroll-bar.cub-member__content-box(
+			#boxElm,
+			suppressX,
+			[class.cub-member__content-box--disabled]='disabled',
+			[class.cub-member__content-box--focusing]='focusing || isPickerMenuOpening',
+			(click)='focus()')
+			.cub-member__content-box-values(
+				*ngFor='let value of values; let index = index;',
+				(click)='!focusing && $event?.stopPropagation();')
+				.cub-member__content-box-values__value
+					cub-member(
+						avatarSize='small',
+						[avatarType]=`value.type === TYPE_OF_MEMBER.TEAM
+							? AVATAR_TYPE.TEAM
+							: AVATAR_TYPE.USER`,
+						[hasViewProfile]='false',
+						[member]='value')
+				.cub-member__content-box-values__icon-remove
+					cub-icon(
+						name='close',
+						size='12px',
+						color='secondary',
+						*ngIf='!disabled',
+						[cubTooltip]='"CUB.LABEL.REMOVE" | translate',
+						(click)='clearMember( index, value ); !focusing && $event?.stopPropagation();')
+			.cub-member__content-box-input(
+				[class.cub-member__content-box-input--unfocused]=`values?.length
+					&& !keySearch
+					&& !focusing
+					&& !isPickerMenuOpening`)
+				input(
+					cubFormFieldInput,
+					clearable,
+					#multipleValueInput='cubFormFieldInput',
+					[class.input--has-values]='values?.length',
+					[autoReset]='autoReset',
+					[disabled]='disabled',
+					[formControl]='formControl',
+					[autoFocusOn]='autoFocusOn',
+					[placeholder]=`!values?.length
+						? ( placeholder || ( "CUB.PLACEHOLDER.SEARCH" | translate ) )
+						: ""`,
+					[valueControl]='keySearch',
+					(valueControlChange)='search( $event )',
+					(keyup.esc)='onEsc()',
+					(keydown.enter)='handleEnter()',
+					(keydown.arrowup)='handleArrowUp()',
+					(keydown.arrowdown)='handleArrowDown()',
+					(keydown)='triggerKeyDown( $event )')

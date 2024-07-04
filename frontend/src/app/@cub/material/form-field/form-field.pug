@@ -1,0 +1,101 @@
+ng-template(#errorTemplate)
+	ng-container(
+		*ngIf='multiErrors || !hasCustomError')
+		ng-container(
+			*ngFor=`
+				let error of control?.errors | cubControlErrors
+					: ( fieldName
+						|| ( "CUB.LABEL.VALUE" | translate ) )
+					: multiErrors
+			`)
+			ng-container(
+				*ngIf=`
+					errorTemplateMap.has( error.key );
+					else elseBlock;
+				`)
+				ng-container(
+					*ngTemplateOutlet=`
+						errorTemplateMap.get( error.key );
+						context: { error };
+					`)
+			ng-template(#elseBlock)
+				div(
+					[innerHtml]='error.message')
+	ng-content(
+		select='[cubFormFieldError]')
+
+.cub-form-field__label
+	label(
+		truncate,
+		[attr.title]='label',
+		[attr.requiredMarker]=`
+			!hideRequiredMarker
+				&& isRequired
+					? true
+					: undefined
+		`)
+		ng-container(
+			*ngIf='label; else elseBlock;')
+			| {{ label }}
+		ng-template(#elseBlock)
+			ng-content(
+				select='[cubFormFieldLabel]')
+	cub-icon(
+		name='info-circle',
+		size='16px',
+		color='secondary',
+		*ngIf='description',
+		[cubTooltip]='description')
+
+.cub-form-field__input(
+	#container,
+	[class.cub-form-field__input--active]='active',
+	[class.cub-form-field__input--focusing]='focusing',
+	[tabindex]='tabindex',
+	(mousemove)='onContainerMousemove()',
+	(mouseleave)='onContainerMouseleave()',
+	(click)='onContainerClick( $event )',
+	(dblclick)='onContainerDblClick( $event )',
+	(keydown)='onContainerKeydown( $event )')
+	.cub-form-field__input__prefix
+		ng-content(
+			select='[cubFormFieldPrefix]')
+	.cub-form-field__input__content
+		.cub-form-field__input__placeholder(
+			*ngIf=`!formFieldInput
+				|| formFieldInput.isEmpty`)
+			ng-content(
+				select='[cubFormFieldPlaceholder]')
+		ng-content
+		.cub-form-field__input__display-layer
+			ng-container(
+				*ngIf='formFieldDisplay; else elseBlock;')
+				ng-content(
+					select='[cubFormFieldDisplay]')
+			ng-template(#elseBlock)
+				ng-container(
+					*ngIf='formFieldInput?.readonly')
+					| {{ formFieldInput.value }}
+	.cub-form-field__input__btn-clear(
+		*ngIf='formFieldInput?.canClear')
+		button(
+			cubClearButton,
+			tabindex='-1',
+			(mousedown)='onClear( $event )')
+	.cub-form-field__input__suffix
+		ng-content(
+			select='[cubFormFieldSuffix]')
+
+.cub-form-field__help-text
+	ng-container(
+		*ngIf='helpText; else elseBlock3;')
+		| {{ helpText }}
+	ng-template(#elseBlock3)
+		ng-content(
+			select='[cubFormFieldHelpText]')
+
+.cub-form-field__error(
+	*ngIf=`isDisplayErrorByInline
+		&& shouldDisplayErrorState`)
+	ng-container(
+		*ngTemplateOutlet='errorTemplate')

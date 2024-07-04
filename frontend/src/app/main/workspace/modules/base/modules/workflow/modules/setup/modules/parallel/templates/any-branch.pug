@@ -1,0 +1,21 @@
+.parallel_conditions
+    cub-switch(
+        size='large',
+        [label]='"BASE.WORKFLOW.SETUP.PARALLEL.LABEL.SET_ADDITIONAL_CONDITIONS" | translate',
+        [ngModel]='conditional',
+        (ngModelChange)='onChangeCondition( $event )')
+    single-conditional(
+        *ngIf='conditional',
+        #conditionalComp,
+        [label]='"BASE.WORKFLOW.SETUP.PARALLEL.LABEL.CONDITION_ROW" | translate',
+        [eventAdvance]='eventAdvance',
+        [boardID]='blockSetup.boardID',
+        [logicalExpression]='settings?.filter?.logicalExpression',
+        [options]='settings?.filter?.options',
+        [logicalOperator]='settings?.filter?.logicalOperator',
+        [conditions]='settings?.filter?.conditions',
+        (optionsChange)='onFilterOptionsChange( $event )',
+        (logicalOperatorChange)='onLogicalOperatorChange( $event )',
+        (logicalExpressionChange)='onLogicalExpressionChange( $event )',
+        (conditionsChange)='onConditionFilterChange( $event )',
+        (conditionalChange)='onSettingChanged()')

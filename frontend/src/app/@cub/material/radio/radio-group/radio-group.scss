@@ -1,0 +1,29 @@
+@import '../../../scss/partials/variable';
+
+.cub-radio-group {
+	$self: &;
+
+	display: flex;
+	flex-direction: column;
+	row-gap: 6px;
+
+	&#{ $self }-horizontal {}
+
+	&#{ $self }-vertical {
+		#{ $self }__content {
+			flex-direction: column;
+		}
+	}
+
+	#{ $self }__content {
+		display: flex;
+		flex-wrap: wrap;
+		row-gap: 8px;
+		column-gap: 8px;
+
+		.cub-radio {
+			width: auto;
+			height: auto;
+		}
+	}
+}

@@ -1,0 +1,48 @@
+ng-container(*ngIf='!notHavePermission; else elseBlock;')
+	ng-container(*ngIf='workspace && item')
+		navigation-bar(
+			[hasFeatureModule]='false')
+		.information__content
+			.information__content-header
+				.layout-column
+					h5.text-truncate(
+						[title]='item.cells?.[ primaryField?.extra?.id ] | empty ')
+						| {{ item.cells?.[ primaryField?.extra?.id ] || ( "RECORD.DETAIL.LABEL.UN_NAME" | translate ) }}
+					.layout-row.layout-align-start-center.layout-gap-2
+						h6.cursor.text-color-secondary.text-truncate(
+							[title]='item.boardName | empty ',
+							(click)='navigate()')
+							| {{ item.boardName | empty }}
+						cub-icon(
+							name='chevron-right',
+							size='12px')
+						h6.cursor.text-truncate(
+							[title]='item.baseName | empty ',
+							(click)='navigate( true )')
+							| {{ item.baseName | empty }}
+				field-information(
+					*ngFor='let f of fields; trackByID',
+					[field]='f',
+					[cellValue]='item.cells[ f.id ]',
+					[recordID]='item.id',
+					[boardID]='item.boardID',
+					[itemName]='item.cells?.[ primaryField?.extra?.id ]',
+					[editable]=`editable === true
+						|| editable?.[ f.id ] === true`)
+ng-template(#elseBlock)
+	.record-empty
+		.record-empty__content
+			.layout-column.layout-align-start-center.layout-gap-8
+				cub-icon(
+					name='not-allow',
+					size='60px',
+					[color]='"ORANGE" | color : 500')
+				.line-height-20
+					| {{ "RECORD.DETAIL.MESSAGE.RECORD_NOT_AVAILABLE" | translate }}
+			.layout-row.layout-align-center.layout-gap-8
+				.develop-by
+					| {{ "BASE.BOARD.FORM.LABEL.DEVELOP_BY" | translate }}
+				cub-image(
+					width='80px',
+					height='20px',
+					src='assets/images/logos/logo-horizontal.svg')

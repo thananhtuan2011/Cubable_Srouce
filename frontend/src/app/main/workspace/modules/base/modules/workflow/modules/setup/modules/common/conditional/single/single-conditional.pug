@@ -1,0 +1,18 @@
+mixin option
+	+drag
+	comparison(
+		[comparisonModule]='comparisonModule',
+		[fields]='fields',
+		[excludeFields]='excludeFields',
+		[error]='o.error',
+		[eventAdvance]='eventAdvance',
+		[(field)]='o.field',
+		[(fieldID)]='o.fieldID',
+		[(operator)]='o.operator',
+		[(data)]='o.data',
+		(fieldIDChange)='filterChanged( o )',
+		(operatorChange)='filterChanged( o )',
+		(dataChange)='filterChanged( o )')
+	+remove&attributes(attributes)
+
+include ../conditional-base.pug

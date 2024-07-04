@@ -1,0 +1,15 @@
+include ../boxes.include.pug
+
++input-box()(
+	type='paragraph',
+	[content]='data?.text')
+
+ng-container(*ngIf='data')
+	.field-cell__text-content(
+		[innerHTML]='data.text | safeHtml')
+	button.field-cell__btn-stick-on-content(
+		cubBasicButton,
+		icon='expand',
+		iconSize='16px',
+		*ngIf=`field.isRichTextFormatting`,
+		(click)='openRichTextEditor()')

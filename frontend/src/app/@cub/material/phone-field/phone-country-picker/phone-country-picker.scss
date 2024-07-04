@@ -1,0 +1,19 @@
+@import '../../../scss/partials/variable';
+
+.cub-phone-country-picker {
+	$self: &;
+
+	display: flex;
+	flex-direction: column;
+
+	#{ $self }__preview {
+		display: flex;
+		align-items: center;
+		column-gap: 6px;
+
+		#{ $self }__preview__text {
+			font-weight: $font-weight-semibold;
+			white-space: nowrap;
+		}
+	}
+}

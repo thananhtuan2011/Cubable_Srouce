@@ -1,0 +1,205 @@
+cub-menu(
+	#comparisonTypeMenu,
+	width='202px')
+	cub-menu-content
+		ng-template(cubMenuContent)
+			button(
+				cubMenuSelectItem,
+				[selected]='$any( data )?.compareType === COMPARISON_TYPE.STATIC',
+				(click)='onTypeChange( COMPARISON_TYPE.STATIC )')
+				| {{ "FIELD.COMPARISON.LABEL.STATIC_VALUE" | translate }}
+			button(
+				cubMenuSelectItem,
+				[selected]='$any( data )?.compareType === COMPARISON_TYPE.AUTO',
+				(click)='onTypeChange( COMPARISON_TYPE.AUTO )')
+				| {{ "FIELD.COMPARISON.LABEL.AUTO_VALUE" | translate }}
+
+cub-menu.cub-menu__comparison-advance(
+	#comparisonTypeAutoMenu,
+	width='456px',
+	height='350px',
+	(opened)='onSelectEvent()')
+	cub-menu-content
+		ng-template(cubMenuContent)
+			.layout-row.layout-gap-8.full-height
+				.layout-column.layout-gap-8.flex-50.pv-8
+					.text-semibold.text-color-primary.ph-12
+						| {{ "FIELD.COMPARISON.LABEL.USE_DATA_FROM" | translate }}
+					button(
+						cubMenuItem,
+						leadingIcon='list',
+						leadingIconSize='20px',
+						trailingIcon='chevron-right',
+						trailingIconSize='20px',
+						trailingIconColor='tertiary',
+						[selected]='!eventAdvanceSelected && eventFields',
+						[autoClose]='false',
+						(click)='onSelectEvent()')
+						| {{ "FIELD.COMPARISON.LABEL.DATA_ON_SAME_ROW" | translate }}
+					cub-menu-group.h-fit-content.mih-0(
+						*ngIf='comparisonTypeSpecific?.length',
+						[class.mah-118]='eventAdvance?.length')
+						cub-scroll-bar(suppressX)
+							button(
+								cubMenuItem,
+								leadingIconSize='20px',
+								*ngFor='let type of comparisonTypeSpecific; ngForTrackByValue',
+								[leadingIcon]='type.icon',
+								(click)='onEventAdvanceChanged( type.value )')
+								| {{ type.label | translate }}
+					cub-menu-group.flex(
+						*ngIf='eventAdvance?.length')
+						cub-scroll-bar(suppressX)
+							button(
+								cubMenuItem,
+								trailingIcon='chevron-right',
+								trailingIconSize='20px',
+								trailingIconColor='tertiary',
+								leadingIconSize='20px',
+								*ngFor='let event of eventAdvance; ngForTrackByID',
+								[selected]='eventAdvanceSelected?.id === event.id',
+								[autoClose]='false',
+								[leadingIcon]='event.icon',
+								(click)='onSelectEvent( event )')
+								ng-container(*ngIf='!event?.lookupCondition; else elseBlock1')
+									| {{ "FIELD.COMPARISON.LABEL.ROW_FROM_EVENT" | translate : { eventName: event.name | lowercase } }}
+								ng-template(#elseBlock1)
+									| {{ event.name }}
+				cub-divider(vertical)
+				.layout-column.layout-gap-8.flex-50.pv-8
+					.text-semibold.text-color-primary.ph-12
+						| {{ "FIELD.COMPARISON.LABEL.SELECT" | translate }}
+					cub-search-box(
+						includeOuterSize,
+						size='large',
+						[data]='eventFields',
+						(filtered)='eventFieldsFiltered = $event')
+					.layout-column.layout-gap-4.mih-0
+						.ml-12.text-semibold.text-color-secondary.line-height-15(
+							[style.fontSize.px]='11')
+							| {{ "FIELD.COMPARISON.LABEL.FIELD" | translate }}
+						.event-fields__empty(
+							*ngIf='!eventFieldsFiltered?.length; else elseBlock;')
+							| {{ "FIELD.COMPARISON.LABEL.NO_FIELDS" | translate }}
+						ng-template(#elseBlock)
+							cub-menu-group.mih-0
+								cub-scroll-bar(suppressX)
+									button(
+										cubMenuItem,
+										leadingIconSize='20px',
+										*ngFor='let field of eventFieldsFiltered; ngForTrackByID',
+										[leadingIcon]='( field.dataType | fieldMetadata ).icon',
+										(click)='onComparisonFieldAdvanceChanged( field )')
+										.text-truncate([title]='field.name | empty')
+											| {{ field.name | empty }}
+
+mixin comparisonOperator
+	cub-dropdown(
+		autoWidth,
+		required,
+		#operatorDropdown,
+		[displayErrorMode]='ERROR_MODE.Tooltip',
+		[menuSize]='{ minWidth: 158, maxHeight: 220 }',
+		[clearable]='false',
+		[disableControl]=`
+			error?.field
+				|| ( excludeFields?.isDisable
+				&& ( excludeFieldsLK?.[ field?.id ] ) )`,
+		[formControl]='comparisonControl',
+		[(valueControl)]='operator',
+		(valueControlChange)='onOperatorChange()',
+		(opened)='onOperatorDropdownOpened()')
+		cub-dropdown-item(
+			*ngFor='let o of comparisonOperators; ngForTrackByValue',
+			[label]='o.label | translate | lowercase',
+			[value]='o.value')
+
+mixin comparisonType(label)
+	button(
+		cubButton='secondary',
+		icon='switch',
+		iconSize='16px',
+		[disabled]=`
+			error?.field
+				|| ( excludeFields?.isDisable
+					&& ( excludeFieldsLK?.[ field?.id ] ) )`,
+		[active]='comparisonTypeMenu?.isOpened',
+		[cubMenuTriggerFor]='comparisonTypeMenu')
+
+	//- cub-dropdown(
+	//- 	autoWidth,
+	//- 	required,
+	//- 	#comparisonTypeDropdown,
+	//- 	[displayErrorMode]='ERROR_MODE.Tooltip',
+	//- 	[menuSize]='{ minWidth: 162 }',
+	//- 	[clearable]='false',
+	//- 	[disableControl]=`
+	//- 		error?.field
+	//- 			|| ( excludeFields?.isDisable
+	//- 			&& ( excludeFieldsLK?.[ field?.id ] ) )`,
+	//- 	[formControl]='typeControl',
+	//- 	[(valueControl)]='$any( data ).compareType',
+	//- 	(valueControlChange)='onTypeChange()')
+	//- 	cub-dropdown-item(
+	//- 		[label]=`"FIELD.COMPARISON.METHOD.CUSTOM." + ${label} | translate`,
+	//- 		[value]='COMPARISON_TYPE.STATIC')
+	//- 	cub-dropdown-item(
+	//- 		[label]='"FIELD.COMPARISON.METHOD.SPECIFIC_FIELD" | translate',
+	//- 		[value]='COMPARISON_TYPE.AUTO')
+
+mixin comparisonTypeAuto
+	cub-form-field.flex.miw-200(
+		#editorFormField,
+		displayErrorMode='tooltip',
+		[disabled]=`
+			error?.field
+				|| ( excludeFields?.isDisable
+					&& ( excludeFieldsLK?.[ field?.id ] ) )`,
+		[focusing]='comparisonTypeAutoMenu?.isOpened',
+		[cubMenuTriggerPosition]='"end-below"',
+		[cubMenuTriggerOrigin]='editorFormField?.container',
+		[cubMenuTriggerFor]='comparisonTypeAutoMenu',
+		(container.blur)='showErrorData = true')
+		cub-basic-editor(
+			readonly,
+			noToolbar,
+			[options]='tagOptions',
+			[placeholder]='"FIELD.COMPARISON.PLACEHOLDER.SELECT_VALUE" | translate',
+			[content]='contentEditor',
+			(textChanged)='onContentEditorChange()')
+		ng-container(
+			cubFormFieldSuffix)
+			button(
+				cubBasicButton,
+				icon='plus',
+				iconSize='20px',
+				[active]='comparisonTypeAutoMenu?.isOpened')
+		ng-container(
+			cubFormFieldError,
+			*ngIf='showErrorData && error?.data')
+			| {{ "FIELD.COMPARISON.ERROR.INPUT_OR_SELECT_VALUE" | translate }}
+
+	//- TODO remove
+	//- cub-dropdown.w-172(
+	//- 	searchable,
+	//- 	required,
+	//- 	singleLine,
+	//- 	#comparisonTypeAuto,
+	//- 	[name]='"FIELD.COMPARISON.LABEL.FIELD" | translate',
+	//- 	[displayErrorMode]='ERROR_MODE.Tooltip',
+	//- 	[disableControl]=`
+	//- 		error?.field
+	//- 		|| ( excludeFields?.isDisable && excludeFieldsLK[ $any( data ).fieldID ] )`,
+	//- 	[clearable]='false',
+	//- 	[formControl]='dataControl',
+	//- 	[(valueControl)]='$any( data ).fieldID',
+	//- 	(valueControlChange)='onDataChange()')
+	//- 	cub-dropdown-item(
+	//- 		*ngFor='let f of otherFields; ngForTrackByID',
+	//- 		[icon]='f.dataType | fieldMetadata : "icon"',
+	//- 		[label]='f.name',
+	//- 		[value]='f.id')
+	//- 	ng-container(
+	//- 		cubDropdownError,
+	//- 		*ngIf='excludeFieldsLK && excludeFieldsLK[ $any( data ).fieldID ]')
+	//- 		| {{ excludeFields.errorMessage }}

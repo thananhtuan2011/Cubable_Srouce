@@ -1,0 +1,58 @@
+@import '../../../scss/partials/variable';
+
+cub-popup {
+	display: none;
+}
+
+.cub-popup {
+	$self: &;
+
+	display: flex;
+	flex-direction: column;
+	width: 100%;
+	min-width: 0;
+	max-width: 100%;
+
+	background-color: $color-white;
+
+	#{ $self }__header,
+	#{ $self }__content,
+	#{ $self }__footer {
+		display: flex;
+		flex-direction: column;
+		padding: {
+			left: 20px;
+			right: 20px;
+		};
+
+		&:empty {
+			display: none;
+		}
+	}
+
+	#{ $self }__header,
+	#{ $self }__footer {
+		padding: {
+			top: 12px;
+			bottom: 12px;
+		};
+	}
+
+	#{ $self }__header {
+		background-color: $color-transparent-light-grey-85;
+	}
+
+	#{ $self }__content {
+		height: 100%;
+		min-height: 0;
+		max-height: 100%;
+		padding: {
+			top: 16px;
+			bottom: 16px;
+		};
+	}
+
+	#{ $self }__footer {
+		border-top: .5px solid $color-border-primary;
+	}
+}

@@ -1,0 +1,69 @@
+ng-container(*ngTemplateOutlet='popupInviteUser.templateRef') 
+
+cub-popup.admin-popup(
+	#popupInviteUser,
+	width='600px')
+	cub-popup-header
+		ng-template(cubPopupHeader)
+			.layout-row.layout-align-space-between-center.layout-gap-8.flex
+				h5
+					| {{ "SETTINGS.WORKSPACE.USER_SYSTEM.USER.LABEL.INVITE_NEW_USER" | translate }}
+				button(
+					cubClearButton,
+					size='20px',
+					[cubTooltip]='"SETTINGS.WORKSPACE.USER_SYSTEM.USER.LABEL.CLOSE" | translate',
+					(click)='popupRef.close()')
+	cub-popup-content
+		form.layout-column.layout-gap-16([formGroup]='inviteForm')
+			label.popup_label(requiredmarker)
+				| {{ "SETTINGS.WORKSPACE.USER_SYSTEM.USER.LABEL.POPUP_EMAIL_ADDRESS" | translate }}
+			cub-multiple-email-input(
+				#emailFormFieldInput,
+				saveable,
+				clearable,
+				autoFocusOn,
+				type='email',
+				[emailsValidation]='emailsValidation',
+				[placeholder]='"SETTINGS.WORKSPACE.USER_SYSTEM.USER.PLACEHOLDER.POPUP_TYPE_EMAIL" | translate')
+			cub-dropdown(
+				ngDefaultControl,
+				required,
+				[clearable]='false',
+				[label]='"SETTINGS.WORKSPACE.USER_SYSTEM.USER.LABEL.USER_ROLE_IN_WORKSPACE" | translate',
+				[formControl]='inviteForm.controls.roleID',
+				[(valueControl)]='newUser.roleID')
+				cub-dropdown-item(
+					*ngFor='let role of roles; trackByID',
+					[label]='role.name',
+					[description]='role?.description',
+					[value]='role.id')
+			.layout-column.layout-gap-6
+				.text-color-secondary.ml-12
+					| {{ "SETTINGS.WORKSPACE.USER_SYSTEM.USER.LABEL.TEAM" | translate }}
+				cub-member-picker(
+					[strictDisplay]='false',
+					[placeholder]='"SETTINGS.WORKSPACE.USER_SYSTEM.USER.PLACEHOLDER.FIND_TEAM" | translate',
+					[teams]='teams',
+					[(selectedTeamIDs)]='newUser.teamIDs')
+			cub-dropdown(
+				ngDefaultControl,
+				[clearable]='false',
+				[label]='"SETTINGS.WORKSPACE.USER_SYSTEM.USER.LABEL.INVITE_EXPIRATION" | translate',
+				[formControl]='inviteForm.controls.expiration',
+				[(valueControl)]='newUser.expiration')
+				cub-dropdown-item(
+					*ngFor='let item of INVITE_EXPIRATION; ngForTrackByValue',
+					[label]='item.name',
+					[value]='item.value')
+	cub-popup-footer
+		ng-template(cubPopupFooter)
+			.layout-row.layout-gap-12.layout-align-end
+				button.w-80(
+					cubButton='secondary',
+					(click)='popupRef.close()')
+					| {{ "SETTINGS.WORKSPACE.USER_SYSTEM.USER.LABEL.CANCEL" | translate }}
+				button.w-120(
+					cubButton,
+					[disabled]='multipleEmailInputCmp.isInvalid || inviteForm.invalid',
+					(click)='invite()')
+					| {{ "SETTINGS.WORKSPACE.USER_SYSTEM.USER.LABEL.INVITE" | translate }}

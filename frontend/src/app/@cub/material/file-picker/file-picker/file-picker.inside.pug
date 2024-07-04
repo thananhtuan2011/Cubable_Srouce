@@ -1,0 +1,49 @@
+mixin btnPickMore
+	button(
+		cubBasicButton,
+		icon='plus-circle',
+		iconSize='16px',
+		*ngIf='pickedFiles?.length',
+		(click)='pick()')
+		| {{ "CUB.LABEL.PICK_MORE" | translate }}
+
+mixin btnCancel
+	button.cub-file-picker-inside__btn-cancel(
+		cubButton='secondary',
+		(click)='cancel()')
+		| {{ "CUB.LABEL.CANCEL" | translate }}
+
+mixin header
+	.cub-file-picker-inside__header
+		h5
+			if block
+				block
+			else
+				| {{ "CUB.LABEL.PICK_FILE" | translate }}
+		button(
+			cubClearButton,
+			size='20px',
+			(click)='cancel()')
+
+mixin content
+	.cub-file-picker-inside__content
+		cub-file-list(
+			*ngIf='pickedFiles?.length; else elseBlock;')
+			cub-file-item(
+				removable,
+				*ngFor='let file of pickedFiles; trackByID',
+				[file]='file',
+				(removed)='onFileRemoved( file )')
+	ng-template(#elseBlock)
+		block
+
+mixin footer
+	.cub-file-picker-inside__footer
+		+btnPickMore
+		.cub-file-picker-inside__buttons
+			+btnCancel
+			button.cub-file-picker-inside__btn-done(
+				cubButton,
+				[disabled]='!pickedFiles?.length',
+				(click)='done()')
+				| {{ "CUB.LABEL.DONE" | translate }}

@@ -1,0 +1,45 @@
+form.form-verify.layout-column.layout-gap-16(
+	(submit)='verifyOTP()')
+	.layout-row.layout-gap-22
+		cub-form-field(
+			*ngFor='let i of [].constructor( 6 ); let index = index;')
+			input(
+				cubFormFieldInput,
+				hiddenArrows,
+				type='number',
+				min='0',
+				max='9',
+				onKeyPress='if ( value.length == 1 ) return false;',
+				[clearable]='false',
+				[autoFocusOn]='index === 0',
+				(input)='onInput( $any( $event?.target )?.value, index )',
+				(keyup)='onKeyUp( $event, index )',
+				(paste)='onPasted( $event )')
+	.text-color-error.text-center(*ngIf='isOTPInvalid')
+		| {{ "AUTH.MESSAGE.INVALID_CODE" | translate }}
+	button.full-width(
+		cubButton='primary'
+		type='submit',
+		size='large',
+		[disabled]='isSubmitting || isFormInvalid',
+		[loading]='isSubmitting')
+		| {{ "AUTH.LABEL.DONE" | translate }}
+	//- .actions.layout-column.text-center([class.mt-30]='!isOTPInvalid')
+	.layout-column.text-center
+		.layout-row.layout-align-center-center(
+			*ngIf='!isSubmitting; else elseBlock;')
+			.text-color-secondary(*ngIf='countdown; else elseBlock;')
+				| {{ "AUTH.LABEL.RESEND_CODE_IN" | translate: { seconds: countdown } }}
+			ng-template(#elseBlock)
+				.text-color-secondary
+					| {{ "AUTH.LABEL.NOT_RECEIVE_CODE" | translate }}&nbsp;
+				cub-loading(*ngIf='isResendingOTP; else elseBlock;')
+				ng-template(#elseBlock)
+					a((click)='resendOTP()')
+						| {{ "AUTH.LABEL.RESEND_CODE" | translate }}
+		ng-template(#elseBlock)
+			.layout-row.layout-align-center-center
+				cub-loading.mr-5
+				b
+					| {{ "AUTH.MESSAGE.VERIFYING_AUTHENTICATION_CODE" | translate }}
+	

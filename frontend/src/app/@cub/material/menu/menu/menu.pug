@@ -1,0 +1,36 @@
+ng-template
+	.cub-menu(
+		[attr.tabindex]='tabindex || 0',
+		[style.width]='width',
+		[style.minWidth]='minWidth',
+		[style.maxWidth]='maxWidth',
+		[style.height]='height',
+		[style.minHeight]='minHeight',
+		[style.maxHeight]='maxHeight',
+		[ngClass]='classList',
+		(keydown)='onKeydown( $event )')
+		.cub-menu__header(
+			*ngIf='!!menuHeader?.templateRef',
+			[ngClass]='menuHeader.classList')
+			ng-container(
+				*ngTemplateOutlet=`
+					menuHeader.templateRef;
+					context: context;`)
+		.cub-menu__content(
+			cdkScrollable,
+			cubScrollBar,
+			suppressX,
+			*ngIf='!!menuContent?.templateRef',
+			[ngClass]='menuContent.classList',
+			(init)='scrollBar = $event')
+			ng-container(
+				*ngTemplateOutlet=`
+					menuContent.templateRef;
+					context: context;`)
+		.cub-menu__footer(
+			*ngIf='!!menuFooter?.templateRef',
+			[ngClass]='menuFooter.classList')
+			ng-container(
+				*ngTemplateOutlet=`
+					menuFooter.templateRef;
+					context: context;`)

@@ -1,0 +1,192 @@
+include ../formula/mixin.pug
+
+mixin peopleDisplay
+	ng-container(*ngFor='let people of d?.selected')
+		cub-chip.cursor.layout-row.layout-gap-4(
+			hasAvatar,
+			*ngIf='people !== null',
+			(click)='openDialogItemDetail( data.value[ index ], index )')
+			cub-member(
+				avatarSize='small',
+				[hasViewProfile]='false',
+				[member]='people')
+
+mixin dateDisplay
+	cub-chip.cursor.layout-row.layout-gap-4(
+		*ngIf='d !== null',
+		(click)='openDialogItemDetail( data.value[ index ], index )')
+		span.text-truncate(
+			[attr.title]='d | dateValue')
+			| {{ d | dateValue }}
+
+mixin renderData(dataType)
+	ng-container([ngSwitch]=`${dataType}`)
+		ng-container(*ngSwitchCase='DATA_TYPE.Text')
+			cub-chip.cursor.layout-row.layout-gap-4(
+				*ngIf='d',
+				(click)='openDialogItemDetail( data.value[ index ], index )')
+				span.text-truncate(
+					[attr.title]='d')
+					| {{ d }}
+		ng-container(*ngSwitchCase='DATA_TYPE.Number')
+			cub-chip.cursor.layout-row.layout-gap-4(
+				*ngIf='d !== null',
+				(click)='openDialogItemDetail( data.value[ index ], index )')
+				span.text-truncate(
+					[attr.title]='d')
+					| {{ d }}
+		ng-container(*ngSwitchCase='DATA_TYPE.Checkbox')
+			cub-chip.cursor.layout-row.layout-gap-4(
+				(click)='openDialogItemDetail( data.value[ index ], index )')
+				cub-checkbox(
+					readonly,
+					size='small',
+					[ngModel]='d')
+		ng-container(*ngSwitchCase='DATA_TYPE.Paragraph')
+			cub-chip.cursor.layout-row.layout-gap-4(
+				*ngIf='d',
+				(click)='openParagraphDetail( d )')
+				.field-cell__text-content(
+					[innerHTML]='d.text | safeHtml')
+		ng-container(*ngSwitchCase='DATA_TYPE.Attachment')
+			ng-container(*ngIf='d?.length')
+				.layout-row.layout-gap-6.full-height.unscrollable
+					cub-file.w-20.h-20(
+						showNameOnTooltip,
+						*ngFor=`
+							let file of d;
+							index as idx;
+							trackByID`,
+						[file]='file',
+						(click)='previewFile( idx )')
+		ng-container(*ngSwitchCase='DATA_TYPE.Dropdown')
+			ng-container(*ngFor='let option of d?.selected; trackByValue')
+				cub-chip.cursor.layout-row.layout-gap-4(
+					*ngIf='option !== null',
+					[color]='option.color',
+					(click)='openDialogItemDetail( data.value[ index ], index  )')
+					span.text-truncate(
+						[attr.title]='option.name')
+						| {{ option.name }}
+		ng-container(*ngSwitchCase='DATA_TYPE.Date')
+			+dateDisplay
+		ng-container(*ngSwitchCase='DATA_TYPE.CreatedTime')
+			+dateDisplay
+		ng-container(*ngSwitchCase='DATA_TYPE.LastModifiedTime')
+			+dateDisplay
+		ng-container(*ngSwitchCase='DATA_TYPE.Phone')
+			cub-chip.cursor.layout-row.layout-gap-4(
+				*ngIf='d',
+				(click)='openDialogItemDetail( data.value[ index ], index )')
+				cub-phone-country-picker(
+					*ngIf='d.countryCode',
+					readonly,
+					flagOnly,
+					style='display: inherit !important',
+					[countryCode]='d.countryCode')
+				a.field-cell__text-content(
+					target='_blank',
+					[attr.title]='d.phone',
+					[href]='"tel:" + d.phone')
+					| {{ d.phone }}
+		ng-container(*ngSwitchCase='DATA_TYPE.Link')
+			cub-chip.cursor.layout-row.layout-gap-4(
+				*ngIf='d',
+				(click)='openDialogItemDetail( data.value[ index ], index )')
+				a.field-cell__text-content(
+					target='_blank',
+					[href]='d.link | link',
+					[attr.title]='d.link')
+					| {{ d.text || d.link }}
+		ng-container(*ngSwitchCase='DATA_TYPE.Email')
+			cub-chip.cursor.layout-row.layout-gap-4(
+				*ngIf='d',
+				(click)='openDialogItemDetail( data.value[ index ], index )')
+				a.field-cell__text-content(
+					target='_blank',
+					[href]='"mailto:" + d',
+					[attr.title]='d')
+					| {{ d }}
+		ng-container(*ngSwitchCase='DATA_TYPE.Currency')
+			cub-chip.cursor.layout-row.layout-gap-4(
+				*ngIf='d',
+				(click)='openDialogItemDetail( data.value[ index ], index )')
+				span.flex.text-right.text-truncate(
+					[attr.title]='d')
+					| {{ d | currencyValue }}
+		ng-container(*ngSwitchCase='DATA_TYPE.Rating')
+			cub-chip.cursor.layout-row.layout-gap-4(
+				*ngIf='d',
+				(click)='openDialogItemDetail( data.value[ index ], index )')
+				span.text-truncate(
+					[attr.title]='d')
+					| {{ d }}
+		ng-container(*ngSwitchCase='DATA_TYPE.Progress')
+			cub-chip.cursor.layout-row.layout-gap-4(
+				*ngIf='d',
+				(click)='openDialogItemDetail( data.value[ index ], index )')
+				span.text-truncate(
+					[attr.title]='d')
+					| {{ d | percent }}
+		ng-container(*ngSwitchCase='DATA_TYPE.Reference')
+			ng-container(*ngFor='let s of d?.selected')
+				cub-chip.cursor.layout-row.layout-gap-4(
+					*ngIf='s !== null',
+					(click)='openDialogItemDetail( data.value[ index ], index )')
+					span.text-truncate(
+						[attr.title]='s.data')
+						ng-container(*ngIf='s.data; else elseBlock;')
+							| {{ s.data }}
+						ng-template(#elseBlock)
+							| {{ "SPREADSHEET.LABEL.UN_NAME" | translate }}
+		ng-container(*ngSwitchCase='DATA_TYPE.Formula')
+			cub-chip.cursor.layout-row.layout-gap-4(
+				*ngIf='d !== null',
+				(click)='openDialogItemDetail( data.value[ index ], index )')
+				span.text-truncate(
+					[attr.title]='d.calculated.data')
+					+formulaCell('d.calculated', '$any( d.params.resultFormatConfig )?', 'd.params.resultFormatType')
+		ng-container(*ngSwitchCase='DATA_TYPE.People')
+			+peopleDisplay
+		ng-container(*ngSwitchCase='DATA_TYPE.CreatedBy')
+			+peopleDisplay
+		ng-container(*ngSwitchCase='DATA_TYPE.LastModifiedBy')
+			+peopleDisplay
+
+.flex.layout-row.layout-gap-6.layout-align-start-start.full-width
+	ng-container(*ngIf='data') 
+		.field-cell__block-content.flex
+			ng-container(*ngIf='field.lookup.sourceFieldDataType !== DATA_TYPE.Lookup; else elseBlock')
+				ng-container(*ngIf='data?.calculated; else elseBlock1')
+					ng-container([ngSwitch]='data.resultType')
+						ng-container(*ngSwitchCase='DATA_TYPE.Number')
+							ng-container(*ngIf='field.lookup?.format?.currency; else elseBlock2')
+								| {{ data.calculated | currencyValue : field.lookup?.format?.currency : field.lookup?.format?.numberFormat : field.lookup?.format?.decimalPlaces }}
+							ng-template(#elseBlock2)
+								| {{ data.calculated | numberValue : field.lookup?.format?.numberFormat : field.lookup?.format?.decimalPlaces }}
+						ng-container(*ngSwitchCase='DATA_TYPE.Date')
+							| {{ data.calculated | dateValue : field.lookup?.format?.dateFormat : field.lookup?.format?.timeFormat }}
+				ng-template(#elseBlock1)
+					ng-container(*ngFor='let d of data?.selected; let index = index')
+						+renderData('field.lookup.sourceFieldDataType')
+			ng-template(#elseBlock)
+				ng-container(*ngFor='let data of data?.selected; let index = index')
+					ng-container(*ngIf='data?.calculated; else elseBlock1')
+						ng-container([ngSwitch]='data.resultType')
+							cub-chip.cursor.layout-row.layout-gap-4(
+								(click)='openDialogItemDetail( data.value[ index ], index )')
+								ng-container(*ngSwitchCase='DATA_TYPE.Number')
+									ng-container(*ngIf='field.lookup.sourceFieldParams.lookup.format?.currency; else elseBlock2')
+										| {{ data.calculated | currencyValue : field.lookup.sourceFieldParams.lookup?.format?.currency : field.lookup.sourceFieldParams.lookup?.numberFormat : field.lookup.sourceFieldParams.lookup?.format?.decimalPlaces }}
+									ng-template(#elseBlock2)
+										| {{ data.calculated | numberValue : field.lookup.sourceFieldParams.lookup?.format?.numberFormat : field.lookup.sourceFieldParams.lookup?.format?.decimalPlaces }}
+								ng-container(*ngSwitchCase='DATA_TYPE.Date')
+									| {{ data.calculated | dateValue : field.lookup.sourceFieldParams.lookup?.format?.dateFormat : field.lookup.sourceFieldParams.lookup?.format?.timeFormat }}
+					ng-template(#elseBlock1)
+						ng-container(*ngFor='let d of data?.selected; let index = index')
+							+renderData('field.lookup.sourceFieldParams.lookup.sourceFieldDataType')
+	button.field-cell__btn-stick-on-content(
+		cubBasicButton,
+		iconSize='16px',
+		icon='expand',
+		(click)='openExpander()')

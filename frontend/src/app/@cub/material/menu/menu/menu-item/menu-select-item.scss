@@ -1,0 +1,43 @@
+@import '../../../../scss/partials/variable';
+
+.cub-menu-item {
+	$self: &;
+
+	&.cub-menu-select-item {
+		// Selected state
+		@at-root {
+			&:not(:disabled) {
+				&#{ $self }--selected {
+					color: $color-text-blue;
+				}
+			}
+		}
+
+		#{ $self }__check-icon {
+			display: flex;
+			min-width: 20px;
+		}
+
+		#{ $self }__left {
+			&:has(#{ $self }__prefix:empty) {
+				~ #{ $self }__right {
+					#{ $self }__check-icon {
+						display: none;
+					}
+				}
+			}
+		}
+
+		#{ $self }__prefix {
+			&:not(:empty) {
+				~ #{ $self }__check-icon {
+					display: none;
+				}
+			}
+
+			~ #{ $self }__check-icon {
+				margin-right: 8px;
+			}
+		}
+	}
+}

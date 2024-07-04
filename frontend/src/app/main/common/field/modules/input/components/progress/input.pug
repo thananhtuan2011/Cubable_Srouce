@@ -1,0 +1,128 @@
+include ../mixins/mixin.pug
+
+ng-container(*ngIf='$any( data )?.valueType; else elseBlock;')
+	.layout-row.layout-gap-8
+		ng-container([ngSwitch]='$any( data ).valueType')
+			ng-container(*ngSwitchCase='VALUE_TYPE.STATIC')
+				cub-form-field.flex(
+					[label]='innerLabel',
+					[size]='size',
+					[variant]='variant',
+					[displayErrorMode]='displayErrorMode',
+					[autoFocusOn]='autoFocusOn',
+					[hideRequiredMarker]='hideRequiredMarker',
+					[disabled]='disabled',
+					(container.dblclick)='onDblClick( $event, $any( data )?.data )',
+					(container.keydown)='onKeydown( $event, $any( data )?.data )',
+					(container.blur)='formControl.markAsTouched()')
+					ng-container(
+						cubFormFieldPlaceholder,
+						*ngIf='!$any( data )?.data && readonly')
+						| {{ placeholder }}
+					ng-container(
+						cubFormFieldSuffix,
+						*ngIf='isInputting')
+						.text-color-tertiary
+							| %
+					ng-container(
+						*ngIf='isInputting; else elseBlock;')
+						input(
+							#input,
+							cubFormFieldInput,
+							autoFocusOn,
+							type='number',
+							pattern='[0-9]+',
+							[min]='field.startValue | convertPercent',
+							[max]='field.endValue | convertPercent',
+							[placeholder]=`
+								placeholder
+									?? ( "FIELD.INPUT.PLACEHOLDER.FILL_PROGRESS" | translate )
+							`,
+							[readonly]='readonly',
+							[clearable]='!readonly',
+							[formControl]='formControl',
+							[disableControl]='disabled',
+							[(valueControl)]='percent',
+							(blur)='onBlur()')
+					ng-template(#elseBlock)
+						.flex.layout-row.layout-gap-4.layout-align-start-center(
+							*ngIf='$any( data )?.data || !readonly')
+							cub-slider.flex(
+								tabindex='-1',
+								[min]='field.startValue',
+								[max]='field.endValue',
+								[disabled]='disabled',
+								[readonly]='readonly',
+								[formControl]='formControl',
+								[valueControl]='$any( data ).data',
+								(valueControlChange)='onDataChanged( $event )',
+								(sliding)='slidingPercent = $event',
+								(slideEnd)='slidingPercent = null')
+							span.miw-36.h-20.text-nowrap.text-right
+								| {{ ( slidingPercent || $any( data ).data ) | percent }}
+			ng-container(*ngSwitchCase='VALUE_TYPE.DYNAMIC')
+				+formField
+					+dynamicValue()(
+						readonly,
+						(click)='plusButton.open()')
+			ng-container(*ngSwitchCase='VALUE_TYPE.EMPTY')
+				+formField
+					+emptyValue
+		+valueTypeSwitch
+ng-template(#elseBlock)
+	cub-form-field(
+		[label]='innerLabel',
+		[size]='size',
+		[variant]='variant',
+		[displayErrorMode]='displayErrorMode',
+		[autoFocusOn]='autoFocusOn',
+		[hideRequiredMarker]='hideRequiredMarker',
+		[disabled]='disabled',
+		(container.dblclick)='onDblClick( $event, data )',
+		(container.keydown)='onKeydown( $event, data )',
+		(container.blur)='formControl.markAsTouched()')
+		ng-container(
+			cubFormFieldPlaceholder,
+			*ngIf='!data && readonly')
+			| {{ placeholder }}
+		ng-container(
+			cubFormFieldSuffix,
+			*ngIf='isInputting')
+			.text-color-tertiary
+				| %
+		ng-container(
+			*ngIf='isInputting; else elseBlock;')
+			input(
+				#input,
+				cubFormFieldInput,
+				autoFocusOn,
+				type='number',
+				pattern='[0-9]+',
+				[min]='field.startValue | convertPercent',
+				[max]='field.endValue | convertPercent',
+				[placeholder]=`
+					placeholder
+						?? ( "FIELD.INPUT.PLACEHOLDER.FILL_PROGRESS" | translate )
+				`,
+				[readonly]='readonly',
+				[clearable]='!readonly',
+				[formControl]='formControl',
+				[disableControl]='disabled',
+				[(valueControl)]='percent',
+				(blur)='onBlur()')
+		ng-template(#elseBlock)
+			.flex.layout-row.layout-gap-4.layout-align-start-center(
+				*ngIf='data || !readonly')
+				cub-slider.flex(
+					tabindex='-1',
+					[min]='field.startValue',
+					[max]='field.endValue',
+					[disabled]='disabled',
+					[readonly]='readonly',
+					[formControl]='formControl',
+					[valueControl]='data',
+					(valueControlChange)='onDataChanged( $event )',
+					(sliding)='slidingPercent = $event',
+					(slideEnd)='slidingPercent = null')
+				span.miw-36.h-20.text-nowrap.text-right
+					| {{ ( slidingPercent || data ) | percent }}

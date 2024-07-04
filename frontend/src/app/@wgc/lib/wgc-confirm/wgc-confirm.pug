@@ -1,0 +1,69 @@
+mixin message
+	ng-container(*ngIf='isMessageString; else elseBlock;')
+		ng-container(*ngIf='config?.translate; else elseBlock;')
+			span([innerHtml]='$any( message ) | translate : config?.translateParams | safeHtml')
+		ng-template(#elseBlock)
+			span([innerHtml]='$any( message ) | safeHtml')
+	ng-template(#elseBlock)
+		ng-container(*ngTemplateOutlet='message; context: config?.data;')
+
+ng-container([ngSwitch]='config?.type')
+	.wgc-confirm--popup(*ngSwitchCase='"popup"')
+		+message
+		| &nbsp;
+		a(*ngIf='config?.buttonApply !== null', (click)='close( true )')
+			ng-container(*ngIf='config?.buttonApply; else elseBlock;')
+				ng-container(*ngIf='config?.translate; else elseBlock;')
+					span([innerHtml]='config?.buttonApply | translate : config?.translateParams | safeHtml')
+				ng-template(#elseBlock)
+					span([innerHtml]='config?.buttonApply | safeHtml')
+			ng-template(#elseBlock)
+				| {{ "WGC.LABEL.APPLY" | translate : config?.translateParams }}
+		ng-container(*ngIf='config?.buttonApply !== null && config?.buttonDiscard !== null')
+			| &nbsp;{{ "WGC.LABEL.OR" | translate : config?.translateParams }}&nbsp;
+		a(*ngIf='config?.buttonDiscard !== null', (click)='close( false )')
+			ng-container(*ngIf='config?.buttonDiscard; else elseBlock;')
+				ng-container(*ngIf='config?.translate; else elseBlock;')
+					span([innerHtml]='config?.buttonDiscard | translate : config?.translateParams | safeHtml')
+				ng-template(#elseBlock)
+					span([innerHtml]='config?.buttonDiscard | safeHtml')
+			ng-template(#elseBlock)
+				| {{ "WGC.LABEL.DISCARD" | translate : config?.translateParams }}
+
+	.wgc-confirm--dialog(*ngSwitchCase='"dialog"')
+		h1(wgcDialogHeader)
+			wgc-truncate(*ngIf='title; else elseBlock2;')
+				ng-container(*ngIf='config?.translate; else elseBlock;')
+					span([innerHtml]='title | translate : config?.translateParams | safeHtml')
+				ng-template(#elseBlock)
+					span([innerHtml]='title | safeHtml')
+			ng-template(#elseBlock2)
+				| {{ "WGC.LABEL.CONFIRMATION" | translate }}
+		.h4(wgcDialogContent)
+			+message
+			.wgc-confirm__warning(*ngIf='config?.warning')
+				wgc-icon.wgc-confirm__warning__icon(name='warning', size='20px')
+				ng-container(*ngIf='config?.warningMessage; else elseBlock;')
+					ng-container(*ngIf='config?.translate; else elseBlock;')
+						| {{ config?.warningMessage | translate : config?.translateParams }}
+					ng-template(#elseBlock)
+						| {{ config?.warningMessage }}
+				ng-template(#elseBlock)
+					| {{ "WGC.MESSAGE.WARNING_CAN_NOT_UNDO_ACTION" | translate }}
+		div(wgcDialogFooter, alignment='stretch')
+			button(wgcButton, color='primary', *ngIf='config?.buttonApply !== null', (click)='close( true )')
+				ng-container(*ngIf='config?.buttonApply; else elseBlock;')
+					ng-container(*ngIf='config?.translate; else elseBlock;')
+						span([innerHtml]='config?.buttonApply | translate : config?.translateParams | safeHtml')
+					ng-template(#elseBlock)
+						span([innerHtml]='config?.buttonApply | safeHtml')
+				ng-template(#elseBlock)
+					| {{ "WGC.LABEL.APPLY" | translate : config?.translateParams }}
+			button(wgcButton, *ngIf='config?.buttonDiscard !== null', (click)='close( false )')
+				ng-container(*ngIf='config?.buttonDiscard; else elseBlock;')
+					ng-container(*ngIf='config?.translate; else elseBlock;')
+						span([innerHtml]='config?.buttonDiscard | translate : config?.translateParams | safeHtml')
+					ng-template(#elseBlock)
+						span([innerHtml]='config?.buttonDiscard | safeHtml')
+				ng-template(#elseBlock)
+					| {{ "WGC.LABEL.DISCARD" | translate : config?.translateParams }}

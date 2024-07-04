@@ -1,0 +1,18 @@
+.wgc-avatar__label(#ref)
+	ng-content
+ng-container(*ngIf='!ref?.childNodes?.length')
+	ng-template(#labelTemp)
+		.wgc-avatar__label
+			ng-container(*ngIf='isIconMode( avatar?.mode ) && avatar?.icon; else elseBlock;')
+				wgc-emoji([emoji]='avatar?.icon')
+			ng-template(#elseBlock)
+				| {{ parsedLabel }}
+	ng-container(*ngIf='( isAutoMode( avatar?.mode ) || isPhotoMode( avatar?.mode ) ) && ( isPhotoLoaded$ | async ); else labelTemp;')
+		ng-container(*ngIf='lazy; else elseBlock;')
+			img.wgc-avatar__image(
+				[lazyLoad]='avatar?.photo',
+				[defaultImage]='defaultPhoto || "assets/images/loading.gif"',
+				[errorImage]='errorPhoto || avatar?.photo',
+				[customObservable]='scroll$')
+		ng-template(#elseBlock)
+			img.wgc-avatar__image([src]='avatar?.photo')

@@ -1,0 +1,48 @@
+cub-popup(
+	#popup,
+	width='252px')
+	cub-popup-content
+		ng-template(cubPopupContent)
+			form#linkForm.layout-column.layout-gap-8(
+				[formGroup]='form',
+				(submit)='submit()')
+				cub-form-field(
+					[label]='"FIELD.EDITOR.LABEL.TEXT" | translate')
+					input(
+						cubFormFieldInput,
+						autoFocusOn,
+						maxlength='255',
+						placeholder='Cubable',
+						formControlName='text',
+						[readonly]='readonly',
+						[clearable]='!readonly',
+						[(valueControl)]='data.text')
+				cub-form-field(
+					[label]='"FIELD.EDITOR.LABEL.LINK" | translate')
+					input(
+						cubFormFieldInput,
+						required,
+						type='url',
+						maxlength='255',
+						placeholder='www.cubable.com',
+						formControlName='link',
+						[readonly]='readonly',
+						[clearable]='!readonly',
+						[(valueControl)]='data.link')
+	cub-popup-footer(
+		*ngIf='!readonly')
+		ng-template(cubPopupFooter)
+			.layout-row.layout-gap-8.layout-align-end
+				button.w-80(
+					cubButton='secondary',
+					(click)='cancel()')
+					| {{ "SPREADSHEET.LABEL.CANCEL" | translate }}
+				button.w-80(
+					cubButton,
+					form='linkForm',
+					type='submit',
+					[disabled]='form.invalid')
+					| {{ "SPREADSHEET.LABEL.CONFIRM" | translate }}
+
+ng-container(
+	*ngTemplateOutlet='popup.templateRef')

@@ -1,0 +1,11 @@
+.wgc-menu-item__prefix
+	ng-content(select='[wgcMenuItemPrefix]')
+	wgc-color-dot(wgcMenuItemPrefix, viewOnly, *ngIf='dotColor', [color]='dotColor')
+	wgc-icon(wgcMenuItemPrefix, size='20px', *ngIf='icon', [name]='icon', [color]='iconColor')
+	div(wgcMenuItemPrefix, *ngIf='menuItemIcon')
+		ng-content(select='[wgcMenuItemIcon]')
+.wgc-menu-item__content
+	ng-content
+.wgc-menu-item__suffix
+	wgc-icon(wgcMenuItemSuffix, name='check', size='20px', color='primary', *ngIf='active')
+	ng-content(select='[wgcMenuItemSuffix]')

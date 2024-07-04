@@ -1,0 +1,23 @@
+@import 'src/scss/partials/variable';
+
+::ng-deep {
+	.compare-today-menu {
+		.context {
+			background: $color-white;
+			border-radius: 12px;
+			padding: 8px;
+			margin-bottom: 8px;
+		}
+	}
+
+	.date-basic-button {
+		.cub-form-field__input {
+			padding: 2px !important;
+
+			.cub-basic-button {
+				padding: 6px 10px;
+			}
+		}
+	}
+
+}

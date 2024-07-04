@@ -1,0 +1,15 @@
+select-row(
+	#selectRowComp,
+	[eventAdvance]='eventAdvance',
+	[baseID]='baseID',
+	[blockSetup]='blockSetup',
+	[(row)]='$any( settings ).row',
+	(loadFields)='onLoadFields()',
+	(rowChange)='onRowChange()')
+
+set-row-content(
+	[baseID]='baseID',
+	[settings]='settings',
+	[blockSetup]='blockSetup',
+	[eventAdvance]='eventAdvance',
+	(settingsChange)='onSettingChange( $any( $event ) )')

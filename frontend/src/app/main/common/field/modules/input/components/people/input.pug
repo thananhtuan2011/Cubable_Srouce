@@ -1,0 +1,150 @@
+include ../mixins/mixin.pug
+
+ng-container(*ngIf='$any( data )?.valueType; else elseBlock;')
+	.layout-row.layout-gap-8
+		ng-container([ngSwitch]='$any( data ).valueType')
+				ng-container(*ngSwitchCase='VALUE_TYPE.STATIC')
+					cub-form-field.flex(
+						cubMemberPicker,
+						#formField,
+						#memberPicker='cubMemberPicker',
+						[hasInput]='false',
+						[canMultipleSelect]='field.isMultipleSelect',
+						[disabled]='disabled',
+						[readonly]='readonly',
+						[users]='getUsersFn',
+						[selectedUsers]='$any( data ).data?.selected',
+						[selectedUserIDs]='$any( data ).data?.value',
+						[label]='innerLabel',
+						[size]='size',
+						[variant]='variant',
+						[displayErrorMode]='displayErrorMode',
+						[hideRequiredMarker]='hideRequiredMarker',
+						[required]='isRequired',
+						[control]='formControl',
+						[focusing]='memberPicker.isOpened',
+						[(keySearch)]='keySearch',
+						(container.keydown)='onKeydown( $event, $any( data ).data )',
+						(container.click)='onClick( $any( data ).data )',
+						(container.blur)='onBlur( formField.focusing )',
+						(opened)='pickerOpened()',
+						(closed)='pickerClosed()',
+						(addedUsers)='onAddedUsers( $event, $any( data ).data )')
+						ng-container(
+							cubFormFieldError,
+							*ngIf=`errors?.required`)
+							| {{ "FIELD.INPUT.MESSAGE.PLEASE_TYPE_VALUE" | translate }}
+						cub-scroll-bar.mah-100(
+							suppressX,
+							[suppressY]='!formField.isFocused')
+							.layout-row.layout-align-start-center.layout-wrap.layout-gap-6
+								.people-field-input__values(
+									*ngFor='let value of $any( data ).data?.selected; let index = index; trackByID',
+									[class.people-field-input__values-filled]='variant === formFieldVariant.Filled')
+									.people-field-input__values-value
+										cub-member(
+											avatarSize='small',
+											[hasViewProfile]='false',
+											[member]='value')
+									cub-icon.cursor.mt-2(
+										name='close',
+										size='12px',
+										color='secondary',
+										*ngIf=`!disabled
+											&& !readonly
+											&& formField.isFocused`,
+										[cubTooltip]='"FIELD.INPUT.LABEL.REMOVE" | translate',
+										(click)='clearValue( value.id, $any( data ).data )')
+								.people-field-input__input(
+									[class.people-field-input__input--unfocused]=`$any( data ).data?.selected?.length
+										&& !keySearch
+										&& !memberPicker.isOpened`)
+									input(
+										cubFormFieldInput,
+										clearable,
+										#searchInput='cubFormFieldInput',
+										[class.people-field-input__input--has-values]='$any( data ).data?.selected?.length',
+										[disabled]='disabled',
+										[readonly]='readonly',
+										[autoFocusOn]='autoFocusOn',
+										[placeholder]=`!$any( data ).data?.selected?.length
+											? ( placeholder ?? ( "FIELD.INPUT.PLACEHOLDER.SELECT" | translate ) )
+											: ""`,
+										[(ngModel)]='keySearch')
+				ng-container(*ngSwitchCase='VALUE_TYPE.DYNAMIC')
+					+formField
+						+dynamicValue()(
+							readonly,
+							(click)='plusButton.open()')
+				ng-container(*ngSwitchCase='VALUE_TYPE.EMPTY')
+					+formField
+						+emptyValue
+		+valueTypeSwitch
+ng-template(#elseBlock)
+	cub-form-field(
+		cubMemberPicker,
+		#memberPicker='cubMemberPicker',
+		#formField,
+		[hasInput]='false',
+		[canMultipleSelect]='field.isMultipleSelect',
+		[disabled]='disabled',
+		[readonly]='readonly',
+		[users]='getUsersFn',
+		[selectedUsers]='data?.selected',
+		[selectedUserIDs]='data?.value',
+		[label]='innerLabel',
+		[size]='size',
+		[variant]='variant',
+		[displayErrorMode]='displayErrorMode',
+		[hideRequiredMarker]='hideRequiredMarker',
+		[required]='isRequired',
+		[control]='formControl',
+		[focusing]='memberPicker.isOpened',
+		[(keySearch)]='keySearch',
+		(container.keydown)='onKeydown( $event, data )',
+		(container.click)='onClick( data )',
+		(container.blur)='onBlur( formField.focusing )',
+		(opened)='pickerOpened()',
+		(closed)='pickerClosed()',
+		(addedUsers)='onAddedUsers( $event, data )')
+		ng-container(
+			cubFormFieldError,
+			*ngIf='errors?.required')
+			| {{ "FIELD.INPUT.MESSAGE.PLEASE_TYPE_VALUE" | translate }}
+		cub-scroll-bar.mah-100(
+			suppressX,
+			[suppressY]='!formField.isFocused')
+			.layout-row.layout-align-start-center.layout-wrap.layout-gap-6
+				.people-field-input__values(
+					*ngFor='let value of data?.selected; let index = index; trackByID',
+					[class.people-field-input__values-filled]='variant === formFieldVariant.Filled')
+					.people-field-input__values-value
+						cub-member(
+							avatarSize='small',
+							[hasViewProfile]='false',
+							[member]='value')
+					cub-icon.cursor.mt-2(
+						name='close',
+						size='12px',
+						color='secondary',
+						*ngIf=`!disabled
+							&& !readonly
+							&& formField.isFocused`,
+						[cubTooltip]='"FIELD.INPUT.LABEL.REMOVE" | translate',
+						(click)='clearValue( value.id, data )')
+				.people-field-input__input(
+					[class.people-field-input__input--unfocused]=`data?.selected?.length
+						&& !keySearch
+						&& !memberPicker.isOpened`)
+					input(
+						cubFormFieldInput,
+						clearable,
+						#searchInput='cubFormFieldInput',
+						[class.people-field-input__input--has-values]='data?.selected?.length',
+						[disabled]='disabled',
+						[readonly]='readonly',
+						[autoFocusOn]='autoFocusOn',
+						[placeholder]=`!data?.selected?.length
+							? ( placeholder ?? ( "FIELD.INPUT.PLACEHOLDER.SELECT" | translate ) )
+							: ""`,
+						[(ngModel)]='keySearch')

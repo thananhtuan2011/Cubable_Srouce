@@ -1,0 +1,73 @@
+@import '../../scss/partials/variable';
+
+// *:disabled,
+// *[disabled] {
+// 	.cub-icon {
+// 		color: $color-icon-tertiary !important;
+// 	}
+// }
+
+.cub-icon {
+	$self: &;
+
+	display: block;
+	width: var(--icon-font-size, fit-content);
+	height: var(--icon-font-size, fit-content);
+
+	color: var(--icon-color, inherit);
+
+	text-align: center;
+
+	// Type
+	@at-root {
+		&#{ $self }-destructive {
+			color: $color-material-destructive-default;
+		}
+	}
+
+	// Color
+	@at-root {
+		&[color='primary'] {
+			color: $color-icon-primary;
+		}
+
+		&[color='secondary'] {
+			color: $color-icon-secondary;
+		}
+
+		&[color='tertiary'] {
+			color: $color-icon-tertiary;
+		}
+
+		&[color='white'] {
+			color: $color-icon-white;
+		}
+
+		&[color='black'] {
+			color: $color-icon-black;
+		}
+
+		&[color='blue'] {
+			color: $color-icon-blue;
+		}
+
+		&[color='success'] {
+			color: $color-icon-success;
+		}
+
+		&[color='warning'] {
+			color: $color-icon-warning;
+		}
+
+		&[color='error'] {
+			color: $color-icon-error;
+		}
+	}
+
+	i {
+		display: block;
+
+		font-size: var(--icon-font-size, inherit);
+		line-height: normal;
+	}
+}

@@ -1,0 +1,13 @@
+.cub-emoji {
+	display: flex;
+
+	font-size: var(--emoji-size, ịnherit);
+	font-family: 'Segoe UI Emoji',
+		'Segoe UI Symbol',
+		'Segoe UI',
+		'Apple Color Emoji',
+		'Twemoji Mozilla',
+		'Noto Color Emoji',
+		'Android Emoji';
+	font-weight: normal !important;
+}

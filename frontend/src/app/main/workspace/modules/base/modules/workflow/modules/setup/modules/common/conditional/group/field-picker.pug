@@ -1,0 +1,14 @@
+cub-dropdown.w-172(
+	searchable,
+	singleLine,
+	#comparisonFieldDropdown,
+	displayErrorMode='tooltip',
+	[clearable]='false',
+	[formControl]='fieldControl',
+	[(valueControl)]='fieldID',
+	(valueControlChange)='comparisonFieldChange()')
+	cub-dropdown-item(
+		*ngFor='let f of fields; ngForTrackByID',
+		[icon]='f.dataType | fieldMetadata : "icon"',
+		[label]='f.name',
+		[value]='f.id')

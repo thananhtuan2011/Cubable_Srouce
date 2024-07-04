@@ -1,0 +1,25 @@
+@import 'src/scss/partials/variable';
+
+.formula-editor {
+	$self: &;
+
+	#{ $self }__help-area {
+		display: flex;
+		height: 210px;
+		min-height: 210px;
+		max-height: 210px;
+		border-top: 1px solid $color-border-primary;
+
+		#{ $self }__help-area-left {
+			width: 35%;
+			padding: 8px;
+		}
+
+		#{ $self }__help-area-right {
+			width: 65%;
+			padding: 8px 12px;
+
+			background-color: $color-transparent-black-3;
+		}
+	}
+}

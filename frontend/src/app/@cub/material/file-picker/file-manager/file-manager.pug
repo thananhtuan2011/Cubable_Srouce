@@ -1,0 +1,45 @@
+cub-popup(
+	#popup,
+	draggable,
+	width='664px',
+	height='552px')
+	cub-popup-header
+		ng-template(cubPopupHeader)
+			h5
+				| {{ "CUB.LABEL.MANAGE_FILE" | translate }}
+			button(
+				cubClearButton,
+				size='20px',
+				(click)='close()')
+	cub-popup-content
+		ng-template(cubPopupContent)
+			cub-file-list(
+				downloadable,
+				*ngIf='files.length; else elseBlock;',
+				[files]='files',
+				[renamable]='!readonly',
+				[removable]='!readonly')
+			ng-template(#elseBlock)
+				.cub-file-manager__not-found
+					cub-image(
+						src='./assets/@cub/images/no-file.svg',
+						width='154px',
+						height='64px')
+					b
+						| {{ "CUB.MESSAGE.NO_FILE" | translate }}
+	cub-popup-footer(
+		*ngIf='!readonly')
+		ng-template(cubPopupFooter)
+			button(
+				cubBasicButton,
+				cubFilePicker,
+				icon='plus-circle',
+				iconSize='16px',
+				(picked)='onFilePicked( $event )')
+				| {{ "CUB.LABEL.PICK_MORE" | translate }}
+			button.cub-file-manager__btn-done(
+				cubButton,
+				(click)='done()')
+				| {{ "CUB.LABEL.DONE" | translate }}
+
+ng-template(*ngTemplateOutlet='popup.templateRef')

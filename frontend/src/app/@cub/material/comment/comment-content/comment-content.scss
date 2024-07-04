@@ -1,0 +1,36 @@
+@import '../../../scss/partials/variable';
+
+.cub-comment-content {
+	$self: &;
+
+	display: flex;
+	flex-direction: column;
+	width: 100%;
+
+	#{$self}__editor {
+		width: 100%;
+
+		.ql-toolbar {
+			border: none;
+			padding: 0;
+			margin-bottom: 4px;
+		}
+
+		.ql-container {
+			border: none;
+			padding: 0;
+
+			.ql-editor {
+				max-height: 400px;
+				padding: 0;
+			}
+
+			.ql-editor.ql-blank::before {
+				font-style: unset;
+				right: unset;
+				left: unset;
+				color: $color-text-tertiary;
+			}
+		}
+	}
+}

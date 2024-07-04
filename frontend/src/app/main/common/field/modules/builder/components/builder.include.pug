@@ -1,0 +1,129 @@
+mixin help-block
+	.layout-row.layout-gap-12.layout-align-start-center
+		cub-icon(
+			name='help-circle-fill',
+			size='28px',
+			color='secondary')
+		label.h6
+			block
+
+mixin tab-setting
+	.layout-column.layout-gap-16.flex-100
+		ng-container(
+			*ngTemplateOutlet='settingBlock')
+
+mixin tab-default
+	.layout-column.layout-gap-16.flex-100
+		ng-container(
+			*ngTemplateOutlet='defaultBlock')
+		+help-block
+			| {{ "FIELD.BUILDER.MESSAGE.DEFAULT_VALUE_HELP_TEXT" | translate }}
+
+mixin tab-description
+	.layout-column.layout-gap-16.flex-100
+		cub-form-field.mah-300(resizable)
+			textarea(
+				cubFormFieldInput,
+				autoFocusOn,
+				rows='5',
+				maxlength='255',
+				[placeholder]='"FIELD.BUILDER.PLACEHOLDER.FILL_DESCRIPTION" | translate',
+				[formControl]='descriptionFormControl',
+				[(ngModel)]='internalField.description')
+		.layout-column.layout-gap-6
+			label
+				| {{ "FIELD.BUILDER.LABEL.DESCRIPTION_POSITION" | translate }}
+			cub-image(
+				src='assets/images/field/description.webp',
+				minWidth='360px',
+				minHeight='80px')
+		+help-block
+			| {{ "FIELD.BUILDER.MESSAGE.DESCRIPTION_HELP_TEXT" | translate }}
+
+ng-template(
+	#fieldTemplate,
+	let-settingBlock='settingBlock',
+	let-defaultBlock='defaultBlock',
+	let-footerExtraBlock='footerExtraBlock',
+	let-canSetRequired='canSetRequired')
+	cub-popup(
+		#popup,
+		maxHeight='610px')
+		cub-popup-header
+			ng-template(cubPopupHeader)
+				.layout-row.layout-gap-12
+					.h-36.layout-column.layout-align-center
+						cub-image(
+							width='36px',
+							height='36px',
+							[src]='internalField.dataType | fieldMetadata : "avatar"')
+					form#fieldBuilderForm.flex(
+						(submit)='done()')
+						cub-form-field
+							input(
+								cubFormFieldInput,
+								autoFocusOn,
+								required,
+								maxlength='80',
+								[placeholder]='"FIELD.BUILDER.PLACEHOLDER.FILL_NAME" | translate',
+								[formControl]='nameFormControl',
+								[(valueControl)]='internalField.name')
+							ng-template(
+								cubFormFieldError='duplicateName',
+								*ngIf='nameFormControl?.errors?.duplicateName')
+								| {{ "FIELD.BUILDER.MESSAGE.FIELD_NAME_ALREADY_EXISTS" | translate }}
+						input.hide(
+							type='submit',
+							[disabled]=`nameFormControl.invalid
+								|| !( canSubmit$ | async )`)
+		cub-popup-content
+			ng-template(cubPopupContent)
+				cub-tabs(
+					alignment='center',
+					(selectedIndexChange)='onTabChange( $event )')
+					cub-tab(*ngIf='settingBlock')
+						ng-template(cubTabHeader)
+							| {{ "FIELD.BUILDER.LABEL.SETTING" | translate }}
+						ng-template(cubTabContent)
+							+tab-setting
+					cub-tab(*ngIf='defaultBlock')
+						ng-template(cubTabHeader)
+							| {{ "FIELD.BUILDER.LABEL.DEFAULT" | translate }}
+							cub-icon(
+								name='warning',
+								color='error',
+								*ngIf='!validateInitialValue()')
+						ng-template(cubTabContent)
+							+tab-default
+					cub-tab
+						ng-template(cubTabHeader)
+							| {{ "FIELD.BUILDER.LABEL.DESCRIPTION" | translate }}
+						ng-template(cubTabContent)
+							+tab-description
+		cub-popup-footer
+			ng-template(cubPopupFooter)
+				.layout-row.layout-gap-12.layout-align-space-between-center
+					.flex.layout-row.layout-gap-12.layout-align-start-center
+						cub-checkbox(
+							*ngIf='canSetRequired',
+							[label]='"FIELD.BUILDER.LABEL.REQUIRED" | translate',
+							[(ngModel)]='internalField.isRequired')
+						ng-container(
+							*ngTemplateOutlet='footerExtraBlock')
+					.flex-nogrow.layout-row.layout-gap-12.layout-align-space-between
+						button.w-80(
+							cubButton='secondary',
+							(click)='cancel()')
+							| {{ "FIELD.BUILDER.LABEL.CANCEL" | translate }}
+						button.w-120(
+							cubButton,
+							type='submit',
+							form='fieldBuilderForm',
+							[disabled]=`nameFormControl.invalid
+								|| descriptionFormControl.invalid
+								|| !isInitialValueValid
+								|| !( canSubmit$ | async )`)
+							| {{ "FIELD.BUILDER.LABEL.DONE" | translate }}
+
+	ng-container(
+		*ngTemplateOutlet='popup.templateRef')

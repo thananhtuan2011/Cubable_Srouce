@@ -1,0 +1,149 @@
+ng-template(
+	#groupDataTooltip,
+	let-selected='selected',
+	let-column='column')
+		.layout-column
+			ng-container(
+				*ngFor='let s of selected; trackByID')
+				ng-container(*ngIf='column.field.dataType | isDropdownField')
+					.text-truncate([title]='s.name')
+						| {{ s.name }}
+				ng-container(*ngIf=`
+					( column.field.dataType | isPeopleField )
+					|| ( column.field.dataType | isReferenceField )`)
+					.text-truncate([title]='s.name')
+						| {{ s.data }}
+
+mixin group-data-template
+	ng-template(
+		let-column='column',
+		let-data='data')&attributes(attributes)
+		block
+
++group-data-template()(
+	#checkboxGroupDataTemplate)
+	cub-checkbox(
+		readonly,
+		size='large',
+		[ngModel]='data')
+
++group-data-template()(
+	#currencyGroupDataTemplate,
+	#numberGroupDataTemplate)
+	.text-truncate([title]='data')
+		| {{ data }}
+
++group-data-template()(
+	#createdTimeGroupDataTemplate,
+	#dateGroupDataTemplate,
+	#lastModifiedTimeGroupDataTemplate)
+	.text-truncate([title]='data | dateValue : column.field.format')
+		| {{ data | dateValue : column.field.format }}
+
++group-data-template()(
+	#emailGroupDataTemplate)
+	a(
+		target='_blank',
+		[href]='"mailto:" + data')
+		| {{ data }}
+
++group-data-template()(
+	#formulaGroupDataTemplate)
+	.text-truncate([title]='data.calculated.data')
+		| {{ data.calculated.data }}
+
++group-data-template()(
+	#linkGroupDataTemplate)
+	a(
+		target='_blank',
+		[href]='data?.link | link')
+		| {{ data.text || data.link }}
+
++group-data-template()(
+	#lookupGroupDataTemplate)
+	| {{ data }}
+
++group-data-template()(
+	#dropdownGroupDataTemplate)
+	.layout-row.layout-gap-4(
+		[style.overflow]="'hidden'",
+		[cubTooltip]='groupDataTooltip',
+		[cubTooltipContext]=`{
+			column,
+			selected: data.selected,
+		}`)
+		cub-chip(
+			*ngFor='let option of data.selected; trackByValue',
+			[color]='option.color')
+			.text-truncate([title]='option.name')
+				| {{ option.name }}
+
++group-data-template()(
+	#peopleGroupDataTemplate)
+	.layout-row.layout-gap-4(
+		[style.overflow]="'hidden'",
+		[cubTooltip]='groupDataTooltip',
+		[cubTooltipContext]=`{
+			column,
+			selected: data.selected,
+		}`)
+		cub-chip(
+			hasAvatar,
+			*ngFor='let member of data.selected; trackByID')
+			cub-member(
+				avatarSize='small',
+				[hasViewProfile]='false',
+				[member]='member')
+
++group-data-template()(
+	#lastModifiedByGroupDataTemplate,
+	#createdByGroupDataTemplate)
+	.layout-row.layout-gap-4
+		cub-chip(
+			hasAvatar,
+			*ngFor='let member of data.selected; trackByID')
+			cub-member(
+				avatarSize='small',
+				[hasViewProfile]='false',
+				[member]='member')
+
++group-data-template()(
+	#referenceGroupDataTemplate)
+	.layout-row.layout-gap-4(
+		[style.overflow]="'hidden'",
+		[cubTooltip]='groupDataTooltip',
+		[cubTooltipContext]=`{
+			column,
+			selected: data.selected,
+		}`)
+		cub-chip(
+			*ngFor='let ref of data.selected; trackByID')
+			.text-truncate([title]='ref.data')
+				| {{ ref.data }}
+
++group-data-template()(
+	#phoneGroupDataTemplate)
+	a(
+		target='_blank',
+		[href]='"tel:" + data.phone')
+		| {{ data.phone }}
+
++group-data-template()(
+	#progressGroupDataTemplate)
+	.text-truncate([title]='( data || 0 ) | unit : '%'')
+		| {{ ( data || 0 ) | unit : '%' }}
+
++group-data-template()(
+	#ratingGroupDataTemplate)
+	.text-nowrap.mr-4
+		| {{ data || 0 }}
+		ng-container(*ngIf='data.maxPoint > 0')
+			| /{{ data.maxPoint }}
+	cub-emoji(
+		[emoji]='column.field.emoji')
+
++group-data-template()(
+	#textGroupDataTemplate)
+	.text-truncate(
+		[title]='data',
+		[innerHTML]='data')

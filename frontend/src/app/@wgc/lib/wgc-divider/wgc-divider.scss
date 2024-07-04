@@ -1,0 +1,18 @@
+@import 'src/scss/partials/variable';
+
+.wgc-divider {
+	display: flex;
+	background-color: $color-border;
+
+	&:not(.wgc-divider--vertical) {
+		height: 1px;
+		min-height: 1px;
+		max-height: 1px;
+	}
+
+	&.wgc-divider--vertical {
+		width: 1px;
+		min-width: 1px;
+		max-width: 1px;
+	}
+}

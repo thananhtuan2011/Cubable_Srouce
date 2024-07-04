@@ -1,0 +1,30 @@
+{
+	"LABEL": {
+		"ACCOUNT": "Tài khoản",
+		"BACK": "Trở về",
+		"CLOSE": "Đóng",
+		"DONE": "Xong",
+		"CREATE_NEW_WORKSPACE": "Tạo Workspace mới",
+		"GO_BACK": "Quay về trang trước",
+		"EDIT": "Chỉnh sửa",
+		"SAVE": "Lưu",
+		"WORKSPACE_ACCENT_COLOR": "Màu chủ đề ",
+		"WORKSPACE_ID": "ID Workspace",
+		"WORKSPACE_NAME": "Tên Workspace"
+	},
+	"PLACEHOLDER": {
+		"MY_WORKSPACE_ID": "my-workspace-id",
+		"TYPE_WORKSPACE_NAME": "Nhập tên Workspace"
+	},
+	"MESSAGE": {
+		"CREATE_A_WORKSPACE": "Tạo workspace",
+		"CREATE_A_WORKSPACE_DESCRIPTION": "Tại Cubable, doanh nghiệp của bạn có thể làm mọi thứ: lập kế hoạch, theo dõi, cộng tác, cấp quyền, v.v.",
+		"LOADING_WORKSPACE": "Đang tải Workspace...",
+		"SETTING_UP_HEADER_DESCRIPTION": "Để chúng tôi có thể hiểu thêm và cá nhân hóa trải nghiệm của bạn",
+		"SETTING_UP_NEW_WORKSPACE": "Thiết lập Workspace mới",
+		"WORKSPACE_ID_HINT": "ID chỉ có thể chứa chữ viết thường, số và dấu \"-\"",
+		"WORKSPACE_ID_PERMANENT": "Bạn sẽ không thể chỉnh sửa ID Workspace sau bước này.",
+		"WORKSPACE_ID_UNAVAILABLE": "ID này đã tồn tại trên hệ thống.",
+		"NOT_ACCESS_WORKSPACE": "Bạn không có quyền truy cập vào Workspace"
+	}
+}

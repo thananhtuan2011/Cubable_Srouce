@@ -1,0 +1,165 @@
+mixin calendar-date
+	span.cub-date-picker__calendar-item(
+		*ngFor='let calendarDate of calendar; let index = index; trackByIndex',
+		[attr.data-date]='calendarDate?.date',
+		[class.cub-date-picker__calendar-item--today]=`calendarDate
+			&& calendarDate.year === calendarToday.year
+			&& calendarDate.month === calendarToday.month
+			&& calendarDate.date === calendarToday.date`,
+		[class.cub-date-picker__calendar-item--inactive]=`calendarDate
+			&& calendarDate.month !== currentMonth`,
+		[class.wgc-date-picker__day-in-month--disabled]=`calendarDate
+			&& ( calendarDate.year < minYear
+			|| calendarDate.month < minMonth
+			|| calendarDate.date < minDate
+			|| calendarDate.year > maxYear
+			|| calendarDate.month > maxMonth
+			|| calendarDate.date > maxDate )`,
+		(click)='canManualChange && pickDate( calendarDate )')&attributes(attributes)
+
+cub-menu(
+	#yearMenu,
+	width='120px',
+	height='215px')
+	cub-menu-content
+		ng-template(cubMenuContent)
+			button(
+				cubMenuSelectItem,
+				*ngFor='let year of YEARS; trackByIndex',
+				[selected]='year === currentYear',
+				(click)='selectYear( year )')
+				| {{ year }}
+
+cub-menu(
+	#monthMenu,
+	width='120px',
+	height='215px')
+	cub-menu-content
+		ng-template(cubMenuContent)
+			button(
+				cubMenuSelectItem,
+				*ngFor='let monthStr of MONTHS; let month = index; trackByIndex',
+				[selected]='month === currentMonth',
+				(click)='selectMonth( month )')
+				| {{ monthStr }}
+
+cub-menu(
+	#timeMenu,
+	width='120px',
+	height='215px')
+	cub-menu-content
+		ng-template(cubMenuContent)
+			button(
+				cubMenuItem,
+				*ngFor='let time of TIMES; trackByIndex',
+				(click)='pickTime( time )')
+				| {{ time }}
+
+.cub-date-picker__header
+	.layout-row.layout-align-space-between-center.flex.mh-8
+		button(
+			cubBasicButton,
+			icon='chevron-left',
+			iconSize='24px',
+			(click)='selectPreviousMonth()')
+		.cub-date-picker__menu-triggers
+			button(
+				cubBasicButton,
+				trailingIcon='chevron-down',
+				trailingIconColor='primary',
+				trailingIconSize='20px',
+				[cubMenuTriggerFor]='monthMenu')
+				| {{ MONTHS[ currentMonth ] }}
+			button(
+				cubBasicButton,
+				trailingIcon='chevron-down',
+				trailingIconColor='primary',
+				trailingIconSize='20px',
+				[cubMenuTriggerFor]='yearMenu')
+				| {{ currentYear }}
+		button(
+			cubBasicButton,
+			icon='chevron-right',
+			iconSize='24px',
+			(click)='selectNextMonth()')
+	form.layout-row.layout-align-space-between-center.flex.mt-16(
+		*ngIf='dateRangeInput',
+		[formGroup]='dateForm')
+		cub-form-field.w-126.mr-12(
+			hideRequiredMarker,
+			displayErrorMode='tooltip',
+			[label]='"CUB.LABEL.START_DATE" | translate')
+			input(
+				required,
+				autoFocusOn,
+				cubFormFieldInput,
+				formControlName='startDate',
+				[pattern]='regExp',
+				[placeholder]='"dd/mm/yyyy"',
+				[ngModel]='picked?.[ 0 ] | momentDate : "DD/MM/YYYY"',
+				(keydown)='onStartDateChangeDebounce()')
+			ng-container(
+				cubFormFieldError,
+				*ngIf='isStartLater && !dateForm.controls.startDate.errors')
+				| {{ "CUB.MESSAGE.START_LATER_END_DATE" | translate }}
+		cub-form-field.w-126(
+			hideRequiredMarker,
+			displayErrorMode='tooltip',
+			[label]='"CUB.LABEL.END_DATE" | translate')
+			input(
+				required,
+				cubFormFieldInput,
+				formControlName='endDate',
+				[pattern]='regExp',
+				[placeholder]='"dd/mm/yyyy"',
+				[disabled]='!picked?.[ 0 ]',
+				[ngModel]='picked?.[ 1 ] | momentDate : "DD/MM/YYYY"',
+				(keydown)='onEndDateChangeDebounce()')
+			ng-container(
+				cubFormFieldError,
+				*ngIf='isEndEarlier && !dateForm.controls.endDate.errors')
+				| {{ "CUB.MESSAGE.END_EARLIER_START_DATE" | translate }}
+.cub-date-picker__calendar
+	.cub-date-picker__calendar-item.cub-date-picker__calendar-header-item(
+		*ngFor='let weekday of WEEKDAYS; trackByIndex')
+		| {{ weekday }}
+	ng-container(*ngIf='dateRange; else elseBlock')
+		+calendar-date()(
+			[class.cub-date-picker__calendar-item--selected]
+				='calendarDate?.picked',
+			[class.cub-date-picker__calendar-item--in-range]
+				=`calendarDate?.inRange
+				&& !( pickedYear?.[ 0 ] === pickedYear?.[ 1 ]
+				&& pickedMonth?.[ 0 ] === pickedMonth?.[ 1 ]
+				&& pickedDate?.[ 0 ] === pickedDate?.[ 1 ] )`,
+			[class.cub-date-picker__calendar-item--in-range--start]
+				='calendarDate?.picked && !calendar[ index - 1 ]?.inRange',
+			[class.cub-date-picker__calendar-item--in-range--end]
+				='calendarDate?.picked && !calendar[ index + 1 ]?.inRange')
+	ng-template(#elseBlock)
+		+calendar-date()(
+			[class.cub-date-picker__calendar-item--selected]=`
+				calendarDate
+				&& calendarDate.year === pickedYear
+				&& calendarDate.month === pickedMonth
+				&& calendarDate.date === pickedDate`)
+.cub-date-picker__footer(
+	*ngIf='!dateOnly')
+	cub-switch(
+		size='large',
+		[label]='"CUB.LABEL.ADD_TIME" | translate',
+		[ngModel]='isTimeAdded',
+		(ngModelChange)='pickTime( $event ? undefined : null )')
+	cub-form-field.cub-date-picker__time-input(
+		#timeFormField,
+		*ngIf='isTimeAdded',
+		(container.click)='openTimeMenu()')
+		input(
+			#input,
+			cubFormFieldInput,
+			minlength='1',
+			maxlength='5',
+			[clearable]='false',
+			[ngModel]='pickedTime',
+			(input)='onTimeInputTyping( input )',
+			(blur)='onTimeInputBlur( input )')

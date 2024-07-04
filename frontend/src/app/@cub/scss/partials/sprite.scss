@@ -1,0 +1,51 @@
+@keyframes flash {
+	0% {
+		opacity: 1;
+	}
+
+	50% {
+		opacity: .1;
+	}
+
+	100% {
+		opacity: 1;
+	}
+}
+
+@keyframes slideltr {
+	0% {
+		width: 0;
+	}
+
+	100% {
+		width: 100%;
+	}
+}
+
+@keyframes zoomIn {
+	from {
+		opacity: 0;
+
+		transform: scale3d(.3, .3, .3);
+	}
+
+	50% {
+		opacity: 1;
+	}
+}
+
+@keyframes zoomOut {
+	from {
+		opacity: 1;
+	}
+
+	50% {
+		opacity: 0;
+
+		transform: scale3d(.3, .3, .3);
+	}
+
+	to {
+		opacity: 0;
+	}
+}

@@ -1,0 +1,2674 @@
+//- cub-flowchart(
+//- 	#flowchart,
+//- 	[rootNode]='rootNode',
+//- 	(scrolling)='console.log( $event )',
+//- 	(scaling)='console.log( $event )',
+//- 	(backdropClicked)='console.log( "Backdrop clicked", $event )',
+cub-flowchart(
+	#flowchart,
+	[rootNode]='rootNode',
+	[viewOnly]='false',
+	(nodeAddon)='addNode( $event )',
+	(nodeClicked)='console.log( "Node clicked", $event )')
+	ng-template(
+		cubFlowchartNodeTemplate,
+		type='sub-process',
+		let-cmp='cmp',
+		let-node='node',
+		let-isCollapsed='isCollapsed')
+		.layout-row.layout-align-space-between.layout-gap-6
+			button(cubButton='secondary')
+				| {{ node.metadata.label }}
+			button(
+				cubButton='secondary',
+				icon='expand',
+				iconSize='20px',
+				[icon]='isCollapsed ? "expand" : "collapse"',
+				(click)='isCollapsed ? cmp.expand() : cmp.collapse()')
+	ng-template(
+		cubFlowchartNodeTemplate,
+		type='trigger',
+		let-cmp='cmp',
+		let-node='node')
+		cub-card.w-280.mih-84(
+			clickable,
+			size='small',
+			boxShadow='on')
+			cub-card-header(
+				style='color: white; background: linear-gradient(90deg, #54A158 0.02%, #8DDD8B 96.38%);')
+				.layout-row.layout-align-space-between-center.flex
+					| {{ node.type }}
+					button(
+						cubBasicButton,
+						icon='trash',
+						iconSize='20px',
+						*ngIf='!flowchart.viewOnly && node !== rootNode && !node.disableInsertNextNode',
+						(click)='flowchart.destroyNode( node )')
+			cub-card-content
+				.text-center
+					| {{ node.metadata.label }}
+	ng-template(
+		cubFlowchartNodeTemplate,
+		type='condition',
+		let-node='node')
+		cub-card.w-280.mih-84(
+			clickable,
+			size='small',
+			boxShadow='on')
+			cub-card-header(
+				style='color: white; background: linear-gradient(90deg, #ED4C7A 11.58%, #FF8EA9 96.38%);')
+				.layout-row.layout-align-space-between-center.flex
+					| {{ node.type }}
+					button(
+						cubBasicButton,
+						icon='trash',
+						iconSize='20px',
+						*ngIf='!flowchart.viewOnly && node !== rootNode && !node.disableInsertNextNode',
+						(click)='flowchart.destroyNode( node )')
+			cub-card-content
+				.text-center
+					| {{ node.metadata.label }}
+	ng-template(
+		cubFlowchartNodeTemplate,
+		type='action',
+		let-node='node')
+		cub-card.w-280.mih-84(
+			clickable,
+			size='small',
+			boxShadow='on')
+			cub-card-header(
+				style='color: white; background: linear-gradient(90deg, #545ADA 30.34%, #56B6FF 118.92%);')
+				.layout-row.layout-align-space-between-center.flex
+					| {{ node.type }}
+					button(
+						cubBasicButton,
+						icon='trash',
+						iconSize='20px',
+						*ngIf='!flowchart.viewOnly && node !== rootNode && !node.disableInsertNextNode',
+						(click)='flowchart.destroyNode( node )')
+			cub-card-content
+				.text-center
+					| {{ node.metadata.label }}
+
+//- cub-menu(#menu, height='300px', width='300px')
+//- 	cub-menu-content
+//- 		ng-template(cubMenuContent)
+//- 			button(
+//- 				cubMenuItem,
+//- 				pointing,
+//- 				(triggered)=`editor.insertMention({
+//- 					id: 1,
+//- 					name: "Item 1",
+//- 				})`)
+//- 				| Item 1
+//- 			button(
+//- 				cubMenuItem,
+//- 				(triggered)=`editor.insertMention({
+//- 					id: 2,
+//- 					name: "Item 2",
+//- 				})`)
+//- 				| Item 2
+//- 			button(
+//- 				cubMenuItem,
+//- 				(triggered)=`editor.insertMention({
+//- 					id: 3,
+//- 					name: "Item 3",
+//- 				})`)
+//- 				| Item 3
+//- .m-30
+//- 	.layout-row.layout-gap-12.mb-20
+//- 		button(
+//- 			cubButton='secondary',
+//- 			(click)='editor.insertText( "Text" )')
+//- 			| Insert text
+//- 		button(
+//- 			cubButton='secondary',
+//- 			(click)=`editor.insertLink({
+//- 				url: 'https://www.google.com',
+//- 				text: 'google',
+//- 			})`)
+//- 			| Insert link
+//- 		button(
+//- 			cubButton='secondary',
+//- 			(click)=`editor.insertTag({
+//- 				tag: "{{field_1}}",
+//- 				name: "Text",
+//- 				icon: "text",
+//- 			})`)
+//- 			| Insert tag
+//- 		button(
+//- 			cubButton='secondary',
+//- 			(click)=`editor.insertMention({
+//- 				id: 10,
+//- 				name: "Ca chep",
+//- 			})`)
+//- 			| Insert mention
+//- 		button(
+//- 			cubButton='secondary',
+//- 			(click)='editor.enable()')
+//- 			| Enable
+//- 		button(
+//- 			cubButton='secondary',
+//- 			(click)='editor.disable()')
+//- 			| Disable
+//- 		button(
+//- 			cubButton='secondary',
+//- 			(click)='editor.focus()')
+//- 			| Focus
+//- 		button(
+//- 			cubButton='secondary',
+//- 			(click)='editor.blur()')
+//- 			| Blur
+//- 		button(
+//- 			cubButton='secondary',
+//- 			(click)='editor.clear()')
+//- 			| Clear
+//- 		button(
+//- 			cubButton='secondary',
+//- 			(click)='console.log( editor.parse() )')
+//- 			| Parse
+//- 	cub-form-field(
+//- 		#trigger='cubMenuTriggerFor',
+//- 		resizable,
+//- 		label='Nội dung',
+//- 		cubMenuTriggerDisableOpen,
+//- 		[cubMenuTriggerFor]='menu',
+//- 		[cubMenuTriggerOtherConfig]='{ autoFocus: false }')
+//- 		cub-basic-editor(
+//- 			#editor,
+//- 			submitOnEnterKey,
+//- 			placeholder='Nhập nội dung',
+//- 			[options]='options',
+//- 			[content]=`{
+//- 				text: 'Abc {{field_1}}',
+//- 				html: '<p><em>Abc </em>{{field_1}} </p>',
+//- 				delta: [
+//- 					{
+//- 						"attributes": {
+//- 							"italic": true,
+//- 						},
+//- 						"insert": "Abc ",
+//- 					},
+//- 					{
+//- 						"insert": {
+//- 							"tag": {
+//- 								"tag": "{{field_1}}",
+//- 								"name": "Text",
+//- 								"icon": "text",
+//- 								"buttonRemove": true,
+//- 							},
+//- 						},
+//- 					},
+//- 					{
+//- 						"insert": " \n",
+//- 					},
+//- 				],
+//- 			}`)
+//- 	cub-basic-editor-content-viewer(
+//- 		[content]=`{
+//- 			text: 'Abc {{field_1}}',
+//- 			html: '<p><em>Abc </em>{{field_1}} </p>',
+//- 			delta: [
+//- 				{
+//- 					"attributes": {
+//- 						"italic": true,
+//- 					},
+//- 					"insert": "Abc ",
+//- 				},
+//- 				{
+//- 					"insert": {
+//- 						"tag": {
+//- 							"tag": "{{field_1}}",
+//- 							"name": "Text",
+//- 							"icon": "text",
+//- 						},
+//- 					},
+//- 				},
+//- 				{
+//- 					"insert": " \n",
+//- 				},
+//- 			],
+//- 		}`)
+
+//- cub-show-more.mt-20(
+//- 	limitLine='5',
+//- 	(show)='console.log( "Show more" )')
+//- 	div
+//- 		| Contrary to popular belief, Lorem Ipsum is not simply random text. It has roots in a piece of classical Latin literature from 45 BC, making it over 2000 years old. Richard McClintock, a Latin professor at Hampden-Sydney College in Virginia, looked up one of the more obscure Latin words, consectetur, from a Lorem Ipsum passage, and going through the cites of the word in classical literature, discovered the undoubtable source. Lorem Ipsum comes from sections 1.10.32 and 1.10.33 of "de Finibus Bonorum et Malorum" (The Extremes of Good and Evil) by Cicero, written in 45 BC. This book is a treatise on the theory of ethics, very popular during the Renaissance. The first line of Lorem Ipsum, "Lorem ipsum dolor sit amet..", comes from a line in section 1.10.32.
+//- 		| The standard chunk of Lorem Ipsum used since the 1500s is reproduced below for those interested. Sections 1.10.32 and 1.10.33 from "de Finibus Bonorum et Malorum" by Cicero are also reproduced in their exact original form, accompanied by English versions from the 1914 translation by H. Rackham.
+//- 		| Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.
+//- .mt-20(
+//- 	cubShowMore,
+//- 	limitLine='5',
+//- 	(show)='console.log( "Show more" )')
+//- 	div
+//- 		| Contrary to popular belief, Lorem Ipsum is not simply random text. It has roots in a piece of classical Latin literature from 45 BC, making it over 2000 years old. Richard McClintock, a Latin professor at Hampden-Sydney College in Virginia, looked up one of the more obscure Latin words, consectetur, from a Lorem Ipsum passage, and going through the cites of the word in classical literature, discovered the undoubtable source. Lorem Ipsum comes from sections 1.10.32 and 1.10.33 of "de Finibus Bonorum et Malorum" (The Extremes of Good and Evil) by Cicero, written in 45 BC. This book is a treatise on the theory of ethics, very popular during the Renaissance. The first line of Lorem Ipsum, "Lorem ipsum dolor sit amet..", comes from a line in section 1.10.32.
+//- 		| The standard chunk of Lorem Ipsum used since the 1500s is reproduced below for those interested. Sections 1.10.32 and 1.10.33 from "de Finibus Bonorum et Malorum" by Cicero are also reproduced in their exact original form, accompanied by English versions from the 1914 translation by H. Rackham.
+//- 		| Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.
+
+//- .m-30
+//- 	button(
+//- 		cubButton,
+//- 		cubFilePicker)
+//- 		| File Picker
+
+//- .m-30
+//- 	cub-form-field
+//- 		input(
+//- 			cubFormFieldInput,
+//- 			cubDatePicker,
+//- 			required,
+//- 			[ngModel]='minDate')
+//- 	cub-date-picker(
+//- 		(yearSelected)='console.log( $event )',
+//- 		(monthSelected)='console.log( $event )',
+//- 		(calendarChanged)='console.log( $event )',
+//- 		(pickedChange)='console.log( $event )')
+//- 	button(
+//- 		cubButton,
+//- 		cubDatePicker,
+//- 		(yearSelected)='console.log( $event )',
+//- 		(monthSelected)='console.log( $event )',
+//- 		(calendarChanged)='console.log( $event )',
+//- 		(pickedChange)='console.log( $event )')
+//- 		| Date Picker
+
+//- .m-30
+//- 	cub-button-toggle(
+//- 		[selectedIndex]='0',
+//- 		(selectedIndexChange)='console.log( $event )',
+//- 		(changes)='console.log( $event )')
+//- 		button(cubButtonToggleItem, icon='list', disabled)
+//- 			| Button 1
+//- 		button(cubButtonToggleItem, icon='grid')
+//- 			| Button 2
+//- 		button(cubButtonToggleItem, icon='more-vertical')
+//- 			| Button 3
+
+//- .m-30
+//- 	cub-accordion.layout-column.layout-gap-16
+//- 		cub-expansion-panel.layout-column.layout-gap-16(expanded)
+//- 			cub-expansion-panel-header
+//- 				| Header
+//- 			cub-expansion-panel-content
+//- 				| Body
+//- 		cub-expansion-panel.layout-column.layout-gap-16
+//- 			cub-expansion-panel-header
+//- 				| Header
+//- 			cub-expansion-panel-content
+//- 				| Body
+
+//- .m-30
+//- 	cub-phone-field(
+//- 		required,
+//- 		[ngModel]='{ phone: "012a" }',
+//- 		(ngModelChange)='console.log( $event )')
+
+//- .m-30
+//- 	cub-badge.mb-20([count]='1')
+//- 		| ABC
+//- 	cub-badge.mb-20([count]='32')
+//- 		| ABC
+//- 	cub-badge
+//- 		| ABC
+
+//- .m-30
+//- 	cub-radio-group(
+//- 		required,
+//- 		label='My View',
+//- 		[ngModel]='1',
+//- 		(ngModelChange)='console.log( $event )')
+//- 		cub-radio(label='Radio 1', [value]='1')
+//- 		cub-radio(label='Radio 2', [value]='2')
+//- 		cub-radio(label='Radio 3', [value]='3')
+//- 		cub-radio(label='Radio 4', [value]='4')
+//- 		cub-radio(label='Radio 4', [value]='5')
+
+//- cub-tabs.w-300([selectedIndex]='2')
+//- 	cub-tab(disabled, label='Label 1', icon='base')
+//- 		| Tab Content 1
+//- 	cub-tab(label='Label 2', icon='base')
+//- 		| Tab Content 2
+//- 	cub-tab(label='Label 3', icon='base')
+//- 		| Tab Content 3
+//- 	cub-tab(label='Label 4', icon='base')
+//- 		| Tab Content 4
+//- 	cub-tab(label='Label 5', icon='base')
+//- 		| Tab Content 5
+//- 	cub-tab(label='Label 6', icon='base')
+//- 		| Tab Content 6
+
+//- cub-page.h-200.w-300
+//- 	div(cubPageHeader)
+//- 		| A
+//- 	div(cubPageContent)
+//- 		| Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed dignissim lectus lorem, sed fermentum massa venenatis at. Etiam sed tortor sapien. Proin convallis vel orci eleifend mattis. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; Pellentesque luctus, lacus ut porta euismod, nisi ante consequat nisl, in posuere nibh elit ut magna. Vestibulum dui elit, tincidunt ac varius et, suscipit sit amet metus. Aliquam erat volutpat. Nam tincidunt venenatis sapien et fermentum. Vivamus nisl justo, hendrerit vitae tempor eget, fringilla in lorem. Aenean sagittis nibh sit amet eros fringilla blandit. Mauris felis dui, dictum et sodales ut, convallis non orci. Proin enim quam, venenatis non hendrerit nec, ullamcorper ac magna.
+//- 		| Proin efficitur maximus lacus non bibendum. Quisque quis pellentesque turpis. Cras ultricies, lectus a interdum lacinia, sapien purus egestas mauris, sit amet imperdiet metus orci at lectus. Curabitur laoreet eros nec tellus tincidunt accumsan. In interdum nulla at convallis lacinia. Fusce ut nulla sit amet nulla consequat fringilla. Etiam vel neque tempor, dictum neque vel, sagittis elit. Donec sed leo et mauris volutpat molestie. Sed et purus in velit scelerisque ultrices. Aliquam sem nulla, malesuada ac rhoncus eu, porta in augue. Phasellus porta et diam vehicula sollicitudin.
+//- 		| Mauris ac finibus libero, quis lacinia nisl. Pellentesque dolor metus, consectetur non consectetur a, scelerisque sit amet quam. Vestibulum eget dapibus est, ultrices tempor nunc. Quisque faucibus ultricies dolor, sed vehicula purus elementum quis. Sed et lacus mattis, blandit ligula ac, molestie quam. Maecenas sed placerat velit, in ultrices purus. Proin iaculis augue mollis, tempus urna at, gravida est. Nam facilisis sed sapien sed volutpat. Vivamus mauris massa, mollis sit amet magna dapibus, euismod aliquam quam. Maecenas efficitur viverra dolor ut tristique. Nunc vestibulum et nunc eget convallis. Etiam placerat justo lacinia tortor consectetur consectetur. Cras aliquam lorem sed semper tincidunt. Nam lacus lorem, imperdiet vitae ultricies vitae, tristique sed ligula.
+//- 		| Phasellus tincidunt, neque quis tincidunt vestibulum, augue eros convallis ipsum, a vulputate libero orci vulputate mauris. In et placerat nisl. Nunc luctus tristique diam nec rhoncus. Praesent pellentesque elit sit amet scelerisque suscipit. Sed iaculis metus sit amet lacus efficitur venenatis. Phasellus sed vehicula lectus, placerat maximus ante. Nullam vitae porta lacus. Mauris vel pellentesque ipsum. Nulla ac nulla sit amet felis congue varius et elementum dolor. Proin tristique felis eget gravida venenatis. Nulla eu felis commodo, mollis nulla vel, imperdiet metus. Nam ac ante mi.
+//- 		| Ut mi enim, commodo a gravida non, ullamcorper nec enim. Praesent nulla tellus, pulvinar nec urna interdum, viverra condimentum justo. Nullam sagittis purus id metus ultrices elementum eget at sapien. Nam nec euismod neque. Suspendisse eu orci dolor. Cras rutrum cursus tortor in commodo. Curabitur nec porttitor dui, vel accumsan lectus. Curabitur in aliquam lacus.
+
+//- cub-card(
+//- 	width='268px',
+//- 	height='194px',
+//- 	backgroundImage='./assets/image.png')
+//- 	.flex.layout-row.layout-align-space-between-start(cubCardContent)
+//- 		cub-checkbox(size='large')
+//- 		button(
+//- 			cubFloatingButton,
+//- 			icon='more-vertical')
+//- 	cub-card-info(
+//- 		title='Base 1',
+//- 		description='Last opened',
+//- 		leadingIcon='collection')
+
+//- cub-card(
+//- 	width='268px',
+//- 	height='194px')
+//- 	.flex.layout-row.layout-align-center-center
+//- 		cub-icon(
+//- 			name='plus',
+//- 			size='84px')
+//- 	cub-card-info(
+//- 		title='Blank base',
+//- 		leadingIcon='collection')
+
+//- .m-30
+//- 	cub-search-box(
+//- 		[data]='positions',
+//- 		[searchQuery]='"Abc"',
+//- 		(searching)='console.log( "searching", $event )',
+//- 		(filtered)='console.log( "filtered", $event )',
+//- 		(focus)='console.log( "focus", $event )',
+//- 		(blur)='console.log( "blur", $event )')
+
+//- .m-30
+//- 	cub-dropdown.w-300(
+//- 		label='Dropdown',
+//- 		[formControl]='requiredFormControl',
+//- 		(ngModelChange)='console.log( $event )')
+//- 		cub-dropdown-item(
+//- 			*ngFor='let position of positions',
+//- 			[label]='position?.name',
+//- 			[value]='position?.id')
+//- 	cub-dropdown.w-300(
+//- 		multiple,
+//- 		required,
+//- 		label='Label',
+//- 		[ngModel]='[ 1 ]',
+//- 		[formControl]='requiredFormControl',
+//- 		(ngModelChange)='console.log( $event )')
+//- 		cub-dropdown-item(
+//- 			description='Lorem Ispum',
+//- 			*ngFor='let position of positions',
+//- 			[label]='position?.name',
+//- 			[value]='position?.id')
+//- 		cub-dropdown-group
+//- 			cub-dropdown-item(
+//- 				icon='user-groups-fill',
+//- 				label='Text',
+//- 				description='Lorem Ispum',
+//- 				(click)='console.log( 0 )')
+
+//- .m-30
+//- 	cub-form-field(label='Label', description='Lorem Ispum', helpText='My help text')
+//- 		div(cubFormFieldPrefix)
+//- 			cub-icon(name='search', size='20px')
+//- 		input(
+//- 			cubFormFieldInput,
+//- 			required,
+//- 			clearable,
+//- 			placeholder='Placeholder',
+//- 			[formControl]='requiredFormControl',
+//- 			[(ngModel)]='b',
+//- 			(ngModelChange)='console.log( "ngModelChange", $event )',
+//- 			(input)='console.log( "Input", $event )',
+//- 			(change)='console.log( "Change", $event )',
+//- 			(cleared)='console.log( "Cleared" )')
+
+//- button(wgcButton, (click)='a = "DEF"')
+//- 	| A
+
+//- .m-30
+//- 	cub-form-field
+//- 		div(cubFormFieldPrefix)
+//- 			cub-icon(name='search', size='20px')
+//- 		textarea(
+//- 			cubFormFieldInput,
+//- 			clearable,
+//- 			placeholder='Placeholder',
+//- 			[formControl]='requiredFormControl')
+//- 		div(cubFormFieldSuffix)
+//- 			cub-icon(
+//- 				name='plus',
+//- 				size='20px',
+//- 				tabindex='-1',
+//- 				(click)='console.log( 0 )')
+
+//- cub-menu(#subMenu, height='300px', width='300px')
+//- 	cub-menu-content
+//- 		ng-template(cubMenuContent)
+//- 			button(
+//- 				cubMenuItem,
+//- 				icon='plus-circle')
+//- 				| Sub Item 1
+//- 			button(cubMenuItem)
+//- 				| Sub Item 2
+//- 			button(cubMenuItem)
+//- 				| Sub Item 3
+
+//- cub-menu(#menu, height='300px', width='300px')
+//- 	cub-menu-header
+//- 		ng-template(cubMenuHeader)
+//- 			cub-search-box
+//- 	cub-menu-content
+//- 		ng-template(cubMenuContent)
+//- 			cub-menu-group(title='Group 1')
+//- 				button(
+//- 					cubMenuItem,
+//- 					[cubSubMenuTriggerFor]='subMenu')
+//- 					| Item 1
+//- 					cub-icon(
+//- 						name='chevron-right',
+//- 						color='tertiary',
+//- 						size='20px')
+//- 				button(
+//- 					cubMenuItem,
+//- 					[cubSubMenuTriggerFor]='subMenu')
+//- 					| Item 2
+//- 					cub-icon(
+//- 						name='chevron-right',
+//- 						color='tertiary',
+//- 						size='20px')
+//- 				button(
+//- 					cubMenuItem,
+//- 					[cubSubMenuTriggerFor]='subMenu')
+//- 					| Item 3
+//- 					cub-icon(
+//- 						name='chevron-right',
+//- 						color='tertiary',
+//- 						size='20px')
+//- 			cub-menu-group(title='Group 2')
+//- 				button(
+//- 					cubMenuItem,
+//- 					[cubSubMenuTriggerFor]='subMenu')
+//- 					| Item 3
+//- 					cub-icon(
+//- 						name='chevron-right',
+//- 						color='tertiary',
+//- 						size='20px')
+//- 				button(
+//- 					cubMenuItem,
+//- 					[cubSubMenuTriggerFor]='subMenu')
+//- 					| Item 4
+//- 					cub-icon(
+//- 						name='chevron-right',
+//- 						color='tertiary',
+//- 						size='20px')
+//- 				button(
+//- 					cubMenuItem,
+//- 					[cubSubMenuTriggerFor]='subMenu')
+//- 					| Item 5
+//- 					cub-icon(
+//- 						name='chevron-right',
+//- 						color='tertiary',
+//- 						size='20px')
+
+//- .flex.m-30.layout-row
+//- 	button.w-300(
+//- 		cubButton,
+//- 		[cubMenuTriggerFor]='menu')
+//- 		| Button
+
+//- .flex.m-30.layout-row.layout-align-space-between
+//- 	button(
+//- 		cubButton,
+//- 		position='before',
+//- 		[cubMenuTriggerFor]='menu')
+//- 		| Button
+//- 	button(
+//- 		cubButton,
+//- 		position='before',
+//- 		[cubMenuTriggerFor]='menu')
+//- 		| Button
+//- 	button(
+//- 		cubButton,
+//- 		position='after',
+//- 		[cubMenuTriggerFor]='menu')
+//- 		| Button
+//- 	button(
+//- 		cubButton,
+//- 		position='after',
+//- 		[cubMenuTriggerFor]='menu')
+//- 		| Button
+
+//- .flex.m-30.layout-column.layout-align-space-between-end
+//- 	button(
+//- 		cubButton,
+//- 		position='above',
+//- 		[cubMenuTriggerFor]='menu')
+//- 		| Button
+//- 	button(
+//- 		cubButton,
+//- 		position='below',
+//- 		[cubMenuTriggerFor]='menu')
+//- 		| Button
+//- 	button(
+//- 		cubButton,
+//- 		position='above',
+//- 		[cubMenuTriggerFor]='menu')
+//- 		| Button
+//- 	button(
+//- 		cubButton,
+//- 		position='below',
+//- 		[cubMenuTriggerFor]='menu')
+//- 		| Button
+
+//- .layout-row.m-30
+//- 	button.mr-10(cubBasicButton)
+//- 		| Button
+//- 	button.mr-10(cubBasicButton, icon='circle-plus')
+//- 		| Button
+//- 	button.mr-10(cubBasicButton, icon='circle-plus', iconPosition='trailing')
+//- 		| Button
+//- 	button.mr-10(cubBasicButton, icon='circle-plus', disabled)
+//- 		| Button
+//- 	button.mr-10(cubBasicButton, icon='circle-plus')
+//- .layout-row.m-30
+//- 	button.mr-10(cubBasicButton='destructive')
+//- 		| Button
+//- 	button.mr-10(cubBasicButton='destructive', icon='trash')
+//- 		| Button
+//- 	button.mr-10(cubBasicButton='destructive', icon='trash', iconPosition='trailing')
+//- 		| Button
+//- 	button.mr-10(cubBasicButton='destructive', icon='trash', disabled)
+//- 		| Button
+//- 	button.mr-10(cubBasicButton='destructive', icon='trash')
+
+//- .layout-row.m-30
+//- 	button.mr-10(cubButton)
+//- 		| Button
+//- 	button.mr-10(cubButton, icon='circle-plus')
+//- 		| Button
+//- 	button.mr-10(cubButton, icon='circle-plus', iconPosition='trailing')
+//- 		| Button
+//- 	button.mr-10(cubButton, icon='circle-plus', disabled)
+//- 		| Button
+//- 	button.mr-10(cubButton, icon='circle-plus', loading, disabled)
+//- 		| Button
+//- 	button.mr-10(cubButton, icon='circle-plus')
+//- .layout-row.m-30
+//- 	button.mr-10(cubButton='secondary')
+//- 		| Button
+//- 	button.mr-10(cubButton='secondary', icon='circle-plus')
+//- 		| Button
+//- 	button.mr-10(cubButton='secondary', icon='circle-plus', iconPosition='trailing')
+//- 		| Button
+//- 	button.mr-10(cubButton='secondary', icon='circle-plus', disabled)
+//- 		| Button
+//- 	button.mr-10(cubButton='secondary', icon='circle-plus', loading, disabled)
+//- 		| Button
+//- 	button.mr-10(cubButton='secondary', icon='circle-plus')
+//- .layout-row.m-30
+//- 	button.mr-10(cubButton='tertiary')
+//- 		| Button
+//- 	button.mr-10(cubButton='tertiary', icon='circle-plus')
+//- 		| Button
+//- 	button.mr-10(cubButton='tertiary', icon='circle-plus', iconPosition='trailing')
+//- 		| Button
+//- 	button.mr-10(cubButton='tertiary', icon='circle-plus', disabled)
+//- 		| Button
+//- 	button.mr-10(cubButton='tertiary', icon='circle-plus', loading, disabled)
+//- 		| Button
+//- 	button.mr-10(cubButton='tertiary', icon='circle-plus')
+//- .layout-row.m-30
+//- 	button.mr-10(cubButton='destructive')
+//- 		| Button
+//- 	button.mr-10(cubButton='destructive', icon='trash')
+//- 		| Button
+//- 	button.mr-10(cubButton='destructive', icon='trash', iconPosition='trailing')
+//- 		| Button
+//- 	button.mr-10(cubButton='destructive', icon='trash', disabled)
+//- 		| Button
+//- 	button.mr-10(cubButton='destructive', icon='trash', loading, disabled)
+//- 		| Button
+//- 	button.mr-10(cubButton='destructive', icon='trash')
+
+//- mixin comp-list(title, list)
+//- 	.layout-row.layout-align-start-center.mv-10(*ngIf=`${list}?.length`)
+//- 		.color-info
+//- 			= title
+//- 		wgc-divider.ml-10.flex
+//- 	wgc-list([hasScrollBar]='false')
+//- 		wgc-list-item(
+//- 			*ngFor=`let compTemplate of ${list}`,
+//- 			[label]='$any( compTemplate )?.label',
+//- 			[active]='currentCompTemplate === compTemplate',
+//- 			(click)='selectCompTemplate( compTemplate )')
+
+//- wgc-drawer-container(stretch)
+//- 	wgc-drawer(
+//- 		opened,
+//- 		label='Menu',
+//- 		width='300px',
+//- 		position='right',
+//- 		[bgColor]='"DEFAULT" | color')
+//- 		wgc-search-box.mb-5((searching)='onSearch( $event )')
+//- 		not-found(mode='search', *ngIf='isCompNotFound')
+//- 		wgc-scroll-bar(suppressScrollX)
+//- 			+comp-list('Dev', 'devCompTemplates')
+//- 			+comp-list('System', 'systemCompTemplates')
+//- 			+comp-list('Layout', 'layoutCompTemplates')
+//- 			+comp-list('Overlay', 'overlayCompTemplates')
+//- 			+comp-list('Display', 'displayCompTemplates')
+//- 			+comp-list('Picker', 'pickerCompTemplates')
+//- 			+comp-list('Button', 'buttonCompTemplates')
+//- 			+comp-list('Input', 'inputCompTemplates')
+//- 			+comp-list('Others', 'otherCompTemplates')
+//- 	wgc-drawer-content
+//- 		ng-container(*ngTemplateOutlet='currentCompTemplate')
+
+//- // Development guide
+//- ng-template(#devCompTemplate, label='Development guide')
+//- 	mixin highlight-point(label)
+//- 		.mb-10
+//- 			label.mb-5= label
+//- 			wgc-card
+//- 				block
+
+//- 	h3.mb-20 Reference Documents
+//- 	wgc-card
+//- 		| - Typescript
+//- 		.mb-5.pl-25
+//- 			a(href='https://www.typescriptlang.org/docs/handbook/utility-types.html', target='_blank')
+//- 				| Utility Types
+
+//- 		| - Lodash
+//- 		.mb-5.pl-25
+//- 			a(href='https://bitbucket.org/powerfulclimax/angular-core/src/v3.0/src/lib/lodash-mixin.ts', target='_blank')
+//- 				| Lodash mixin - Angular Core v3.0
+
+//- 		| - CSS
+//- 		.mb-5.pl-25
+//- 			a(href='https://www.freecodecamp.org/news/css-naming-conventions-that-will-save-you-hours-of-debugging-35cea737d849/', target='_blank')
+//- 				| CSS Naming Conventions that Will Save You Hours of Debugging
+//- 			br
+//- 			a(href='https://css-tricks.com/poll-results-how-do-you-order-your-css-properties/', target='_blank')
+//- 				| Poll Results: How do you order your CSS properties?
+
+//- 		| - Angular
+//- 		.mb-5.pl-25
+//- 			a(href='https://v13.material.angular.io/cdk/drag-drop/api', target='_blank')
+//- 				| API reference for Angular CDK drag-drop v13
+//- 			br
+//- 			a(href='https://dev.to/this-is-angular/angular-signals-everything-you-need-to-know-2b7g', target='_blank')
+//- 				| Angular & signals. Everything you need to know
+
+//- 		| - Rxjs
+//- 		.mb-5.pl-25
+//- 			a(href='https://blog.angular-university.io/rxjs-higher-order-mapping/', target='_blank')
+//- 				| Comprehensive Guide to Higher-Order RxJs Mapping Operators: switchMap, mergeMap, concatMap (and exhaustMap)
+//- 			a(href='https://www.htmlgoodies.com/javascript/rxjs-memory-leaks/', target='_blank')
+//- 				| Rewriting RxJS Nested Subscriptions to Avoid Memory Leaks
+
+//- 	h3.mv-20 Design Notes
+//- 	.layout-row.layout-fixer-15
+//- 		.layout-column.flex-50.ph-15
+//- 			+highlight-point('Using Text Color Classes')
+//- 				div
+//- 					b .color-text:&nbsp;
+//- 					span.color-text color $color-text ({{ "TEXT" | color }})
+//- 				div
+//- 					b .color-label:&nbsp;
+//- 					span.color-label color $color-label ({{ "LABEL" | color }})
+//- 				div
+//- 					b .color-placeholder:&nbsp;
+//- 					span.color-placeholder color $color-placeholder ({{ "PLACEHOLDER" | color }})
+//- 				div
+//- 					b .color-disabled:&nbsp;
+//- 					span.color-disabled color $color-disabled ({{ "DISABLED" | color }})
+//- 				div
+//- 					b .color-primary:&nbsp;
+//- 					span.color-primary color $color-primary ({{ "PRIMARY" | color }})
+//- 				div
+//- 					b .color-info:&nbsp;
+//- 					span.color-info color $color-info ({{ "INFO" | color }})
+//- 				div
+//- 					b .color-success:&nbsp;
+//- 					span.color-success color $color-success ({{ "SUCCESS" | color }})
+//- 				div
+//- 					b .color-warning:&nbsp;
+//- 					span.color-warning color $color-warning ({{ "WARNING" | color }})
+//- 				div
+//- 					b .color-danger:&nbsp;
+//- 					span.color-danger color $color-danger ({{ "DANGER" | color }})
+//- 			+highlight-point('Relative Pixel To 5px')
+//- 				div Ex: 6px => 5px
+//- 				div Ex: 7px => 5px
+//- 				div Ex: 8px => 10px
+//- 				div Ex: 9px => 10px
+//- 				div Ex: 11px => 10px
+//- 				div Ex: 12px => 10px
+//- 				div Ex: 13px => 15px
+//- 				div Ex: 14px => 15px
+//- 			+highlight-point('Translate Text')
+//- 				div Only capitalize first word (Ex: Add Row => Add row)
+//- 		.layout-column.flex-50.ph-15
+//- 			+highlight-point('Using Font Weight Classes & Styles')
+//- 				div
+//- 					b AvertaStdCY-Regular:
+//- 					ul
+//- 						li Class: .text-regular
+//- 						li Class: .font-weight-400
+//- 						li CSS: font-weight: $font-weight-regular;
+//- 				div
+//- 					b AvertaStdCY-Semibold:
+//- 					ul
+//- 						li Class: .text-semibold
+//- 						li Class: .font-weight-600
+//- 						li CSS: font-weight: $font-weight-semibold;
+//- 				div
+//- 					b AvertaStdCY-Bold:
+//- 					ul
+//- 						li Class: .text-bold
+//- 						li Class: .font-weight-700
+//- 						li CSS: font-weight: $font-weight-bold;
+//- 			+highlight-point('Using Bold & Strong & Anchor & Label HTML Tags')
+//- 				b
+//- 					b b:&nbsp;
+//- 					| font weight 600 (AvertaStdCY-Semibold)
+//- 				strong
+//- 					strong strong:&nbsp;
+//- 					| font weight 700 (AvertaStdCY-Bold)
+//- 				a
+//- 					| a(href=''):
+//- 					| color color(blue, 700) ({{ "BLUE" | color: 700 }})
+//- 				label(required)
+//- 					| label(required-tag):
+//- 					| color $color-label ({{ "LABEL" | color }}), font size 13px
+//- 				label(required, requiredDot)
+//- 					| label(required-dot)
+
+//- 	h3.mv-20 Code Convention
+//- 	.layout-row.layout-fixer-15
+//- 		.layout-column.flex-50.ph-15
+//- 			+highlight-point('Starting Project')
+//- 				div Use following command if your machine runs to max heap size error:
+//- 				div node --max-old-space-size=4096 ./node_modules/@angular/cli/bin/ng serve --host localhost --configuration=aot
+//- 			+highlight-point('Using CONSTANT')
+//- 				ul.pl-20
+//- 					li CONSTANT that is imported from other modules should be aliased as {{ "`${MODULE_NAME}_CONSTANT`" }}
+//- 					li Use CONSTANT.[PROPERTY_NAME] instead of this.[PROPERTY_NAME] (use imported constant instead of class property)
+//- 			+highlight-point('Margin Priority Between Siblings')
+//- 				div margin-right over margin-left
+//- 				div margin-bottom over margin-top
+//- 			+highlight-point('Html Attribute Arrangement')
+//- 				div prop
+//- 				div #prop
+//- 				div *prop
+//- 				div prop=''
+//- 				div #prop=''
+//- 				div *prop=''
+//- 				div [prop]=''
+//- 				div [(prop)]=''
+//- 				div (prop)=''
+//- 			+highlight-point('Object Single/Multiple line')
+//- 				.layout-row
+//- 					.flex-50
+//- 						b Should Not
+//- 						div
+//- 							p {{ "{" }} a, b, c, d, e {{ "}" }}
+//- 					wgc-divider.mh-20(vertical)
+//- 					.flex-50
+//- 						b Should
+//- 						div
+//- 							p {{ "{" }} a, b, c, d {{ "}" }} // Less than or equals 4 properties
+//- 							p {{ "{" }}
+//- 							p &nbsp;&nbsp;&nbsp;&nbsp;a, b, c,
+//- 							p &nbsp;&nbsp;&nbsp;&nbsp;d, e,
+//- 							p {{ "}" }}
+//- 			+highlight-point('Array Single/Multiple line')
+//- 				.layout-row
+//- 					.flex-50
+//- 						b Should Not
+//- 						div
+//- 							p [ a, b, c, d, e ]
+//- 					wgc-divider.mh-20(vertical)
+//- 					.flex-50
+//- 						b Should
+//- 						div
+//- 							p [ a, b, c, d ] // Less than or equals 4 items
+//- 							p [
+//- 							p &nbsp;&nbsp;&nbsp;&nbsp;a, b, c,
+//- 							p &nbsp;&nbsp;&nbsp;&nbsp;d, e,
+//- 							p ]
+//- 			+highlight-point('If Else Block')
+//- 				.layout-row
+//- 					.flex-50
+//- 						b Should Not
+//- 						div
+//- 							p if ( condition ) {{ "{" }}
+//- 							p &nbsp;&nbsp;&nbsp;&nbsp;// Do something
+//- 							p {{ "}" }} else {{ "{" }}
+//- 							p &nbsp;&nbsp;&nbsp;&nbsp;// Do something else
+//- 							p {{ "}" }}
+//- 					wgc-divider.mh-20(vertical)
+//- 					.flex-50
+//- 						b Should
+//- 						div
+//- 							p if ( condition ) {{ "{" }}
+//- 							p &nbsp;&nbsp;&nbsp;&nbsp;// Do something
+//- 							p &nbsp;&nbsp;&nbsp;&nbsp;return;
+//- 							p {{ "}" }}
+//- 							p // Do something else
+//- 				wgc-divider.mv-20
+//- 				.layout-row
+//- 					.flex-50
+//- 						b Should Not
+//- 						div
+//- 							p if ( condition ) {{ "{" }}
+//- 							p &nbsp;&nbsp;&nbsp;&nbsp;a();
+//- 							p {{ "}" }} else {{ "{" }}
+//- 							p &nbsp;&nbsp;&nbsp;&nbsp;b();
+//- 							p {{ "}" }}
+//- 						div
+//- 							p if ( condition ) {{ "{" }}
+//- 							p &nbsp;&nbsp;&nbsp;&nbsp;a();
+//- 							p &nbsp;&nbsp;&nbsp;&nbsp;return;
+//- 							p {{ "}" }}
+//- 							p b();
+//- 					wgc-divider.mh-20(vertical)
+//- 					.flex-50
+//- 						b Should
+//- 						div
+//- 							p condition ? a() : b();
+//- 				wgc-divider.mv-20
+//- 				.layout-row
+//- 					.flex-50
+//- 						b Should Not
+//- 						div
+//- 							p if ( condition ) {{ "{" }}
+//- 							p &nbsp;&nbsp;&nbsp;&nbsp;a();
+//- 							p {{ "}" }}
+//- 						div
+//- 							p if ( condition ) a();
+//- 					wgc-divider.mh-20(vertical)
+//- 					.flex-50
+//- 						b Should
+//- 						div
+//- 							p condition && a();
+//- 				wgc-divider.mv-20
+//- 				.layout-row
+//- 					.flex-50
+//- 						b Should Not
+//- 						div
+//- 							p if ( condition ) {{ "{" }}
+//- 							p &nbsp;&nbsp;&nbsp;&nbsp;return;
+//- 							p {{ "}" }}
+//- 					wgc-divider.mh-20(vertical)
+//- 					.flex-50
+//- 						b Should
+//- 						div
+//- 							p if ( condition ) return;
+//- 		.layout-column.flex-50.ph-15
+//- 			+highlight-point('Global Types')
+//- 				div
+//- 					b([style.color]='"BLUE" | color : 700') type&nbsp;
+//- 					span INullish =&nbsp;
+//- 					b([style.color]='"BLUE" | color : 700') null | undefined
+//- 					span ;
+//- 				div
+//- 					b([style.color]='"BLUE" | color : 700') type&nbsp;
+//- 					span ObjectType#{'<'}T =&nbsp;
+//- 					b([style.color]='"BLUE" | color : 700') any
+//- 					span #{'> = Record<'}
+//- 					b([style.color]='"BLUE" | color : 700') string
+//- 					span , T#{'>'};
+//- 				div
+//- 					b([style.color]='"BLUE" | color : 700') type&nbsp;
+//- 					span IRange#{'<'}T&nbsp;
+//- 					b([style.color]='"BLUE" | color : 700') extends number
+//- 					span #{'>'} =&nbsp;
+//- 					b([style.color]='"BLUE" | color : 700') number extends&nbsp;
+//- 					span T ?&nbsp;
+//- 					b([style.color]='"BLUE" | color : 700') number&nbsp;
+//- 					span : _Range#{'<T, []>'}; // Generate a union type from a number range
+//- 				div
+//- 					b([style.color]='"BLUE" | color : 700') type&nbsp;
+//- 					span MapObjectValue#{'<T>'} = T[&nbsp;
+//- 					b([style.color]='"BLUE" | color : 700') keyof&nbsp;
+//- 					span T ]; // Map object value type into union type
+//- 			+highlight-point('Template Building')
+//- 				div
+//- 					b Things that go together
+//- 					ul
+//- 						li Button loading state & disabled state
+//- 						li Attribute innerHtml & safeHtml pipe
+//- 						li Form control has required validation & required directive
+//- 						li Attribute disableControl & formControl
+//- 				div
+//- 					b Notes
+//- 					ul
+//- 						li Flex items should have minimum default margin set to 5px against others
+//- 						li Disable item action when missing id
+//- 						li All field in a validation form should have its own formControl
+//- 			+highlight-point('Element Alignment')
+//- 				.layout-row
+//- 					.flex-50
+//- 						b Should Not
+//- 						div
+//- 							p .layout-row
+//- 							p &nbsp;&nbsp;&nbsp;&nbsp;.flex-50 A
+//- 							p &nbsp;&nbsp;&nbsp;&nbsp;.flex-50.ml-10 B
+//- 					wgc-divider.mh-20(vertical)
+//- 					.flex-50
+//- 						b Should
+//- 						div
+//- 							p .layout-row.layout-fixer-5 // Using .layout-align-fixer with layout-align-*
+//- 							p &nbsp;&nbsp;&nbsp;&nbsp;.flex-50.ph-5 A
+//- 							p &nbsp;&nbsp;&nbsp;&nbsp;.flex-50.ph-5 B
+//- 			+highlight-point('Array Bracket Spacing')
+//- 				.layout-row
+//- 					.flex-50
+//- 						b Should Not
+//- 						div
+//- 							p arr = [a, b, c]
+//- 					wgc-divider.mh-20(vertical)
+//- 					.flex-50
+//- 						b Should
+//- 						div
+//- 							p arr = [ a, b, c ]
+//- 							p arr = [{{ "{" }} id: 1 {{ "}" }}]
+//- 							p arr = [{{ "{" }} id: 1 {{ "}" }}, {{ "{" }} id: 1 {{ "}" }}]
+//- 			+highlight-point('Object Bracket Spacing')
+//- 				.layout-row
+//- 					.flex-50
+//- 						b Should Not
+//- 						div
+//- 							p obj = {{ "{" }}id: 1{{ "}" }}
+//- 							p obj = {{ "{" }}id: 1, name: "a"{{ "}" }}
+//- 					wgc-divider.mh-20(vertical)
+//- 					.flex-50
+//- 						b Should
+//- 						div
+//- 							p obj = {{ "{" }} id: 1 {{ "}" }}
+//- 							p obj = {{ "{" }} id: 1, name: "a" {{ "}" }}
+//- 			+highlight-point('Function Bracket Spacing')
+//- 				.layout-row
+//- 					.flex-50
+//- 						b Should Not
+//- 						div
+//- 							p func(a)
+//- 							p func(a, b)
+//- 					wgc-divider.mh-20(vertical)
+//- 					.flex-50
+//- 						b Should
+//- 						div
+//- 							p func( a )
+//- 							p func( a, b )
+//- 							p func([ a ])
+//- 							p func([ a ], [ b ])
+//- 							p func({{ "{" }} id: 1 {{ "}" }})
+//- 							p func({{ "{" }} id: 1 {{ "}" }}, {{ "{" }} id: 2 {{ "}" }})
+
+//- // System
+//- ng-template(#systemCompTemplate, label='Color & Typography')
+//- 	h3.mb-20 System Color
+//- 	.layout-row.layout-align-start-center.layout-wrap.flex-noshrink
+//- 		.mr-10
+//- 			.w-50.h-50.mb-5(
+//- 				[style.backgroundColor]='"WHITE" | color',
+//- 				[style.outlineColor]='"BORDER" | color',
+//- 				style='outline: 1px solid')
+//- 			.h6
+//- 				| White
+//- 				br
+//- 				| {{ "WHITE" | color }}
+//- 		.mr-10
+//- 			.w-50.h-50.mb-5(
+//- 				[style.backgroundColor]='"BLACK" | color',
+//- 				[style.outlineColor]='"BORDER" | color',
+//- 				style='outline: 1px solid')
+//- 			.h6
+//- 				| Black
+//- 				br
+//- 				| {{ "BLACK" | color }}
+//- 		.mr-10
+//- 			.w-50.h-50.mb-5(
+//- 				[style.backgroundColor]='"PRIMARY" | color',
+//- 				[style.outlineColor]='"BORDER" | color',
+//- 				style='outline: 1px solid')
+//- 			.h6
+//- 				| Primary
+//- 				br
+//- 				| {{ "PRIMARY" | color }}
+//- 		.mr-10
+//- 			.w-50.h-50.mb-5(
+//- 				[style.backgroundColor]='"SECONDARY" | color',
+//- 				[style.outlineColor]='"BORDER" | color',
+//- 				style='outline: 1px solid')
+//- 			.h6
+//- 				| Secondary
+//- 				br
+//- 				| {{ "SECONDARY" | color }}
+//- 		.mr-10
+//- 			.w-50.h-50.mb-5(
+//- 				[style.backgroundColor]='"DEFAULT" | color',
+//- 				[style.outlineColor]='"BORDER" | color',
+//- 				style='outline: 1px solid')
+//- 			.h6
+//- 				| Default
+//- 				br
+//- 				| {{ "DEFAULT" | color }}
+//- 	h3.mv-20 Main Color
+//- 	.layout-row.layout-align-start-center.layout-wrap.flex-noshrink
+//- 		.mr-10
+//- 			.w-50.h-50.mb-5(
+//- 				[style.backgroundColor]='"INFO" | color',
+//- 				[style.outlineColor]='"BORDER" | color',
+//- 				style='outline: 1px solid')
+//- 			.h6
+//- 				| Info
+//- 				br
+//- 				| {{ "INFO" | color }}
+//- 		.mr-10
+//- 			.w-50.h-50.mb-5(
+//- 				[style.backgroundColor]='"SUCCESS" | color',
+//- 				[style.outlineColor]='"BORDER" | color',
+//- 				style='outline: 1px solid')
+//- 			.h6
+//- 				| Success
+//- 				br
+//- 				| {{ "SUCCESS" | color }}
+//- 		.mr-10
+//- 			.w-50.h-50.mb-5(
+//- 				[style.backgroundColor]='"WARNING" | color',
+//- 				[style.outlineColor]='"BORDER" | color',
+//- 				style='outline: 1px solid')
+//- 			.h6
+//- 				| Warning
+//- 				br
+//- 				| {{ "WARNING" | color }}
+//- 		.mr-10
+//- 			.w-50.h-50.mb-5(
+//- 				[style.backgroundColor]='"DANGER" | color',
+//- 				[style.outlineColor]='"BORDER" | color',
+//- 				style='outline: 1px solid')
+//- 			.h6
+//- 				| Danger
+//- 				br
+//- 				| {{ "DANGER" | color }}
+//- 	h3.mv-20 Text Color
+//- 	.layout-row.layout-align-start-center.layout-wrap.flex-noshrink
+//- 		.mr-10
+//- 			.w-50.h-50.mb-5(
+//- 				[style.backgroundColor]='"TEXT" | color',
+//- 				[style.outlineColor]='"BORDER" | color',
+//- 				style='outline: 1px solid')
+//- 			.h6
+//- 				| Text
+//- 				br
+//- 				| {{ "TEXT" | color }}
+//- 		.mr-10
+//- 			.w-50.h-50.mb-5(
+//- 				[style.backgroundColor]='"LABEL" | color',
+//- 				[style.outlineColor]='"BORDER" | color',
+//- 				style='outline: 1px solid')
+//- 			.h6
+//- 				| Label
+//- 				br
+//- 				| {{ "LABEL" | color }}
+//- 		.mr-10
+//- 			.w-50.h-50.mb-5(
+//- 				[style.backgroundColor]='"PLACEHOLDER" | color',
+//- 				[style.outlineColor]='"BORDER" | color',
+//- 				style='outline: 1px solid')
+//- 			.h6
+//- 				| Placeholder
+//- 				br
+//- 				| {{ "PLACEHOLDER" | color }}
+//- 		.mr-10
+//- 			.w-50.h-50.mb-5(
+//- 				[style.backgroundColor]='"DISABLED" | color',
+//- 				[style.outlineColor]='"BORDER" | color',
+//- 				style='outline: 1px solid')
+//- 			.h6
+//- 				| Disabled
+//- 				br
+//- 				| {{ "DISABLED" | color }}
+//- 	h3.mv-20 Border Color
+//- 	.layout-row.layout-align-start-center.layout-wrap.flex-noshrink
+//- 		.mr-10
+//- 			.w-50.h-50.mb-5(
+//- 				[style.backgroundColor]='"BORDER" | color',
+//- 				[style.outlineColor]='"BORDER" | color',
+//- 				style='outline: 1px solid')
+//- 			.h6
+//- 				| Border
+//- 				br
+//- 				| {{ "BORDER" | color }}
+//- 		.mr-10
+//- 			.w-50.h-50.mb-5(
+//- 				[style.backgroundColor]='"BORDER_THICK" | color',
+//- 				[style.outlineColor]='"BORDER" | color',
+//- 				style='outline: 1px solid')
+//- 			.h6
+//- 				| Thick
+//- 				br
+//- 				| {{ "BORDER_THICK" | color }}
+//- 		.mr-10
+//- 			.w-50.h-50.mb-5(
+//- 				[style.backgroundColor]='"BORDER_SUPER_THICK" | color',
+//- 				[style.outlineColor]='"BORDER" | color',
+//- 				style='outline: 1px solid')
+//- 			.h6
+//- 				| Super Thick
+//- 				br
+//- 				| {{ "BORDER_SUPER_THICK" | color }}
+//- 	h3.mv-20 Color Palette
+//- 	.layout-row.layout-align-start-center.layout-wrap.flex-noshrink
+//- 		.mb-10.mr-10
+//- 			.layout-column
+//- 				.w-170.h-25.p-5([style.backgroundColor]='"BLUE" | color: 700')
+//- 					.h6.text-center([style.color]='"BLUE" | color: 700 | contrast')
+//- 						| color(blue, 700) | {{ "BLUE" | color: 700 }}
+//- 				.w-170.h-25.p-5([style.backgroundColor]='"BLUE" | color: 500')
+//- 					.h6.text-center([style.color]='"BLUE" | color: 500 | contrast')
+//- 						| color(blue, 500) | {{ "BLUE" | color: 500 }}
+//- 				.w-170.h-25.p-5([style.backgroundColor]='"BLUE" | color: 400')
+//- 					.h6.text-center([style.color]='"BLUE" | color: 400 | contrast')
+//- 						| color(blue, 400) | {{ "BLUE" | color: 400 }}
+//- 		.mb-10.mr-10
+//- 			.layout-column
+//- 				.w-170.h-25.p-5([style.backgroundColor]='"GREEN" | color: 700')
+//- 					.h6.text-center([style.color]='"GREEN" | color: 700 | contrast')
+//- 						| color(green, 700) | {{ "GREEN" | color: 700 }}
+//- 				.w-170.h-25.p-5([style.backgroundColor]='"GREEN" | color: 500')
+//- 					.h6.text-center([style.color]='"GREEN" | color: 500 | contrast')
+//- 						| color(green, 500) | {{ "GREEN" | color: 500 }}
+//- 				.w-170.h-25.p-5([style.backgroundColor]='"GREEN" | color: 400')
+//- 					.h6.text-center([style.color]='"GREEN" | color: 400 | contrast')
+//- 						| color(green, 400) | {{ "GREEN" | color: 400 }}
+//- 		.mb-10.mr-10
+//- 			.layout-column
+//- 				.w-170.h-25.p-5([style.backgroundColor]='"YELLOW" | color: 700')
+//- 					.h6.text-center([style.color]='"YELLOW" | color: 700 | contrast')
+//- 						| color(yellow, 700) | {{ "YELLOW" | color: 700 }}
+//- 				.w-170.h-25.p-5([style.backgroundColor]='"YELLOW" | color: 500')
+//- 					.h6.text-center([style.color]='"YELLOW" | color: 500 | contrast')
+//- 						| color(yellow, 500) | {{ "YELLOW" | color: 500 }}
+//- 				.w-170.h-25.p-5([style.backgroundColor]='"YELLOW" | color: 400')
+//- 					.h6.text-center([style.color]='"YELLOW" | color: 400 | contrast')
+//- 						| color(yellow, 400) | {{ "YELLOW" | color: 400 }}
+//- 		.mb-10.mr-10
+//- 			.layout-column
+//- 				.w-170.h-25.p-5([style.backgroundColor]='"RED" | color: 700')
+//- 					.h6.text-center([style.color]='"RED" | color: 700 | contrast')
+//- 						| color(red, 700) | {{ "RED" | color: 700 }}
+//- 				.w-170.h-25.p-5([style.backgroundColor]='"RED" | color: 500')
+//- 					.h6.text-center([style.color]='"RED" | color: 500 | contrast')
+//- 						| color(red, 500) | {{ "RED" | color: 500 }}
+//- 				.w-170.h-25.p-5([style.backgroundColor]='"RED" | color: 400')
+//- 					.h6.text-center([style.color]='"RED" | color: 400 | contrast')
+//- 						| color(red, 400) | {{ "RED" | color: 400 }}
+//- 		.mb-10.mr-10
+//- 			.layout-column
+//- 				.w-170.h-25.p-5([style.backgroundColor]='"ORANGE" | color: 700')
+//- 					.h6.text-center([style.color]='"ORANGE" | color: 700 | contrast')
+//- 						| color(orange, 700) | {{ "ORANGE" | color: 700 }}
+//- 				.w-170.h-25.p-5([style.backgroundColor]='"ORANGE" | color: 500')
+//- 					.h6.text-center([style.color]='"ORANGE" | color: 500 | contrast')
+//- 						| color(orange, 500) | {{ "ORANGE" | color: 500 }}
+//- 				.w-170.h-25.p-5([style.backgroundColor]='"ORANGE" | color: 400')
+//- 					.h6.text-center([style.color]='"ORANGE" | color: 400 | contrast')
+//- 						| color(orange, 400) | {{ "ORANGE" | color: 400 }}
+//- 	.layout-row.layout-align-start-center.layout-wrap.flex-noshrink
+//- 		.mb-10.mr-10
+//- 			.layout-column
+//- 				.w-170.h-25.p-5([style.backgroundColor]='"PURPLE" | color: 700')
+//- 					.h6.text-center([style.color]='"PURPLE" | color: 700 | contrast')
+//- 						| color(purple, 700) | {{ "PURPLE" | color: 700 }}
+//- 				.w-170.h-25.p-5([style.backgroundColor]='"PURPLE" | color: 500')
+//- 					.h6.text-center([style.color]='"PURPLE" | color: 500 | contrast')
+//- 						| color(purple, 500) | {{ "PURPLE" | color: 500 }}
+//- 				.w-170.h-25.p-5([style.backgroundColor]='"PURPLE" | color: 400')
+//- 					.h6.text-center([style.color]='"PURPLE" | color: 400 | contrast')
+//- 						| color(purple, 400) | {{ "PURPLE" | color: 400 }}
+//- 		.mb-10.mr-10
+//- 			.layout-column
+//- 				.w-170.h-25.p-5([style.backgroundColor]='"PINK" | color: 700')
+//- 					.h6.text-center([style.color]='"PINK" | color: 700 | contrast')
+//- 						| color(pink, 700) | {{ "PINK" | color: 700 }}
+//- 				.w-170.h-25.p-5([style.backgroundColor]='"PINK" | color: 500')
+//- 					.h6.text-center([style.color]='"PINK" | color: 500 | contrast')
+//- 						| color(pink, 500) | {{ "PINK" | color: 500 }}
+//- 				.w-170.h-25.p-5([style.backgroundColor]='"PINK" | color: 400')
+//- 					.h6.text-center([style.color]='"PINK" | color: 400 | contrast')
+//- 						| color(pink, 400) | {{ "PINK" | color: 400 }}
+//- 		.mb-10.mr-10
+//- 			.layout-column
+//- 				.w-170.h-25.p-5([style.backgroundColor]='"INDIGO" | color: 700')
+//- 					.h6.text-center([style.color]='"INDIGO" | color: 700 | contrast')
+//- 						| color(indigo, 700) | {{ "INDIGO" | color: 700 }}
+//- 				.w-170.h-25.p-5([style.backgroundColor]='"INDIGO" | color: 500')
+//- 					.h6.text-center([style.color]='"INDIGO" | color: 500 | contrast')
+//- 						| color(indigo, 500) | {{ "INDIGO" | color: 500 }}
+//- 				.w-170.h-25.p-5([style.backgroundColor]='"INDIGO" | color: 400')
+//- 					.h6.text-center([style.color]='"INDIGO" | color: 400 | contrast')
+//- 						| color(indigo, 400) | {{ "INDIGO" | color: 400 }}
+//- 		.mb-10.mr-10
+//- 			.layout-column
+//- 				.w-170.h-25.p-5([style.backgroundColor]='"TEAL" | color: 700')
+//- 					.h6.text-center([style.color]='"TEAL" | color: 700 | contrast')
+//- 						| color(teal, 700) | {{ "TEAL" | color: 700 }}
+//- 				.w-170.h-25.p-5([style.backgroundColor]='"TEAL" | color: 500')
+//- 					.h6.text-center([style.color]='"TEAL" | color: 500 | contrast')
+//- 						| color(teal, 500) | {{ "TEAL" | color: 500 }}
+//- 				.w-170.h-25.p-5([style.backgroundColor]='"TEAL" | color: 400')
+//- 					.h6.text-center([style.color]='"TEAL" | color: 400 | contrast')
+//- 						| color(teal, 400) | {{ "TEAL" | color: 400 }}
+//- 		.mb-10.mr-10
+//- 			.layout-column
+//- 				.w-170.h-25.p-5([style.backgroundColor]='"MINT" | color: 700')
+//- 					.h6.text-center([style.color]='"MINT" | color: 700 | contrast')
+//- 						| color(mint, 700) | {{ "MINT" | color: 700 }}
+//- 				.w-170.h-25.p-5([style.backgroundColor]='"MINT" | color: 500')
+//- 					.h6.text-center([style.color]='"MINT" | color: 500 | contrast')
+//- 						| color(mint, 500) | {{ "MINT" | color: 500 }}
+//- 				.w-170.h-25.p-5([style.backgroundColor]='"MINT" | color: 400')
+//- 					.h6.text-center([style.color]='"MINT" | color: 400 | contrast')
+//- 						| color(mint, 400) | {{ "MINT" | color: 400 }}
+//- 	.layout-row.layout-align-start-center.layout-wrap.flex-noshrink
+//- 		.mb-10.mr-10
+//- 			.layout-column
+//- 				.w-340.h-25.p-5([style.backgroundColor]='"DARK_GRAY" | color: 700')
+//- 					.h6.text-center([style.color]='"DARK_GRAY" | color: 700 | contrast')
+//- 						| color(darkGray, 700) | {{ "DARK_GRAY" | color: 700 }}
+//- 				.w-340.h-25.p-5([style.backgroundColor]='"DARK_GRAY" | color: 500')
+//- 					.h6.text-center([style.color]='"DARK_GRAY" | color: 500 | contrast')
+//- 						| color(darkGray, 500) | {{ "DARK_GRAY" | color: 500 }}
+//- 				.w-340.h-25.p-5([style.backgroundColor]='"DARK_GRAY" | color: 400')
+//- 					.h6.text-center([style.color]='"DARK_GRAY" | color: 400 | contrast')
+//- 						| color(darkGray, 400) | {{ "DARK_GRAY" | color: 400 }}
+//- 				.w-340.h-25.p-5([style.backgroundColor]='"DARK_GRAY" | color: 300')
+//- 					.h6.text-center([style.color]='"DARK_GRAY" | color: 300 | contrast')
+//- 						| color(darkGray, 300) | {{ "DARK_GRAY" | color: 300 }}
+//- 				.w-340.h-25.p-5([style.backgroundColor]='"DARK_GRAY" | color: 200')
+//- 					.h6.text-center([style.color]='"DARK_GRAY" | color: 200 | contrast')
+//- 						| color(darkGray, 200) | {{ "DARK_GRAY" | color: 200 }}
+//- 		.mb-10.mr-10
+//- 			.layout-column
+//- 				.w-340.h-25.p-5([style.backgroundColor]='"LIGHT_GRAY" | color: 700')
+//- 					.h6.text-center([style.color]='"LIGHT_GRAY" | color: 700 | contrast')
+//- 						| color(lightGray, 700) | {{ "LIGHT_GRAY" | color: 700 }}
+//- 				.w-340.h-25.p-5([style.backgroundColor]='"LIGHT_GRAY" | color: 500')
+//- 					.h6.text-center([style.color]='"LIGHT_GRAY" | color: 500 | contrast')
+//- 						| color(lightGray, 500) | {{ "LIGHT_GRAY" | color: 500 }}
+//- 				.w-340.h-25.p-5([style.backgroundColor]='"LIGHT_GRAY" | color: 400')
+//- 					.h6.text-center([style.color]='"LIGHT_GRAY" | color: 400 | contrast')
+//- 						| color(lightGray, 400) | {{ "LIGHT_GRAY" | color: 400 }}
+//- 				.w-340.h-25.p-5([style.backgroundColor]='"LIGHT_GRAY" | color: 300')
+//- 					.h6.text-center([style.color]='"LIGHT_GRAY" | color: 300 | contrast')
+//- 						| color(lightGray, 300) | {{ "LIGHT_GRAY" | color: 300 }}
+//- 				.w-340.h-25.p-5([style.backgroundColor]='"LIGHT_GRAY" | color: 200')
+//- 					.h6.text-center([style.color]='"LIGHT_GRAY" | color: 200 | contrast')
+//- 						| color(lightGray, 200) | {{ "LIGHT_GRAY" | color: 200 }}
+//- 	h3.mv-20 Typography
+//- 	div
+//- 		div
+//- 			| Body 14px
+//- 		a.mt-20
+//- 			| Anchor 14px
+//- 		label.mt-20
+//- 			| Label 13px
+//- 		h1.mt-20
+//- 			| h1 24px
+//- 			span.h1 &nbsp;24px
+//- 		h2.mt-20
+//- 			| h2 20px
+//- 			span.h2 &nbsp;20px
+//- 		h3.mt-20
+//- 			| h3 18px
+//- 			span.h3 &nbsp;18px
+//- 		h4.mt-20
+//- 			| h4 16px
+//- 			span.h4 &nbsp;16px
+//- 		h5.mt-20
+//- 			| h5 13px
+//- 			span.h5 &nbsp;13px
+//- 		h6.mt-20
+//- 			| h6 12px
+//- 			span.h6 &nbsp;12px
+//- 		wgc-code-block.mt-20
+//- 			| Code
+//- 	h3.mv-20 Font Family
+//- 	div Default: AvertaStdCY, Helvetica, sans-serif
+//- 	div Code: SourceCodePro, Helvetica, sans-serif
+
+//- ng-template(#systemCompTemplate, label='Icon')
+//- 	.layout-row.layout-wrap
+//- 		.layout-column.layout-align-space-between-center.flex-10.mb-20(*ngFor='let icon of icons')
+//- 			cub-icon(size='28px', [name]='icon?.properties?.name')
+//- 			wgc-truncate.text-center.mt-5
+//- 				| {{ icon?.properties?.name }}
+
+//- // Layout
+//- ng-template(#layoutCompTemplate, label='Page')
+//- 	wgc-page(stretch)
+//- 		div(wgcPageHeader)
+//- 			h1 Page Header
+//- 		div(wgcPageContent)
+//- 			| Page Content
+
+//- ng-template(#layoutCompTemplate, label='Drawer')
+//- 	wgc-drawer-container(stretch)
+//- 		wgc-drawer(position='left', label='Label', width='300px')
+//- 			.p-20
+//- 				| Drawer Left
+//- 		wgc-drawer(position='right', label='Label', width='300px')
+//- 			.p-20
+//- 				| Drawer Right
+//- 		wgc-drawer-content
+//- 			.p-20
+//- 				| Drawer Content
+
+//- ng-template(#layoutCompTemplate, label='Tabs')
+//- 	h3.mb-20 Default
+//- 	wgc-tab-group(headerVerticalDivider)
+//- 		wgc-tab(label='Label 1', icon='list')
+//- 			| Tab Content 1
+//- 		wgc-tab(label='Label 2', icon='grid')
+//- 			| Tab Content 2
+//- 	h3.mv-20 Alignment
+//- 	wgc-tab-group(alignment='center')
+//- 		wgc-tab(label='Label 1', icon='list')
+//- 			| Tab Content 1
+//- 		wgc-tab(label='Label 2', icon='grid')
+//- 			| Tab Content 2
+//- 	wgc-tab-group(alignment='right')
+//- 		wgc-tab(label='Label 1', icon='list')
+//- 			| Tab Content 1
+//- 		wgc-tab(label='Label 2', icon='grid')
+//- 			| Tab Content 2
+//- 	h3.mv-20 Stretch
+//- 	wgc-tab-group(stretch, stretchTab)
+//- 		wgc-tab(label='Label 1')
+//- 			| Tab Content 1
+//- 		wgc-tab(label='Label 2')
+//- 			| Tab Content 2
+
+//- ng-template(#layoutCompTemplate, label='Expansion panel')
+//- 	h3.mb-20 Default
+//- 	wgc-accordion
+//- 		wgc-expansion-panel(expanded)
+//- 			wgc-expansion-panel-header
+//- 				wgc-truncate(limitLine='1')
+//- 					| Header
+//- 				button.ml-5(
+//- 					wgcBasicButton,
+//- 					(click)='$event?.stopPropagation(); console.log( "Edit" );')
+//- 					wgc-icon(name='edit', size='20px')
+//- 			| Body
+//- 		wgc-expansion-panel
+//- 			wgc-expansion-panel-header
+//- 				wgc-truncate(limitLine='1')
+//- 					| Header
+//- 				button.ml-5(
+//- 					wgcBasicButton,
+//- 					(click)='$event?.stopPropagation(); console.log( "Add" );')
+//- 					wgc-icon(name='circle-plus', size='20px')
+//- 			| Body
+//- 	h3.mv-20 Background Theme
+//- 	div(cdkDropList, (cdkDropListDropped)='console.log( "Expansion Dropped", $event )')
+//- 		wgc-expansion-panel(theme='background', cdkDrag, draggable)
+//- 			wgc-expansion-panel-header
+//- 				wgc-truncate(limitLine='1')
+//- 					| Header 1
+//- 				button.ml-10(
+//- 					wgcBasicButton,
+//- 					(click)='$event?.stopPropagation(); console.log( "Edit" );')
+//- 					wgc-icon(name='edit', size='20px')
+//- 				button.ml-10(
+//- 					wgcBasicButton,
+//- 					(click)='$event?.stopPropagation(); console.log( "Delete" );')
+//- 					wgc-icon(name='trash', size='20px')
+//- 				button.ml-10(
+//- 					wgcBasicButton,
+//- 					(click)='$event?.stopPropagation(); console.log( "Add" );')
+//- 					wgc-icon(name='plus', size='20px')
+//- 			| Body
+//- 		wgc-expansion-panel.mt-20(theme='background', cdkDrag, draggable)
+//- 			wgc-expansion-panel-header([color]='"GREEN" | color: 400')
+//- 				wgc-truncate(limitLine='1')
+//- 					| Header 2
+//- 				button.ml-10(
+//- 					wgcBasicButton,
+//- 					(click)='$event?.stopPropagation(); console.log( "Edit" );')
+//- 					wgc-icon(name='edit', size='20px')
+//- 				button.ml-10(
+//- 					wgcBasicButton,
+//- 					(click)='$event?.stopPropagation(); console.log( "Delete" );')
+//- 					wgc-icon(name='trash', size='20px')
+//- 				button.ml-10(
+//- 					wgcBasicButton,
+//- 					(click)='$event?.stopPropagation(); console.log( "Add" );')
+//- 					wgc-icon(name='plus', size='20px')
+//- 			| Body
+//- 		wgc-expansion-panel.mt-20(theme='background', cdkDrag, draggable)
+//- 			wgc-expansion-panel-header([color]='"RED" | color: 700')
+//- 				wgc-truncate(limitLine='1')
+//- 					| Header 3
+//- 				button.ml-10(
+//- 					wgcBasicButton,
+//- 					(click)='$event?.stopPropagation(); console.log( "Edit" );')
+//- 					wgc-icon(name='edit', size='20px')
+//- 				button.ml-10(
+//- 					wgcBasicButton,
+//- 					(click)='$event?.stopPropagation(); console.log( "Delete" );')
+//- 					wgc-icon(name='trash', size='20px')
+//- 				button.ml-10(
+//- 					wgcBasicButton,
+//- 					(click)='$event?.stopPropagation(); console.log( "Add" );')
+//- 					wgc-icon(name='plus', size='20px')
+//- 			| Body
+
+//- ng-template(#layoutCompTemplate, label='Divider')
+//- 	span Line 1
+//- 	wgc-divider.mv-20
+//- 	span Line 2
+
+//- // Overlay
+//- ng-template(#overlayCompTemplate, label='Menu')
+//- 	.layout-row.layout-wrap.layout-align-center-center(style='height: 800px')
+//- 		.mr-10
+//- 			button(wgcButton, position='before', [wgcMenuTriggerFor]='menu')
+//- 				| Menu Before
+//- 		.mr-10
+//- 			button(wgcButton, position='after', [wgcMenuTriggerFor]='menu')
+//- 				| Menu After
+//- 		.mr-10
+//- 			button(wgcButton, position='above', [wgcMenuTriggerFor]='menu')
+//- 				| Menu Above
+//- 		.mr-10
+//- 			button(wgcButton, position='below', [wgcMenuTriggerFor]='menu')
+//- 				| Menu Below
+//- 	wgc-menu(#menu)
+//- 		wgc-menu-content
+//- 			button(wgcMenuItem, icon='sort-up')
+//- 				| Item 1
+//- 			button(wgcMenuItem, icon='sort-down')
+//- 				| Item 2
+//- 			button(wgcMenuItem, icon='eye-off')
+//- 				| Item 3
+
+//- ng-template(#overlayCompTemplate, label='Tooltip')
+//- 	.layout-row.layout-wrap.layout-align-center-center(style='height: 800px')
+//- 		.mr-10
+//- 			button(wgcButton, position='above', [wgcTooltip]='"Tooltip"')
+//- 				| Tooltip Above
+//- 		.mr-10
+//- 			button(wgcButton, position='below', [wgcTooltip]='"Tooltip"')
+//- 				| Tooltip Below
+//- 		.mr-10
+//- 			button(wgcButton, position='before', [wgcTooltip]='"Tooltip"')
+//- 				| Tooltip Before
+//- 		.mr-10
+//- 			button(wgcButton, position='after', [wgcTooltip]='"Tooltip"')
+//- 				| Tooltip After
+//- 		.mr-10
+//- 			button(wgcButton, position='below', [wgcTooltip]='tooltip')
+//- 				| Tooltip Custom
+//- 	wgc-tooltip(#tooltip, theme='light')
+//- 		h4.mb-10 Need more informations?
+//- 		.layout-row.layout-align-start-center
+//- 			| Click on&nbsp;&nbsp;
+//- 			button(wgcIconButton, icon='plus')
+//- 			| &nbsp;&nbsp;to create for fields
+
+//- ng-template(#overlayCompTemplate, label='Dialog')
+//- 	.layout-row.layout-wrap
+//- 		.mr-10
+//- 			button(wgcButton, (click)='openDialog()')
+//- 				| Open Dialog Component
+//- 		.mr-10
+//- 			button(wgcButton, (click)='openDialog( dialog )')
+//- 				| Open Dialog Template
+//- 	ng-template(#dialog, let-data='data')
+//- 		.p-30 {{ data?.content }}
+
+//- ng-template(#overlayCompTemplate, label='Confirm')
+//- 	.layout-row.layout-wrap
+//- 		.mr-10
+//- 			button(wgcButton, (click)='openConfirm()')
+//- 				| Open Confirm Popup
+//- 		.mr-10
+//- 			button(wgcButton, (click)='openConfirm( true )')
+//- 				| Open Confirm Dialog
+
+//- ng-template(#overlayCompTemplate, label='Action box')
+//- 	.layout-row.layout-wrap.layout-align-center-center(style='height: 800px')
+//- 		.mr-10
+//- 			button(wgcButton, (click)='actionBoxVisible = true; actionBoxPosition = "top";')
+//- 				| Show Action Box Top
+//- 		.mr-10
+//- 			button(wgcButton, (click)='actionBoxVisible = true; actionBoxPosition = "bottom";')
+//- 				| Show Action Box Bottom
+//- 	wgc-action-box([position]='actionBoxPosition', [(visible)]='actionBoxVisible', (dismissed)='console.log( "Action Box Dismissed" )')
+//- 		wgc-action-box-start
+//- 			wgc-radio(checked, bgColor='translate', label='2 rows selected', [color]='"WHITE" | color')
+//- 		wgc-action-box-middle
+//- 			wgc-action-item(icon='duplicate', label='Duplicate', (click)='console.log( "Duplicate" )')
+//- 			wgc-action-item(icon='trash', label='Remove', (click)='console.log( "Remove" )')
+
+//- ng-template(#overlayCompTemplate, label='Toast')
+//- 	.layout-row.layout-wrap
+//- 		.mr-10
+//- 			button(
+//- 				wgcButton,
+//- 				(click)='hasDescription = !hasDescription; showToast( hasDescription );')
+//- 				| Show Toast
+//- 		.mr-10
+//- 			button(
+//- 				wgcButton,
+//- 				(click)='hasDescription = !hasDescription; showInfoToast( hasDescription );')
+//- 				| Show Info Toast
+//- 		.mr-10
+//- 			button(
+//- 				wgcButton,
+//- 				(click)='hasDescription = !hasDescription; showSuccessToast( hasDescription );')
+//- 				| Show Success Toast
+//- 		.mr-10
+//- 			button(
+//- 				wgcButton,
+//- 				(click)='hasDescription = !hasDescription; showWarningToast( hasDescription );')
+//- 				| Show Warning Toast
+//- 		.mr-10
+//- 			button(
+//- 				wgcButton,
+//- 				(click)='hasDescription = !hasDescription; showDangerToast( hasDescription );')
+//- 				| Show Danger Toast
+
+//- // Display
+//- ng-template(#displayCompTemplate, label='Board')
+//- 	wgc-board-group(
+//- 		stretch,
+//- 		(boardsMoved)='console.log( "Boards Moved", $event )',
+//- 		(loadMore)='console.log( "Board Group load more", $event )')
+//- 		wgc-board(
+//- 			draggable,
+//- 			[id]='1',
+//- 			[order]='1',
+//- 			(itemsMoved)='console.log( "Items Moved", $event )',
+//- 			(loadMore)='console.log( "Board Open load more", $event )')
+//- 			wgc-board-header([color]='"PRIMARY" | color')
+//- 				wgc-truncate(limitLine='1') Open (20)
+//- 				button.ml-30(wgcBasicButton)
+//- 					wgc-icon(name='circle-plus', size='20px')
+//- 				button.ml-10(wgcBasicButton)
+//- 					wgc-icon(name='more-vertical', size='20px')
+//- 			wgc-board-item(
+//- 				draggable,
+//- 				disabled,
+//- 				*ngFor='let item of arr',
+//- 				[id]='item',
+//- 				[order]='item',
+//- 				(click)='console.log( "Item Clicked", $event )')
+//- 				| Item {{ item }}
+//- 		wgc-board(
+//- 			draggable,
+//- 			[id]='2',
+//- 			[order]='2',
+//- 			(itemsMoved)='console.log( "Items Moved", $event )',
+//- 			(loadMore)='console.log( "Board In progress load more", $event )')
+//- 			wgc-board-header([color]='"WARNING" | color')
+//- 				wgc-truncate(limitLine='1') In progress (20)
+//- 				button.ml-30(wgcBasicButton)
+//- 					wgc-icon(name='circle-plus', size='20px')
+//- 				button.ml-10(wgcBasicButton)
+//- 					wgc-icon(name='more-vertical', size='20px')
+//- 			wgc-board-item(
+//- 				draggable,
+//- 				*ngFor='let item of arr',
+//- 				[id]='item + 20',
+//- 				[order]='item + 20',
+//- 				(click)='console.log( "Item Clicked", $event )')
+//- 				| Item {{ item + 20 }}
+//- 		wgc-board(
+//- 			draggable,
+//- 			[id]='3',
+//- 			[order]='3',
+//- 			(itemsMoved)='console.log( "Items Moved", $event )',
+//- 			(loadMore)='console.log( "Board Testing load more", $event )')
+//- 			wgc-board-header([color]='"INFO" | color')
+//- 				wgc-truncate(limitLine='1') Testing (0)
+//- 				button.ml-30(wgcBasicButton)
+//- 					wgc-icon(name='circle-plus', size='20px')
+//- 				button.ml-10(wgcBasicButton)
+//- 					wgc-icon(name='more-vertical', size='20px')
+//- 		wgc-board(
+//- 			draggable,
+//- 			[id]='4',
+//- 			[order]='4',
+//- 			(itemsMoved)='console.log( "Items Moved", $event )',
+//- 			(loadMore)='console.log( "Board Done load more", $event )')
+//- 			wgc-board-header([color]='"SUCCESS" | color')
+//- 				wgc-truncate Done (0)
+//- 				button.ml-30(wgcBasicButton)
+//- 					wgc-icon(name='circle-plus', size='20px')
+//- 				button.ml-10(wgcBasicButton)
+//- 					wgc-icon(name='more-vertical', size='20px')
+//- 		div(wgcBoardGroupContent)
+//- 			button.w-220(
+//- 				wgcButton,
+//- 				icon='plus',
+//- 				color='white',
+//- 				alignment='left',
+//- 				borderStyle='dashed',
+//- 				[textColor]='"LABEL" | color')
+//- 				| Add new
+
+//- ng-template(#displayCompTemplate, label='Grid')
+//- 	wgc-grid(
+//- 		stretch,
+//- 		itemsPerRow='5',
+//- 		(itemsMoved)='console.log( "Items Moved", $event )',
+//- 		(itemsSelected)='console.log( "Items Selected", $event )',
+//- 		(loadMore)='console.log( "Load More", $event )')
+//- 		wgc-grid-item(
+//- 			draggable,
+//- 			*ngFor='let item of arr; let last = last;',
+//- 			[id]='item',
+//- 			[disabled]='last')
+//- 			.layout-row.layout-align-start-center.mb-15
+//- 				wgc-avatar.mr-10(size='45px', label='AB')
+//- 				h4
+//- 					| Employe
+//- 					| {{ item }}
+//- 			.mb-15
+//- 				label Job Title
+//- 				div Sale Director
+//- 			.mb-15
+//- 				label Position
+//- 				div Director
+//- 			.mb-15
+//- 				label Department
+//- 				div Sale
+//- 			.mb-15
+//- 				label Phone
+//- 				div
+//- 					a 0902698567
+//- 			div
+//- 				label Email
+//- 				div
+//- 					a quan@novaland.com
+
+//- ng-template(#displayCompTemplate, label='List')
+//- 	wgc-menu(#actionMenu)
+//- 		wgc-menu-content
+//- 			ng-template(wgcMenuContent, let-listItemComp='listItemComp')
+//- 				button(wgcMenuItem, icon='text-input', (click)='listItemComp?.edit()')
+//- 					| Rename
+//- 				button(wgcMenuItem, icon='trash', [color]='"DANGER" | color')
+//- 					| Delete
+//- 	wgc-list(
+//- 		displayColorDot,
+//- 		name='Name',
+//- 		[activeColor]='"SUB" | color',
+//- 		(itemsMoved)='console.log( "Items Moved", $event )',
+//- 		(loadMore)='console.log( "Load More", $event )')
+//- 		wgc-list-item(
+//- 			draggable,
+//- 			#listItemComp,
+//- 			*ngFor='let item of [ { id: 1, name: "A" }, { id: 2, name: "B" }, { id: 3, name: "C" } ]; let first = first;',
+//- 			[id]='item?.id',
+//- 			[label]='item?.name',
+//- 			[description]='"12 items"',
+//- 			[active]='!!first',
+//- 			(dotColorChange)='console.log( "Item Dot Color Change", $event )',
+//- 			(editing)='console.log( "Item Editing", $event )',
+//- 			(saved)='console.log( "Edit Item Saved", $event )',
+//- 			(cancelled)='console.log( "Edit Item Cancelled", $event )',
+//- 			(click)='console.log( "Item Clicked", $event )')
+//- 			button(
+//- 				wgcBasicButton,
+//- 				icon='more-vertical',
+//- 				[wgcMenuTriggerFor]='actionMenu',
+//- 				[menuData]='{ listItemComp: listItemComp }',
+//- 				[class.hidden]='!listItemComp?.focusing && !listItemComp?.hovering',
+//- 				(menuOpened)='listItemComp?.focus()',
+//- 				(menuClosed)='listItemComp?.blur()',
+//- 				(click)='$event?.stopPropagation()')
+
+//- ng-template(#displayCompTemplate, label='Table')
+//- 	table(wgcTable)
+//- 		thead
+//- 			tr
+//- 				th.w-300(sticky='left', align='left') Positions
+//- 				th.w-200(sticky='left', [style.left.px]='300') Description
+//- 				th.w-200 KPI
+//- 				th.w-200 Number Of Members
+//- 				th.w-150 Status
+//- 		tbody
+//- 			tr(*ngFor='let position of positions; let first = first;', [attr.active]='first || undefined')
+//- 				td.w-300.text-semibold(sticky='left', align='left')
+//- 					wgc-truncate
+//- 						| {{ position?.name }}
+//- 				td.w-200(sticky='left', [style.left.px]='300')
+//- 					wgc-truncate
+//- 						| {{ position?.description }}
+//- 				td.w-200
+//- 					wgc-truncate
+//- 						| {{ position?.kpi }}
+//- 				td.w-200
+//- 					wgc-truncate
+//- 						| {{ position?.noOfMembers }}
+//- 				td.w-150
+//- 					wgc-tag(*ngIf='position?.status', [color]='"PRIMARY" | color', [label]='position?.status')
+//- 					ng-container(*ngIf='!position?.status')
+//- 						| {{ undefined | empty }}
+//- 		tfoot
+//- 			tr
+//- 				td(align='left', colspan='5')
+//- 					button.btn-normal(wgcBasicButton, icon='circle-plus')
+//- 						| Add row
+
+//- ng-template(#displayCompTemplate, label='CDK Table')
+//- 	table(wgcCdkTable, [dataSource]='dataSource')
+//- 		ng-container(cdkColumnDef='positions')
+//- 			th(cdk-header-cell, align='left', *cdkHeaderCellDef)
+//- 				| Positions
+//- 			td.text-semibold(cdk-cell, align='left', *cdkCellDef='let element')
+//- 				wgc-truncate
+//- 					| {{ element?.name }}
+//- 			td(cdk-footer-cell, align='left', colspan='5', *cdkFooterCellDef)
+//- 				button.btn-normal(wgcBasicButton, icon='circle-plus')
+//- 					| Add row
+//- 		ng-container(cdkColumnDef='description')
+//- 			th.w-200(cdk-header-cell, *cdkHeaderCellDef)
+//- 				| Description
+//- 			td.w-200(cdk-cell, *cdkCellDef='let element')
+//- 				wgc-truncate
+//- 					| {{ element?.description }}
+//- 			td.w-200.hide(cdk-footer-cell, *cdkFooterCellDef)
+//- 		ng-container(cdkColumnDef='kpi')
+//- 			th.w-200(cdk-header-cell, *cdkHeaderCellDef)
+//- 				| KPI
+//- 			td.w-200(cdk-cell, *cdkCellDef='let element')
+//- 				wgc-truncate
+//- 					| {{ element?.kpi }}
+//- 			td.w-200.hide(cdk-footer-cell, *cdkFooterCellDef)
+//- 		ng-container(cdkColumnDef='numberOfMembers')
+//- 			th.w-200(cdk-header-cell, *cdkHeaderCellDef)
+//- 				| Number Of Members
+//- 			td.w-200(cdk-cell, *cdkCellDef='let element')
+//- 				wgc-truncate
+//- 					| {{ element?.noOfMembers }}
+//- 			td.w-200.hide(cdk-footer-cell, *cdkFooterCellDef)
+//- 		ng-container(cdkColumnDef='status')
+//- 			th.w-150(cdk-header-cell, *cdkHeaderCellDef)
+//- 				| Status
+//- 			td.w-150(cdk-cell, *cdkCellDef='let element')
+//- 				wgc-tag(*ngIf='element?.status', [color]='"PRIMARY" | color', [label]='element?.status')
+//- 					| {{ element?.status }}
+//- 				ng-container(*ngIf='!element?.status')
+//- 					| {{ undefined | empty }}
+//- 			td.w-150.hide(cdk-footer-cell, *cdkFooterCellDef)
+//- 		tr(cdk-header-row, *cdkHeaderRowDef='displayedColumns')
+//- 		tr(cdk-row, *cdkRowDef='let row; columns: displayedColumns;')
+//- 		tr(cdk-footer-row, *cdkFooterRowDef='displayedColumns')
+
+//- ng-template(#displayCompTemplate, label='Excel Table')
+//- 	table(wgcExcelTable)
+//- 		thead
+//- 			tr
+//- 				td.w-50(wgcExcelHeaderCell, index)
+//- 				th(wgcExcelHeaderCell) Text
+//- 				th(wgcExcelHeaderCell, required) Required
+//- 				th(wgcExcelHeaderCell) Email
+//- 				th(wgcExcelHeaderCell) Website
+//- 				th(wgcExcelHeaderCell) Number
+//- 				th(wgcExcelHeaderCell) List
+//- 				th(wgcExcelHeaderCell) Strict List
+//- 				th(wgcExcelHeaderCell) Multi List
+//- 		tbody
+//- 			tr(*ngFor='let item of arr')
+//- 				td.w-50(wgcExcelCell, index, readonly) {{ item }}
+//- 				td(wgcExcelCell) Content
+//- 				td(wgcExcelCell, required) Content
+//- 				td(wgcExcelCell, type='email') mail@example.com
+//- 				td(wgcExcelCell, type='website') https://example.com
+//- 				td(wgcExcelCell, type='number') 1
+//- 				td(wgcExcelCell, type='list', [list]='[ "Item 1", "Item 2", "Item 3" ]') Item 1
+//- 				td(wgcExcelCell, type='strict-list', [list]='[ "Item 1", "Item 2", "Item 3" ]') Item 1
+//- 				td(wgcExcelCell, type='multi-list', [list]='[ "Item 1", "Item 2", "Item 3" ]') Item 1
+
+//- ng-template(#displayCompTemplate, label='Calendar')
+//- 	ng-template(#calendarEventTemplate, let-event='event')
+//- 		wgc-card.cursor
+//- 			.layout-row.layout-align-space-between-center
+//- 				wgc-color-dot(viewOnly, color='#53926b')
+//- 					wgc-truncate
+//- 						| {{ event?.label }}
+//- 				wgc-icon(name='more-vertical')
+//- 	wgc-calendar(
+//- 		stretch,
+//- 		creatable,
+//- 		firstWeekDay='0',
+//- 		view='week',
+//- 		[displayHighlight]='true',
+//- 		[events]='calendarEvents',
+//- 		(periodChange)='console.log( "Period change", $event )',
+//- 		(selectedEventIDChange)='console.log( "Selected event", $event )',
+//- 		(eventChange)='console.log( "Event change", $event )',
+//- 		(eventCreate)='console.log( "Event create", $event )')
+
+//- ng-template(#displayCompTemplate, label='Timeline')
+//- 	wgc-timeline(
+//- 		stretch,
+//- 		firstWeekDay='4',
+//- 		view='month',
+//- 		[displayHighlight]='true',
+//- 		[events]='timelineEvent',
+//- 		(periodChange)='console.log( "Period change", $event )',
+//- 		(periodExtended)='console.log( "Period extended", $event )',
+//- 		(selectedEventIDChange)='console.log( "Selected event", $event )',
+//- 		(eventChange)='console.log( "Event change", $event )')
+
+//- ng-template(#displayCompTemplate, label='Chart')
+//- 	wgc-bar-chart(height='800px', [labels]='chartLabels', [datasets]='barChartDatasets')
+//- 	wgc-line-chart(height='800px', [labels]='chartLabels', [datasets]='lineChartDatasets')
+//- 	.layout-row
+//- 		wgc-pie-chart.flex-50([datasets]='pieChartDatasets')
+//- 		wgc-donut-chart.flex-50([datasets]='donutChartDatasets')
+
+//- ng-template(#displayCompTemplate, label='Carousel')
+//- 	wgc-carousel(
+//- 		canClose,
+//- 		canFullscreen,
+//- 		mode='contain',
+//- 		size='700px',
+//- 		[photo]='photo',
+//- 		(selected)='console.log( $event )',
+//- 		(closed)='console.log( $event )')
+
+//- // Picker
+//- ng-template(#pickerCompTemplate, label='Date picker')
+//- 	h3.mb-20 Directive
+//- 	.layout-row
+//- 		.mr-10
+//- 			button(
+//- 				wgcButton,
+//- 				wgcDatePicker,
+//- 				[pickedDate]='currentDate',
+//- 				[minDate]='minDate',
+//- 				[maxDate]='maxDate',
+//- 				(picked)='console.log( "Date Picked", $event )')
+//- 				| Date Picker
+//- 		.mr-10
+//- 			button(
+//- 				wgcButton,
+//- 				wgcDatePicker,
+//- 				dateRange,
+//- 				[pickedDate]='currentDateRange',
+//- 				[minDate]='minDate',
+//- 				[maxDate]='maxDate',
+//- 				(picked)='console.log( "Date Range Picked", $event )')
+//- 				| Date Range Picker
+//- 	h3.mv-20 Component
+//- 	wgc-date-picker.w-300(mode='inline', (picked)='console.log( $event )')
+
+//- ng-template(#pickerCompTemplate, label='Color picker')
+//- 	h3.mb-20 Directive
+//- 	button(wgcButton, wgcColorPicker, [pickedColor]='"#da8fff"', (picked)='console.log( "Color Picked", $event )')
+//- 		| Color Picker
+//- 	h3.mv-20 Component
+//- 	wgc-color-picker.w-300(mode='inline', [pickedColor]='"#da8fff"')
+
+//- ng-template(#pickerCompTemplate, label='Color range picker')
+//- 	.layout-row.layout-align-start-center
+//- 		wgc-color-range-picker.mr-20(#rangeColorPicker, selected='Indigo')
+//- 		button(wgcButton, (click)='rangeColorPicker?.open()') Open
+
+//- ng-template(#pickerCompTemplate, label='Emoji picker')
+//- 	h3.mb-20 Directive
+//- 	button(wgcButton, wgcEmojiPicker, (picked)='console.log( "Emoji Picked", $event )')
+//- 		| Emoji Picker
+//- 	h3.mv-20 Component
+//- 	wgc-emoji-picker.w-300(mode='inline')
+
+//- ng-template(#pickerCompTemplate, label='File picker')
+//- 	h3.mb-20 Directive
+//- 	.layout-row.layout-wrap
+//- 		.mr-10
+//- 			button(wgcButton, wgcFilePicker, (picked)='console.log( "File Picked", $event )')
+//- 				| File
+//- 		.mr-10
+//- 			button(wgcButton, wgcFilePicker, imageOnly, (picked)='console.log( "File Picked", $event )')
+//- 				| Image
+//- 		.mr-10
+//- 			button(wgcButton, wgcGoogleDrivePicker, (picked)='console.log( "Google Drive Picked", $event )')
+//- 				| Google Drive
+//- 		.mr-10
+//- 			button(wgcButton, wgcDropboxPicker, (picked)='console.log( "Dropbox Picked", $event )')
+//- 				| Dropbox
+//- 		.mr-10
+//- 			button(wgcButton, wgcOneDrivePicker, (picked)='console.log( "One Drive Picked", $event )')
+//- 				| One Drive
+//- 	h3.mv-20 Component
+//- 	wgc-file-picker.w-300(mode='inline')
+
+//- ng-template(#pickerCompTemplate, label='Avatar picker')
+//- 	wgc-avatar-picker.w-500(label='Avatar', (picked)='console.log( "Avatar Picked", $event )')
+
+//- ng-template(#pickerCompTemplate, label='Member picker')
+//- 	wgc-member-picker.mv-20(
+//- 		canViewProfile,
+//- 		required,
+//- 		label='Member Picker Directive',
+//- 		limit='3',
+//- 		mode='inline',
+//- 		[includesStatus]='[ 2, 3 ]',
+//- 		[members]='members',
+//- 		[(selected)]='selected',
+//- 		(added)='console.log( "Added", $event )',
+//- 		(removed)='console.log( "Removed", $event )',
+//- 		(selectedChange)='console.log( "Selected Change", $event )',
+//- 		(selectedMembersChange)='console.log( "Selected Members Change", $event )',
+//- 		(viewDetail)='console.log( "View detail", $event )')
+//- 	button.w-fit-content.mv-20(
+//- 		wgcButton,
+//- 		wgcMemberPicker,
+//- 		canViewProfile,
+//- 		required,
+//- 		label='Member Picker Directive',
+//- 		limit='3',
+//- 		[includesStatus]='[ 2, 3 ]',
+//- 		[members]='members',
+//- 		[(selected)]='selected',
+//- 		(added)='console.log( "Added", $event )',
+//- 		(removed)='console.log( "Removed", $event )',
+//- 		(selectedChange)='console.log( "Selected Change", $event )',
+//- 		(selectedMembersChange)='console.log( "Selected Members Change", $event )',
+//- 		(viewDetail)='console.log( "View detail", $event )')
+//- 		| Member Picker
+//- 	wgc-member-list.mv-20(
+//- 		label='Member Picker',
+//- 		[members]='members',
+//- 		[(selected)]='selected',
+//- 		(added)='console.log( "Added", $event )',
+//- 		(removed)='console.log( "Removed", $event )',
+//- 		(selectedChange)='console.log( "Selected Change", $event )')
+//- 	wgc-member-list.mv-20(
+//- 		label='Member Picker Lazy List',
+//- 		[strictDisplay]='false',
+//- 		[members]='members$',
+//- 		[selectedMembers]='[ { id: 1, name: "Member 1" }, { id: 2, name: "Member 2" } ]',
+//- 		[(selected)]='selected',
+//- 		(added)='console.log( "Added", $event )',
+//- 		(removed)='console.log( "Removed", $event )',
+//- 		(selectedChange)='console.log( "Selected Change", $event )')
+//- 	wgc-member-list.mv-20(
+//- 		canViewProfile,
+//- 		required,
+//- 		label='Member Picker Have Pending/Inactive Status',
+//- 		limit='3',
+//- 		[includesStatus]='[ 2, 3 ]',
+//- 		[members]='members',
+//- 		[(selected)]='selected',
+//- 		(added)='console.log( "Added", $event )',
+//- 		(removed)='console.log( "Removed", $event )',
+//- 		(selectedChange)='console.log( "Selected Change", $event )',
+//- 		(selectedMembersChange)='console.log( "Selected Members Change", $event )',
+//- 		(viewDetail)='console.log( "View detail", $event )')
+//- 	wgc-member-list.mv-20(readonly, label='Member picker readonly', [members]='members', [(selected)]='selected')
+//- 	wgc-member-list.mv-20(disabled, label='Member picker disabled', [members]='members', [(selected)]='selected')
+
+//- ng-template(#pickerCompTemplate, label='Member picker v2')
+//- 	.mb-20
+//- 		h3 CUB Member
+//- 		cub-member.mv-20(
+//- 			canViewProfile,
+//- 			[hasAvatarOutline]='false',
+//- 			[displayMemberName]='false',
+//- 			[member]='members[ 0 ]')
+//- 		cub-member.mv-20(
+//- 			canViewProfile,
+//- 			[hasAvatarOutline]='false',
+//- 			[member]='members[ 0 ]')
+//- 		cub-member(
+//- 			canViewProfile,
+//- 			displayMemberStatus,
+//- 			[hasAvatarOutline]='false',
+//- 			[member]='members[ 0 ]')
+//- 	.mb-20
+//- 		h3 CUB Member List
+//- 		cub-member-list.mv-20(
+//- 			selectedAllMembers,
+//- 			label='Member List All',
+//- 			limit='3',
+//- 			viewListTitle='Manage who has been added',
+//- 			[optionAll]='optionAll',
+//- 			(addedOptionAll)='console.log( "Added Option All", $event )',
+//- 			(addedUsers)='console.log( "Added Users", $event )',
+//- 			(addedTeams)='console.log( "Added Teams", $event )',
+//- 			(added)='console.log( "Added", $event )',
+//- 			(removedOptionAll)='console.log( "Removed Option All", $event )',
+//- 			(removedUsers)='console.log( "Removed Users", $event )',
+//- 			(removedTeams)='console.log( "Removed Teams", $event )',
+//- 			(removed)='console.log( "Removed", $event )',
+//- 			(selectedAllMembersChange)='console.log( "Selected All Member Change", $event )',
+//- 			(selectedUserIDsChange)='console.log( "Selected UserIDs Change", $event )',
+//- 			(selectedTeamIDsChange)='console.log( "Selected TeamIDs Change", $event )',
+//- 			(selectedChange)='console.log( "Selected Change", $event )',
+//- 			(selectedUsersChange)='console.log( "Selected Users Change", $event )',
+//- 			(selectedTeamsChange)='console.log( "Selected Teams Change", $event )',
+//- 			(selectedMembersChange)='console.log( "Selected Members Change", $event )')
+
+//- 		cub-member-list.mv-20(
+//- 			label='Member List Users | Teams',
+//- 			limit='3',
+//- 			viewListTitle='Manage who has been added',
+//- 			[users]='users',
+//- 			[teams]='teams',
+//- 			[selectedUserIDs]='selectedUserIDs',
+//- 			[selectedTeamIDs]='selectedTeamIDs',
+//- 			(addedOptionAll)='console.log( "Added Option All", $event )',
+//- 			(addedUsers)='console.log( "Added Users", $event )',
+//- 			(addedTeams)='console.log( "Added Teams", $event )',
+//- 			(added)='console.log( "Added", $event )',
+//- 			(removedOptionAll)='console.log( "Removed Option All", $event )',
+//- 			(removedUsers)='console.log( "Removed Users", $event )',
+//- 			(removedTeams)='console.log( "Removed Teams", $event )',
+//- 			(removed)='console.log( "Removed", $event )',
+//- 			(selectedAllMembersChange)='console.log( "Selected All Member Change", $event )',
+//- 			(selectedUserIDsChange)='console.log( "Selected UserIDs Change", $event )',
+//- 			(selectedTeamIDsChange)='console.log( "Selected TeamIDs Change", $event )',
+//- 			(selectedChange)='console.log( "Selected Change", $event )',
+//- 			(selectedUsersChange)='console.log( "Selected Users Change", $event )',
+//- 			(selectedTeamsChange)='console.log( "Selected Teams Change", $event )',
+//- 			(selectedMembersChange)='console.log( "Selected Members Change", $event )')
+
+//- 		cub-member-list.mv-20(
+//- 			label='Member List',
+//- 			limit='3',
+//- 			viewListTitle='Manage who has been added',
+//- 			pickerTitle='Add to role',
+//- 			[optionAll]='optionAll',
+//- 			[users]='users',
+//- 			[teams]='teams',
+//- 			[selectedUserIDs]='selectedUserIDs',
+//- 			[selectedTeamIDs]='selectedTeamIDs',
+//- 			(addedOptionAll)='console.log( "Added Option All", $event )',
+//- 			(addedUsers)='console.log( "Added Users", $event )',
+//- 			(addedTeams)='console.log( "Added Teams", $event )',
+//- 			(added)='console.log( "Added", $event )',
+//- 			(removedOptionAll)='console.log( "Removed Option All", $event )',
+//- 			(removedUsers)='console.log( "Removed Users", $event )',
+//- 			(removedTeams)='console.log( "Removed Teams", $event )',
+//- 			(removed)='console.log( "Removed", $event )',
+//- 			(selectedAllMembersChange)='console.log( "Selected All Member Change", $event )',
+//- 			(selectedUserIDsChange)='console.log( "Selected UserIDs Change", $event )',
+//- 			(selectedTeamIDsChange)='console.log( "Selected TeamIDs Change", $event )',
+//- 			(selectedChange)='console.log( "Selected Change", $event )',
+//- 			(selectedUsersChange)='console.log( "Selected Users Change", $event )',
+//- 			(selectedTeamsChange)='console.log( "Selected Teams Change", $event )',
+//- 			(selectedMembersChange)='console.log( "Selected Members Change", $event )')
+//- 	.mb-20
+//- 		h3 CUB Member Picker Has Input
+//- 		cub-member-picker.mv-20(
+//- 			selectedAllMembers,
+//- 			required,
+//- 			label='Member Picker Directive',
+//- 			limit='3',
+//- 			mode='inline',
+//- 			[optionAll]='optionAll',
+//- 			[users]='users',
+//- 			[teams]='teams',
+//- 			[selectedUserIDs]='selectedUserIDs',
+//- 			[selectedTeamIDs]='selectedTeamIDs',
+//- 			(addedOptionAll)='console.log( "Added Option All", $event )',
+//- 			(addedUsers)='console.log( "Added Users", $event )',
+//- 			(addedTeams)='console.log( "Added Teams", $event )',
+//- 			(added)='console.log( "Added", $event )',
+//- 			(removedOptionAll)='console.log( "Removed Option All", $event )',
+//- 			(removedUsers)='console.log( "Removed Users", $event )',
+//- 			(removedTeams)='console.log( "Removed Teams", $event )',
+//- 			(removed)='console.log( "Removed", $event )',
+//- 			(selectedAllMembersChange)='console.log( "Selected All Member Change", $event )',
+//- 			(selectedUserIDsChange)='console.log( "Selected UserIDs Change", $event )',
+//- 			(selectedTeamIDsChange)='console.log( "Selected TeamIDs Change", $event )',
+//- 			(selectedChange)='console.log( "Selected Change", $event )',
+//- 			(selectedUsersChange)='console.log( "Selected Users Change", $event )',
+//- 			(selectedTeamsChange)='console.log( "Selected Teams Change", $event )',
+//- 			(selectedMembersChange)='console.log( "Selected Members Change", $event )')
+
+//- 		h3.mt-20 CUB Member Picker Not Has Input
+//- 		cub-member-picker.mv-20(
+//- 			required,
+//- 			selectedAllMembers,
+//- 			label='Member Picker Directive',
+//- 			limit='3',
+//- 			mode='inline',
+//- 			[hasInput]='false',
+//- 			[optionAll]='optionAll',
+//- 			[users]='users',
+//- 			[teams]='teams',
+//- 			[selectedUserIDs]='selectedUserIDs',
+//- 			[selectedTeamIDs]='selectedTeamIDs',
+//- 			(addedOptionAll)='console.log( "Added Option All", $event )',
+//- 			(addedUsers)='console.log( "Added Users", $event )',
+//- 			(addedTeams)='console.log( "Added Teams", $event )',
+//- 			(added)='console.log( "Added", $event )',
+//- 			(removedOptionAll)='console.log( "Removed Option All", $event )',
+//- 			(removedUsers)='console.log( "Removed Users", $event )',
+//- 			(removedTeams)='console.log( "Removed Teams", $event )',
+//- 			(removed)='console.log( "Removed", $event )',
+//- 			(selectedAllMembersChange)='console.log( "Selected All Member Change", $event )',
+//- 			(selectedUserIDsChange)='console.log( "Selected UserIDs Change", $event )',
+//- 			(selectedTeamIDsChange)='console.log( "Selected TeamIDs Change", $event )',
+//- 			(selectedChange)='console.log( "Selected Change", $event )',
+//- 			(selectedUsersChange)='console.log( "Selected Users Change", $event )',
+//- 			(selectedTeamsChange)='console.log( "Selected Teams Change", $event )',
+//- 			(selectedMembersChange)='console.log( "Selected Members Change", $event )')
+
+//- // Button
+//- ng-template(#buttonCompTemplate, label='Button')
+//- 	h3.mb-20 Button
+//- 	.layout-row.layout-align-start-center.layout-wrap
+//- 		.mr-10
+//- 			button(wgcButton, (click)='console.log( $event )')
+//- 				| Default
+//- 		.mr-10
+//- 			button(wgcButton, color='primary', (click)='console.log( $event )')
+//- 				| Primary
+//- 		.mr-10
+//- 			button(wgcButton, color='white', (click)='console.log( $event )')
+//- 				| White
+//- 		.mr-10
+//- 			button(wgcButton, color='primary', disabled, (click)='console.log( $event )')
+//- 				| Disabled
+//- 	h3.mv-20 Button With Icon
+//- 	.layout-row.layout-align-start-center.layout-wrap
+//- 		.mr-10
+//- 			button(wgcButton, icon='calendar', (click)='console.log( $event )')
+//- 		.mr-10
+//- 			button(wgcButton, icon='calendar', (click)='console.log( $event )')
+//- 				| Default
+//- 		.mr-10
+//- 			button(wgcButton, color='primary', icon='calendar', (click)='console.log( $event )')
+//- 				| Primary
+//- 		.mr-10
+//- 			button(wgcButton, color='white', icon='calendar', (click)='console.log( $event )')
+//- 				| White
+//- 		.mr-10
+//- 			button(wgcButton, color='primary', disabled, (click)='console.log( $event )')
+//- 				wgc-icon(wgcButtonIcon, name='calendar')
+//- 				| Disabled
+//- 	h3.mv-20 Button Loading
+//- 	.layout-row.layout-align-start-center.layout-wrap
+//- 		.mr-10
+//- 			button(wgcButton, loading, (click)='console.log( $event )')
+//- 		.mr-10
+//- 			button(wgcButton, loading, color='primary', (click)='console.log( $event )')
+//- 		.mr-10
+//- 			button(wgcButton, loading, color='white', (click)='console.log( $event )')
+//- 	h3.mv-20 Button Custom Color
+//- 	.layout-row.layout-align-start-center.layout-wrap
+//- 		.mr-10
+//- 			button(wgcButton, color='#ff0000', (click)='console.log( $event )')
+//- 				| Red
+//- 		.mr-10
+//- 			button(wgcButton, color='#0000ff', (click)='console.log( $event )')
+//- 				| Blue
+//- 		.mr-10
+//- 			button(wgcButton, color='#008000', (click)='console.log( $event )')
+//- 				| Green
+//- 	h3.mv-20 Basic Button
+//- 	.layout-row.layout-align-start-center.layout-wrap
+//- 		.mr-10
+//- 			button(wgcBasicButton, (click)='console.log( $event )')
+//- 				| Default
+//- 		.mr-10
+//- 			button(wgcBasicButton, color='primary', (click)='console.log( $event )')
+//- 				| Primary
+//- 		.mr-10
+//- 			button(wgcBasicButton, color='primary', disabled, (click)='console.log( $event )')
+//- 				| Disabled
+//- 	h3.mv-20 FAB Button
+//- 	.layout-row.layout-align-start-center.layout-wrap
+//- 		.mh-20
+//- 			button(wgcFabButton, icon='plus', (click)='console.log( $event )')
+//- 		.mh-20
+//- 			button(wgcFabButton, color='primary', icon='plus', (click)='console.log( $event )')
+//- 		.mh-20
+//- 			button(wgcFabButton, color='primary', icon='plus', disabled, (click)='console.log( $event )')
+//- 	h3.mv-20 Icon Button
+//- 	.layout-row.layout-align-start-center.layout-wrap
+//- 		.mr-10
+//- 			button(wgcIconButton, icon='plus', (click)='console.log( $event )')
+//- 		.mr-10
+//- 			button(wgcIconButton, color='primary', icon='plus', (click)='console.log( $event )')
+//- 		.mr-10
+//- 			button(wgcIconButton, [color]='"LIGHT_GRAY" | color: 700', icon='plus', (click)='console.log( $event )')
+//- 		.mr-10
+//- 			button(wgcIconButton, disabled, (click)='console.log( $event )')
+//- 				wgc-icon(wgcButtonIcon, name='plus')
+//- 		.mr-10
+//- 			button(wgcIconButton, color='#ff0000', hoverColor='green', (click)='console.log( $event )')
+//- 				wgc-icon(wgcButtonIcon, name='plus')
+//- 		.mr-10
+//- 			button(wgcIconButton, iconColor='yellow', color='#ff0000', hoverColor='green', (click)='console.log( $event )')
+//- 				wgc-icon(wgcButtonIcon, name='plus')
+//- 		.mr-10
+//- 			button(wgcIconButton, (click)='console.log( $event )')
+//- 				wgc-icon(wgcButtonIcon, name='plus')
+//- 		.mr-10
+//- 			button(wgcIconButton, circle, size='small', (click)='console.log( $event )')
+//- 				wgc-icon(wgcButtonIcon, name='plus')
+
+//- ng-template(#buttonCompTemplate, label='Button Toggle')
+//- 	wgc-button-toggle(
+//- 		[selectedIndex]='0',
+//- 		(selectedIndexChange)='console.log( $event )',
+//- 		(changes)='console.log( $event )')
+//- 		wgc-button-toggle-item(disabled, icon='list')
+//- 			| Button 1
+//- 		wgc-button-toggle-item(icon='grid')
+//- 			| Button 2
+//- 		wgc-button-toggle-item(icon='more-vertical')
+//- 			| Button 3
+//- 	wgc-button-toggle(
+//- 		reverse,
+//- 		hasBorder,
+//- 		iconSize='16px',
+//- 		[hasShadow]='false',
+//- 		[selectedIndex]='0',
+//- 		(selectedIndexChange)='console.log( $event )',
+//- 		(changes)='console.log( $event )')
+//- 		wgc-button-toggle-item(onlyIcon, icon='plus')
+//- 		wgc-button-toggle-item(onlyIcon, icon='minus')
+//- 		wgc-button-toggle-item(onlyIcon, icon='close')
+//- 		wgc-button-toggle-item(onlyIcon, icon='division')
+
+//- // Input
+//- ng-template(#inputCompTemplate, label='Form Field')
+//- 	h3.mb-20 Input
+//- 	.layout-row.layout-align-start-center.layout-wrap
+//- 		.mr-10.mb-20
+//- 			wgc-form-field.w-300
+//- 				div(wgcFormFieldLabel)
+//- 					| Input With Prefix
+//- 				div(wgcFormFieldPrefix)
+//- 					wgc-icon(name='document', size='20px')
+//- 				input(wgcFormFieldInput, autoFocusOn, placeholder='Placeholder')
+//- 		.mr-10.mb-20
+//- 			wgc-form-field.w-300(label='Input With Suffix')
+//- 				input(wgcFormFieldInput, placeholder='Placeholder')
+//- 				div(wgcFormFieldSuffix)
+//- 					wgc-icon(name='document', size='20px')
+//- 		.mr-10.mb-20
+//- 			wgc-form-field.w-300(label='Input Disabled')
+//- 				input(wgcFormFieldInput, disabled, placeholder='Placeholder')
+//- 	.layout-row.layout-align-start-center.layout-wrap
+//- 		.mr-10.mb-20
+//- 			wgc-form-field.w-300(label='Range')
+//- 				input(wgcFormFieldInput, type='range', min='1', max='5', step='1')
+//- 		.mr-10.mb-20
+//- 			wgc-form-field.w-300(label='Select')
+//- 				select(wgcFormFieldInput, placeholder='Choose')
+//- 					option Item 1
+//- 					option Item 2
+//- 					option Item 3
+//- 	.layout-row.layout-align-start-center.layout-wrap
+//- 		.mr-10.mb-20
+//- 			wgc-form-field.w-300(label='Input With Form Control')
+//- 				input(wgcFormFieldInput, required, placeholder='Placeholder', [formControl]='requiredFormControl')
+//- 	.layout-row.layout-align-start-center.layout-wrap
+//- 		.mr-10.mb-20
+//- 			wgc-form-field.w-300(label='Input Appearance Standard', appearance='standard')
+//- 				div(wgcFormFieldPrefix) $
+//- 				input(wgcFormFieldInput, placeholder='Placeholder')
+//- 		.mr-10.mb-20
+//- 			wgc-form-field.w-300(label='Input Appearance Legacy', appearance='legacy')
+//- 				input(wgcFormFieldInput, placeholder='Placeholder')
+//- 	h3.mv-20 Dropdown
+//- 	.layout-row.layout-wrap
+//- 		.mr-10.mb-20
+//- 			wgc-dropdown.w-300(label='Default')
+//- 				wgc-dropdown-item(
+//- 					*ngFor='let position of positions; let first = first',
+//- 					[label]='position?.name',
+//- 					[value]='position?.id',
+//- 					[disabled]='first')
+//- 				wgc-dropdown-group-item(label='Group', title='Select Group Children')
+//- 					wgc-dropdown-item(label='Group Item 1', [value]='100')
+//- 					wgc-dropdown-item(label='Group Item 2', [value]='101')
+//- 		.mr-10.mb-20
+//- 			wgc-dropdown.w-300(label='Dropdown With Icon')
+//- 				wgc-dropdown-item(
+//- 					icon='document',
+//- 					*ngFor='let position of positions',
+//- 					[label]='position?.name',
+//- 					[value]='position?.id')
+//- 		.mr-10.mb-20
+//- 			wgc-dropdown.w-300(label='Dropdown With Dot Color')
+//- 				wgc-dropdown-item(
+//- 					dotColor='#ff0000',
+//- 					*ngFor='let position of positions',
+//- 					[label]='position?.name',
+//- 					[value]='position?.id')
+//- 		.mr-10.mb-20
+//- 			wgc-dropdown.w-300(label='Dropdown Multiple Select', multiple)
+//- 				wgc-dropdown-item(
+//- 					icon='document',
+//- 					*ngFor='let position of positions',
+//- 					[label]='position?.name',
+//- 					[value]='position?.id')
+//- 		.mr-10.mb-20
+//- 			wgc-dropdown.w-300(
+//- 				required,
+//- 				ngDefaultControl,
+//- 				label='Dropdown Required',
+//- 				[formControl]='requiredFormControl')
+//- 				wgc-dropdown-item(*ngFor='let position of positions', [label]='position?.name', [value]='position?.id')
+//- 		.mr-10.mb-20
+//- 			wgc-dropdown.w-300(disabled, label='Dropdown Disabled')
+//- 				wgc-dropdown-item(*ngFor='let position of positions', [label]='position?.name', [value]='position?.id')
+//- 	h3.mv-20 Textarea
+//- 	wgc-form-field(label='Textarea')
+//- 		textarea(wgcFormFieldInput, placeholder='Placeholder')
+//- 	h3.mv-20 Inline Input
+//- 	h4.stick(
+//- 		ngDefaultControl,
+//- 		wgcInlineInput,
+//- 		#wgcInlineInput,
+//- 		label='Inline',
+//- 		placeholder='Placeholder',
+//- 		[(ngModel)]='inline',
+//- 		(ngModelChange)='console.log( $event )',
+//- 		(saved)='console.log( "Saved", $event )',
+//- 		(cancelled)='console.log( "Cancelled", $event )')
+//- 		| {{ inline }}
+//- 		.stick-right
+//- 			button(wgcBasicButton, (click)='wgcInlineInput?.edit()')
+//- 				wgc-icon(name='edit', size='20px')
+//- 	h3.mv-20 Range Input
+//- 	wgc-range-input.w-300(
+//- 		required,
+//- 		label='Range',
+//- 		[(ngModel)]='range',
+//- 		(ngModelChange)='console.log( $event )')
+//- 	h3.mv-20 Phone Field
+//- 	wgc-phone-field.w-300(
+//- 		required,
+//- 		label='Phone',
+//- 		[(ngModel)]='phone',
+//- 		(ngModelChange)='console.log( $event )')
+
+//- ng-template(#inputCompTemplate, label='Search Box')
+//- 	h3.mb-20 Default
+//- 	wgc-search-box.w-300(
+//- 		autoFocusOn,
+//- 		displayNotFound,
+//- 		#searchBox,
+//- 		(searching)='console.log( "Searching", $event )',
+//- 		(cleared)='console.log( "Cleared", $event )')
+//- 	.w-300
+//- 		ng-container(*ngTemplateOutlet='searchBox?.notFoundTemplate; context: { emptyImage: "assets/images/icons/video-empty.png" };')
+//- 	h3.mv-20 Suggestion
+//- 	wgc-search-box.w-300(
+//- 		[suggestion]='suggestionFn',
+//- 		(searching)='console.log( "Searching", $event )',
+//- 		(cleared)='console.log( "Cleared", $event )',
+//- 		(suggested)='console.log( "Suggested", $event )')
+//- 	h3.mv-20 Suggestion Server Side
+//- 	wgc-search-box.w-300(
+//- 		[suggestion]='suggestionServerSideFn',
+//- 		(searching)='console.log( "Searching", $event )',
+//- 		(cleared)='console.log( "Cleared", $event )',
+//- 		(suggested)='console.log( "Suggested", $event )')
+
+//- ng-template(#inputCompTemplate, label='Editor')
+//- 	wgc-editor(resizable)
+
+//- ng-template(#inputCompTemplate, label='Slider')
+//- 	h3.mb-20 Default
+//- 	wgc-slider.w-300([(ngModel)]='slideValue')
+//- 	.mt-15
+//- 		| Value: {{ slideValue }}
+//- 	h3.mv-20 Primary
+//- 	wgc-slider.w-300(color='primary', [(ngModel)]='slideValue')
+//- 	.mt-15
+//- 		| Value: {{ slideValue }}
+//- 	h3.mv-20 Custom
+//- 	wgc-slider.w-300([color]='"GREEN" | color: 400', [(ngModel)]='slideValue')
+//- 	.mt-15
+//- 		| Value: {{ slideValue }}
+//- 	h3.mv-20 Readonly
+//- 	wgc-slider.w-300(readonly, [(ngModel)]='slideValue')
+//- 	.mt-15
+//- 		| Value: {{ slideValue }}
+//- 	h3.mv-20 Disabled
+//- 	wgc-slider.w-300(disabled, [(ngModel)]='slideValue')
+//- 	.mt-15
+//- 		| Value: {{ slideValue }}
+
+//- ng-template(#inputCompTemplate, label='Checkbox')
+//- 	.layout-row.layout-wrap
+//- 		.mr-10
+//- 			wgc-checkbox(checked)
+//- 				| Default
+//- 		.mr-10
+//- 			wgc-checkbox(checked, color='primary')
+//- 				| Primary
+//- 		.mr-10
+//- 			wgc-checkbox(checked, disabled)
+//- 				| Checked & Disabled
+//- 		.mr-10
+//- 			wgc-checkbox(disabled)
+//- 				| Disabled
+
+//- ng-template(#inputCompTemplate, label='Radio')
+//- 	h3.mb-20 Radio
+//- 	.layout-row.layout-wrap
+//- 		.mr-10
+//- 			wgc-radio(checked)
+//- 				| Default
+//- 		.mr-10
+//- 			wgc-radio(checked, label='Primary', color='primary')
+//- 		.mr-10
+//- 			wgc-radio(checked, disabled, label='Checked & Disabled', color='primary')
+//- 		.mr-10
+//- 			wgc-radio(disabled, label='Disabled', color='primary')
+//- 	h3.mv-20 Radio Custom Color
+//- 	.layout-row.layout-wrap
+//- 		.mr-10
+//- 			wgc-radio(checked, label='Red', color='#ff0000', labelColor='red')
+//- 		.mr-10
+//- 			wgc-radio(checked, label='Blue', color='#0000ff', labelColor='blue')
+//- 		.mr-10
+//- 			wgc-radio(checked, label='Green', color='#008000', labelColor='green')
+//- 		.mr-10
+//- 			wgc-radio(checked, disabled, label='Checked & Disabled', color='#008000')
+//- 		.mr-10
+//- 			wgc-radio(disabled, label='Disabled', color='#008000')
+//- 	h3.mv-20 Radio Group
+//- 	wgc-radio-group(ngDefaultControl, label='Label', [ngModel]='1')
+//- 		wgc-radio([value]='1')
+//- 			| Radio 1
+//- 		wgc-radio([value]='2')
+//- 			| Radio 2
+//- 	h3.mv-20 Radio Group Diasbled
+//- 	wgc-radio-group(ngDefaultControl, disabled, label='Label', [ngModel]='1')
+//- 		wgc-radio([value]='1')
+//- 			| Radio 1
+//- 		wgc-radio([value]='2')
+//- 			| Radio 2
+
+//- ng-template(#inputCompTemplate, label='Switch')
+//- 	h3.mb-20 Switch
+//- 	.layout-row.layout-wrap
+//- 		.mr-10
+//- 			wgc-switch(ngDefaultControl, [ngModel]='true')
+//- 				| Default
+//- 		.mr-10
+//- 			wgc-switch(ngDefaultControl, label='Primary', color='primary', [ngModel]='true')
+//- 		.mr-10
+//- 			wgc-switch(ngDefaultControl, disabled, label='Active & Disabled', [ngModel]='true')
+//- 		.mr-10
+//- 			wgc-switch(disabled, label='Disabled')
+//- 	h3.mv-20 Switch Custom Color
+//- 	.layout-row.layout-wrap
+//- 		.mr-10
+//- 			wgc-switch(ngDefaultControl, label='Red', color='#ff0000', labelColor='red', [ngModel]='true')
+//- 		.mr-10
+//- 			wgc-switch(ngDefaultControl, label='Blue', color='#0000ff', labelColor='blue', [ngModel]='true')
+//- 		.mr-10
+//- 			wgc-switch(ngDefaultControl, label='Green', color='#008000', labelColor='green', [ngModel]='true')
+//- 		.mr-10
+//- 			wgc-switch(ngDefaultControl, disabled, label='Active & Disabled', color='#008000', [ngModel]='true')
+//- 		.mr-10
+//- 			wgc-switch(disabled, label='Disabled', color='#008000')
+
+//- ng-template(#inputCompTemplate, label='Rating')
+//- 	h3.mb-20 Rating
+//- 		wgc-rating(range='5', [(ngModel)]='ratingValue')
+//- 	h3.mv-20 Rating Custom Emoji
+//- 		wgc-rating(range='5', emoji='1F600', [(ngModel)]='ratingValue')
+//- 	h3.mv-20 Rating Custom Range
+//- 		wgc-rating(range='10', [(ngModel)]='ratingValue')
+
+//- ng-template(#inputCompTemplate, label='Multiple value input')
+//- 	h3.mb-20 Email
+//- 	cub-multiple-email-input(
+//- 		type='email',
+//- 		ngDefaultControl,
+//- 		errorMessage='One or more email addresses are invalid',
+//- 		errorActionTitle='Remove invalid email',
+//- 		[formControl]='emailFormControl')
+
+//- // Others
+//- ng-template(#otherCompTemplate, label='Card')
+//- 	.layout-row.layout-wrap.layout-fixer-10
+//- 		wgc-card.p-10.flex-20(autoUnhighlight, *ngFor='let item of arr', [highlight]='item === 2')
+//- 			| My Card {{ item }}
+
+//- ng-template(#otherCompTemplate, label='Tag')
+//- 	h3.mb-20 Tag
+//- 	.layout-row.layout-wrap
+//- 		.mr-10
+//- 			wgc-tag
+//- 				| Default
+//- 		.mr-10
+//- 			wgc-tag(color='primary', label='Primary')
+//- 		.mr-10
+//- 			wgc-tag(color='white', label='White')
+//- 	h3.mv-20 Tag Custom Color
+//- 	.layout-row.layout-wrap
+//- 		.mr-10
+//- 			wgc-tag(color='#ff0000', label='Red')
+//- 		.mr-10
+//- 			wgc-tag(color='#0000ff', label='Blue')
+//- 		.mr-10
+//- 			wgc-tag(color='#008000', label='Green')
+
+//- ng-template(#otherCompTemplate, label='Avatar')
+//- 	h3.mb-20 XLarge (72px)
+//- 	.layout-row.layout-wrap
+//- 		.mr-10
+//- 			wgc-avatar(size='xlarge', label='AB', [avatar]='{ mode: "auto", photo: "https://www.i-music.com.hk/assets/images/no-avatar.png", icon: "1F600" }')
+//- 		.mr-10
+//- 			wgc-avatar(size='xlarge', label='AB', [avatar]='{ mode: "photo", photo: "https://www.i-music.com.hk/assets/images/no-avatar.png", icon: "1F600" }')
+//- 		.mr-10
+//- 			wgc-avatar(size='xlarge', label='AB', [avatar]='{ mode: "text", photo: "https://www.i-music.com.hk/assets/images/no-avatar.png", icon: "1F600" }')
+//- 		.mr-10
+//- 			wgc-avatar(size='xlarge', label='AB', [avatar]='{ mode: "icon", photo: "https://www.i-music.com.hk/assets/images/no-avatar.png", icon: "1F600" }')
+//- 	h3.mv-20 Large (56px)
+//- 	.layout-row.layout-wrap
+//- 		.mr-10
+//- 			wgc-avatar(size='large', label='AB', [avatar]='{ mode: "auto", photo: "https://www.i-music.com.hk/assets/images/no-avatar.png", icon: "1F600" }')
+//- 		.mr-10
+//- 			wgc-avatar(size='large', label='AB', [avatar]='{ mode: "photo", photo: "https://www.i-music.com.hk/assets/images/no-avatar.png", icon: "1F600" }')
+//- 		.mr-10
+//- 			wgc-avatar(size='large', label='AB', [avatar]='{ mode: "text", photo: "https://www.i-music.com.hk/assets/images/no-avatar.png", icon: "1F600" }')
+//- 		.mr-10
+//- 			wgc-avatar(size='large', label='AB', [avatar]='{ mode: "icon", photo: "https://www.i-music.com.hk/assets/images/no-avatar.png", icon: "1F600" }')
+//- 	h3.mv-20 Medium (40px)
+//- 	.layout-row.layout-wrap
+//- 		.mr-10
+//- 			wgc-avatar(size='medium', label='AB', [avatar]='{ mode: "auto", photo: "https://www.i-music.com.hk/assets/images/no-avatar.png", icon: "1F600" }')
+//- 		.mr-10
+//- 			wgc-avatar(size='medium', label='AB', [avatar]='{ mode: "photo", photo: "https://www.i-music.com.hk/assets/images/no-avatar.png", icon: "1F600" }')
+//- 		.mr-10
+//- 			wgc-avatar(size='medium', label='AB', [avatar]='{ mode: "text", photo: "https://www.i-music.com.hk/assets/images/no-avatar.png", icon: "1F600" }')
+//- 		.mr-10
+//- 			wgc-avatar(size='medium', label='AB', [avatar]='{ mode: "icon", photo: "https://www.i-music.com.hk/assets/images/no-avatar.png", icon: "1F600" }')
+//- 	h3.mv-20 Small (32px)
+//- 	.layout-row.layout-wrap
+//- 		.mr-10
+//- 			wgc-avatar(size='small', label='AB', [avatar]='{ mode: "auto", photo: "https://www.i-music.com.hk/assets/images/no-avatar.png", icon: "1F600" }')
+//- 		.mr-10
+//- 			wgc-avatar(size='small', label='AB', [avatar]='{ mode: "photo", photo: "https://www.i-music.com.hk/assets/images/no-avatar.png", icon: "1F600" }')
+//- 		.mr-10
+//- 			wgc-avatar(size='small', label='AB', [avatar]='{ mode: "text", photo: "https://www.i-music.com.hk/assets/images/no-avatar.png", icon: "1F600" }')
+//- 		.mr-10
+//- 			wgc-avatar(size='small', label='AB', [avatar]='{ mode: "icon", photo: "https://www.i-music.com.hk/assets/images/no-avatar.png", icon: "1F600" }')
+//- 	h3.mv-20 Custom Color & Size
+//- 	.layout-row.layout-wrap
+//- 		.mr-10
+//- 			wgc-avatar(size='36px', label='AB', [avatar]='{ color: "#ff0000" }')
+//- 		.mr-10
+//- 			wgc-avatar(size='36px', label='AB', [avatar]='{ color: "#0000ff" }')
+//- 		.mr-10
+//- 			wgc-avatar(size='36px', label='AB', [avatar]='{ color: "#008000" }')
+//- 	h3.mv-20 Custom Avatar
+//- 	wgc-avatar(size='medium')
+//- 		wgc-icon(name='collection', color='white')
+
+//- ng-template(#otherCompTemplate, label='Badge')
+//- 	.layout-row.layout-wrap.layout-align-start-center.mt-20
+//- 		.mr-30(wgcBadge='2')
+//- 			wgc-icon(name='file-attachment', size='20px')
+//- 		wgc-badge.mr-30(count='199', color='primary')
+//- 			wgc-icon(name='file-attachment', size='20px')
+//- 		wgc-badge.mr-30([count]='1000 | kUnit')
+//- 			wgc-icon(name='file-attachment', size='20px')
+
+//- ng-template(#otherCompTemplate, label='Loading')
+//- 	wgc-loading.mb-10
+//- 	wgc-loading.mb-10(color='#ff0000')
+//- 	wgc-loading.mb-10(color='#0000ff')
+//- 	wgc-loading.mb-10(color='primary')
+//- 	wgc-loading.mb-10([size]='12')
+
+//- ng-template(#otherCompTemplate, label='Breadcrumb')
+//- 	wgc-breadcrumb
+//- 		wgc-breadcrumb-item
+//- 			| Home
+//- 		wgc-breadcrumb-item([commands]='[ "/" ]')
+//- 			| Library
+//- 		wgc-breadcrumb-item([commands]='[ "/" ]')
+//- 			| Data
+
+//- ng-template(#otherCompTemplate, label='Comment')
+//- 	wgc-comment-list.full-viewport-vertical(
+//- 		[canComment]='true',
+//- 		[comments]='comments',
+//- 		[mentionSource]='mentionSourceFn',
+//- 		[user]='user',
+//- 		[userID]='user.id')
+
+//- ng-template(#otherCompTemplate, label='Timer')
+//- 	wgc-timer
+
+//- ng-template(#otherCompTemplate, label='Show More')
+//- 	wgc-show-more(limit='80px', (show)='console.log( "Show more" )')
+//- 		div
+//- 			| Contrary to popular belief, Lorem Ipsum is not simply random text. It has roots in a piece of classical Latin literature from 45 BC, making it over 2000 years old. Richard McClintock, a Latin professor at Hampden-Sydney College in Virginia, looked up one of the more obscure Latin words, consectetur, from a Lorem Ipsum passage, and going through the cites of the word in classical literature, discovered the undoubtable source. Lorem Ipsum comes from sections 1.10.32 and 1.10.33 of "de Finibus Bonorum et Malorum" (The Extremes of Good and Evil) by Cicero, written in 45 BC. This book is a treatise on the theory of ethics, very popular during the Renaissance. The first line of Lorem Ipsum, "Lorem ipsum dolor sit amet..", comes from a line in section 1.10.32.
+//- 			| The standard chunk of Lorem Ipsum used since the 1500s is reproduced below for those interested. Sections 1.10.32 and 1.10.33 from "de Finibus Bonorum et Malorum" by Cicero are also reproduced in their exact original form, accompanied by English versions from the 1914 translation by H. Rackham.
+//- 			| Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.
+//- 	.mt-20(wgcShowMore, limit='80px', (show)='console.log( "Show more" )')
+//- 		div
+//- 			| Contrary to popular belief, Lorem Ipsum is not simply random text. It has roots in a piece of classical Latin literature from 45 BC, making it over 2000 years old. Richard McClintock, a Latin professor at Hampden-Sydney College in Virginia, looked up one of the more obscure Latin words, consectetur, from a Lorem Ipsum passage, and going through the cites of the word in classical literature, discovered the undoubtable source. Lorem Ipsum comes from sections 1.10.32 and 1.10.33 of "de Finibus Bonorum et Malorum" (The Extremes of Good and Evil) by Cicero, written in 45 BC. This book is a treatise on the theory of ethics, very popular during the Renaissance. The first line of Lorem Ipsum, "Lorem ipsum dolor sit amet..", comes from a line in section 1.10.32.
+//- 			| The standard chunk of Lorem Ipsum used since the 1500s is reproduced below for those interested. Sections 1.10.32 and 1.10.33 from "de Finibus Bonorum et Malorum" by Cicero are also reproduced in their exact original form, accompanied by English versions from the 1914 translation by H. Rackham.
+//- 			| Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.

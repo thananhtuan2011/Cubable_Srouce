@@ -1,0 +1,12 @@
+include ../boxes.include.pug
+
++number-box()(
+	[type]=`
+		field.allowNegative
+			? "number"
+			: "positive-number"
+	`)
+
+.flex.text-right.text-truncate(
+	*ngIf='data !== undefined && data !== null')
+	| {{ data | currencyValue : field.currency : field.format : field.decimalPlaces }}

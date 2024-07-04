@@ -1,0 +1,96 @@
+cub-popup(#popup)
+	cub-popup-header
+		ng-template(cubPopupHeader)
+			.cub-confirm__header__title
+				ng-container(
+					*ngIf='title; else elseBlock;')
+					ng-container(
+						*ngIf='config.translate; else elseBlock;')
+						span(
+							[innerHtml]=`
+								title
+									| translate : config.translate
+									| safeHtml
+							`)
+					ng-template(#elseBlock)
+						span(
+							[innerHtml]='title | safeHtml')
+				ng-template(#elseBlock)
+					| {{ "CUB.LABEL.CONFIRMATION" | translate }}
+			button(
+				cubClearButton,
+				size='20px',
+				(click)='ref.close( false )')
+	cub-popup-content
+		ng-template(cubPopupContent)
+			.cub-confirm__content
+				.cub-confirm__content__message
+					ng-container(
+						*ngIf='isMessageTemplate; else elseBlock;')
+						ng-container(
+							*ngTemplateOutlet='message')
+					ng-template(#elseBlock)
+						ng-container(
+							*ngIf='config.translate; else elseBlock;')
+							span(
+								[innerHtml]=`
+									$any( message )
+										| translate : config.translate
+										| safeHtml
+								`)
+						ng-template(#elseBlock)
+							span(
+								[innerHtml]='$any( message ) | safeHtml')
+				.cub-confirm__content__warning(
+					*ngIf='config.warning')
+					ng-container(
+						*ngIf='warningMessage; else elseBlock;')
+						ng-container(
+							*ngIf='config.translate; else elseBlock;')
+							| {{ warningMessage | translate : config.translate }}
+						ng-template(#elseBlock)
+							| {{ warningMessage }}
+					ng-template(#elseBlock)
+						| {{ "CUB.MESSAGE.WARNING_CAN_NOT_UNDO_ACTION" | translate }}
+	cub-popup-footer
+		ng-template(cubPopupFooter)
+			.cub-confirm__action-bar
+				button(
+					[cubButton]='buttonDiscardType',
+					(click)='ref.close( false )')
+					ng-container(
+						*ngIf='buttonDiscardText; else elseBlock1;')
+						ng-container(
+							*ngIf='config.translate; else elseBlock1;')
+							span(
+								[innerHtml]=`
+									buttonDiscardText
+										| translate : config.translate
+										| safeHtml
+								`)
+						ng-template(#elseBlock1)
+							span(
+								[innerHtml]='buttonDiscardText | safeHtml')
+					ng-template(#elseBlock1)
+						| {{ "CUB.LABEL.CANCEL" | translate }}
+				button(
+					[cubButton]='buttonApplyType',
+					(click)='ref.close( true )')
+					ng-container(
+						*ngIf='buttonApplyText; else elseBlock2;')
+						ng-container(
+							*ngIf='config.translate; else elseBlock2;')
+							span(
+								[innerHtml]=`
+									buttonApplyText
+										| translate : config.translate
+										| safeHtml
+								`)
+						ng-template(#elseBlock2)
+							span(
+								[innerHtml]='buttonApplyText | safeHtml')
+					ng-template(#elseBlock2)
+						| {{ "CUB.LABEL.APPLY" | translate }}
+
+ng-container(
+	*ngTemplateOutlet='popup.templateRef')

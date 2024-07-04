@@ -1,0 +1,47 @@
+ng-container(*ngIf='isEntry')
+	include ./blocks/select-board.partial.pug
+
+	select-row(
+		*ngIf='settings.boardID',
+		[boardID]='settings.boardID',
+		[(row)]='settings.row',
+		(rowChange)='onRowChange()')
+
+cub-card(
+	variant='tonal',
+	size='small',
+	*ngIf='settings.boardID')
+	cub-card-content
+		.layout-column.layout-gap-12
+			cub-dropdown(
+				required,
+				hideRequiredMarker,
+				#rowPicker,
+				[label]='"BASE.WORKFLOW.SETUP.TRIGGER.LABEL.SELECT_FIELD_DATA" | translate',
+				[clearable]='false',
+				[formControl]='typeControl',
+				[valueControl]='settings.field?.type',
+				(valueControlChange)='onFieldDataTypeChange( $event )')
+				cub-dropdown-item( 
+					*ngFor='let type of FIELD_DATA_TYPE_INFO; ngForTrackByValue',
+					[label]='( "BASE.WORKFLOW.SETUP.TRIGGER.LABEL." + type.name ) | translate',
+					[value]='type.value')
+			cub-card(
+				size='small',
+				*ngIf=`settings.field?.type === FIELD_DATA_TYPE.SPECIFIC_FIELD
+					&& settings.boardID`)
+				cub-card-content
+					group-conditional(
+						#groupConditionalComp,
+						[label]='"BASE.WORKFLOW.SETUP.TRIGGER.LABEL.SELECT_FIELD_DATA" | translate',
+						[addConditionLabel]='"BASE.WORKFLOW.SETUP.TRIGGER.LABEL.ADD_FIELD_DATA" | translate',
+						[boardID]='settings.boardID',
+						[logicalExpression]='settings.field.filter?.logicalExpression',
+						[options]='settings.field.filter?.options',
+						[logicalOperator]='settings.field.filter?.logicalOperator',
+						[conditions]='settings.field.filter?.conditions',
+						(optionsChange)='onFilterOptionsChange( $event )',
+						(logicalOperatorChange)='onLogicalOperatorChange( $event )',
+						(logicalExpressionChange)='onLogicalExpressionChange( $event )',
+						(conditionsChange)='onConditionFilterChange( $event )',
+						(conditionalChange)='onConditionalChange()')

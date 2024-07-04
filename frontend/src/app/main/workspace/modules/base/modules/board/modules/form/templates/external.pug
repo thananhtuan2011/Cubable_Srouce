@@ -1,0 +1,19 @@
+.layout-row.layout-align-center.full-height.mt-100(*ngIf='!isLoading; else elseBlock;')
+	cub-loading
+ng-template(#elseBlock)
+	.layout-row.layout-align-center.mt-50
+		.form-external(*ngIf='formDetail; else formNotAvailable')
+			submitting(
+				[form]='formDetail',
+				[boardID]='formDetail.boardID',
+				[submitFunc]='submit.bind( this )')
+		ng-template(#formNotAvailable)
+			.form-not-available
+				.layout-column.layout-align-center-center.layout-gap-40
+					.layout-column.layout-align-center-center.layout-gap-8
+						cub-icon(
+							name='not-allow',
+							size='60px',
+							[color]='"orange" | cubPalette : "500"')
+						| {{ formDetail?.settings?.invalidFormMessage || ( "BASE.BOARD.FORM.MESSAGE.CUSTOMIZE_THE_SHARING_STATUS_MESSAGE_CONTENT" | translate ) }}
+					include blocks/block-form-footer.partial.pug

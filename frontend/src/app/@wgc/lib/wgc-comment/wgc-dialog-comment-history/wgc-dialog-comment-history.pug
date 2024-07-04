@@ -1,0 +1,39 @@
+div(wgcDialogHeader)
+	h1
+		| {{ "WGC.LABEL.EDIT_HISTORY" | translate : { commentsCount: commentsHistory?.length || 0 } }}
+	button(wgcButton, icon='close', [wgcTooltip]='"WGC.LABEL.CLOSE" | translate', (click)='dialogRef?.close()')
+div(wgcDialogContent)
+	not-found(mode='error', *ngIf='!commentsHistory?.length')
+	.wgc-dialog-comment-history_list
+		.wgc-dialog-comment-history__header(*ngFor='let comment of commentsHistory')
+			wgc-member.h-36(
+				size='36px',
+				[hasViewProfile]='false',
+				[displayMemberName]='false',
+				[member]='comment?.user')
+			.wgc-dialog-comment-history__card
+				wgc-card(
+					contentPaddingVertical='10px',
+					contentPaddingHorizontal='10px',
+					[color]='"DEFAULT" | color')
+					wgc-truncate.wgc-dialog-comment-history__header__title__name
+						| {{ comment?.user?.name | empty }}
+					.wgc-dialog-comment-history__header__title__time
+						| {{ comment?.createdAt | momentFromNow }}
+					.wgc-dialog-comment-history__content
+						wgc-comment-content(
+							*ngIf='comment?.content?.html',
+							[limitContentHeight]='data?.limitContentHeight',
+							[content]='comment?.content?.html')
+
+						wgc-comment-link-list(
+							*ngIf='comment?.linkPreviews?.length',
+							[linkPreviews]='comment?.linkPreviews')
+
+						wgc-comment-attachment-list(
+							*ngIf='comment?.attachments?.length',
+							[attachments]='comment?.attachments')
+
+						wgc-comment-image-list(
+							*ngIf='comment?.images?.length',
+							[images]='comment?.images')

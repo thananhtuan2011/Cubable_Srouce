@@ -1,0 +1,83 @@
+include ../blocks/block-member.partial.pug
+
+mixin member(member)
+	cub-member.cub-member-picker__groups__group-item__member(
+		avatarSize='medium',
+		[class.cub-member-picker__groups__group-item__member--hover]=`${member}.id === memberHovering?.id
+			&& ${member}.type === memberHovering.type`,
+		[hasViewProfile]='false',
+		[member]=member,
+		(mouseenter)=`memberHovering = ${member}`,
+		(mouseleave)='memberHovering = null')&attributes(attributes)
+
+mixin group
+	ng-container(*ngIf=`optionAllAvailableSelect
+		|| usersAvailableSelect?.length
+		|| teamsAvailableSelect?.length
+		|| selectedMembers?.length; else notFound;`)
+		.cub-member-picker__groups__groups(*ngIf='optionAllAvailableSelect')
+			.cub-member-picker__groups__group
+				.cub-member-picker__groups__group-item(
+					[class.cub-member-picker__groups__group-item--disabled]='disabled',
+					(click)='addMember( optionAll, TYPE_OF_MEMBER.ALL )')
+					+member('optionAll')
+		.cub-member-picker__groups__groups(*ngIf='usersAvailableSelect?.length')
+			.cub-member-picker__groups__title
+				| {{ "CUB.LABEL.USER" | translate }}
+			.cub-member-picker__groups__group
+				.cub-member-picker__groups__group-item(
+					*ngFor='let user of usersAvailableSelect; let last = last; trackByID',
+					[class.cub-member-picker__groups__group-item--disabled]='disabled',
+					(click)='addMember( user, TYPE_OF_MEMBER.USER )')
+					+member('user')([avatarType]='AVATAR_TYPE.USER')
+					cub-divider.cub-member-picker__groups__group-item__divider(*ngIf='!last')
+		.cub-member-picker__groups__groups(*ngIf='teamsAvailableSelect?.length')
+			.cub-member-picker__groups__title
+				| {{ "CUB.LABEL.TEAM" | translate }}
+			.cub-member-picker__groups__group
+				.cub-member-picker__groups__group-item(
+					*ngFor='let team of teamsAvailableSelect; let last = last; trackByID',
+					[class.cub-member-picker__groups__group-item--disabled]='disabled',
+					(click)='addMember( team, TYPE_OF_MEMBER.TEAM )')
+					+member('team')([avatarType]='AVATAR_TYPE.TEAM')
+					cub-divider.cub-member-picker__groups__group-item__divider(*ngIf='!last')
+		.cub-member-picker__groups__groups.cub-member-picker__groups__groups--selected(
+			*ngIf='selectedMembers?.length')
+			.cub-member-picker__groups__title
+				| {{ "CUB.LABEL.SELECTED" | translate }}
+			.cub-member-picker__groups__group
+				.cub-member-picker__groups__group-item.cub-member-picker__groups__group-item--selected(
+					*ngFor='let member of selectedMembers; let last = last; trackByID')
+					.cub-member-picker__groups__group-item__data
+						+member('member')(
+							[avatarType]=`member.type === TYPE_OF_MEMBER.TEAM
+								? AVATAR_TYPE.TEAM
+								: AVATAR_TYPE.USER`)
+						cub-icon.cub-member-picker__groups__group-item__data-icon(
+							name='check',
+							size='20px',
+							color='primary')
+					cub-divider.cub-member-picker__groups__group-item__divider(*ngIf='!last')
+	ng-template(#notFound)
+		.cub-member-picker__groups__not-found
+			.cub-member-picker__groups__not-found-text
+				| {{ "CUB.LABEL." + ( keySearch ? "NO_USERS_FOUND" : "ALL_OPTION_IS_SELECTED" ) | translate }}
+
+cub-menu.cub-member-picker.cub-member-picker__picker-menu(
+	#pickerMenu,
+	maxHeight='300px',
+	(opened)='onPickerMenuOpened( $event )',
+	(closed)='isPickerMenuOpening = false')
+	cub-menu-content
+		+group
+
+.cub-member-picker__content
+	ng-container(*ngIf='hasInput; else elseBlock;')
+		+multipleInput()(
+			#pickerMenuTrigger='cubMenuTriggerFor',
+			[cubMenuTriggerFor]='pickerMenu',
+			[cubMenuTriggerDisableClose]='disableClose',
+			[cubMenuTriggerDisableOpen]='disabled')
+	ng-template(#elseBlock)
+		.cub-member-picker__content-no-input
+			+group

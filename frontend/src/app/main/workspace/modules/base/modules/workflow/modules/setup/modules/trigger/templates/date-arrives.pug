@@ -1,0 +1,147 @@
+ng-container(*ngIf='isEntry')
+	include ./blocks/select-board.partial.pug
+
+	select-row(
+		*ngIf='settings.boardID',
+		[boardID]='settings.boardID',
+		[(row)]='settings.row',
+		(rowChange)='onRowChange()')
+
+cub-card(
+	variant='tonal',
+	size='small',
+	*ngIf='settings.boardID && settings.dateSelection')
+	cub-card-content
+		.layout-column.layout-gap-16.flex
+			.layout-column.layout-gap-6
+				.text-color-secondary.ml-12
+					| {{ "BASE.WORKFLOW.SETUP.TRIGGER.LABEL.SELECT_DATE_FIELD" | translate }}
+				cub-dropdown(
+					required,
+					searchable,
+					#dateDrop,
+					[clearable]='false',
+					[formControl]='typeControl',
+					[(valueControl)]='settings.dateSelection.fieldID',
+					(valueControlChange)='onDateTypeChange( $event )')
+					cub-dropdown-item(
+						*ngFor='let f of fields; ngForTrackByID',
+						[icon]='f.dataType | fieldMetadata : "icon"',
+						[label]='f.name',
+						[value]='f.id')
+			cub-radio-group(
+				*ngIf='settings.dateSelection.fieldID',
+				[ngModel]='currentRadio',
+				(ngModelChange)='onTargetFieldChanged($event)')
+				cub-radio.layout-row.layout-align-start-center(
+					[value]='OPTION_DATE?.TIME')
+					.layout-row.layout-align-start-center.layout-wrap.layout-gap-8
+						| {{ "BASE.WORKFLOW.SETUP.TRIGGER.LABEL.ON_EVENT_DAY" | translate }}
+						cub-form-field.w-100(
+							displayErrorMode='tooltip')
+							input(
+								clearable,
+								required,
+								cubFormFieldInput,
+								minlength='1',
+								maxlength='5',
+								#inputTime='cubFormFieldInput',
+								#inputPickTime='cubTimePicker',
+								[cubTimePicker]='settings.dateSelection.time',
+								(timeChanged)='changedTime( $event )',
+								[disableControl]='currentRadio !== OPTION_DATE.TIME',
+								[formControl]='timeEventControl',
+								[placeholder]='"BASE.WORKFLOW.SETUP.TRIGGER.PLACEHOLDER.TIME" | translate ')
+				cub-radio.layout-row.layout-align-start-baseline(
+					[value]='OPTION_DATE?.DATE')
+					form.layout-row.layout-align-start-center.layout-wrap.layout-gap-8(
+						[formGroup]='dateForm')
+						cub-form-field.w-80(
+							displayErrorMode='tooltip')
+							input(
+								required,
+								cubFormFieldInput,
+								clearable,
+								type='number',
+								#inputNumDay='cubFormFieldInput',
+								[disableControl]='currentRadio !== OPTION_DATE.DATE',
+								formControlName='quantity',
+								[valueControl]='settings.dateSelection.date.quantity',
+								(valueControlChange)='onQuantityChange( $event )',
+								placeholder='0')
+						cub-dropdown.w-80(
+							required,
+							displayErrorMode='tooltip',
+							formControlName='period',
+							[clearable]='false',
+							[disableControl]='currentRadio !== OPTION_DATE.DATE',
+							[placeholder]='"BASE.WORKFLOW.SETUP.TRIGGER.PLACEHOLDER.DAY" | translate ',
+							[valueControl]='settings.dateSelection.date.period',
+							(valueControlChange)='onPeriodChange( $event )')
+							cub-dropdown-item(
+								*ngFor='let type of FIELD_EVENTS_TYPE; ngForTrackByValue',
+								[label]='( "BASE.WORKFLOW.SETUP.TRIGGER.LABEL." + type.name ) | translate',
+								[value]='type.value')
+						cub-dropdown.w-80(
+							required,
+							displayErrorMode='tooltip',
+							formControlName='positionTime',
+							[clearable]='false',
+							[disableControl]='currentRadio !== OPTION_DATE.DATE',
+							[placeholder]='"BASE.WORKFLOW.SETUP.TRIGGER.PLACEHOLDER.BEFORE" | translate ',
+							[valueControl]='settings.dateSelection.date.positionTime',
+							(valueControlChange)='onPositionTimeChange( $event )')
+							cub-dropdown-item(
+								*ngFor='let type of FIELD_POSITION_TYPE; ngForTrackByValue',
+								[label]='( "BASE.WORKFLOW.SETUP.TRIGGER.LABEL." + type.name ) | translate',
+								[value]='type.value')
+						| {{ "BASE.WORKFLOW.SETUP.TRIGGER.LABEL.EVENT_DAY" | translate }}
+						cub-form-field.w-100(
+							displayErrorMode='tooltip')
+							input(
+								clearable,
+								required,
+								cubFormFieldInput,
+								minlength='1',
+								maxlength='5',
+								formControlName='timeDay',
+								#inputDate='cubFormFieldInput',
+								[cubTimePicker]='settings.dateSelection.date.time',
+								[disableControl]='currentRadio !== OPTION_DATE.DATE',
+								[placeholder]='"BASE.WORKFLOW.SETUP.TRIGGER.PLACEHOLDER.TIME" | translate',
+								(timeChanged)='changedTime( $event )')
+				cub-radio.layout-row.layout-align-start-baseline(
+					[value]='OPTION_DATE?.SCHEDULE')
+					form.layout-row.layout-align-start-center.layout-wrap.layout-gap-8(
+						[formGroup]='scheduleForm')
+						| {{ "BASE.WORKFLOW.SETUP.TRIGGER.LABEL.REPEAT" | translate }}
+						cub-dropdown(
+							required,
+							#scheduleDrop,
+							displayErrorMode='tooltip',
+							formControlName='frequency',
+							[disableControl]='currentRadio !== OPTION_DATE.SCHEDULE',
+							[clearable]='false',
+							[placeholder]='"BASE.WORKFLOW.SETUP.TRIGGER.PLACEHOLDER.MONTHLY" | translate ',
+							[valueControl]='settings.dateSelection.schedule.frequency',
+							(valueControlChange)='onFrequencyChange( $event )')
+							cub-dropdown-item(
+								*ngFor='let type of FIELD_FREQUENCY_TYPE; ngForTrackByValue',
+								[label]='( "BASE.WORKFLOW.SETUP.TRIGGER.LABEL." + type.name ) | translate',
+								[value]='type.value')
+						| {{ "BASE.WORKFLOW.SETUP.TRIGGER.LABEL.ON_EVENT_DAY" | translate | lowercase}}
+						cub-form-field.w-100(
+							displayErrorMode='tooltip')
+							input(
+								required,
+								clearable,
+								cubFormFieldInput,
+								minlength='1',
+								maxlength='5',
+								formControlName='timeRepeat',
+								#inputSchedule='cubFormFieldInput',
+								[cubTimePicker]='settings.dateSelection.schedule.time',
+								[disableControl]='currentRadio !== OPTION_DATE.SCHEDULE',
+								[placeholder]='"BASE.WORKFLOW.SETUP.TRIGGER.PLACEHOLDER.TIME" | translate',
+								(timeChanged)='changedTime( $event )')
+

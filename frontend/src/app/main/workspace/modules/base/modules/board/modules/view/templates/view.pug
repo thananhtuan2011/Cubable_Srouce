@@ -1,0 +1,102 @@
+mixin view(view)
+	.view__item(
+		[ngSwitch]=`${view}.type`,
+		[class.view__item--active]=`${view}?.id === activeView?.id`)
+		ng-container(*ngSwitchCase='VIEW_TYPE.DATA')
+			data-view(#dataViewComps)&attributes(attributes)
+		ng-container(*ngSwitchCase='VIEW_TYPE.FORM')
+			form-view&attributes(attributes)
+
+include ../modules/common/templates/new-view.pug
+
++newViewMenu('create')
+
+cub-menu(
+	#allBoardMenu,
+	width='320px',
+	maxHeight='320px')
+	cub-menu-content
+		ng-template(cubMenuContent)
+			ng-container(*ngFor='let b of boards; ngForTrackByID')
+				button(
+					cubMenuItem,
+					[class.all-board-menu--active]='b.id === board.id',
+					(click)='changeBoard( b )')
+					.text-truncate([title]='b.name | empty')
+						| {{ b.name | empty }}
+
+.layout-column.layout-align-center(*ngIf='isLoading; else elseBlock;')
+	cub-loading
+ng-template(#elseBlock)
+	.layout-row.layout-align-space-between-center.layout-gap-16.flex
+		.view.layout-row.layout-align-start-center
+			div(
+				cdkScrollable,
+				cubScrollBar,
+				suppressY)
+				.layout-row.layout-align-start-center
+					button.w-145.mr-8(
+						cubFloatingButton,
+						size='large',
+						*ngIf='!isDrawerOpen',
+						[cubMenuTriggerFor]='allBoardMenu')
+						span
+							.layout-row.layout-align-start-center
+								.text-truncate([title]='board.name | empty')
+									| {{ board.name | empty }}
+								cub-icon.ml-8(
+									color='white',
+									size='16px',
+									[name]=`allBoardMenu.isOpened
+										? "chevron-up"
+										: "chevron-down"`)
+					ng-container(*ngFor='let view of views; let index = index; ngForTrackByID')
+						ng-container(*ngIf='!view.isHidden || tempView?.id === view.id')
+							+view('view')(
+								[boardID]='boardID',
+								[canCreate]='canCreate',
+								[view]='view',
+								[views]='views',
+								[activeView]='activeView',
+								[tempView]='tempView',
+								(deleteChange)='delete( $event )',
+								(sharedChange)='share( $event )',
+								(updateChange)='update( $event )',
+								(duplicateChange)='duplicate( $event )',
+								(exportChange)='export( $event )',
+								(activeViewChange)=`activeViewChange.emit( $event );
+									changeView( $event.view );`)
+							cub-divider.h-18(
+								vertical,
+								*ngIf=`view?.id !== activeView?.id
+									&& view?.id !== showedViews[ showedViews.length - 1 ]?.id
+									&& views[ index + 1 ]?.id !== activeView?.id
+									&& showedViews.length > 0`)
+			ng-container(*ngIf='canCreate')
+				cub-divider.ml-4.h-18(
+					vertical,
+					*ngIf=`views
+						&& showedViews.length > 0
+						&& showedViews[ showedViews.length - 1 ]?.id !== activeView?.id`)
+				button.ml-16(
+					[cubMenuTriggerFor]='newViewMenu')
+					span
+						cub-icon(
+							name='plus-circle',
+							size='16px',
+							color='white')
+		all-view.mb-4(
+			#allViewComp,
+			[boardID]='boardID',
+			[canCreate]='canCreate',
+			[views]='views',
+			[activeView]='activeView',
+			[tempView]='tempView',
+			(deleteChange)='delete( $event )',
+			(sharedChange)='share( $event )',
+			(updateChange)='update( $event, true )',
+			(duplicateChange)='duplicate( $event )',
+			(activeViewChange)=`activeViewChange.emit( $event );
+				changeView( $event.view );`,
+			(viewArrange)='syncViews()',
+			(createChange)='create( $event, false )')

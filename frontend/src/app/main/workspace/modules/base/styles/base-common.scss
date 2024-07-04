@@ -1,0 +1,37 @@
+@import 'src/scss/partials/variable';
+
+.number-item {
+	color: $color-text-secondary;
+}
+
+.spin-out {
+	.base-empty__icon {
+		animation: 400ms ease-out none spin-out;
+	}
+}
+
+.spin-in {
+	.base-empty__icon {
+		animation: 400ms ease-out none spin-in;
+	}
+}
+
+@keyframes spin-out {
+	from {
+		transform: rotate(0deg);
+	}
+
+	to {
+		transform: rotate(-360deg);
+	}
+}
+
+@keyframes spin-in {
+	from {
+		transform: rotate(0deg);
+	}
+
+	to {
+		transform: rotate(360deg);
+	}
+}

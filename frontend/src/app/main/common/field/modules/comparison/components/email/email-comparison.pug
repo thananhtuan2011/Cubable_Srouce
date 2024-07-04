@@ -1,0 +1,59 @@
+include ../mixins/mixin.pug
+
+mixin textInput(data)
+	cub-form-field.w-172(
+		displayErrorMode='tooltip')
+		input(
+			cubFormFieldInput,
+			clearable,
+			required,
+			maxlength='255',
+			#textInput='cubFormFieldInput',
+			[placeholder]='"FIELD.COMPARISON.PLACEHOLDER.FILL_TEXT" | translate',
+			[disableControl]=`
+				error?.field
+					|| ( excludeFields?.isDisable
+						&& ( excludeFieldsLK?.[ field?.id ] ) )`,
+			[formControl]='dataControl',
+			[(valueControl)]=`${data}`,
+			(valueControlChange)='onDataChange()')
+
+.layout-row.layout-align-start-center.layout-gap-8.layout-wrap.flex
+	ng-container(*ngTemplateOutlet='fieldPicker')
+
+	+comparisonOperator
+
+	ng-container(*ngIf='$any( data )?.compareType')
+		ng-container([ngSwitch]='$any( data ).compareType')
+			ng-container(*ngSwitchCase='COMPARISON_TYPE.STATIC')
+				ng-container(*ngIf='operator === COMPARISON_OPERATOR.CONTAINS\
+					|| operator === COMPARISON_OPERATOR.DOES_NOT_CONTAINS')
+					+textInput('$any( data ).text')
+				ng-container(*ngIf='operator === COMPARISON_OPERATOR.IS_EXACTLY\
+					|| operator === COMPARISON_OPERATOR.IS_NOT_EXACTLY')
+					cub-form-field.flex.miw-200(
+						displayErrorMode='tooltip')
+						input(
+							cubFormFieldInput,
+							clearable,
+							required,
+							maxlength='255',
+							type='email',
+							placeholder='name@gmail.com',
+							#emailInput='cubFormFieldInput',
+							[disableControl]=`
+								error?.field
+									|| ( excludeFields?.isDisable
+										&& ( excludeFieldsLK?.[ field?.id ] ) )`,
+							[formControl]='dataControl',
+							[(valueControl)]='$any( data ).text',
+							(valueControlChange)='onDataChange()')
+			ng-container(*ngSwitchCase='COMPARISON_TYPE.AUTO')
+				+comparisonTypeAuto
+
+	ng-container(*ngIf='operator === COMPARISON_OPERATOR.STARTS_WITH\
+		|| operator === COMPARISON_OPERATOR.ENDS_WITH')
+		+textInput('data')
+
+	ng-container(*ngIf='operatorHasComparisonType.has( operator )')
+		+comparisonType

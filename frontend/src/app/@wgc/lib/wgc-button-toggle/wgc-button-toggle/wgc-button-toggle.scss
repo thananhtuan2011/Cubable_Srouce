@@ -1,0 +1,88 @@
+@import 'src/scss/partials/variable';
+@import 'src/scss/partials/mixin';
+
+.wgc-button-toggle {
+	display: flex;
+	background-color: $color-default;
+	border-radius: 8px;
+	width: fit-content;
+	padding: 5px;
+
+	&.wgc-button-toggle--stretch {
+		width: 100%;
+		min-width: 0;
+
+		.wgc-button-toggle-item {
+			width: 100%;
+			min-width: 0;
+		}
+	}
+
+	&.wgc-button-toggle--reverse {
+		background-color: $color-white;
+
+		.wgc-button-toggle-item {
+			&.wgc-button-toggle-item--active {
+				background-color: $color-default;
+			}
+		}
+	}
+
+	&.wgc-button-toggle--has-border {
+		border: 1px solid $color-border;
+	}
+
+	&.wgc-button-toggle--has-shadow {
+		.wgc-button-toggle-item {
+			&.wgc-button-toggle-item--active {
+				box-shadow: $box-shadow;
+			}
+		}
+	}
+
+	.wgc-button-toggle-item {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		text-align: center;
+		min-height: 30px;
+		padding: 5px 15px;
+		border-radius: 8px;
+		font-size: $font-size-body;
+		font-weight: $font-weight-semibold;
+		cursor: pointer;
+		transition: background 200ms ease-in-out, color 200ms ease-in-out;
+		color: $color-label;
+		white-space: nowrap;
+
+		&.wgc-button-toggle-item--active {
+			background-color: $color-white;
+			color: $color-text;
+		}
+
+		&:not(.wgc-button-toggle-item--disabled) {
+			&:hover {
+				color: $color-text;
+			}
+		}
+
+		&.wgc-button-toggle-item--disabled {
+			@include cursor-not-allowed;
+			color: $color-disabled;
+		}
+
+		&:not(.wgc-button-toggle-item--only-icon) {
+			min-width: 110px;
+			min-height: 32px;
+
+			.wgc-button-toggle-item__icon {
+				margin-right: 5px;
+			}
+		}
+
+		&.wgc-button-toggle-item--only-icon {
+			width: 32px;
+			height: 32px;
+		}
+	}
+}

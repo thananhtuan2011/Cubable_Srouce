@@ -1,0 +1,13 @@
+.cub-list-group {
+	$self: &;
+
+	display: flex;
+	flex-direction: column;
+
+	#{ $self }__label {
+		padding: {
+			left: 12px;
+			right: 12px;
+		};
+	}
+}

@@ -1,0 +1,154 @@
+@import '../../../scss/partials/variable';
+@import '../../../scss/partials/mixin';
+
+.cdk-overlay-backdrop {
+	&.cdk-overlay-backdrop-showing:not(.cdk-overlay-transparent-backdrop) {
+		& ~ .cdk-global-overlay-wrapper {
+			.cub-dialog-pane {
+				.cub-dialog-container {
+					background-color: $color-white;
+				}
+			}
+		}
+	}
+}
+
+.cdk-global-overlay-wrapper {
+	&:has(.cub-dialog-pane) {
+		overflow: hidden;
+	}
+}
+
+.cub-dialog-pane {
+	$self: &;
+	$container: '.cub-dialog-container';
+
+	@include transition(transform);
+
+	width: 100%;
+	max-width: calc(100% - 50px);
+	height: 100%;
+	max-height: calc(100% - 50px);
+	opacity: 0;
+	visibility: hidden;
+
+	will-change: transform opacity visibility;
+
+	&#{ $self }--opened {
+		opacity: 1;
+		visibility: visible;
+	}
+
+	&#{ $self }--horizontal {
+		margin-top: auto;
+
+		transform: translateX(0);
+
+		&#{ $self }--sliding {
+			transform: translateX(100%);
+		}
+
+		#{ $container } {
+			#{ $container }-resizer {
+				bottom: 0;
+
+				width: 6px;
+
+				cursor: col-resize;
+			}
+		}
+	}
+
+	&#{ $self }--vertical {
+		margin: {
+			left: auto;
+			right: auto;
+		};
+
+		transform: translateY(0);
+
+		&#{ $self }--sliding {
+			transform: translateY(100%);
+		}
+
+		#{ $container } {
+			border-top-right-radius: 20px;
+
+			#{ $container }-resizer {
+				right: 0;
+
+				height: 6px;
+
+				cursor: row-resize;
+			}
+		}
+	}
+}
+
+.cub-dialog-container {
+	$self: &;
+
+	@include backdrop-blur;
+
+	position: relative;
+
+	width: 100%;
+	min-width: 0;
+	max-width: 100%;
+	border-top-left-radius: 20px;
+	overflow: hidden;
+
+	[cubDialogHeader],
+	[cubDialogContent],
+	[cubDialogFooter] {
+		padding: {
+			left: 20px;
+			right: 20px;
+		};
+	}
+
+	[cubDialogHeader],
+	[cubDialogFooter] {
+		padding: {
+			top: 12px;
+			bottom: 12px;
+		};
+	}
+
+	[cubDialogHeader] {
+		background-color: $color-transparent-light-grey-85;
+	}
+
+	[cubDialogContent] {
+		height: 100%;
+		min-height: 0;
+		padding: {
+			top: 16px;
+			bottom: 16px;
+		};
+	}
+
+	[cubDialogFooter] {
+		border-top: 1px solid $color-border-primary;
+
+		background-color: $color-white;
+
+		backdrop-filter: blur(12.5px);
+	}
+
+	#{ $self }-wrapper,
+	#{ $self }-wrapper > * {
+		display: flex;
+		flex-direction: column;
+		width: 100%;
+		min-width: 0;
+		height: 100%;
+		min-height: 0;
+	}
+
+	#{ $self }-resizer {
+		position: absolute;
+		left: 0;
+		top: 0;
+	}
+}

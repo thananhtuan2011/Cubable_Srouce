@@ -1,0 +1,22 @@
+.syntax-editor__line-numbers(
+	*ngIf='lineNumbers')
+	p.syntax-editor__line-number(
+		*ngFor='let f of [].constructor( numberOfLines || 1 ); let idx = index;',
+		[class.syntax-editor__line-number--active]='activeLine === idx + 1')
+		| {{ idx + 1 }}
+.syntax-editor__content(
+	(click)='canAction && editor.focus()')
+	.syntax-editor__editor(
+		#editor,
+		spellcheck='false',
+		autocapitalize='off',
+		[attr.contenteditable]='canAction',
+		[autoFocusOn]='autoFocusOn',
+		(input)='onInput( $event )',
+		(keydown)='onEventStart( $event )',
+		(mousedown)='onEventStart( $event )',
+		(blur)='onEventStart( $event )',
+		(keyup)='onEventEnd( $event )',
+		(mouseup)='onEventEnd( $event )',
+		(focus)='onEventEnd( $event )')
+	.syntax-editor__placeholder(#placeholder)

@@ -1,0 +1,15 @@
+{
+	"LABEL": {
+		"EDIT": "Chỉnh sửa",
+		"SHARE_PRIVATE": "Chia sẻ nội bộ",
+		"SHARE_PUBLIC": "Chia sẻ ra bên ngoài",
+		"LINK": "Đường liên kết",
+		"FRAME": "Nội dung nhúng",
+		"SHARE_QR": "Chia sẻ QR",
+		"DOWNLOAD_QR": "Tải mã QR xuống"
+	},
+	"MESSAGE": {
+		"SHARE_PRIVATE": "Thành viên của Base có thể truy cập và điền biểu mẫu",
+		"SHARE_PUBLIC": "Bất kỳ ai có đường liên kết công khai sẽ có thể truy cập và điền biểu mẫu"
+	}
+}

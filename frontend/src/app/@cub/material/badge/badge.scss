@@ -1,0 +1,73 @@
+@import '../../scss/partials/variable';
+
+.cub-badge {
+	$self: &;
+
+	position: relative;
+
+	display: flex;
+	width: fit-content;
+
+	&:after {
+		content: attr(data-count);
+
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		width: 6px;
+		height: 6px;
+		border-radius: 50%;
+
+		background-color: var(--badge-color, color(red, 500));
+		color: var(--badge-text-color, $color-white);
+
+		font-size: 12px;
+		line-height: 16px;
+	}
+
+	// Type
+	@at-root {
+		&#{ $self }--inline {
+			align-items: center;
+			gap: 4px;
+		}
+
+		&:not(&#{ $self }--inline) {
+			&:after {
+				position: absolute;
+				top: 0;
+				right: 0;
+
+				transform: translate(50%, -50%);
+			}
+		}
+	}
+
+	// Size
+	@at-root {
+		&#{ $self }--small {
+			&[data-count]:after {
+				width: 16px;
+				height: 16px;
+			}
+		}
+
+		&#{ $self }--large {
+			&[data-count]:after {
+				width: 20px;
+				height: 20px;
+			}
+		}
+	}
+
+	&#{ $self }--multi-digits {
+		&[data-count]:after {
+			width: auto;
+			padding: {
+				left: 4px;
+				right: 4px;
+			};
+			border-radius: 100px;
+		}
+	}
+}

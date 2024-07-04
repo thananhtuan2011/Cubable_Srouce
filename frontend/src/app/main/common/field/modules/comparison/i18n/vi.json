@@ -1,0 +1,117 @@
+{
+	"LABEL": {
+		"TEXT": "Văn bản",
+		"WORD_COUNT": "Có số từ",
+		"FIELD": "Trường dữ liệu",
+		"DATA": "Mục dữ liệu",
+		"STATIC_VALUE": "Giá trị tĩnh",
+		"AUTO_VALUE": "Giá trị động",
+		"USE_DATA_FROM": "Sử dụng dữ liệu từ...",
+		"SELECT": "Chọn...",
+		"CURRENT_VIEWER": "Người đang xem",
+		"ROW_FROM_EVENT": "Hàng kết quả từ {{ eventName }}",
+		"DATA_ON_SAME_ROW": "Dữ liệu trên cùng hàng",
+		"NO_FIELDS": "Không có trường dữ liệu nào",
+		"UN_NAME": "Chưa đặt tên"
+	},
+	"OPERATOR": {
+		"ANY": "Bất kỳ",
+		"COMPARE_TODAY": "So với ngày hôm nay",
+		"CONTAINS": "Chứa",
+		"DOES_NOT_CONTAINS": "Không chứa",
+		"ENDS_WITH": "Kết thúc với",
+		"IN": "Thuộc một trong",
+		"IS_AFTER": "Sau",
+		"IS_BEFORE": "Trước",
+		"IS_BETWEEN": "Nằm giữa",
+		"IS_BETWEEN_DATE": "Thuộc khoảng",
+		"IS_EMPTY": "Trống",
+		"IS_EXACTLY": "Là",
+		"IS_NOT_BETWEEN": "Không nằm giữa",
+		"IS_NOT_BETWEEN_DATE": "Không thuộc khoảng",
+		"IS_NOT_EMPTY": "Không trống",
+		"IS_NOT_EXACTLY": "Không là",
+		"NOT_IN": "Không thuộc một trong",
+		"STARTS_WITH": "Bắt đầu với",
+		"TEXT": {
+			"WORD_COUNT_EQUAL": "Có số từ bằng",
+			"WORD_COUNT_GREATER_THAN": "Có số từ lớn hơn",
+			"WORD_COUNT_GREATER_THAN_OR_EQUAL": "Có số từ lớn hơn hoặc bằng",
+			"WORD_COUNT_LESS_THAN": "Có số từ nhỏ hơn",
+			"WORD_COUNT_LESS_THAN_OR_EQUAL": "Có số từ nhỏ hơn hoặc bằng"
+		},
+		"WORD": {
+			"EQUAL": "Bằng",
+			"GT": "Lớn hơn",
+			"GTE": "Lớn hơn hoặc bằng",
+			"LT": "Nhỏ hơn",
+			"LTE": "Nhỏ hơn hoặc bằng"
+		},
+		"SYMBOL": {
+			"GREATER_THAN": ">",
+			"GREATER_THAN_OR_EQUAL": "≥",
+			"IS_EXACTLY": "=",
+			"IS_NOT_EXACTLY": "≠",
+			"LESS_THAN": "<",
+			"LESS_THAN_OR_EQUAL": "≤"
+		}
+	},
+	"METHOD": {
+		"CUSTOM": {
+			"CHECKBOX": "Giá trị cụ thể",
+			"CURRENCY": "Số tiền cụ thể",
+			"EMAIL": "Email cụ thể",
+			"NUMBER": "Số cụ thể",
+			"PEOPLE": "Người dùng cụ thể",
+			"PHONE": "Số điện thoại cụ thể",
+			"RATING": "Đánh giá cụ thể",
+			"SPECIFIC_DATE": "Ngày cụ thể",
+			"REFERENCE": "Hàng dữ liệu cụ thể",
+			"TEXT": "Văn bản cụ thể"
+
+		},
+		"SPECIFIC_FIELD": "Trường cụ thể"
+	},
+	"FORMULA_TYPE": {
+		"NUMBER": "Số"
+	},
+	"DATE_SPECIFIC": {
+		"DAY": "Ngày",
+		"LAST": "Trước",
+		"LAST_MONTH": "Tháng trước",
+		"LAST_WEEK": "Tuần trước",
+		"LAST_YEAR": "Năm trước",
+		"MONTH": "Tháng",
+		"NEXT": "Sau",
+		"NEXT_MONTH": "Tháng sau",
+		"NEXT_WEEK": "Tuần sau",
+		"NEXT_YEAR": "Năm sau",
+		"SPECIFIC_DATE": "Ngày cụ thể",
+		"SPECIFIC_FIELD": "Trường cụ thể",
+		"THIS": "Trong",
+		"THIS_MONTH": "Tháng này",
+		"THIS_WEEK": "Tuần này",
+		"THIS_YEAR": "Năm này",
+		"TODAY": "Hôm nay",
+		"TOMORROW": "Ngày mai",
+		"WEEK": "Tuần",
+		"YEAR": "Năm",
+		"YESTERDAY": "Hôm qua"
+	},
+	"MESSAGE": {
+		"REQUIRED": "Vui lòng nhập giá trị",
+		"END_EARLIER_START_DATE": "Ngày kết thúc không thể sớm hơn ngày bắt đầu",
+		"QUANTITY_INVALID": "Lỗi không đúng định dạng"
+	},
+	"PLACEHOLDER": {
+		"FILL_TEXT": "Nhập văn bản",
+		"SELECT": "Chọn",
+		"SELECT_OPTION": "Lựa chọn",
+		"SELECT_VALUE": "Chọn giá trị"
+	},
+	"ERROR": {
+		"END_NOT_SMALLER_START": "Số sau không thể nhỏ hơn số trước",
+		"START_NOT_BIGGER_END": "Số trước không thể lớn hơn số sau",
+		"INPUT_OR_SELECT_VALUE": "Vui lòng nhập hoặc chọn giá trị"
+	}
+}

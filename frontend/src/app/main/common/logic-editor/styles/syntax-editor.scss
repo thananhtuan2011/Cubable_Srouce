@@ -1,0 +1,170 @@
+@import 'src/app/@cub/scss/partials/variable';
+@import 'src/app/@cub/scss/partials/mixin';
+
+@keyframes typing {
+	from { width: 0 }
+	to { width: 100% }
+}
+
+$line-height: 20px;
+
+.syntax-editor {
+	$self: &;
+
+	display: flex;
+	width: 100%;
+	min-width: 0;
+	height: 100%;
+	min-height: 150px;
+	overflow: auto;
+	resize: vertical;
+
+	&#{ $self }--readonly {
+		#{ $self }__content,
+		#{ $self }__content #{ $self }__editor {
+			cursor: default;
+		}
+	}
+
+	&#{ $self }--disabled {
+		#{ $self }__content,
+		#{ $self }__content #{ $self }__editor {
+			@include cursor-not-allowed;
+
+			background-color: $color-material-default;
+			color: $color-text-tertiary;
+
+			pointer-events: none;
+		}
+	}
+
+	#{ $self }__line-numbers,
+	#{ $self }__content {
+		height: 100%;
+		min-height: 150px;
+	}
+
+	#{ $self }__line-numbers {
+		min-width: 32px;
+		padding: 8px 10px;
+		border-right: 1px solid $color-border-primary;
+
+		color: $color-text-tertiary;
+
+		text-align: center;
+		line-height: $line-height;
+
+		p#{ $self }__line-number {
+			&#{ $self }__line-number--active {
+				color: $color-text-primary;
+			}
+		}
+	}
+
+	#{ $self }__content {
+		display: flex;
+		flex-direction: column;
+		width: 100%;
+		min-width: 0;
+		padding: 8px 12px;
+
+		cursor: text;
+
+		#{ $self }__editor,
+		#{ $self }__placeholder {
+			line-height: $line-height;
+		}
+
+		#{ $self }__editor {
+			display: inline;
+
+			font-weight: $font-weight-semibold;
+			white-space: pre-wrap;
+			tab-size: 12;
+
+			&:empty {
+				&:before {
+					height: $line-height;
+				}
+
+				&~ #{ $self }__placeholder {
+					display: block;
+				}
+			}
+
+			a {
+				// color: $color-text-primary;
+
+				text-decoration: none;
+
+				cursor: default;
+			}
+
+			span {
+				&.se-string {
+					color: color(yellowGreen, 500);
+				}
+
+				&.se-number {
+					color: color(purple, 500);
+				}
+
+				&.se-atom {
+					color: color(peacockBlue, 500);
+				}
+
+				&.se-operator {
+					color: color(red, 500);
+				}
+
+				&.se-commas {
+					color: color(orange, 500);
+				}
+
+				&.se-function {
+					color: color(indigo, 500);
+				}
+			}
+		}
+
+		#{ $self }__placeholder {
+			display: none;
+			margin-top: -$line-height;
+			overflow: hidden;
+
+			color: $color-text-tertiary;
+
+			white-space: nowrap;
+
+			&:not(:empty) {
+				animation:
+					2s steps(100, end) 0s forwards alternate typing,
+					2s steps(100, end) 3s forwards reverse typing;
+			}
+
+			i {
+				color: $color-text-primary;
+			}
+		}
+		
+		#{ $self }__field {
+			min-width: 32px;
+			max-width: 100%;
+			min-height: 20px;
+			max-height: 100%;
+			padding: 2px 8px;
+			border-radius: 20px;
+
+			color: var(--chip-text-color, $color-text-primary);
+			background-color: var(--chip-color, $color-material-default);
+			
+			font-size: 12px;
+			line-height: 16px;
+			white-space: nowrap;
+
+			i {
+				font-size: 16px;
+			}
+		}
+	}
+}

@@ -1,0 +1,82 @@
+cub-menu(
+	#fieldsMenu,
+	width='258px',
+	maxHeight='400px')
+	cub-menu-content
+		ng-template(cubMenuContent)
+			ng-container(*ngFor='let f of fields; ngForTrackByID')
+				button(
+					cubMenuItem,
+					*ngIf='!f?.isAdded',
+					(click)='addField( f )')
+					div(cubMenuItemPrefix)
+						cub-icon(
+							size='20px',
+							[name]='( f?.dataType | fieldMetadata )?.icon')
+					.text-truncate(
+						[title]='f?.name | empty')
+						| {{ f?.name | empty }}
+
+cub-card(
+	variant='tonal',
+	size='small')
+	cub-card-content
+		.layout-column.layout-gap-12
+			div
+				| {{ "BASE.WORKFLOW.SETUP.ACTION.LABEL.SET_ROW_VALUE" | translate }}
+			cub-card(
+				size='small',
+				*ngFor='let fv of $any( settings ).fields; let index = index; ngForTrackByID')
+				cub-card-content
+					.layout-column.layout-gap-6
+						.layout-row.layout-align-space-between-center.ml-12
+							.layout-row.layout-align-start-center.layout-gap-6
+								cub-icon(
+									size='20px',
+									[name]='( ( fieldsMap.get( fv.fieldID ) ? fieldsMap.get( fv.fieldID ).dataType : fv.field.dataType ) | fieldMetadata ).icon')
+								.text-truncate(
+									[title]=`fieldsMap?.get( fv.fieldID )
+										? fieldsMap.get( fv.fieldID ).name
+										: fv.field.name | empty`)
+									| {{ fieldsMap.get( fv.fieldID ) ? fieldsMap.get( fv.fieldID ).name : fv.field.name | empty }}
+							button(
+								cubBasicButton,
+								icon='close',
+								iconColor='primary',
+								iconSize='20px',
+								[style.padding.px]='0',
+								(click)='removeFieldInput( fv.fieldID )')
+						ng-template(
+							required,
+							hideLabel,
+							fieldInputFactory,
+							size='large',
+							changeOn='blur',
+							variant='outlined',
+							displayErrorMode='tooltip',
+							[label]='null',
+							[field]=`fieldsMap
+								? fieldsMap.get( fv.fieldID )
+								: fv.field`,
+							[fields]='fields',
+							[data]='fv.value',
+							[disabled]='fv.value?.valueType === VALUE_TYPE.EMPTY',
+							[eventAdvance]='eventAdvance',
+							(dataChange)='onFieldValueChange( $event, index )')
+			.layout-column.layout-gap-8(
+				[class.hide]='$any( settings ).fields?.length && !canFieldAdd')
+				button(
+					cubBasicButton,
+					size='large',
+					iconSize='20px',
+					icon='plus-circle',
+					[disabled]='!fields?.length || !canFieldAdd',
+					[cubMenuTriggerFor]='fieldsMenu')
+					span
+						.text-nowrap.line-height-20
+							| {{ "BASE.WORKFLOW.SETUP.ACTION.LABEL.SELECT_FIELD" | translate }}
+				ng-container(*ngIf=`required
+					&& showInvalidState
+					&& !$any( settings ).fields?.length`)
+					.text-color-error.ml-6
+						| {{ "BASE.WORKFLOW.SETUP.ACTION.MESSAGE.SELECT_AT_LEAST_ONE_FIELD" | translate }}

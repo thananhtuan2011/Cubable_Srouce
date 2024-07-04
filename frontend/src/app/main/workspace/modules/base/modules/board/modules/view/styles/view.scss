@@ -1,0 +1,33 @@
+@import 'src/scss/partials/variable';
+
+:host {
+	display: flex;
+	width: 100%;
+	min-width: 0;
+	max-width: 100%;
+	align-items: stretch;
+	padding: 0 16px 0 24px;
+	height: 36px;
+
+	.view {
+		min-width: 0;
+
+		.view__item {
+			padding: 8px 12px;
+			max-width: 200px;
+	
+			cursor: pointer;
+	
+			&.view__item--active {
+				border-radius: 12px 12px 0 0;
+				background-color: $color-white;
+			}
+		}
+	}
+}
+
+::ng-deep {
+	.all-board-menu--active {
+		background-color: $color-material-focus;
+	}
+}

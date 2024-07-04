@@ -1,0 +1,63 @@
+ng-container([ngSwitch]='blockSetup.blockType')
+	ng-container(*ngSwitchCase='WORKFLOW_BLOCK_TYPE.TRIGGER')
+		trigger(
+			#triggerComp,
+			[baseID]='baseID',
+			[blockSetup]='blockSetup',
+			[(type)]='$any( blockSetup ).type',
+			[(settings)]='blockSetup.settings',
+			(typeChange)='onBlockSetupChange()',
+			(settingsChange)='onBlockSetupChange()')
+	ng-container(*ngSwitchCase='WORKFLOW_BLOCK_TYPE.ACTION')
+		action(
+			#actionComp,
+			[baseID]='baseID',
+			[blockSetup]='blockSetup',
+			[boardsLk]='boardsLk',
+			[(type)]='$any( blockSetup ).type',
+			[(settings)]='blockSetup.settings',
+			(typeChange)='onBlockSetupChange()',
+			(settingsChange)='onBlockSetupChange()')
+	ng-container(*ngSwitchCase='WORKFLOW_BLOCK_TYPE.CONDITION')
+		condition(
+			#conditionComp,
+			[baseID]='baseID',
+			[blockSetup]='blockSetup',
+			[boardsLk]='boardsLk',
+			[(type)]='$any( blockSetup ).type',
+			[(settings)]='blockSetup.settings',
+			(settingsChange)='onBlockSetupChange()')
+	ng-container(*ngSwitchCase='WORKFLOW_BLOCK_TYPE.SUB_PROCESS')
+		sub-process(
+			#subProcessComp,
+			[baseID]='baseID',
+			[blockSetup]='blockSetup',
+			[boardsLk]='boardsLk',
+			[(type)]='$any( blockSetup ).type',
+			[(settings)]='blockSetup.settings',
+			(settingsChange)='onBlockSetupChange()')
+	ng-container(*ngSwitchCase='WORKFLOW_BLOCK_TYPE.LOOP')
+		loop(
+			#loopComp,
+			[baseID]='baseID',
+			[blockSetup]='blockSetup',
+			[boardsLk]='boardsLk',
+			[(settings)]='blockSetup.settings',
+			(settingsChange)='onBlockSetupChange()')
+	ng-container(*ngSwitchCase='WORKFLOW_BLOCK_TYPE.DELAY')
+		delay(
+			[(settings)]='blockSetup.settings',
+			(settingsChange)='onBlockSetupChange()')
+	ng-container(*ngSwitchCase='WORKFLOW_BLOCK_TYPE.PARALLEL')
+		parallel(
+			#parallelComp,
+			[baseID]='baseID',
+			[blockSetup]='blockSetup',
+			[boardsLk]='boardsLk',
+			[(settings)]='blockSetup.settings',
+			(settingsChange)='onBlockSetupChange()')
+	ng-container(*ngSwitchCase='WORKFLOW_BLOCK_TYPE.END')
+		end(
+			#endComp,
+			[(type)]='$any( blockSetup ).type',
+			(typeChange)='onBlockSetupChange()')

@@ -1,0 +1,18 @@
+@import 'src/app/@cub/scss/partials/variable';
+
+.information {
+	display: flex;
+	flex-direction: column;
+	width: 100%;
+	min-width: 0;
+
+	.item-detail__content {
+		display: flex;
+		flex-direction: column;
+		justify-content: space-between;
+		overflow: hidden;
+		display: flex;
+		flex-direction: column;
+		gap: 12px;
+	}
+}

@@ -1,0 +1,105 @@
+extends patterns/setting.pug
+
+block header
+	.layout-row.layout-align-start-center
+		h1.text-nowrap.flex.mr-10
+			| {{ "ACCOUNT.SETTINGS.LABEL.SECURITY" | translate }}
+		button.mr-10(
+			wgcButton,
+			color='primary',
+			[disabled]='!isLogoutSettingChanged || isSaving',
+			[loading]='isSaving',
+			(click)='save()')
+			| {{ "ACCOUNT.SETTINGS.LABEL.SAVE" | translate }}
+
+block content
+	wgc-menu(#logoutSettingMenu, minWidth='600px', maxWidth='600px', maxHeight='700px', (opened)='isLogoutSettingOpened = !isLogoutSettingOpened')
+		wgc-menu-content
+			ng-template(wgcMenuContent)
+				button(
+					wgcMenuItem,
+					autoClose,
+					position='after',
+					[active]='logoutSettingOptions[ 0 ] === logoutSettingSelected',
+					(click)='selectLogoutSettingOption( logoutSettingOptions[ 0 ], LOGOUT_SETTING_TYPE.NEVER )')
+					.flex
+						.layout-row.layout-align-space-between-center
+							wgc-truncate.maw-600.mr-5.color-text(limitLine='1')
+								| {{ logoutSettingOptions[ 0 ] }}
+				button(
+					wgcMenuItem,
+					autoClose,
+					position='after',
+					[active]='logoutSettingOptions[ 2 ] === logoutSettingSelected',
+					(click)='selectLogoutSettingOption( logoutSettingOptions[ 2 ], LOGOUT_SETTING_TYPE.ANOTHER_DEVICE )')
+					.flex
+						.layout-row.layout-align-space-between-center
+							wgc-truncate.maw-600.mr-5.color-text(limitLine='1')
+								| {{ logoutSettingOptions[ 2 ] }}
+				//- button(
+				//- 	wgcMenuItem,
+				//- 	autoClose,
+				//- 	position='after',
+				//- 	[active]='logoutSettingOptions[ 3 ] === logoutSettingSelected',
+				//- 	(click)='selectLogoutSettingOption( logoutSettingOptions[ 3 ], LOGOUT_SETTING_TYPE.CLOSE_BROWSER )')
+				//- 	.flex
+				//- 		.layout-row.layout-align-space-between-center
+				//- 			wgc-truncate.maw-600.mr-5.color-text(limitLine='1')
+				//- 				| {{ logoutSettingOptions[ 3 ] }}
+				button(
+					wgcMenuItem,
+					position='after',
+					[autoClose]='false',
+					[active]='logoutSettingOptions[ 1 ] === logoutSettingSelected',
+					[wgcMenuTriggerFor]='logoutBaseOnTimeMenu')
+					.flex
+						.layout-row.layout-align-space-between-center
+							wgc-truncate.maw-600.mr-5.color-text(limitLine='1')
+								| {{ logoutSettingOptions[ 1 ] }}
+							wgc-icon(
+								size='20px',
+								name='chevron-right')
+
+	wgc-menu(#logoutBaseOnTimeMenu, minWidth='265px', maxWidth='265px', maxHeight='160px')
+		wgc-menu-content
+			ng-template(wgcMenuContent)
+				button(
+					wgcMenuItem,
+					[active]='baseOnTimeOptions[ 0 ] === baseOnTimeSelected',
+					(click)='selectCustomTimeOption( baseOnTimeOptions[ 0 ], LOGOUT_SETTING_CUSTOM_TIME.DAYS )')
+					wgc-truncate.maw-265.mr-5.color-text(limitLine='1')
+						| {{ baseOnTimeOptions[ 0 ] }}
+				button(
+					wgcMenuItem,
+					[active]='baseOnTimeOptions[ 1 ] === baseOnTimeSelected',
+					(click)='selectCustomTimeOption( baseOnTimeOptions[ 1 ], LOGOUT_SETTING_CUSTOM_TIME.WEEKS )')
+					wgc-truncate.maw-265.mr-5.color-text(limitLine='1')
+						| {{ baseOnTimeOptions[ 1 ] }}
+				button(
+					wgcMenuItem,
+					[active]='baseOnTimeOptions[ 2 ] === baseOnTimeSelected',
+					(click)='selectCustomTimeOption( baseOnTimeOptions[ 2 ], LOGOUT_SETTING_CUSTOM_TIME.MONTHS )')
+					wgc-truncate.maw-265.mr-5.color-text(limitLine='1')
+						| {{ baseOnTimeOptions[ 2 ] }}
+
+	.layout-row.layout-align-space-between-center
+		div
+			h4.mb-10
+				| {{ "ACCOUNT.SETTINGS.LABEL.PASSWORD" | translate }}
+			.color-label
+				| {{ "ACCOUNT.SETTINGS.LABEL.LAST_MODIFIED_TIME" | translate }}:
+				| {{ account?.updatedPasswordAt | momentDate : undefined : true }}
+		button(wgcButton, size='small', (click)='openDialogChangePassword()')
+			| {{ "ACCOUNT.SETTINGS.LABEL.CHANGE_PASSWORD" | translate }}
+	wgc-divider.mv-20
+	h4.mb-10
+		| {{ "ACCOUNT.SETTINGS.LABEL.AUTOMATIC_LOGOUT" | translate }}
+	.color-label.mb-15
+		| {{ "ACCOUNT.SETTINGS.MESSAGE.SET_AUTOMATIC_LOGOUT_TO_PREVENT" | translate }}
+	wgc-form-field.cursor(
+		autoFit,
+		*ngIf='logoutSettingLoaded',
+		position='below',
+		[wgcMenuTriggerFor]='logoutSettingMenu')
+		input.cursor(wgcFormFieldInput, readonly, [value]='logoutSettingLabel')
+		wgc-icon(wgcFormFieldSuffix, size='20px', [name]='logoutSettingMenu?.isOpened ? "chevron-up" : "chevron-down"')

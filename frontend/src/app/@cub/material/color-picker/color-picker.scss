@@ -1,0 +1,50 @@
+@import '../../scss/partials/variable';
+
+.cub-color-picker {
+	$self: &;
+
+	display: flex;
+
+	#{ $self }-color-list {
+		display: flex;
+		flex-wrap: wrap;
+		row-gap: 12px;
+		column-gap: 12px;
+		width: 420px;
+		height: 140px;
+		padding: 16px;
+		border-radius: 8px;
+
+		background-color: $color-white;
+
+		#{ $self }-color-item {
+			position: relative;
+
+			width: 28px;
+			min-width: 28px;
+			max-width: 28px;
+			height: 28px;
+			min-height: 28px;
+			max-height: 28px;
+			border-radius: 4px;
+
+			background-color: var(--item-color);
+
+			&#{ $self }-color-item--selected {
+				&:before {
+					content: '';
+
+					position: absolute;
+					left: -2px;
+					top: -2px;
+
+					display: block;
+					width: 32px;
+					height: 32px;
+					border: 1.5px solid var(--item-color);
+					border-radius: 6px;
+				}
+			}
+		}
+	}
+}

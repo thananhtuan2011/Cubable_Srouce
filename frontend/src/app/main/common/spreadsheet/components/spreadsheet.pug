@@ -1,0 +1,93 @@
+include ./sub-templates/blocks/calculation.include.pug
+include ./sub-templates/blocks/others.include.pug
+
+virtual-scroll(
+	#virtualScroll,
+	[horizontalTrackOffset]='virtualScrollHorizontalTrackOffset')
+	include ./sub-templates/blocks/header.partial.pug
+	include ./sub-templates/blocks/body.partial.pug
+	include ./sub-templates/blocks/footer.partial.pug
+
+//- Empty block
+.empty-block(
+	*ngIf='!rows?.length')
+	ng-content(select='[emptyBlock]')
+
+//- Frozen divider
+.frozen-divider(
+	cdkDrag,
+	cdkDragLockAxis='x',
+	*ngIf=`
+		config.column.freezable
+			|| frozenIndex !== null
+	`,
+	[style.left.px]=`
+		layoutProperties.pane.leftWidth
+	`,
+	[class.frozen-divider--hover]=`
+		layoutProperties.frozenDivider.isHover
+	`,
+	[class.frozen-divider--dragging]=`
+		layoutProperties.frozenDivider.dragPlaceholderIndex >= 0
+	`,
+	[class.frozen-divider--disabled]=`
+		$any( displayingColumns?.[ frozenIndex ] )?._isResizing
+	`,
+	[cdkDragDisabled]=`
+		!isEditorMode
+			|| !config.column.freezable
+	`,
+	(cdkDragStarted)='onFrozenDividerDragStarted( $event )',
+	(cdkDragEnded)='onFrozenDividerDragEnded( $event )',
+	(cdkDragMoved)='onFrozenDividerDragMoved( $event )')
+	.frozen-divider__line.frozen-divider__head-line(
+		*ngIf=`
+			!layoutProperties.frozenDivider.isHideHeadLine
+				&& !$any( displayingColumns?.[ frozenIndex ] )?._isResizing
+		`)
+	.frozen-divider__line(
+		(mousemove)='onFrozenDividerMouseMove( $event )')
+	span.frozen-divider__drag-handle(
+		cdkDragHandle,
+		*ngIf=`
+			isEditorMode
+				&& config.column.freezable
+		`,
+		[style.transform]=`
+			"translateY("
+				+ layoutProperties.frozenDivider.dragHandleOffset
+				+ "px)"
+		`)
+
+//- Frozen divider drag placeholder
+ng-container(
+	*ngIf='layoutProperties.frozenDivider.dragPlaceholderIndex >= 0')
+	.frozen-divider-drag-placeholder(
+		[style.transform]=`
+			"translateX("
+				+ layoutProperties.frozenDivider.dragPlaceholderOffset
+				+ "px)"
+		`)
+	.frozen-divider-drag-overlay
+
+//- Column drag placeholder
+ng-container(
+	*ngIf='layoutProperties.column.dragPlaceholderIndex >= 0')
+	.column-drag-placeholder(
+		[style.transform]=`
+			"translateX("
+				+ layoutProperties.column.dragPlaceholderOffset
+				+ "px)"
+		`)
+	.column-drag-overlay
+
+//- Row drag placeholder
+ng-container(
+	*ngIf='layoutProperties.row.dragPlaceholderIndex >= 0')
+	.row-drag-placeholder(
+		[style.transform]=`
+			"translateY("
+				+ layoutProperties.row.dragPlaceholderOffset
+				+ "px)"
+		`)
+	.row-drag-overlay

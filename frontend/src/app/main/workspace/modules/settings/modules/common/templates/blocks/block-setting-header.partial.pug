@@ -1,0 +1,20 @@
+mixin settingHeader(header, disableSave='!isChanged || isSubmitting', disableCancel='!isChanged || isSubmitting', hint)
+	.layout-row.layout-align-start-center
+		.layout-column.flex.mr-10
+			h1.text-nowrap
+				| {{ #{header} }}
+			if hint
+				wgc-truncate.color-label.text-nowrap.mt-5(limitLine='1')
+					| {{ #{hint} }}
+		if block
+			block
+		else
+			button.mr-10(
+				wgcButton,
+				color='primary',
+				[disabled]=disableSave,
+				[loading]='isSubmitting',
+				(click)='save()')
+				| {{ "SETTINGS.COMMON.LABEL.SAVE_CHANGES" | translate }}
+		button(wgcButton, [disabled]=disableCancel, (click)='cancel()')
+			| {{ "SETTINGS.COMMON.LABEL.CANCEL" | translate }}

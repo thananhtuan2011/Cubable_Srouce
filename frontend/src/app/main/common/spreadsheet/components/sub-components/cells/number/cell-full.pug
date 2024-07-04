@@ -1,0 +1,17 @@
+include ../boxes.include.pug
+
++number-box()(
+	[type]=`
+		field.allowNegative
+			? "number"
+			: "positive-number"
+	`,
+	[content]=`
+		isPercentFormat
+			? ( data | convertPercent )
+			: data
+	`)
+
+.flex.text-right.text-truncate(
+	*ngIf='data !== undefined && data !== null')
+	| {{ data | numberValue : field.format : field.decimalPlaces }}

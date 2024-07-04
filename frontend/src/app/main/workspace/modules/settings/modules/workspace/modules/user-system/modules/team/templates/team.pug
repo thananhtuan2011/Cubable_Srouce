@@ -1,0 +1,143 @@
+cub-menu(
+	#control,
+	width='220px'
+	max-height='96px')
+	cub-menu-content
+		ng-template(cubMenuContent, let-team='team')
+			button(
+				autoClose,
+				cubMenuItem,
+				icon='pencil',
+				(click)='onEditTem( team )')
+				| {{ "SETTINGS.WORKSPACE.USER_SYSTEM.TEAM.LABEL.EDIT" | translate }}
+			button(
+				autoClose,
+				icon='trash',
+				cubMenuItem='destructive',
+				(click)='onDeleteTeam( team )')
+				| {{ "SETTINGS.WORKSPACE.USER_SYSTEM.TEAM.LABEL.DELETE" | translate }}
+
+.full-width.miw-0.flex.layout-row.layout-align-space-between.layout-align-start-center.p-16
+	h4
+		| {{ "SETTINGS.WORKSPACE.USER_SYSTEM.TEAM.LABEL.TEAM_MANAGEMENT" | translate }}
+	button(
+		cubButton,
+		icon='plus-circle',
+		iconSize='16px',
+		(click)='openPopupCreateTeam()')
+		| {{ "SETTINGS.WORKSPACE.USER_SYSTEM.TEAM.LABEL.CREATE_TEAM" | translate }}
+cub-divider
+
+.table_wrapper
+	table
+		thead
+			tr.full-width.miw-0
+				.full-width.miw-0.layout-row.pos-relative
+					.sticky.sticky-left
+						th.w-40(align='left')
+						th.w-210(align='left')
+							.layout-row.header-cell-wrapper
+								label.layout-row.layout-align-start-center
+									| {{ "SETTINGS.WORKSPACE.USER_SYSTEM.TEAM.LABEL.TEAM_NAME" | translate }}
+					th.w-172(align='left')
+						.layout-row.header-cell-wrapper
+							label.layout-row.layout-align-start-center
+								| {{ "SETTINGS.WORKSPACE.USER_SYSTEM.TEAM.LABEL.ROLE" | translate }}
+					th.w-172(align='left')
+						.layout-row.header-cell-wrapper
+							label.layout-row.layout-align-start-center
+								| {{ "SETTINGS.WORKSPACE.USER_SYSTEM.TEAM.LABEL.TEAM_STATUS" | translate }}
+					th.w-172(align='left')
+						.layout-row.header-cell-wrapper
+							label.layout-row.layout-align-start-center
+								| {{ "SETTINGS.WORKSPACE.USER_SYSTEM.TEAM.LABEL.TEAM_MEMBERS" | translate }}
+					th.w-172(align='left')
+						.layout-row.header-cell-wrapper
+							label.layout-row.layout-align-start-center
+								| {{ "SETTINGS.WORKSPACE.USER_SYSTEM.TEAM.LABEL.TEAM_CREATED" | translate }}
+					th.w-202(align='left')
+						.layout-row.header-cell-wrapper
+							label.layout-row.layout-align-start-center
+								| {{ "SETTINGS.WORKSPACE.USER_SYSTEM.TEAM.LABEL.TEAM_CREATED_BY" | translate }}
+					th.action-cell
+		tbody(*ngIf='teams?.length')
+			tr.full-width.miw-0(*ngFor='let team of teams | orderBy : [ "id" ]; let index = index; trackByID')
+				.full-width.miw-0.layout-row.pos-relative
+					.sticky.sticky-left
+						td.w-40(align='center')
+							| {{ index + 1 }}
+						td.w-210(align='left')
+							cub-member.mr-4(
+								avatarSize='medium-small',
+								avatarType='team',
+								[displayMemberStatusHint]='false',
+								[member]='team')
+					td.w-172(align='left')
+						.layout-row.layout-gap-8
+							ng-container(*ngIf='team?.roles?.length === 0')
+								| --
+							ng-container(*ngIf='team?.roles?.length === 1')
+								cub-chip
+									ng-container(*ngIf='team?.isOwner')
+										cub-icon.mr-4(name='crown-fill')
+									span.text-truncate(
+										[innerHtml]=`
+											team?.roles[0]?.name === 'Owner' 
+											? ( 'SETTINGS.WORKSPACE.USER_SYSTEM.USER.LABEL.ADMIN' | translate ) 
+											: ( team?.roles[0]?.name )`)
+							ng-container(*ngIf='team?.roles?.length > 1')
+								cub-chip
+									ng-container(*ngIf='team?.isOwner')
+										cub-icon.mr-4(name='crown-fill')
+									span.text-truncate(
+										[innerHtml]=`
+											team?.roles[0]?.name === 'Owner' 
+											? ( 'SETTINGS.WORKSPACE.USER_SYSTEM.USER.LABEL.ADMIN' | translate ) 
+											: ( team?.roles[0]?.name )`)
+								cub-chip([cubTooltip]='team?.tooltipRoles')
+									span.text-truncate([attr.title]='team.roles[0]?.name')
+										| + {{ team.roles?.length - 1 }}
+					td.w-172(align='left')
+						ng-container(*ngIf='team?.infoStatus !== 0; else infoStatus')
+							cub-chip.layout-row.layout-gap-4
+								ng-container(*ngIf='team?.infoStatus !== 0')
+									span.dot_status([ngStyle]="{ 'background-color': team?.infoStatus?.color }")
+									label
+										| {{ team?.infoStatus?.label | translate }}		
+						ng-template(#infoStatus)
+							| --
+					td.w-172(align='left')
+						ng-container(*ngIf='team?.userIDs?.length; else usersTemp;')
+							cub-member-list(
+								avatarSize='medium-small',
+								limit='3',
+								width='200px',
+								[canRemove]='false',
+								[canAdd]='false',
+								[users]='users',
+								[selectedUserIDs]='team.userIDs')
+						ng-template(#usersTemp)
+							| --
+					td.w-172(align='left')
+						ng-container(*ngIf='team.createdAt; else createdAt')
+							| {{ team.createdAt | momentDate : "DD/MM/YYYY HH:mm" }}
+						ng-template(#createdAt)
+							| --
+					td.w-172(align='left')
+						ng-container(*ngIf='team?.createdBy; else createdBy;')
+							.layout-row.layout-align-start-center.flex.gap-8
+								cub-avatar.mr-10(
+									size='medium-small',
+									[label]='team?.createdByUser?.name', 
+									[avatar]='team?.createdByUser?.avatar')
+								span.text-truncate.maw-158([innerHtml]='team?.createdByUser?.name')
+						ng-template(#createdBy)
+							| --
+					.sticky.sticky-right
+						td.action-cell
+							button(
+								cubBasicButton,
+								icon='more-vertical',
+								overlayX='start',
+								[cubMenuTriggerContext]='{ team }',
+								[cubMenuTriggerFor]='control')

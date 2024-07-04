@@ -1,0 +1,17 @@
+{
+	"LABEL": {
+		"ACCESS": "Truy cập ({{length}})",
+		"CREATE": "Tạo mới",
+		"CREATE_BY_ME": "Tạo bởi tôi",
+		"CREATE_BY_OTHER": "Tạo bởi người khác",
+		"DATA": "Dữ liệu",
+		"FORM": "Biểu mẫu",
+		"LIST_TITLE": "Danh sách chế độ xem",
+		"MANAGE": "Quản lý ({{length}})"
+	},
+	"MESSAGE": {
+		"CREATE_BY_OTHER": "Bạn có thể không được truy cập Chế độ xem tạo bởi người khác, nhưng vẫn có thể quản lý chúng",
+		"NO_CREATE_BY_ME": "Bạn chưa tạo chế độ xem nào",
+		"NO_CREATE_BY_OTHER": "Bạn không có quyền quản lý chế độ xem của người khác"
+	}
+}

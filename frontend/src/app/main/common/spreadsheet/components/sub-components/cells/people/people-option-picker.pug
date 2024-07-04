@@ -1,0 +1,35 @@
+cub-menu(
+	#menu,
+	width='240px',
+	maxHeight='260px')
+	cub-menu-header
+		ng-template(cubMenuHeader)
+			cub-search-box(
+				autoFocusOn,
+				[placeholder]='"SPREADSHEET.PLACEHOLDER.SEARCH_PEOPLE" | translate',
+				[data]='availableUsers',
+				[(searchQuery)]='searchQuery',
+				(searchQueryChange)='onSearching()',
+				(filtered)='!isSearched && searched( $event )')
+	cub-menu-content
+		ng-template(cubMenuContent)
+			ng-container(*ngIf='searchQuery?.length\
+				&& !filteredUsers?.length; else elseBlock;')
+				cub-menu-group
+					| {{ "SPREADSHEET.LABEL.NO_RESULT_FOUND" | translate }}
+			ng-template(#elseBlock)
+				ng-container(
+					*ngIf='availableUsers?.length; else elseBlock1;')
+					button(
+						cubMenuItem,
+						*ngFor='let user of filteredUsers; ngForTrackByID',
+						(click)='pickUser( user )')
+						cub-member(
+							[hasViewProfile]='false',
+							[member]='user',
+							[searchQuery]='searchQuery')
+				ng-template(#elseBlock1)
+					cub-menu-group
+						| {{ "SPREADSHEET.MESSAGE.ALL_OPTIONS_WAS_SELECTED" | translate }}
+
+ng-container(*ngTemplateOutlet='menu.templateRef')

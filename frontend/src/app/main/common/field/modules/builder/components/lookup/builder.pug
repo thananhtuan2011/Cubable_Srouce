@@ -1,0 +1,222 @@
+include ../builder.include.pug
+
+cub-menu(
+	#sourceFieldMenu,
+	width='321px',
+	maxHeight='271px')
+	cub-menu-header
+		ng-template(cubMenuHeader)
+			.layout-column.layout-gap-8
+				cub-search-box(
+					[data]='sourceBoardField',
+					(filtered)='sourceBoardFieldFiltered = $event')
+				.text-truncate.text-color-secondary(
+					[title]='sourceBoardName')
+					| {{ "FIELD.BUILDER.LABEL.FIELD_IN_BOARD" | translate }} {{ sourceBoardName | empty}}
+	cub-menu-content
+		ng-template(cubMenuContent)
+			cub-menu-group(*ngIf='sourceBoardFieldFiltered?.length; else elseBlock')
+				button(
+					cubMenuSelectItem,
+					*ngFor='let field of sourceBoardFieldFiltered; ngForTrackByValue',
+					[trailingIcon]='field.id === selectedSourceBoardField?.id ? "check" : undefined',
+					trailingIconColor='blue',
+					[autoClose]='false',
+					(click)='onSelectSourceBoardField( field )')
+					span(
+						[class.text-color-hyperlink]='field.id === selectedSourceBoardField?.id')
+						| {{ field.name | empty }}
+					div(cubMenuItemPrefix)
+						cub-icon(
+							size='20px',
+							[color]='field.id === selectedSourceBoardField?.id ? "blue" : undefined',
+							[name]='( field.dataType | fieldMetadata ).icon')
+			ng-template(#elseBlock)
+				.pv-10.ph-12(
+					[style.backgroundColor]='"WHITE" | color',
+					[style.borderRadius]='"12px"')
+					| {{ "FIELD.BUILDER.LABEL.NO_OPTION" | translate }}
+
+ng-template(#settingBlock)
+	ng-container(*ngIf='!isLoaded, else elseBlock')
+		.layout-row.layout-align-center-start.full-width
+			cub-loading
+	ng-template(#elseBlock)
+		form.layout-column(
+			[style.width]='"536px"',
+			[formGroup]='fieldForm')
+			cub-dropdown(
+				required,
+				searchable,
+				formControlName='sourceBoardID',
+				[clearable]='false',
+				[menuSize]='{ maxHeight: 243 }',
+				[label]='"FIELD.BUILDER.LABEL.SELECT_SOURCE_BOARD_LOOKUP" | translate',
+				[valueControl]='internalField.lookup?.sourceBoardID',
+				(valueControlChange)='onSelectSourceBoard( $event )')
+				cub-dropdown-item(
+					*ngFor='let board of sourceBoard; ngForTrackByID',
+					[label]='board.name',
+					[value]='board.id')
+			.layout-column.layout-gap-16.mt-12
+				ng-container(*ngIf='internalField.lookup?.sourceBoardID')
+					.p-12.pv-10.ph-12(
+						[style.backgroundColor]='"SECONDARY" | color',
+						[style.borderRadius]='"12px"')
+						single-conditional(
+							*ngIf='sourceBoardField',
+							[mustHaveOption]='false',
+							[label]='"FIELD.BUILDER.LABEL.FIND_ROW_CONDITION" | translate',
+							[hideAddCondition]='internalField.lookup.filter?.options.length === 5',
+							[comparisonModule]='COMPARISON_SOURCE.Lookup',
+							[eventAdvance]='eventAdvance',
+							[fields]='sourceBoardField',
+							[options]='internalField.lookup.filter?.options',
+							[conditions]='internalField.lookup.filter?.conditions',
+							[logicalOperator]='internalField.lookup.filter?.logicalOperator',
+							[logicalExpression]='internalField.lookup.filter?.logicalExpression',
+							(logicalOperatorChange)='internalField.lookup.filter.logicalOperator = $event',
+							(logicalExpressionChange)='internalField.lookup.filter.logicalExpression = $event',
+							(optionsChange)=`onOptionsChange( $event )`,
+							(conditionsChange)='onConditionFilterChange( $event )',
+							(conditionalChange)='filterChanged()')
+				.layout-row.layout-gap-16
+					cub-form-field.flex-50(
+						#sourceField,
+						[label]='"FIELD.BUILDER.LABEL.SELECT_FIELD_RESULT_LOOKUP" | translate',
+						[focusing]='sourceFieldMenu?.isOpened',
+						[cubMenuTriggerPosition]='"end-below"',
+						[cubMenuTriggerDisableOpen]='!internalField?.lookup?.sourceBoardID',
+						[cubMenuTriggerOrigin]='sourceField?.container',
+						[cubMenuTriggerFor]='sourceFieldMenu')
+						input(
+							required,
+							cubFormFieldInput,
+							formControlName='sourceFieldID',
+							[clearable]='false',
+							[placeholder]='"FIELD.BUILDER.PLACEHOLDER.SELECT" | translate',
+							[disableControl]='!internalField?.lookup?.sourceBoardID',
+							[valueControl]='selectedSourceBoardField?.name')
+						ng-container(cubFormFieldSuffix)
+							cub-icon(
+								size='16px',
+								color='tertiary',
+								[name]=`
+									sourceFieldMenu.isOpened
+									? "chevron-up"
+									: "chevron-down"`)
+					cub-dropdown.flex-50(
+						#operatorDropdown,
+						required,
+						searchable,
+						formControlName='operator',
+						[clearable]='false',
+						[menuSize]='{ maxHeight: 243 }',
+						[disableControl]='!internalField?.lookup?.sourceBoardID',
+						[label]='"FIELD.BUILDER.LABEL.OPERATOR" | translate',
+						[valueControl]='internalField.lookup?.operator',
+						(valueControlChange)='onSelectOperator( $event )')
+						cub-dropdown-item(
+							*ngFor='let o of operators; ngForTrackByValue',
+							[label]='o.label | translate',
+							[value]='o.value')
+				ng-container(*ngIf=`internalField.lookup?.operator
+					&& internalField.lookup?.operator !== OPERATORS.NotApply`)
+					ng-container(*ngIf=`
+						internalField.lookup?.operator === OPERATORS.EarliestDate
+						|| internalField.lookup?.operator === OPERATORS.LatestDate;
+						else elseBlock1`)
+						.layout-row.layout-gap-16
+							cub-dropdown.flex(
+								formControlName='dateFormat',
+								[menuSize]='{ maxHeight: 244 }',
+								[label]='"FIELD.BUILDER.LABEL.DISPLAY_DATE_FORMAT" | translate',
+								[clearable]='false',
+								[valueControl]='internalField.lookup.format?.dateFormat',
+								(valueControlChange)='internalField.lookup.format.dateFormat = $event')
+								cub-dropdown-group(
+									[title]='"FIELD.BUILDER.LABEL.DATE_STRING" | translate')
+									cub-dropdown-item(
+										*ngFor='let format of DATE_FORMATS | slice : 0 : 2',
+										[label]='CURRENT_DATE | dateValue : format',
+										[value]='format')
+								cub-dropdown-group(
+									[title]='"FIELD.BUILDER.LABEL.YEAR_STRING" | translate')
+									cub-dropdown-item(
+										*ngFor='let format of DATE_FORMATS | slice : 2 : 4',
+										[label]='CURRENT_DATE | dateValue : format',
+										[value]='format')
+								cub-dropdown-group(
+									[title]='"FIELD.BUILDER.LABEL.TEXT_MODE" | translate')
+									cub-dropdown-item(
+										*ngFor='let format of DATE_FORMATS | slice : 4',
+										[label]='CURRENT_DATE | dateValue : format',
+										[value]='format')
+							cub-dropdown.flex(
+								formControlName='timeFormat',
+								[label]='"FIELD.BUILDER.LABEL.DISPLAY_TIME_FORMAT" | translate',
+								[clearable]='false',
+								[valueControl]='internalField.lookup.format?.timeFormat',
+								(valueControlChange)='internalField.lookup.format.timeFormat = $event')
+								ng-container(*ngFor='let format of TIME_FORMATS; let idx = index;')
+									ng-container([ngSwitch]='idx')
+										cub-dropdown-item(
+											*ngSwitchCase='0',
+											[label]='"FIELD.BUILDER.LABEL.NOT_DISPLAY_TIME" | translate',
+											[value]='0')
+										cub-dropdown-item(
+											*ngSwitchCase='1',
+											[label]='"FIELD.BUILDER.LABEL.HOUR_COUNT" | translate : { hour: 12 }',
+											[value]='format')
+										cub-dropdown-item(
+											*ngSwitchCase='2',
+											[label]='"FIELD.BUILDER.LABEL.HOUR_COUNT" | translate : { hour: 24 }',
+											[value]='format')
+					ng-template(#elseBlock1)
+						cub-dropdown.full-width(
+							formControlName='formatTypeControl',
+							[clearable]='true',
+							[label]='"FIELD.BUILDER.LABEL.FORMAT_TYPE" | translate',
+							[valueControl]='internalField.lookup?.format?.formatType',
+							(valueControlChange)='onFormatTypeChange( $event )')
+							cub-dropdown-item(
+								*ngFor='let type of formatType; ngForTrackByValue',
+								[label]='type.label | translate',
+								[value]='type.value')
+						.layout-row.layout-gap-16.full-width(
+							*ngIf='internalField.lookup?.format?.formatType')
+							cub-dropdown.flex(
+								searchable,
+								formControlName='currencyControl',
+								*ngIf=`internalField.lookup.format.formatType
+									=== FORMAT_TYPE.Currency`,
+								[menuSize]='{ maxHeight: 244, width: 360 }',
+								[label]='"FIELD.BUILDER.LABEL.CURRENCY_UNIT" | translate',
+								[(ngModel)]='internalField.lookup.format.currency')
+								cub-dropdown-item(
+									*ngFor='let currency of CURRENCIES; trackByProperty: "code"',
+									[label]='currency.code + " - " + currency.name + " - " + currency.symbol',
+									[value]='currency.symbol')
+							cub-dropdown.flex(
+								formControlName='numberFormat',
+								[label]='"FIELD.BUILDER.LABEL.NUMBER_FORMAT" | translate',
+								[(ngModel)]='internalField.lookup.format.numberFormat')
+								cub-dropdown-item(
+									description='Ex: 1,000,000.25',
+									[label]='"FIELD.BUILDER.LABEL.COMMAS_SEPARATOR" | translate',
+									[value]='NumberFormat.CommasSeparator')
+								cub-dropdown-item(
+									description='Ex: 1000 = 1K',
+									[label]='"FIELD.BUILDER.LABEL.THOUSAND_UNIT" | translate',
+									[value]='NumberFormat.ThousandUnit')
+							cub-dropdown.flex(
+								formControlName='decimalPlaces',
+								[menuSize]='{ maxHeight: 200 }',
+								[label]='"FIELD.BUILDER.LABEL.DECIMAL_PLACES_FORMAT" | translate',
+								[(ngModel)]='internalField.lookup.format.decimalPlaces')
+								cub-dropdown-item(
+									*ngFor='let i of [].constructor( 7 ); let index = index;',
+									[label]='10 | numberValue : null : index',
+									[value]='index')
+
+ng-container(*ngTemplateOutlet='fieldTemplate; context: { settingBlock };')

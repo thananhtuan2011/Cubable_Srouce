@@ -1,0 +1,29 @@
+div(wgcDialogHeader)
+	.flex.mr-15
+		h1
+			| {{ "ERROR.LABEL.ITS_TIME_TO_UPGRADE" | translate }}
+	button(
+		wgcButton,
+		icon='close',
+		[wgcTooltip]='"ERROR.LABEL.CLOSE" | translate',
+		(click)='dialogRef?.close()')
+div(wgcDialogContent)
+	.h4.mb-20
+		| {{ "ERROR.MESSAGE.YOUR_WORKSPACE_HAVE_REACHED_THE_LIMIT" | translate }}
+	.layout-row.layout-align-start-center.color-label.mb-20
+		wgc-icon.mr-10(name='check', size='24px')
+		.h4
+			| {{ "ERROR.LABEL.UNLIMITED_RECORD" | translate }}
+	.layout-row.layout-align-start-center.color-label.mb-20
+		wgc-icon.mr-10(name='check', size='24px')
+		.h4
+			| {{ "ERROR.LABEL.UNLIMITED_AUTOMATION" | translate }}
+	.layout-row.layout-align-start-center.color-label
+		wgc-icon.mr-10(name='check', size='24px')
+		.h4
+			| {{ "ERROR.LABEL.UNLIMITED_CAPACITY" | translate }}
+	.h4.mt-20.mb-30(*ngIf='!isAdministrator')
+		| {{ "ERROR.MESSAGE.CONTACT_WORKSPACE_OWNER_ADMIN" | translate }}
+div(wgcDialogFooter, alignment='stretch', *ngIf='isAdministrator')
+	button(wgcButton, color='primary', (click)='contact()')
+		| {{ "ERROR.LABEL.CONTACT_US_TO_UPGRADE" | translate }}

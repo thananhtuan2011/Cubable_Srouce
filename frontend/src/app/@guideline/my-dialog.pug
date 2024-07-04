@@ -1,0 +1,15 @@
+div(wgcDialogHeader)
+	.flex.mr-15
+		h1 My Dialog
+	button(
+		wgcButton,
+		icon='close',
+		[wgcTooltip]='"WGC.LABEL.CLOSE" | translate',
+		(click)='dialogRef?.close()')
+div(wgcDialogContent)
+	div My Dialog Content
+	div
+		| {{ data?.content }}
+div(wgcDialogFooter)
+	button(wgcButton, (click)='dialogRef?.close()') Cancel
+	button(wgcButton, color='primary', (click)='dialogRef?.close( true )') Save

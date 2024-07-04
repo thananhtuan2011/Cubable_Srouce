@@ -1,0 +1,14 @@
+@import 'src/scss/partials/variable';
+
+.wgc-drawer-container {
+	display: flex;
+
+	&.wgc-drawer-container--stretch {
+		width: 100%;
+		min-width: 0;
+		max-width: 100vw;
+		height: 100%;
+		min-height: 0;
+		max-height: 100vh;
+	}
+}

@@ -1,0 +1,75 @@
+mixin moreActionView(isFromManageTab)
+	cub-menu(
+		#moreActionMenu,
+		width='240px',
+		(opened)='nameView = moreActionMenu.context.view.name')
+		cub-menu-header
+			ng-template(cubMenuHeader)
+				cub-form-field(active)
+					input(
+						cubFormFieldInput,
+						clearable,
+						required,
+						autoFocusOn,
+						[name]='"VIEW.COMMON.LABEL.VIEW_NAME" | translate',
+						[disabled]='!view.canManage',
+						[formControl]='nameFormControl',
+						[ngModel]='view.name',
+						(keydown.enter)='updateName( view )',
+						(blur)='updateName( view )',
+						(ngModelChange)='nameView = $event')
+		cub-menu-content
+			ng-template(cubMenuContent, let-view='view')
+				cub-menu-group
+					ng-container(*ngIf='view.canManage')
+						block
+						//- button(
+						//- 	cubMenuItem,
+						//- 	icon='export',
+						//- 	iconSize='20px',
+						//- 	position='after',
+						//- 	trailingIcon='chevron-right',
+						//- 	trailingIconColor='tertiary',
+						//- 	[autoClose]='false',
+						//- 	[pointing]='shareViewMenu.isOpened',
+						//- 	[cubSubMenuTriggerFor]='shareViewMenu',
+						//- 	[cubMenuTriggerContext]='{ view }')
+						//- 	| {{ "VIEW.COMMON.LABEL.SHARING" | translate }}
+					//- button(
+					//- 	cubMenuItem,
+					//- 	icon='duplicate',
+					//- 	iconSize='20px',
+					//- 	*ngIf='canCreate',
+					//- 	(click)='duplicateChange.emit( view )')
+					//- 	| {{ "VIEW.COMMON.LABEL.DUPLICATE" | translate }}
+					
+					button(
+						cubMenuItem,
+						icon='export',
+						iconSize='20px',
+						*ngIf=`view.type === VIEW_TYPE.DATA && !${isFromManageTab}`,
+						(click)='exportChange.emit( view )')
+						| {{ "VIEW.COMMON.LABEL.EXPORT" | translate }}
+					button(
+						cubMenuItem,
+						icon='eye',
+						iconSize='20px',
+						*ngIf=`!${isFromManageTab}`,
+						(click)='updateChange.emit({ view, data: { isHidden: view.isHidden ? false : true } })')
+						| {{ "VIEW.COMMON.LABEL." + ( view.isHidden ? "SHOW_VIEW" : "HIDE_VIEW" ) | translate }}
+					button(
+						cubMenuItem,
+						icon='flag',
+						iconSize='20px',
+						*ngIf=`!${isFromManageTab}`,
+						(click)='updateChange.emit( { view, data: { isDefault: true } } )')
+						| {{ "VIEW.COMMON.LABEL.SET_DEFAULT" | translate }}
+				cub-menu-group
+					button(
+						cubMenuItem='destructive',
+						icon='trash',
+						iconSize='20px',
+						iconColor='destructive',
+						*ngIf='!view.isMain && view.canManage',
+						(click)='deleteChange.emit( view )')
+						| {{ "VIEW.COMMON.LABEL.DELETE" | translate }}

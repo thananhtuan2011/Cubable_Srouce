@@ -1,0 +1,6 @@
+options:
+  config-file: node_modules/angular-core/.sass-lint.yml
+files:
+  include: 'src/**/*.s+(a|c)ss'
+  ignore:
+    - 'src/app/@cub/scss/partials/core.s+(a|c)ss'

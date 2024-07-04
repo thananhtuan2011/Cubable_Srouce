@@ -1,0 +1,18 @@
+:host {
+	display: flex;
+	flex-direction: column;
+	position: relative;
+	overflow: hidden;
+	width: 100%;
+	min-width: 0;
+	height: 100%;
+	min-height: 0;
+
+	.edit-button {
+		position: absolute;
+		width: 145px;
+		height: 28px;
+		top: 0;
+		right: 16px;
+	}
+}

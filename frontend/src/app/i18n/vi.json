@@ -1,0 +1,12 @@
+{
+	"LABEL": {
+		"CHANGES_NOT_SAVED": "Lưu thay đổi?",
+		"NO_INTERNET": "Không có kết nối mạng",
+		"SESSION_EXPIRED": "Phiên hết hạn"
+	},
+	"MESSAGE": {
+		"ASK_TO_SAVE_CHANGES": "Bạn có muốn lưu các thay đổi vừa rồi?",
+		"NO_INTERNET": "Kiểm tra cài đặt mạng và thử lại.",
+		"SESSION_EXPIRED": "Vui lòng đăng nhập lại để gia hạn phiên của bạn."
+	}
+}

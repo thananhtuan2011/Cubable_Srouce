@@ -1,0 +1,175 @@
+@import 'src/app/@cub/scss/partials/variable';
+
+:host {
+	display: flex;
+	flex-direction: column;
+	width: 100%;
+	min-width: 0;
+	height: 100%;
+	min-height: 0;
+
+	.column {
+		$self: &;
+
+		#{ $self }-manage {
+			background-color: white;
+		}
+
+		#{ $self }-manage--active {
+			background-color: $color-material-focus;
+		}
+	}
+
+	.group {
+		display: flex;
+		flex-direction: column;
+		align-items: flex-start;
+		align-self: stretch;
+		gap: 8px;
+		border-radius: 16px;
+		padding: 8px;
+		border: 1px solid $color-border-primary;
+
+		.group-list {
+			display: flex;
+			flex-direction: column;
+			align-items: flex-start;
+			align-self: stretch;
+			padding-left: 12px;
+			background: white;
+			border-radius: 8px;
+		}
+
+		.group-button {
+			display: flex;
+			flex-direction: row;
+			padding: {
+				right: 2px;
+				left: 2px;
+			};
+
+			button {
+				padding: 2px 4px;
+				font-size: 12px;
+				line-height: 16px;
+				width: 45px;
+				background-color: $color-material-default;
+			}
+
+			.left {
+				border-right: 1px solid white;
+				padding-left: 6px;
+				border-radius: 20px 0 0 20px;
+			}
+
+			.center {
+				border-right: 1px solid white;
+			}
+
+			.right {
+				padding-right: 6px;
+				border-radius: 0 20px 20px 0;
+			}
+
+			.red {
+				background-color: color(red, 500);
+				color: white;
+			}
+
+			.yellow {
+				background-color: color(yellow, 500);
+				color: white;
+			}
+
+			.green {
+				background-color: color(green, 500);
+				color: white;
+			}
+		}
+	}
+
+	.group-corner-expand {
+		border-bottom-right-radius: 24px;
+		border-bottom-left-radius: 24px;
+	}
+
+	.view-select {
+		width: 100%;
+		display: flex;
+		flex-direction: column;
+		padding: 8px;
+		gap: 4px;
+		border-radius: 16px;
+		border: 1px solid $color-border-primary;
+
+		.view-table {
+			width: 100%;
+			display: flex;
+			flex-direction: column;
+			padding-left: 12px;
+			border-radius: 8px;
+			background-color: white;
+		}
+	}
+
+	.option {
+		display: flex;
+		flex-direction: row;
+		align-items: center;
+		justify-content: space-between;
+		align-self: stretch;
+		padding: 0 8px 0 12px;
+		border-radius: 8px;
+		background: white;
+
+		cursor: pointer;
+
+		.option-label {
+			display: flex;
+			flex-direction: column;
+			padding: 4px 0;
+			flex: 1 0 0%;
+		}
+
+		.option-dropdown {
+			display: flex;
+			flex-direction: row;
+			align-items: center;
+			justify-content: center;
+			padding: 8px 12px;
+			border: 1px solid $color-border-primary;
+			border-radius: 10px;
+
+			&:hover {
+				border: 1px solid $color-text-primary;
+			}
+		}
+
+		.option-dropdown--active {
+			border: 1px solid $color-text-primary;
+			box-shadow: 0 0 0 3px rgba(129, 129, 129, .3), 0 1px 2px 0 rgba(16, 24, 40, .05);
+		}
+	}
+
+	.remove-border-radius-bottom {
+		border-bottom-right-radius: 0;
+		border-bottom-left-radius: 0;
+	}
+
+	.remove-border-radius-top {
+		width: 100%;
+		padding-left: 12px;
+		border-top-right-radius: 0;
+		border-top-left-radius: 0;
+	}
+
+	.column-divider {
+		width: 96%;
+	}
+
+	.dialog-role-permission {
+		[cubDialogContent] {
+			padding: 20px 18px;
+		}
+	}
+}

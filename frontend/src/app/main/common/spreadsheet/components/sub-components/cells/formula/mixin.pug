@@ -1,0 +1,23 @@
+mixin formulaCell(calculated, resultFormatConfig, resultFormatType)
+	ng-container([ngSwitch]='true')
+		ng-container(*ngSwitchCase=`$any( ${calculated}?.resultType ) | isDateField`)
+			ng-container(*ngIf=`${resultFormatType} === formulaResultFormatType.Date; else elseBlock;`)
+				| {{ #{calculated}.data | dateValue : #{resultFormatConfig}.format : #{resultFormatConfig}.timeFormat }}
+			ng-template(#elseBlock)
+				| {{ #{calculated}.data | dateValue }}
+		ng-container(*ngSwitchCase=`$any( ${calculated}?.resultType ) | isNumberField`)
+			| {{ #{calculated}.data | numberValue : #{resultFormatConfig}.format : #{resultFormatConfig}.decimalPlaces }}
+		ng-container(*ngSwitchCase=`$any( ${calculated}?.resultType ) | isCheckboxField`)
+			| {{ #{calculated}?.data ? "TRUE" : "FALSE" }}
+		.field-cell__text-content
+			ng-container(*ngSwitchCase=`${calculated}?.resultType === formulaCalculatedType.CALCULATED_ARRAY`)
+				| {{ #{calculated}.data | json }}
+			ng-container(*ngSwitchCase=`$any( ${calculated}?.resultType ) | isTextField`)
+				| {{ #{calculated}.data }}
+			ng-container(*ngSwitchCase=`${calculated}?.resultType === formulaCalculatedType.CALCULATED_NULL`)
+				| null
+			ng-container(*ngSwitchCase=`${calculated}?.resultType === formulaCalculatedType.CALCULATED_UNDEFINED`)
+				| undefined
+			ng-container(*ngSwitchDefault)
+				span([ngClass]=`{ "text-color-error": ${calculated} && ${calculated}.resultType === null }`)
+					| {{ #{calculated}?.data }}

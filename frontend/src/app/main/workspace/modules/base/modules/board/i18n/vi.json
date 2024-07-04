@@ -1,0 +1,25 @@
+{
+	"LABEL": {
+		"AUTOMATION": "Tự động hóa",
+		"COLLAPSE": "Thu gọn",
+		"CREATE_NEW": "Tạo mới",
+		"CREATE_NEW_VIEW": "Tạo chế độ xem mới",
+		"DELETE": "Xóa",
+		"IMPORT_DATA": "Nhập dữ liệu",
+		"DELETE_BOARD": "Xóa Board",
+		"DUPLICATE": "Tạo bản sao",
+		"KEEP": "Giữ lại",
+		"MANAGE_VIEW": "Quản lý chế độ xem",
+		"MORE_ACTION": "Thao tác khác",
+		"NAME": "Tên"
+	},
+	"MESSAGE": {
+		"BASE_NOT_AVAILABLE": "Base {{ name }} hiện tại không còn khả dụng",
+		"ALL_VIEWS_HIDDEN": "Tất cả chế độ xem đã bị ẩn",
+		"DELETE_BOARD_CONFIRM": "<b>{{ boardName }}</b> sẽ bị xóa vĩnh viễn. Bạn chắc chứ?",
+		"NOT_HAS_VIEW": "Chưa có chế độ xem nào"
+	},
+	"PLACEHOLDER": {
+		"TYPE_BOARD_NAME": "Nhập tên board"
+	}
+}

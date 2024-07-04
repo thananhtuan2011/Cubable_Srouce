@@ -1,0 +1,27 @@
+@import 'src/scss/partials/variable';
+@import 'src/scss/partials/mixin';
+
+.wgc-excel-header-cell {
+	overflow: hidden;
+	padding: 0 !important;
+	position: relative;
+	height: 40px;
+	min-height: 40px;
+
+	&.wgc-excel-header-cell--required {
+		> div {
+			@include inside-required-tag;
+		}
+	}
+
+	> div {
+		display: flex;
+		align-items: center;
+		padding: 10px;
+		position: absolute;
+		top: 0;
+		right: 0;
+		left: 0;
+		bottom: 0;
+	}
+}

@@ -1,0 +1,9 @@
+ng-container(*ngIf='isEntry')
+	include ./blocks/select-board.partial.pug
+
+	select-row(
+		#selectRowComp,
+		*ngIf='settings.boardID',
+		[boardID]='settings.boardID',
+		[(row)]='settings.row',
+		(rowChange)='onRowChange()')

@@ -1,0 +1,152 @@
+label.wgc-avatar-picker__label(wgcTruncate)
+	| {{ label }}
+.wgc-avatar-picker__list
+	.wgc-avatar-picker__list-item
+		.wgc-avatar-picker__option(
+			[class.wgc-avatar-picker__option--active]='mode === "text"',
+			[class.wgc-avatar-picker__option--disabled]='disabled',
+			(click)='!disabled && mode = "text"; !disabled && pick();')
+			wgc-icon.wgc-avatar-picker__option-icon(size='20px', name='typography')
+			.wgc-avatar-picker__option-label
+				| {{ "WGC.LABEL.TEXT" | translate }}
+			wgc-radio.wgc-avatar-picker__option-radio(readonly, color='primary', [disabled]='disabled', [checked]='mode === "text"')
+	.wgc-avatar-picker__list-item
+		.wgc-avatar-picker__option(
+			[class.wgc-avatar-picker__option--active]='mode === "photo"',
+			[class.wgc-avatar-picker__option--disabled]='disabled',
+			(click)='!disabled && mode = "photo"; !disabled && pick();')
+			wgc-icon.wgc-avatar-picker__option-icon(size='20px', name='image')
+			.wgc-avatar-picker__option-label
+				| {{ "WGC.LABEL.PHOTO" | translate }}
+			wgc-radio.wgc-avatar-picker__option-radio(readonly, color='primary', [disabled]='disabled', [checked]='mode === "photo"')
+	.wgc-avatar-picker__list-item
+		.wgc-avatar-picker__option(
+			[class.wgc-avatar-picker__option--active]='mode === "icon"',
+			[class.wgc-avatar-picker__option--disabled]='disabled',
+			(click)='!disabled && mode = "icon"; !disabled && pick();')
+			.wgc-avatar-picker__option-icon
+				wgc-emoji([emoji]='icon || defaultIcon')
+			.wgc-avatar-picker__option-label
+				| {{ "WGC.LABEL.ICON" | translate }}
+			wgc-radio.wgc-avatar-picker__option-radio(readonly, color='primary', [disabled]='disabled', [checked]='mode === "icon"')
+.wgc-avatar-picker__list
+	ng-container(*ngIf='mode === "icon"; else elseBlock;')
+		.wgc-avatar-picker__list-item.wgc-avatar-picker__list-item--full
+			.wgc-avatar-picker__content.wgc-avatar-picker__content--mode-icon
+				wgc-emoji-picker(mode='inline', perLine='undefined', (picked)='!disabled && icon = $event?.unified; !disabled && pick();')
+				.wgc-avatar-picker__content--wrapper
+					.wgc-avatar-picker__avatar
+						wgc-avatar(size='xlarge', [avatar]='{ icon: icon || defaultIcon, color: color, mode: "icon" }')
+					.wgc-avatar-picker__anchor(
+						wgcColorPicker,
+						emptyMode='background',
+						[class.wgc-avatar-picker__anchor--disabled]='disabled',
+						[(pickedColor)]='color',
+						(picked)='pick()')
+						| {{ "WGC.LABEL.EDIT_COLOR" | translate }}
+	ng-template(#elseBlock)
+		.wgc-avatar-picker__list-item([class.wgc-avatar-picker__list-item--hidden]='mode !== "text"')
+			.wgc-avatar-picker__content.wgc-avatar-picker__content--mode-text
+				.wgc-avatar-picker__content--wrapper
+					.wgc-avatar-picker__avatar
+						wgc-avatar(size='xlarge', [label]='text || "AB"', [avatar]='{ mode: "text", color: color }')
+					.wgc-avatar-picker__anchor(
+						wgcColorPicker,
+						emptyMode='background',
+						[class.wgc-avatar-picker__anchor--disabled]='disabled',
+						[(pickedColor)]='color',
+						(picked)='pick()')
+						| {{ "WGC.LABEL.EDIT_COLOR" | translate }}
+		.wgc-avatar-picker__list-item([class.wgc-avatar-picker__list-item--hidden]='mode !== "photo"')
+			.wgc-avatar-picker__content.wgc-avatar-picker__content--mode-photo
+				.wgc-avatar-picker__content--wrapper
+					ng-container(*ngIf='photo; else elseBlock;')
+						.wgc-avatar-picker__avatar
+							wgc-avatar(
+								size='xlarge',
+								[avatar]='{ photo: croppedImage || photo, mode: "photo" }',
+								[scrolling$]='scrolling$')
+							button.wgc-avatar-picker__btn-remove(
+								wgcIconButton,
+								circle,
+								size='small',
+								icon='trash',
+								[disabled]='disabled',
+								[wgcTooltip]='"WGC.LABEL.REMOVE" | translate',
+								(click)='photo = null; pick();')
+						div
+							span.wgc-avatar-picker__anchor([class.wgc-avatar-picker__anchor--disabled]='disabled', (click)='!disabled && openDialog( photoDialog )')
+								| {{ "WGC.LABEL.UPLOAD" | translate }}
+							| &nbsp;{{ "WGC.LABEL.OTHER" | translate | lowercase }}
+					ng-template(#elseBlock)
+						button.wgc-avatar-picker__avatar.wgc-avatar-picker__avatar--empty(
+							wgcIconButton,
+							circle,
+							size='72px',
+							iconSize='24px',
+							icon='cloud-upload',
+							[disabled]='disabled',
+							(click)='openDialog( photoDialog )')
+						.wgc-avatar-picker__anchor([class.wgc-avatar-picker__anchor--disabled]='disabled', (click)='!disabled && openDialog( photoDialog )')
+							| {{ "WGC.LABEL.UPLOAD" | translate }}
+
+ng-template(#photoDialog)
+	.wgc-avatar-picker-dialog
+		div(wgcDialogHeader)
+			h1
+				| {{ "WGC.LABEL.UPLOAD_YOUR_PHOTO" | translate }}
+			button(
+				wgcButton,
+				icon='close',
+				[wgcTooltip]='"WGC.LABEL.CLOSE" | translate',
+				(click)='dialogRef?.close()')
+		div(wgcDialogContent)
+			ng-container(*ngIf='isCropping; else elseBlock;')
+				wgc-cropper(
+					circle,
+					[image]='selectedFile',
+					[options]='{ aspectRatio: 1 / 1 }',
+					(init)='cropper = $event',
+					(cropped)='onCropped( $event )')
+			ng-template(#elseBlock)
+				input(
+					#avatarPickerFileInput,
+					type='file',
+					accept='image/*',
+					tabindex='-1',
+					style='display: none',
+					(change)='onFileSelected( $any( $event?.target )?.files[ 0 ] ); avatarPickerFileInput.value = "";')
+				ng-container(*ngIf='croppedImage; else elseBlock;')
+					.wgc-avatar-picker__avatar
+						wgc-avatar(size='210px', [avatar]='{ photo: croppedImage }', [scrolling$]='scrolling$')
+						button.wgc-avatar-picker__btn-remove(
+							wgcIconButton,
+							icon='trash',
+							size='small',
+							[wgcTooltip]='"WGC.LABEL.REMOVE" | translate',
+							(click)='croppedImage = undefined')
+					div
+						span.wgc-avatar-picker__anchor((click)='avatarPickerFileInput?.click()')
+							| {{ "WGC.LABEL.BROWSE" | translate }}
+						| &nbsp;{{ "WGC.LABEL.OTHER" | translate | lowercase }}
+				ng-template(#elseBlock)
+					.wgc-avatar-picker__drag-zone(
+						(dragover)='$event?.stopPropagation(); $event?.preventDefault();',
+						(drop)='$event?.preventDefault(); onFileSelected( $event?.dataTransfer?.files[ 0 ] )')
+						div
+							| {{ "WGC.LABEL.DRAG_IMAGE" | translate }}
+						div
+							| {{ "WGC.LABEL.OR" | translate }}
+						div
+							span.wgc-avatar-picker__anchor((click)='avatarPickerFileInput?.click()')
+								| {{ "WGC.LABEL.BROWSE" | translate }}
+							| &nbsp;{{ "WGC.LABEL.OTHER" | translate | lowercase }}
+					div
+						| {{ "WGC.MESSAGE.SUPPORT_IMAGE" | translate }}
+		div(wgcDialogFooter)
+			button.wgc-avatar-picker__btn-update(
+				wgcButton,
+				color='primary',
+				[disabled]='!isCropping && !croppedImage',
+				(click)='isCropping ? cropImage() : pickImage()')
+				| {{ ( "WGC.LABEL." + ( isCropping ? "CROP" : "UPLOAD" ) ) | translate }}

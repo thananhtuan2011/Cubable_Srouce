@@ -1,0 +1,93 @@
+@import 'src/scss/partials/variable';
+@import 'src/scss/partials/mixin';
+
+.wgc-basic-button {
+	$self: &;
+	display: flex;
+	cursor: pointer;
+	width: fit-content;
+	text-align: left;
+	font-weight: $font-weight-semibold;
+	color: var(--basic-button-color, inherit);
+	background-color: transparent;
+	border: none;
+
+	// Color state
+	@at-root {
+		&.wgc-primary {
+			color: var(--primary-color, $color-primary);
+		}
+	}
+
+	// Alignment state
+	@at-root {
+		&#{ $self }--left {
+			#{ $self }-wrapper {
+				justify-content: flex-start;
+			}
+		}
+
+		&#{ $self }--center {
+			#{ $self }-wrapper {
+				justify-content: center;
+			}
+		}
+
+		&#{ $self }--right {
+			#{ $self }-wrapper {
+				justify-content: flex-end;
+			}
+		}
+	}
+
+	// Has icon state
+	@at-root {
+		&#{ $self }--has-icon {
+			#{ $self }__content {
+				padding: {
+					left: 5px;
+					right: 5px;
+				};
+			}
+		}
+	}
+
+	// Disabled state
+	@at-root {
+		&:not(#{ $self }--disabled) {
+			&:hover {
+				opacity: .8;
+			}
+
+			&:focus-visible {
+				box-shadow: $box-shadow-focus;
+			}
+		}
+
+		&#{ $self }--disabled {
+			@include cursor-not-allowed;
+			color: $color-disabled;
+		}
+	}
+
+	#{ $self }-wrapper {
+		display: flex;
+		align-items: center;
+		height: 100%;
+		width: 100%;
+	}
+
+	#{ $self }__icon {
+		font-size: var(--basic-button-icon-size, inherit);
+		line-height: var(--basic-button-icon-size, inherit);
+	}
+
+	#{ $self }__content {
+		display: flex;
+		align-items: center;
+
+		&:empty {
+			display: none;
+		}
+	}
+}

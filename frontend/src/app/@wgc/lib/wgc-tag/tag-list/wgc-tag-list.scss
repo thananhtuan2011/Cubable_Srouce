@@ -1,0 +1,31 @@
+.wgc-tag-list {
+	$self: &;
+	display: flex;
+
+	&#{ $self }--wrapping {
+		#{ $self }-wrapper {
+			flex-wrap: wrap;
+		}
+	}
+
+	#{ $self }-wrapper {
+		display: flex;
+		align-items: center;
+		margin-left: -2.5px;
+		margin-right: -2.5px;
+	}
+
+	.wgc-tag {
+		margin: 2.5px;
+		height: 32px;
+		min-height: 32px;
+		max-height: 32px;
+		min-width: min-content;
+		max-width: max-content;
+		white-space: nowrap;
+
+		&--more {
+			cursor: pointer;
+		}
+	}
+}

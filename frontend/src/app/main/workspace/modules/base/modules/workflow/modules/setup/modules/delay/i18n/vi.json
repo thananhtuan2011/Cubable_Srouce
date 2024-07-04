@@ -1,0 +1,11 @@
+{
+	"LABEL": {
+		"SET_DELAY": "Đặt thời gian chờ"
+	},
+	"MESSAGE": {
+		"DAY": "Ngày",
+		"HOUR": "Giờ",
+		"MINUTE": "Phút",
+		"SET_DELAY_MESSAGE": "Là thời gian hệ thống sẽ tạm hoãn trước khi kiểm tra điều kiện và rẽ nhánh hành động"
+	}
+}

@@ -1,0 +1,109 @@
+mixin fieldItem
+	.layout-row.layout-align-space-between-center.flex
+		.layout-row.layout-align-start-center.layout-gap-8
+			cub-icon.drag(
+				cdkDragHandle,
+				name='drag',
+				size='20px',
+				[color]='"LABEL" | color',
+				(click)='$event?.stopPropagation()')
+			cub-icon(
+				size='20px',
+				[name]='( f.dataType | fieldMetadata ).icon')
+			.text-truncate.maw-150.mr-8(
+				[title]='f.name | empty')
+				| {{ f.name | empty }}
+		button(
+			cubBasicButton,
+			icon='plus',
+			iconSize='20px',
+			iconColor='secondary',
+			(click)=`addField( f );
+				$event?.stopPropagation();`)
+
+.layout-column.layout-gap-12.full-height
+	h5
+		| {{ "BASE.BOARD.FORM.LABEL.DISPLAY" | translate }}
+	.sidebar-display
+		cub-switch(
+			color='primary',
+			[formControl]='avatarControl',
+			[label]='"BASE.BOARD.FORM.LABEL.AVATAR" | translate',
+			[valueControl]='form?.hasAvatar',
+			(valueControlChange)='avatarChange( $event )')
+		cub-switch(
+			color='primary',
+			[formControl]='coverImageControl',
+			[label]='"BASE.BOARD.FORM.LABEL.AVATAR_COVER" | translate',
+			[valueControl]='form?.hasCoverImage',
+			(valueControlChange)='coverAvatarChange( $event )')
+		cub-switch(
+			color='primary',
+			[formControl]='recaptchaControl',
+			[label]='"BASE.BOARD.FORM.LABEL.RE-CAPTCHA" | translate',
+			[valueControl]='form?.hasRecaptcha',
+			(valueControlChange)='recaptchaChange( $event )')
+	.sidebar-field
+		.layout-column
+			.sidebar-field__title
+				h5
+					| {{ "BASE.BOARD.FORM.LABEL.FIELD" | translate }}
+				.layout-row.layout-gap-4
+					button(
+						cubBasicButton,
+						[disabled]='!fieldsAdded?.length',
+						(click)='removeAllField()')
+						.text-color-hyperlink(
+							*ngIf='fieldsAdded?.length',
+							[cubTooltip]='"BASE.BOARD.FORM.MESSAGE.TOOLTIP_REMOVE_ALL" | translate')
+							| {{ "BASE.BOARD.FORM.LABEL.REMOVE_ALL" | translate }}
+						.text-color-tertiary(*ngIf='!fieldsAdded?.length')
+							| {{ "BASE.BOARD.FORM.LABEL.REMOVE_ALL" | translate }}
+					button(
+						cubBasicButton,
+						[disabled]='!fieldsAvailable?.length',
+						(click)='addAllField()')
+						.text-color-hyperlink(
+							*ngIf='fieldsAvailable?.length',
+							[cubTooltip]='"BASE.BOARD.FORM.MESSAGE.TOOLTIP_ADD_ALL" | translate')
+							| {{ "BASE.BOARD.FORM.LABEL.ADD_ALL" | translate }}
+						.text-color-tertiary(*ngIf='!fieldsAvailable?.length')
+							| {{ "BASE.BOARD.FORM.LABEL.ADD_ALL" | translate }}
+			cub-search-box.p-2(
+				#searchBox,
+				includeOuterSize,
+				(searching)='searchField( $event )')
+
+		cub-scroll-bar(
+			suppressX,
+			detectScroll,
+			*ngIf='fieldsAvailable?.length')
+			cub-list
+				cub-list-group.layout-gap-8(
+					cdkDropList,
+					#listOfAllFields='cdkDropList',
+					[cdkDropListData]='fields')
+					button.sidebar-field__item(
+						cubListItem,
+						cdkDrag,
+						*ngFor='let f of fieldsAvailable; trackByID',
+						[cdkDragData]='f',
+						(click)='addField( f )')
+						.sidebar-field-preview(*cdkDragPreview)
+							+fieldItem
+						.sidebar-field-placeholder(*cdkDragPlaceholder)
+						+fieldItem
+		.sidebar-not-found-result(*ngIf='!fields?.length && searchBox?.searchQuery')
+			| {{ "BASE.BOARD.FORM.MESSAGE.NOT_FOUND_RESULT" | translate }}
+		button.sidebar-button__create.layout-gap-8(
+			fieldMenu,
+			position='start-after',
+			*ngIf='board.permission.detail.field.createAndManage',
+			[unsupportDataTypes]='fieldTypeNotSupport',
+			[otherFields]='fields',
+			[context]='{ boardID: board.id }',
+			(added)='createField( $event )')
+			cub-icon(
+				name='plus-circle',
+				size='20px')
+			| {{ "BASE.BOARD.FORM.LABEL.CREATE_NEW_FIELD" | translate }}

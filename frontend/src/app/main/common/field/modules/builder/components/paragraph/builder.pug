@@ -1,0 +1,37 @@
+include ../builder.include.pug
+
+ng-template(#settingBlock)
+	.layout-column.layout-gap-8
+		b.line-height-20
+			| {{ "FIELD.BUILDER.LABEL.FORMAT_METHOD" | translate }}
+		.layout-row.layout-gap-6
+			cub-switch(
+				size='small',
+				[ngModel]='internalField.isRichTextFormatting',
+				(ngModelChange)='onFormatMethodChanged( $event )')
+			div
+				div
+					| {{ "FIELD.BUILDER.LABEL.ENABLE_RICH_TEXT_FORMATTING" | translate }}
+				label.h6
+					| {{ "FIELD.BUILDER.MESSAGE.RICH_TEXT_FORMATTING" | translate }}
+
+ng-template(#defaultBlock)
+	paragraph-field-input(
+		[autoFocusOn]='!internalField.isRichTextFormatting',
+		[required]='false',
+		[label]='"FIELD.BUILDER.LABEL.DEFAULT_VALUE" | translate',
+		[field]='internalField',
+		[(data)]='initialData',
+		(dataChange)='onInitialDataChanged( $event )',
+		(richTextEditorOpened)='onRichTextEditorOpened()',
+		(richTextEditorClosed)='onRichTextEditorClosed()')
+
+ng-container(
+	*ngTemplateOutlet=`
+		fieldTemplate;
+		context: {
+			settingBlock,
+			defaultBlock,
+			canSetRequired: true,
+		};
+	`)

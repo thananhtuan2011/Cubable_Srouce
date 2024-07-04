@@ -1,0 +1,8 @@
+{
+	"LABEL": {
+		"ALL": "All"
+	},
+	"MESSAGE": {
+		"DELETE_COMMENT_CONFIRM": "Comment is about to be permanently deleted.<br>Are you sure?"
+	}
+}

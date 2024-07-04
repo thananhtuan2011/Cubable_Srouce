@@ -1,0 +1,17 @@
+include ../file-picker.inside.pug
+
++header
+
++content
+	.cub-file-picker-inside__picking-zone
+		.cub-file-picker-inside__picking-zone__info
+			cub-icon(
+				name='./assets/@cub/images/icons/one-drive.svg',
+				size='36px')
+			| {{ "CUB.MESSAGE.PICK_FILE_FROM_ONE_DRIVE" | translate }}
+		button(
+			cubButton='secondary',
+			(click)='pick()')
+			| {{ "CUB.LABEL.PICK_FILE" | translate }}
+
++footer

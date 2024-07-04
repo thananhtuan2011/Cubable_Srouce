@@ -1,0 +1,31 @@
+@import '../../scss/partials/variable';
+
+.cub-list-item {
+	$self: &;
+
+	display: flex;
+	column-gap: 8px;
+	min-height: 32px;
+	padding: 8px 8px 8px 12px;
+	border-radius: 8px;
+
+    text-align: left;
+	word-break: break-word;
+
+	// Common states
+	@at-root {
+		&:active,
+		&:hover,
+		&:focus-visible,
+		&#{ $self }--pointing {
+			background-color: $color-material-hover;
+		}
+	}
+
+	// Active state
+	@at-root {
+		&#{ $self }--active {
+			background-color: color(blue, 100);
+		}
+	}
+}

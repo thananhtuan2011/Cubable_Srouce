@@ -1,0 +1,97 @@
+@import 'src/scss/partials/variable';
+@import 'src/scss/partials/mixin';
+
+.wgc-action-item {
+	$self: &;
+
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	min-width: 80px;
+	max-width: 80px;
+	margin: {
+		left: 10px;
+		right: 10px;
+	};
+
+	text-align: center;
+
+	// Text only state
+	@at-root {
+		&#{ $self }--text-only {
+			max-width: 120px;
+
+			#{ $self }__trigger {
+				width: 100%;
+				min-width: 0;
+				max-width: none;
+			}
+		}
+	}
+
+	// Disabled state
+	@at-root {
+		&:not(#{ $self }--disabled) {
+			#{ $self }__trigger {
+				&:hover {
+					color: $color-text;
+					background-color: $color-white;
+
+					& ~ #{ $self }__label {
+						color: $color-white;
+					}
+				}
+			}
+		}
+
+		&#{ $self }--disabled {
+			@include cursor-not-allowed;
+
+			#{ $self }__trigger,
+			#{ $self }__label {
+				color: color(darkGray, 200); // Special
+			}
+		}
+	}
+
+	#{ $self }__trigger,
+	#{ $self }__label {
+		display: block;
+		overflow: hidden;
+		max-width: 100%;
+
+		white-space: nowrap;
+		text-overflow: ellipsis;
+	}
+
+	#{ $self }__trigger {
+		height: 40px;
+		min-height: 40px;
+		max-height: 40px;
+		width: 40px;
+		min-width: 40px;
+		max-width: 40px;
+		padding: 10px;
+		border: none;
+		border-radius: 8px;
+
+		color: var(--action-item-color, $color-white);
+		background-color: color(darkGray, 700); // Special
+
+		transition: all 100ms ease-in-out;
+	}
+
+	#{ $self }__label {
+		margin-top: 5px;
+
+		color: var(--action-item-color, $color-white);
+
+		font-weight: $font-weight-semibold;
+
+		transition: color 100ms ease-in-out;
+
+		&:empty {
+			display: none;
+		}
+	}
+}

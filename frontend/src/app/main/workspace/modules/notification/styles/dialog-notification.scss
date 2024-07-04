@@ -1,0 +1,18 @@
+@import 'src/scss/partials/variable';
+
+:host {
+	display: flex;
+	flex-direction: column;
+	width: 100%;
+	min-width: 0;
+	height: 100%;
+	min-height: 0;
+
+	::ng-deep {
+		.cub-tabs > .cub-tabs__header.cub-tabs__header-left {
+			height: 47px;
+			min-height: 47px;
+			max-height: 47px;
+		}
+	}
+}

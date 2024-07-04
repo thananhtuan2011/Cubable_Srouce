@@ -1,0 +1,31 @@
+cub-card(
+	variant='tonal',
+	size='small')
+	cub-card-content
+		.layout-column.layout-gap-6
+			| {{ "BASE.WORKFLOW.SETUP.DELAY.LABEL.SET_DELAY" | translate }}
+			h6.text-color-secondary
+				| {{ "BASE.WORKFLOW.SETUP.DELAY.MESSAGE.SET_DELAY_MESSAGE" | translate }}
+			.layout-row.layout-align-center-start.layout-gap-8
+				cub-form-field.flex-50
+					input(
+						appNumbersOnly,
+						required,
+						autoFocusOn,
+						cubFormFieldInput,
+						min='0',
+						type='number',
+						[placeholder]='"0"',
+						[formControl]='quantityControl',
+						[(valueControl)]='quantity',
+						(valueControlChange)='onSettingChanged()',
+						(blur)='onSettingChanged()')
+				cub-dropdown.flex-50(
+					[clearable]='false',
+					[formControl]='periodControl',
+					[(valueControl)]='settings.period',
+					(valueControlChange)='onSettingChanged()')
+					cub-dropdown-item(
+						*ngFor='let type of periodTypes; ngForTrackByValue',
+						[label]='( "BASE.WORKFLOW.SETUP.DELAY.MESSAGE." + type.label ) | translate',
+						[value]='type.period')

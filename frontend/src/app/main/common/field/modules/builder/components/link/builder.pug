@@ -1,0 +1,19 @@
+include ../builder.include.pug
+
+ng-template(#defaultBlock)
+	link-field-input(
+		autoFocusOn,
+		[required]='false',
+		[label]='"FIELD.BUILDER.LABEL.DEFAULT_LINK" | translate',
+		[field]='internalField',
+		[(data)]='initialData',
+		(dataChange)='onInitialDataChanged( $event )')
+
+ng-container(
+	*ngTemplateOutlet=`
+		fieldTemplate;
+		context: {
+			defaultBlock,
+			canSetRequired: true,
+		};
+	`)

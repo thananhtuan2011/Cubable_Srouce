@@ -1,0 +1,10 @@
+include ../boxes.include.pug
+
++hyperlink-box()(
+	placeholder='email@gmail.com')
+
+a.field-cell__text-content(
+	target='_blank',
+	*ngIf='data',
+	[href]='"mailto:" + data')
+	| {{ data }}

@@ -1,0 +1,137 @@
+@import 'src/scss/partials/variable';
+@import 'src/scss/partials/mixin';
+
+:host(.wgc-table) {
+	@include inside-zindex;
+	position: relative;
+	width: 100%;
+	min-width: 100%;
+	// table-layout: fixed;
+	border: transparent;
+	border-spacing: 0;
+
+	&:not([border]) {
+		::ng-deep {
+			tr:not(:first-child),
+			thead + tbody tr:first-child {
+				td {
+					border-top: 1px solid $color-border;
+				}
+			}
+		}
+	}
+
+	&[border] {
+		border-collapse: separate;
+
+		::ng-deep {
+			th,
+			td {
+				border: 1px solid rgba($color-border, .5);
+			}
+		}
+	}
+
+	&.wgc-table--scrolling {
+		::ng-deep {
+			th,
+			td {
+				&[sticky='top'] {
+					box-shadow: $box-shadow-scroll-vertical;
+				}
+
+				&[sticky='left'] {
+					box-shadow: $box-shadow-scroll-horizontal;
+				}
+			}
+		}
+	}
+
+	::ng-deep {
+		th,
+		td {
+			text-align: center;
+			padding-left: 7.5px;
+			padding-right: 7.5px;
+			background-color: $color-white;
+			height: 56px;
+			min-height: 56px;
+
+			&[align='left'] {
+				text-align: left;
+			}
+
+			&[align='center'] {
+				text-align: center;
+			}
+
+			&[align='right'] {
+				text-align: right;
+			}
+
+			&[sticky] {
+				position: sticky;
+				z-index: 1;
+				overflow: hidden;
+				background-image: none;
+				background-color: $color-white;
+
+				&[sticky='top'] {
+					top: 0;
+				}
+
+				&[sticky='bottom'] {
+					bottom: 0;
+				}
+
+				&[sticky='left'] {
+					left: 0;
+				}
+
+				&[sticky='right'] {
+					right: 0;
+				}
+
+				> * {
+					position: relative;
+					z-index: 1;
+				}
+			}
+		}
+
+		thead {
+			th,
+			td {
+				font-size: 13px;
+				font-weight: $font-weight-regular;
+				background-color: $color-secondary;
+				color: $color-label;
+				height: 48px;
+				min-height: 48px;
+
+				&[sticky] {
+					background-color: $color-secondary;
+				}
+			}
+		}
+
+		tbody {
+			tr {
+				&:hover {
+					td,
+					td[sticky] {
+						background-color: $color-secondary;
+					}
+				}
+
+				&:not(:hover)[active] td {
+					background-color: $color-active;
+				}
+			}
+
+			td {
+				transition: background 100ms ease-in-out;
+			}
+		}
+	}
+}

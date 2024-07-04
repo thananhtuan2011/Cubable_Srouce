@@ -1,0 +1,49 @@
+@import 'src/scss/partials/variable';
+
+.wgc-comment-image-list {
+	display: flex;
+	flex-direction: column;
+	flex-wrap: wrap;
+	height: 150px;
+	border-radius: 10px;
+	overflow: hidden;
+
+	.wgc-comment-image {
+		height: 100%;
+		background-color: $color-placeholder;
+		background-position: center;
+		background-size: cover;
+		background-repeat: no-repeat;
+		cursor: pointer;
+
+		&:nth-child(2),
+		&:nth-child(3) {
+			flex: 1 1 48%;
+			margin-left: 5px;
+		}
+
+		&:nth-child(3) {
+			margin-top: 5px;
+		}
+
+		&.wgc-comment-image--more {
+			position: relative;
+
+			&:after {
+				content: '+' attr(data-more-count);
+				background-color: rgba(33, 33, 33, .7);
+				display: flex;
+				align-items: center;
+				justify-content: center;
+				position: absolute;
+				font-size: 18px;
+				font-weight: $font-weight-semibold;
+				color: $color-white;
+				top: 0;
+				bottom: 0;
+				right: 0;
+				left: 0;
+			}
+		}
+	}
+}

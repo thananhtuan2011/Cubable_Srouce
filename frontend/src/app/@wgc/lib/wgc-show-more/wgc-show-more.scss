@@ -1,0 +1,38 @@
+@import 'src/scss/partials/variable';
+
+.wgc-show-more {
+	display: flex;
+	flex-direction: column;
+	position: relative;
+	max-height: var(--show-more-limit);
+
+	&.wgc-show-more--hidden {
+		> .wgc-show-more-wrapper {
+			overflow: hidden;
+		}
+	}
+
+	> .wgc-show-more-wrapper {
+		position: relative;
+		word-break: break-word;
+
+		> .wgc-show-more__content {
+			height: fit-content;
+		}
+
+		> .wgc-show-more__cut-off {
+			position: absolute;
+			bottom: 0;
+			right: 0;
+			left: 0;
+			height: 40px;
+			background-image: $gradient-secondary-vertical;
+		}
+	}
+
+	> .wgc-show-more__btn-toggle {
+		color: $color-label;
+		background-color: transparent;
+		margin-top: 10px;
+	}
+}

@@ -1,0 +1,27 @@
+.cub-tabs__header(
+	cubScrollBar,
+	suppressY,
+	[class.cub-tabs__header-left]='alignment === "left"',
+	[class.cub-tabs__header-center]='alignment === "center"',
+	[class.cub-tabs__header-right]='alignment === "right"')
+	.cub-tabs__header-item(
+		#tabHeader,
+		*ngFor='let item of items; let idx = index;',
+		[attr.title]='item.label',
+		[attr.disabled]='item.disabled || undefined',
+		[class.cub-tabs__header-item--selected]='selectedIndex === idx',
+		(click)='!item.disabled && select( idx )')
+		cub-icon(
+			*ngIf='item.leadingIcon',
+			[name]='item.leadingIcon')
+		| {{ item.label }}
+		ng-container(*ngTemplateOutlet='item.header')
+		cub-icon(
+			*ngIf='item.trailingIcon',
+			[name]='item.trailingIcon')
+
+.cub-tabs__content
+	ng-container(
+		*ngFor='let item of items; let idx = index;')
+		ng-template(
+			*ngTemplateOutlet='selectedIndex === idx ? item.content : undefined')

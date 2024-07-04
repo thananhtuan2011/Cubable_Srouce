@@ -1,0 +1,9 @@
+include ../boxes.include.pug
+
++text-box()(
+	[placeholder]='field.inputFormat',
+	[content]='data | momentDate : field.inputFormat')
+
+.field-cell__text-content(
+	*ngIf='data')
+	| {{ data | dateValue : field.format : field.timeFormat }}

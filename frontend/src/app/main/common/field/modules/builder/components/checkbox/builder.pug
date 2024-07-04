@@ -1,0 +1,15 @@
+include ../builder.include.pug
+
+ng-template(#defaultBlock)
+	checkbox-field-input(
+		autoFocusOn,
+		[label]='"FIELD.BUILDER.LABEL.DEFAULT_VALUE" | translate',
+		[field]='internalField',
+		[(data)]='initialData',
+		(dataChange)='onInitialDataChanged( $event )')
+
+ng-container(
+	*ngTemplateOutlet=`
+		fieldTemplate;
+		context: { defaultBlock };
+	`)

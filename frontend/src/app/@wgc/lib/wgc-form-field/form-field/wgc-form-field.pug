@@ -1,0 +1,121 @@
+mixin errors
+	div(
+		*ngFor='let error of control?.errors | controlErrors : ( fieldName || ( "WGC.LABEL.INPUT" | translate ) ) : multiErrors',
+		[innerHtml]='error')
+
+ng-template(#content)
+	ng-content
+
+label.wgc-form-field__label(wgcTruncate, [attr.required]='required || formFieldInput?.required || undefined')
+	ng-container(*ngIf='label; else elseBlock;')
+		| {{ label }}
+	ng-template(#elseBlock)
+		ng-content(select='[wgcFormFieldLabel]')
+
+.wgc-form-field__input-container
+	.wgc-form-field__prefix((mousedown)='$event.preventDefault()')
+		ng-content(select='[wgcFormFieldPrefix]')
+	wgc-color-dot.wgc-form-field__dot-color(
+		*ngIf='displayColorDot',
+		[viewOnly]='disabled || control?.disabled || formFieldInput?.disabled',
+		[(color)]='dotColor',
+		(colorChange)='dotColorChange?.emit( $event )',
+		(mousedown)='$event.preventDefault()')
+	.wgc-form-field__input
+		ng-container(*ngIf='fakeInput; else elseBlock2;')
+			input.wgc-form-field__input__fake-input(wgcFormFieldInput, readonly)
+			.wgc-form-field__input__fake-input-content
+				ng-container(*ngTemplateOutlet='content')
+		ng-template(#elseBlock2)
+			ng-container(*ngTemplateOutlet='content')
+	.wgc-form-field__actions((mousedown)='$event.preventDefault()')
+		button.wgc-form-field__action(
+			wgcBasicButton,
+			tabindex='-1',
+			color='primary',
+			icon='check',
+			iconSize='16px',
+			*ngIf='canSave',
+			[wgcTooltip]='"WGC.LABEL.SAVE" | translate',
+			(click)='formFieldInput?.save(); formFieldInput?.focus( $event );')
+		button.wgc-form-field__action(
+			wgcBasicButton,
+			tabindex='-1',
+			icon='close',
+			iconSize='16px',
+			*ngIf='canClear',
+			[wgcTooltip]='"WGC.LABEL.CLEAR" | translate',
+			(click)='formFieldInput?.clear(); formFieldInput?.focus( $event );')
+		button.wgc-form-field__action(
+			wgcBasicButton,
+			tabindex='-1',
+			icon='close',
+			iconSize='16px',
+			*ngIf='canCancel',
+			[wgcTooltip]='"WGC.LABEL.CANCEL" | translate',
+			(click)='formFieldInput?.cancel( $event ); formFieldInput?.focus( $event );')
+		button.wgc-form-field__action(
+			wgcBasicButton,
+			tabindex='-1',
+			*ngIf='togglePasswordVisibility && formFieldInput?.hasValue',
+			[wgcTooltip]='"WGC.LABEL." + ( unhidePassword ? "HIDE_PASSWORD" : "SHOW_PASSWORD" ) | translate',
+			[icon]='unhidePassword ? "eye-off" : "eye-on"',
+			(click)='togglePassword();')
+	.wgc-form-field__suffix((mousedown)='$event.preventDefault()')
+		ng-content(select='[wgcFormFieldSuffix]')
+	.wgc-form-field__description((mousedown)='$event.preventDefault()')
+		ng-content(select='[wgcFormFieldDescription]')
+
+.wgc-form-field__hint
+	ng-content(select='[wgcFormFieldHint]')
+
+ng-container([ngSwitch]='errorDisplayMode')
+	ng-container(*ngSwitchCase='"inline"')
+		wgc-tooltip(
+			messageOnly,
+			#inlineErrorTooltipCmp,
+			maxWidth='300px',
+			[color]='"DANGER" | color')
+			+errors
+		div(
+			programmatically,
+			position='below',
+			#inlineErrorTooltip='wgcTooltip',
+			[panelClass]='null',
+			[disabled]='!control?.touched',
+			[wgcTooltip]='inlineErrorTooltipCmp')
+	ng-container(*ngSwitchDefault)
+		.wgc-form-field__error(*ngIf='control || formFieldError')
+			ng-container(*ngIf='control?.touched || formFieldInput?.hasValue')
+				+errors
+			ng-content(select='[wgcFormFieldError]')
+
+.wgc-form-field__password-validation(*ngIf='canCheckWeekPassword')
+	wgc-slider.wgc-form-field__password-validation__slider(
+		readonly,
+		tabindex='-1',
+		[ngModel]='passwordRule?.percent',
+		[color]='passwordHighlight[ passwordRule?.percent ]?.color')
+	.wgc-form-field__password-validation__message
+		| {{ passwordHighlight[ passwordRule?.percent ]?.message | translate }}
+	.wgc-form-field__password-validation-rule-list
+		.wgc-form-field__password-validation-rule(
+			[class.wgc-form-field__password-validation-rule--success]='passwordRule?.minlength',
+			[class.wgc-form-field__password-validation-rule--error]='!passwordRule?.minlength')
+			| •
+			| {{ "WGC.LABEL.MINIMUM_8_CHARACTERS" | translate }}
+		.wgc-form-field__password-validation-rule(
+			[class.wgc-form-field__password-validation-rule--success]='passwordRule?.uppercase',
+			[class.wgc-form-field__password-validation-rule--error]='!passwordRule?.uppercase')
+			| •
+			| {{ "WGC.LABEL.UPPERCASE_LETTERS" | translate }}
+		.wgc-form-field__password-validation-rule(
+			[class.wgc-form-field__password-validation-rule--success]='passwordRule?.lowercase',
+			[class.wgc-form-field__password-validation-rule--error]='!passwordRule?.lowercase')
+			| •
+			| {{ "WGC.LABEL.LOWERCASE_LETTERS" | translate }}
+		.wgc-form-field__password-validation-rule(
+			[class.wgc-form-field__password-validation-rule--success]='passwordRule?.numberOrSymbol',
+			[class.wgc-form-field__password-validation-rule--error]='!passwordRule?.numberOrSymbol')
+			| •
+			| {{ "WGC.LABEL.NUMBERS_OR_SYMBOLS" | translate }}

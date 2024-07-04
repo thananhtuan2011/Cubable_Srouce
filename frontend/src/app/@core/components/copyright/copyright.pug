@@ -1,0 +1,5 @@
+span([innerHtml]='"CORE.MESSAGE.COPYRIGHT_TIME" | translate: { year: year, appName: ( "APP_NAME" | environment ) } | safeHtml')
+| &nbsp;
+span([innerHtml]='"CORE.MESSAGE.COPYRIGHT" | translate | safeHtml')
+| &nbsp;
+span([innerHtml]='"CORE.MESSAGE.VERSION" | translate: { appVersion: ( "APP_VERSION" | environment ) } | safeHtml')

@@ -1,0 +1,17 @@
+.left
+	chart(
+		#chartComp,
+		[blockActive]='blockSetup',
+		[(entryTrigger)]='workflow.entryTrigger',
+		(blockActiveChange)='onBlockClicked( $event.blockActive, $event.forceUpdate )',
+		(entryTriggerChange)='onChartChange()',
+		(validate)='validate()')
+cub-scroll-bar.right(
+	suppressX,
+	*ngIf='blockSetup')
+	setup(
+		#setupComp,
+		[baseID]='workflow.baseID',
+		[boardsLk]='boardsLk',
+		[(blockSetup)]='blockSetup',
+		(blockSetupChange)='onBlockSetupChange()')

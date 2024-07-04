@@ -1,0 +1,8 @@
+{
+	"LABEL": {
+		"SWITCH_WORKSPACE": "Switch workspace"
+	},
+	"MESSAGE": {
+		"REDIRECT_WORKSPACE": "You're being redirected to <b class='color-text'>{{ name }}</b> in {{ count }} seconds"
+	}
+}

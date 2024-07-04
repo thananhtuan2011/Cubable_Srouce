@@ -1,0 +1,16 @@
+.layout-column.layout-align-start-center.layout-gap-20.flex
+	.layout-row.layout-align-start-center.layout-gap-10
+		h2.text-truncate([title]='title | empty')
+			| {{ title }}
+		cub-image(
+			src='assets/images/icons/reactions/reaction-smiling.webp',
+			width='26px',
+			height='26px')
+	.layout-column.layout-gap-16.full-width
+		.text-center([innerHtml]='"AUTH.COMMON.MESSAGE.REDIRECT_WORKSPACE" | translate : { name: workspace?.name, count: maxCount - countdown }')
+		button.full-width(
+			cubButton='primary'
+			size='large',
+			[disabled]='disabled',
+			(click)='switch()')
+			| {{ "AUTH.COMMON.LABEL.SWITCH_WORKSPACE" | translate }}

@@ -1,0 +1,6 @@
+.wgc-basic-button-wrapper((click)='preventClickOnWrapper( $event )')
+	.wgc-basic-button__icon(*ngIf='buttonIcon || icon')
+		ng-content(select='[wgcButtonIcon]', *ngIf='buttonIcon')
+		wgc-icon(*ngIf='icon', [name]='icon', [size]='iconSize')
+	.wgc-basic-button__content
+		ng-content

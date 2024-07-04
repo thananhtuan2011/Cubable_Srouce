@@ -1,0 +1,33 @@
+@import 'src/app/@cub/scss/partials/variable';
+
+:host {
+	display: flex;
+	flex-direction: column;
+	height: 100%;
+	min-height: 0;
+	width: 100%;
+	min-width: 0;
+
+	.card-content{
+		width: 800px;
+		max-width: 800px;
+		min-width: 800px;
+		height: 100%;
+		border: 1px solid $color-border-primary;
+	}
+}
+
+::ng-deep {
+	.cub-popup.admin-popup{
+		.cub-popup__content {
+			padding: 16px 16px 20px;
+		}
+		
+		.cub-checkbox__check-icon {
+			path {
+				fill: $color-icon-secondary;
+			}
+		}
+	}
+
+}

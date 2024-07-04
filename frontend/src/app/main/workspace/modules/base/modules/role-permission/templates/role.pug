@@ -1,0 +1,133 @@
+cub-menu(
+	#roleActionMenu,
+	width='240px')
+	cub-menu-content
+		ng-template(cubMenuContent, let-role='role')
+			button(
+				cubMenuItem,
+				icon='pencil',
+				iconColor='primary',
+				[cubPopupTriggerOrigin]='null',
+				[cubPopupTriggerHasBackdrop]='true',
+				[cubPopupTriggerContext]='{ role }',
+				[cubPopupTriggerFor]='editRolePopup',
+				[cubPopupTriggerDisableClose]='nameFormControl.dirty || descriptionFormControl.dirty')
+				.text-color-primary
+					| {{ "BASE.ROLE_PERMISSION.LABEL.EDIT_INFORMATION" | translate }}
+			button(
+				cubMenuItem='destructive',
+				icon='trash',
+				*ngIf='!( [ ROLE_UNIQ_NAME?.ADMIN, ROLE_UNIQ_NAME?.MEMBER, ROLE_UNIQ_NAME?.VIEWER ] | includes : role.uniqName )',
+				(click)='deleteRole( role )')
+				| {{ "BASE.ROLE_PERMISSION.LABEL.DELETE" | translate }}
+
+cub-popup(
+	#editRolePopup,
+	width='400px',
+	(opened)='nameFormControl.reset(); descriptionFormControl.reset();',
+	(closed)='closeEditRolePopup( true )')
+	cub-popup-header
+		ng-template(cubPopupHeader)
+			.layout-row.layout-align-space-between-center.full-width
+				h5
+					| {{ "BASE.ROLE_PERMISSION.LABEL.EDIT_INFORMATION" | translate }}
+				button(
+					cubClearButton,
+					size='20px',
+					(click)='editRolePopup?.close()')
+	cub-popup-content
+		ng-template(cubPopupContent, let-role='role')
+			cub-form-field.mb-16([label]='"BASE.ROLE_PERMISSION.LABEL.NAME" | translate')
+				input(
+					cubFormFieldInput,
+					[formControl]='nameFormControl',
+					[placeholder]='"BASE.ROLE_PERMISSION.PLACEHOLDER.VIEWER" | translate',
+					[disableControl]='( [ ROLE_UNIQ_NAME?.MEMBER, ROLE_UNIQ_NAME?.VIEWER ] | includes : role.uniqName )',
+					[valueControl]='role?.name',
+					(valueControlChange)='changeRoleName( $event )')
+			cub-form-field([label]='"BASE.ROLE_PERMISSION.LABEL.DESCRIPTION" | translate')
+				textarea.h-62(
+					cubFormFieldInput,
+					[formControl]='descriptionFormControl',
+					[placeholder]='"BASE.ROLE_PERMISSION.PLACEHOLDER.TYPE_DESCRIPTION" | translate',
+					[valueControl]='role?.description',
+					(valueControlChange)='roleDescription = $event')
+	cub-popup-footer
+		ng-template(cubPopupFooter, let-role='role')
+			.layout-row.layout-align-end-center
+				button.w-80.mr-12(
+					cubButton='secondary',
+					(click)='closeEditRolePopup()')
+					| {{ "BASE.ROLE_PERMISSION.LABEL.CANCEL_EDIT" | translate }}
+				button.w-120(
+					cubButton,
+					[disabled]='( !nameFormControl.dirty && !descriptionFormControl.dirty ) || nameFormControl.invalid || descriptionFormControl.invalid',
+					[loading]='isSubmitting',
+					(click)='update( role )')
+					| {{ "BASE.ROLE_PERMISSION.LABEL.DONE" | translate }}
+
+cub-scroll-bar.layout-gap-16(
+	suppressX,
+	*ngIf='roles?.length; else notFound')
+	cub-card(
+		*ngFor='let role of roles; ngForTrackByID')
+		cub-card-content
+			.flex
+				.layout-row.layout-align-space-between-center
+					.layout-row.layout-align-start-center
+						h4.text-truncate.cursor([title]='role.name | empty', (click)='accessPermission( role )')
+							| {{ role.name | empty }}
+						cub-icon.ml-4(
+							name='lock-on-fill',
+							size='16px',
+							*ngIf='role.uniqName === ROLE_UNIQ_NAME.ADMIN')
+					cub-switch.ml-10(
+						color='primary',
+						size='large',
+						*ngIf='role.uniqName !== ROLE_UNIQ_NAME?.ADMIN',
+						[ngModel]='role.isActive',
+						[cubTooltip]='"BASE.ROLE_PERMISSION.LABEL." + ( role.isActive ? "DEACTIVATE" : "ACTIVATE" ) | translate',
+						(ngModelChange)='update( role, $event )')
+				.text-color-secondary.text-truncate.line-height-20.mb-16([title]='role.description | empty')
+					| {{ role.description | empty }}
+				.layout-row.layout-align-space-between-center
+					cub-member-list(
+						limit='3',
+						width='544px',
+						overlayX='start',
+						size='medium',
+						avatarSize='large',
+						[viewListTitle]='"BASE.ROLE_PERMISSION.LABEL.MANAGE_USER_ROLE" | translate',
+						[placeholder]='"BASE.ROLE_PERMISSION.LABEL.SEARCH_USER_OR_TEAM" | translate',
+						[disableClose]='disableClose',
+						[strictDisplay]='false',
+						[optionAll]='optionAll',
+						[users]='users',
+						[teams]='teams',
+						[selectedAllMembers]='role.isAllBaseUsersTeams',
+						[selectedUserIDs]='role.userIDs',
+						[selectedTeamIDs]='role.teamIDs',
+						[selectedUsers]='role.selectedUsers',
+						[selectedTeams]='role.selectedTeams',
+						(valuesChange)='disableClose = !!$event?.length',
+						(added)='invite( $event, role )',
+						(removed)='remove( $event, role )',
+						(closed)='disableClose = false')
+					.layout-row.layout-gap-20.ml-10
+						ng-container(*ngIf='role.uniqName !== ROLE_UNIQ_NAME?.ADMIN')
+							button((click)='accessPermission( role )')
+								.layout-row.layout-align-start-center.layout-gap-4
+									cub-icon(name='setting', size='20px', color='blue')
+									.text-color-hyperlink
+										| {{ "BASE.ROLE_PERMISSION.LABEL.SETTING_PERMISSION" | translate }}
+							.text-color-secondary
+								button(
+									cubBasicButton,
+									icon='more-vertical',
+									iconSize='20px',
+									*ngIf='role.uniqName !== ROLE_UNIQ_NAME?.ADMIN',
+									[cubMenuTriggerContext]='{ role }',
+									[cubMenuTriggerFor]='roleActionMenu',
+									[cubMenuTriggerDisableClose]='nameFormControl.dirty || descriptionFormControl.dirty')
+ng-template(#notFound)
+	not-found

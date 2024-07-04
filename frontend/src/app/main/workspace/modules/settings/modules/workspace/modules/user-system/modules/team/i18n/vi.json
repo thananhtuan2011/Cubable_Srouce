@@ -1,0 +1,41 @@
+{
+	"LABEL": {
+		"CHECK_ACTIVE": "Kích hoạt",
+		"CREATE": "Tạo",
+		"SAVE": "Lưu",
+		"TEAM": "Nhóm",
+		"CANCEL": "Hủy",
+		"DELETE": "Xóa",
+		"EDIT": "Chỉnh sửa",
+		"CLOSE": "Đóng",
+		"ACTIVE": "Đã kích hoạt",
+		"INACTIVE": "Vô hiệu hóa",
+		"NAME": "Tên",
+		"STATUS": "Trạng thái",
+		"TEAM_MEMBERS": "Thành viên nhóm",
+		"TEAM_MANAGEMENT": "Quản lý nhóm",
+		"CREATE_TEAM": "Tạo nhóm",
+		"TEAM_NAME": "Tên nhóm",
+		"ROLE": "Vai trò",
+		"TEAM_STATUS": "Trạng thái",
+		"TEAM_CREATED": "Thời gian tạo",
+		"TEAM_CREATED_BY": "Tạo bởi",
+		"STATUS_ACTIVE": "Đã kích hoạt",
+		"STATUS_INACTIVE": "Vô hiệu hóa",
+		"DEACTIVATE_TEAM": "Vô hiệu hoá nhóm?",
+		"DELETE_TEAM": "Xóa nhóm?",
+		"USER_ROLE_IN_WORKSPACE": "Vai trò trong Workspace"
+	},
+	"PLACEHOLDER": {
+		"FIND_USER": "Nhập tìm kiếm và thêm người dùng"
+	},
+	"MESSAGE": {
+		"DELETE_SUCCESS": "Xoá thành công.",
+		"CONFIRM_DELETE_TEAM": "<b>{{ team }}</b> sẽ bị xóa khỏi Workspace. Bạn chắc chứ?",
+		"TEAM_NAME_MAX_LENGTH": "Tên nhóm phải nhỏ hơn hoặc bằng 80 ký tự",
+		"TEAM_NAME_REQUIRED": "Vui lòng nhập tên nhóm",
+		"TEAM_NAME_DUPLICATE": "Tên nhóm đã tồn tại",
+		"INFO_ACTIVE": "Khi được kích hoạt thì những người dùng thuộc nhóm này sẽ được phép truy cập và thao tác ở những nơi mà nhóm đã được cấp quyền",
+		"CONFIRM_DEACTIVATE_TEAM": "Những thành viên thuộc nhóm này sẽ tạm thời mất khả năng truy cập và thao tác ở những nơi mà nhóm được cấp quyền."
+	}
+}

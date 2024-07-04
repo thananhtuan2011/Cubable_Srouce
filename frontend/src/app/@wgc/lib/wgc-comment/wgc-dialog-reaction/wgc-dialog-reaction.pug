@@ -1,0 +1,47 @@
+div(wgcDialogHeader)
+	h1
+		| {{ "WGC.LABEL.REACTIONS_TO" | translate : { name: data?.comment?.user?.name } }}
+	button(wgcButton, icon='close', [wgcTooltip]='"WGC.LABEL.CLOSE" | translate', (click)='dialogRef?.close( reactedDelete )')
+div(wgcDialogContent)
+	ng-container(*ngIf='reactionsClone?.length; else notFound')
+		wgc-tab-group(
+			stretch,
+			stretchTab,
+			contentPaddingVertical='0',
+			[hasScrollBar]='false',
+			[(selectedIndex)]='tabIndex',
+			(selectedIndexChange)='filterUserReactions()')
+			wgc-tab([label]='"WGC.LABEL.ALL" | translate')
+			wgc-tab(
+				*ngFor='let reaction of reactionsClone; let index = index; trackBy: "iconType" | trackByFn;',
+				[label]='reactionsClone[ index ]?.users.length || 0',
+				[icon]='ASSETS_ICON[ reaction?.iconType ]')
+		wgc-search-box.wgc-dialog-reaction__search-box(
+			ngDefaultControl,
+			#searchBox,
+			appearance='legacy',
+			[placeholder]='"WGC.PLACEHOLDER.TYPE_TO_SEARCH" | translate',
+			(searching)='filterUserReactions()')
+	wgc-scroll-bar.wgc-dialog-reaction__item-list(*ngIf='reactions?.length; else notFound1;')
+		ng-container(*ngFor='let reaction of reactions; let reactionIndex = index; trackBy: "iconType" | trackByFn;')
+			wgc-divider(*ngIf='reactionIndex')
+			ng-container(*ngFor='let user of reaction?.users; let index = index;')
+				wgc-divider(*ngIf='index')
+				.wgc-dialog-reaction__item
+					wgc-member.wgc-dialog-reaction__item__name(
+						size='36px',
+						[hasViewProfile]='false',
+						[member]='user',
+						[searchBox]='searchBox')
+					button(
+						wgcButton,
+						size='small',
+						*ngIf='data?.canComment && user?.id === data?.userID',
+						(click)='deleteReaction( reaction?.iconType, data?.comment )')
+						| {{ "WGC.LABEL.REMOVE" | translate }}
+					img.wgc-dialog-reaction__item__icon([lazyLoad]='ASSETS_ICON[ reaction.iconType ]')
+	ng-template(#notFound)
+		not-found([name]='"WGC.LABEL.REACTIONS" | translate')
+	ng-template(#notFound1)
+		ng-container(*ngIf='searchBox?.searchQuery && reactionsClone?.length')
+			ng-container(*ngTemplateOutlet='searchBox?.notFoundTemplate')

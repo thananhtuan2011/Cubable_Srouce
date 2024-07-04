@@ -1,0 +1,108 @@
+@import '../../scss/partials/variable';
+@import '../../scss/partials/mixin';
+
+.cub-slider {
+	$self: &;
+
+	position: relative;
+
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	width: 100%;
+	min-width: 0;
+	max-width: 100%;
+	min-height: 12px;
+
+	&:not([disabled]):not([readonly]) {
+		cursor: pointer;
+	}
+
+	// Readonly state
+	@at-root {
+		&[readonly] {
+			#{ $self }__thumb {
+				display: none;
+			}
+		}
+	}
+
+	// Disabled state
+	@at-root {
+		&[disabled] {
+			#{ $self }__progress-bar:after {
+				opacity: .5;
+			}
+		}
+	}
+
+	#{ $self }__progress-bar {
+		position: absolute;
+		left: 6px;
+		right: 6px;
+		
+		display: flex;
+	}
+
+	#{ $self }__thumb {
+		position: relative;
+
+		display: flex;
+		width: 12px;
+		min-width: 12px;
+		max-width: 12px;
+		height: 12px;
+		min-height: 12px;
+		max-height: 12px;
+		border: .5px solid rgba(0, 0, 0, .02);
+		border-radius: 50%;
+		box-shadow: 0 1px .75px 0 rgba(0, 0, 0, .05),
+			0 .25px .25px 0 rgba(0, 0, 0, .15);
+
+		background-color: var(
+			--slider-thumb-color,
+			$color-light-blue
+		);
+
+		&:hover,
+		&.cdk-drag-dragging {
+			#{ $self }__thumb__tick {
+				transform: rotate(45deg);
+			}
+		}
+
+		&:disabled {
+			background-color: $color-white;
+		}
+
+		#{ $self }__thumb__tick {
+			position: absolute;
+			right: -9px;
+			top: -40px;
+
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			width: 28px;
+			height: 28px;
+			border-radius: 50% 50% 0;
+
+			background-color: $color-transparent-dark-grey-75;
+			color: $color-white;
+
+			font-size: 9px;
+			font-weight: $font-weight-semibold;
+
+			transform: translateY(26px)
+				scale(.01)
+				rotate(45deg);
+			transition: transform visible-animation-effect(),
+				border-radius visible-animation-effect(),
+				background-color visible-animation-effect();
+
+			#{ $self }__thumb__tick__text {
+				transform: rotate(-45deg);
+			}
+		}
+	}
+}

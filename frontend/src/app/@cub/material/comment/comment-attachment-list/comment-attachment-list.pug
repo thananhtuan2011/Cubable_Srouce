@@ -1,0 +1,12 @@
+.cub-comment-attachment-list
+	.cub-comment-attachment-list__wrapper(
+		*ngFor=`
+			let file of files | slice : 0 : limit;
+			index as idx;
+			trackByID`)
+		cub-file.cub-comment-attachment-list__wrapper__file(
+			showNameOnTooltip,
+			[file]='file',
+			[class.cub-comment-attachment-list__wrapper__file--more]=`idx === ( limit - 1 ) && files?.length > limit`,
+			[attr.data-more-count]='files?.length - limit',
+			(click)='previewFile( idx )')

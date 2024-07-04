@@ -1,0 +1,189 @@
+include ../blocks/block-member.partial.pug
+
+mixin group(data)
+	.cub-member-list__content-items__group
+		.cub-member-list__content-items__group-item(
+			*ngFor=`let member of ${data} | slice : 0 : limit; trackBy: "id" | trackByFn;`)
+			cub-member(
+				hasAvatarOutline,
+				[avatarSize]='avatarSize',
+				[member]='member',
+				[hasViewProfile]='false',
+				[displayMemberName]='false')&attributes(attributes)
+		.cub-member-list__content-items__group-length(*ngIf=`${data}?.length > limit`)
+			cub-avatar(
+				hasOutline,
+				[size]='avatarSize',
+				[style.fontWeight]='"400"',
+				[avatar]='{ color: ( "grey" | cubPalette : "300" ) }',
+				[label]=`( ${data}?.length - limit < 10 ) ? "+" + ( ${data}?.length - limit ) : "9+"`)
+
+mixin memberItem(data, typeOfMember)
+	button.cub-member-list__more-menu__item(
+		cubMenuItem,
+		*ngFor=`let member of ${data}; ngForTrackByID`,
+		[autoClose]='false')
+		ng-container(cubMenuItemPrefix)
+			cub-avatar(
+				panelClass='cub-member',
+				[label]='member.name',
+				[avatar]='member.avatar')&attributes(attributes)
+		.cub-member__data
+			.text-truncate([title]='member.name | empty ')
+				span([innerHtml]='member.name')
+			.text-truncate.cub-member-list__more-menu__item__role(
+				*ngIf='member.role',
+				[title]='member.role.name | empty')
+				| {{ member.role.name | empty }}
+		button(
+			cubMenuItemSuffix,
+			cubBasicButton='destructive',
+			icon='trash',
+			iconSize='20px',
+			*ngIf='!member.cannotRemove && canRemove',
+			[cubTooltip]='"CUB.LABEL.REMOVE" | translate',
+			(click)=`$event?.stopPropagation(); removeMember( member, ${typeOfMember} );`)
+
+cub-menu.cub-member-list.cub-member-list__picker-menu(
+	#pickerMenu,
+	maxHeight='500px',
+	[width]='width',
+	(opened)='onPickerMenuOpened( $event )',
+	(closed)='onPickerMenuClosed( $event )')
+	cub-menu-header
+		ng-template(cubMenuHeader)
+			+multipleInput
+	cub-menu-content
+		ng-template(cubMenuContent)
+			//- TEMP check [(selectedAllMembers)]='selectedAllMembers',
+				[(selectedUserIDs)]='selectedUserIDs',
+				[(selectedTeamIDs)]='selectedTeamIDs',
+				[(selectedUsers)]='selectedUsers',
+				[(selectedTeams)]='selectedTeams',
+
+				check 
+			cub-member-picker(
+				[disabled]='disabled',
+				[required]='required',
+				[name]='name',
+				[label]='label',
+				[hasInput]='false',
+				[disableClose]='disableClose',
+				[autoFocusOn]='autoFocusOn',
+				[placeholder]='placeholder',
+				[autoReset]='autoReset',
+				[context]='context',
+				[optionAll]='optionAll',
+				[users]='users',
+				[teams]='teams',
+				[selectedAllMembers]='selectedAllMembers',
+				[selectedUserIDs]='selectedUserIDs',
+				[selectedTeamIDs]='selectedTeamIDs',
+				[selectedUsers]='selectedUsers',
+				[selectedTeams]='selectedTeams',
+				[values]='values',
+				[(keySearch)]='keySearch',
+				(valuesChange)='onValuesChanged( $event )',
+				(opened)='onPickerOpened()',
+				(addedOptionAll)='onAddedOptionAll()',
+				(addedUsers)='onAddedUsers( $event )',
+				(addedTeams)='onAddedTeams( $event )',
+				(removedOptionAll)='onRemovedOptionAll()',
+				(removedUsers)='onRemovedUsers( $event )',
+				(removedTeams)='onRemovedTeams( $event )')
+	cub-menu-footer(*ngIf='hasFooter')
+		ng-template(cubMenuFooter)
+			.cub-member-list__picker-menu__footer
+				button.cub-member-list__picker-menu__footer-button-cancel(
+					cubButton='secondary',
+					(click)='onCancel()')
+					| {{ "CUB.LABEL.CANCEL" | translate }}
+				button.cub-member-list__picker-menu__footer-button-save(
+					cubButton='primary',
+					(click)='onSave()')
+					| {{ "CUB.LABEL.DONE" | translate }}
+
+cub-menu.cub-member-list.cub-member-list__more-menu(
+	#moreMenu,
+	maxHeight='400px',
+	[width]='width',
+	(opened)='onMoreMenuOpened()',
+	(closed)='onMoreMenuClosed()')
+	cub-menu-content
+		ng-template(cubMenuContent)
+			label.cub-member-list__title.text-truncate(
+				cubMenuItem,
+				[title]='viewListTitle || ( "CUB.LABEL.SELECTED" | translate )')
+				| {{ viewListTitle || ( "CUB.LABEL.SELECTED" | translate ) }}
+			ng-container(*ngIf=`selectedAllMembersClone
+				|| selectedUsersClone?.length
+				|| selectedTeamsClone?.length; else notFound;`)
+				ng-container(*ngIf='selectedAllMembersClone')
+					+memberItem('[ optionAll ]', 'TYPE_OF_MEMBER.ALL')
+				+memberItem('selectedUsersClone', 'TYPE_OF_MEMBER.USER')(
+					[type]='AVATAR_TYPE.USER')
+				+memberItem('selectedTeamsClone', 'TYPE_OF_MEMBER.TEAM')(
+					[type]='AVATAR_TYPE.TEAM')
+			ng-template(#notFound)
+				not-found
+
+label.cub-member-list__label(
+	*ngIf='label',
+	[attr.title]='label',
+	[attr.requiredMarker]='required || undefined')
+	| {{ label }}
+
+.cub-member-list__content(
+	*ngIf=`selectedUsers?.length
+		|| selectedTeams?.length
+		|| selectedAllMembers; else noValue;`,
+	[cubTooltip]='"CUB.LABEL.VIEW_LIST" | translate')
+	.cub-member-list__content-items(
+		[cubMenuTriggerOtherConfig]=`{
+			originX,
+			originY,
+			overlayX,
+			overlayY,
+			width
+		}`,
+		[class.cub-member-list__content-items--active]='moreMenu?.isOpened',
+		[cubMenuTriggerFor]='moreMenu',
+		(menuOpened)='cdRef?.detectChanges()')
+		.cub-member-list__content-items__group-all(*ngIf='selectedAllMembers')
+			+group('[ optionAll ]')
+		ng-container(*ngIf='selectedUsers?.length')
+			cub-divider.mh-8(vertical, *ngIf='selectedAllMembers')
+			.cub-member-list__content-items__group-user
+				+group('selectedUsers')([avatarType]='AVATAR_TYPE.USER')
+		ng-container(*ngIf='selectedTeams?.length')
+			cub-divider.mh-8(vertical, *ngIf='selectedUsers?.length')
+			.cub-member-list__content-items__group-team
+				+group('selectedTeams')([avatarType]='AVATAR_TYPE.TEAM')
+ng-template(#noValue)
+	.cub-member-list__no-value(*ngIf='!canAdd')
+		| {{ undefined | empty }}
+
+.cub-member-list__btn-add(
+	#pickerMenuTrigger='cubMenuTriggerFor',
+	*ngIf=`canAdd\
+		&& ( canMultipleSelect
+			|| ( !canMultipleSelect
+				&& !(selectedUserIDs?.length > 0
+				|| selectedTeamIDs?.length > 0 ) ) )`,
+	[cubMenuTriggerOtherConfig]=`{
+		originX,
+		originY,
+		overlayX,
+		overlayY,
+		width,
+	}`,
+	[cubMenuTriggerDisableClose]='disableClose',
+	[cubMenuTriggerDisableOpen]='disabled',
+	[class.cub-member-list__btn-add--disabled]='disabled',
+	[class.cub-member-list__btn-add--focusing]='isOpened',
+	[class.cub-member-list__btn-add--required]='required',
+	[cubMenuTriggerFor]='pickerMenu')
+	cub-icon.cub-member-list__btn-add__icon(
+		name='plus',
+		color='primary',
+		size='16px')

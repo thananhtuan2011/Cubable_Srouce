@@ -1,0 +1,55 @@
+include ../mixins/pane.include.pug
+include ../mixins/group.include.pug
+include ../mixins/row.include.pug
+include ./group-data-templates.include.pug
+
+.spreadsheet__body(
+	cdkDropList,
+	cdkDropListSortingDisabled,
+	cdkVirtualScrollingElement,
+	[cdkDropListAutoScrollStep]='10',
+	(cdkDropListDropped)='onRowsDropped( $event )')
+	+row-cell-template
+	+row-left-template
+	+row-right-template
+	ng-container(
+		*ngIf='isGrouping; else elseBlock;')
+		+pane-container()(
+			groupVirtualScrollViewport,
+			[rootGroup]='rootGroup')
+			+group-left
+			+group-right
+	ng-template(#elseBlock)
+		+pane-container
+			+left-pane()
+				.box.box-left.box--radius
+					cdk-virtual-scroll-viewport(
+						style='position: relative; z-index: 1;',
+						*ngIf='rows?.length',
+						[itemSize]='rowHeight')
+						ng-container(
+							*cdkVirtualFor=`let row of rows;
+								templateCacheSize: 50;
+								index as rowIndex;
+								cdkVirtualForTrackByID`)
+							ng-container(
+								*ngTemplateOutlet=`
+									rowLeftTemplate;
+									context: { row, rowIndex };`)
+					+insert-row(true)
+			+right-pane()
+				.box.box-right.box--radius
+					cdk-virtual-scroll-viewport(
+						style='position: relative; z-index: 1;',
+						*ngIf='rows?.length',
+						[itemSize]='rowHeight')
+						ng-container(
+							*cdkVirtualFor=`let row of rows;
+								templateCacheSize: 50;
+								index as rowIndex;
+								cdkVirtualForTrackByID`)
+							ng-container(
+								*ngTemplateOutlet=`
+									rowRightTemplate;
+									context: { row: row, rowIndex };`)
+					+insert-row(false)

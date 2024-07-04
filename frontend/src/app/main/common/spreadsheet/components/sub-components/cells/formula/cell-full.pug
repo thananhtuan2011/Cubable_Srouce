@@ -1,0 +1,19 @@
+include mixin.pug
+
+ng-template(#popupHeader)
+	.layout-row.layout-align-space-between-center
+		.layout-row.layout-align-start-center.layout-gap-8
+			cub-icon(
+				size='20px',
+				[name]='field.dataType | fieldMetadata : "icon"')
+			span.text-truncate.font-size-16.line-height-24.text-semibold(
+				[attr.title]='field.name | empty')
+				| {{ field.name | empty }}
+		button(
+			cubClearButton,
+			size='20px',
+			(click)='close()')
+
+.field-cell__text-content
+	ng-container(*ngIf='data')
+		+formulaCell('data.calculated', '$any( data.params.resultFormatConfig )?', 'data.params.resultFormatType' )

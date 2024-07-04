@@ -1,0 +1,165 @@
+mixin categoryTitle(title)
+	h3.color-text.text-nowrap.mb-8
+		| {{ "BASE.LABEL.#{title}" | translate }}
+	cub-divider.category-title-divider.mb-16
+
+cub-action-box(
+	[visible]='!!selectedBases?.length',
+	(dismissed)='deselectAllItems()')
+	cub-action-box-start
+		| {{ "BASE.LABEL.SELECTED_NUMBER" | translate : { count: selectedBases?.length } }}
+	cub-action-box-middle
+		button(
+			cubActionItem,
+			icon='folder',
+			offsetY='14',
+			[active]='foldersMenu?.isOpened',
+			[label]='"BASE.LABEL.MOVE_TO_FOLDER" | translate',
+			[cubMenuTriggerFor]='foldersMenu')
+		button(
+			cubActionItem,
+			icon='star',
+			*ngIf='multipleActions.canSetFavorite',
+			[label]='"BASE.LABEL.FAVORITE" | translate',
+			(click)='setFavorite( true )')
+		button(
+			cubActionItem,
+			icon='star-slash',
+			*ngIf='multipleActions.canSetUnFavorite',
+			[label]='"BASE.LABEL.UNFAVORITE" | translate',
+			(click)='setFavorite( false )')
+		button(
+			cubActionItem,
+			type='destructive',
+			icon='trash',
+			*ngIf='multipleActions.canDelete',
+			[label]='"BASE.LABEL.REMOVE" | translate',
+			(click)='removeBase()')
+
+cub-menu(
+	#foldersMenu,
+	width='240px',
+	maxHeight='385px',
+	(closed)='isCreatingFolder = false')
+	cub-menu-content
+		ng-template(cubMenuContent, let-base='base')
+			button(
+				cubMenuSelectItem,
+				*ngFor='let category of categories; ngForTrackByID',
+				[selected]='base?.categoryID === category.id',
+				[disabled]='base?.categoryID === category.id',
+				(click)='moveToCategory( category, base )')
+				.text-truncate([title]='category.name')
+					| {{ category.name | empty }}
+			button(
+				cubMenuSelectItem,
+				[selected]='base && base.categoryID === null',
+				[disabled]='base && base.categoryID === null',
+				(click)='moveToCategory( uncategorized, base )')
+				.text-truncate([title]='uncategorized.name | translate')
+					| {{ uncategorized.name | translate }}
+	cub-menu-footer
+		ng-template(cubMenuFooter, let-base='base')
+			button(
+				cubMenuItem,
+				icon='folder-add',
+				*ngIf='!isCreatingFolder; else elseBlock;',
+				[autoClose]='false',
+				(click)='isCreatingFolder = true')
+				| {{ "BASE.LABEL.NEW" | translate }}
+			ng-template(#elseBlock)
+				cub-form-field(active)
+					input(
+						cubFormFieldInput,
+						autoFocusOn,
+						clearable,
+						required,
+						[name]='"BASE.LABEL.NAME" | translate',
+						[formControl]='categoryNameFormControl',
+						[(valueControl)]='newCategory.name',
+						[placeholder]='"BASE.PLACEHOLDER.TYPE_NAME" | translate',
+						(keydown.enter)='createCategory( base )',
+						(blur)='createCategory( base )',
+						(keydown.esc)='cancelCreateCategory()')
+
+cub-menu(
+	#baseActionMenu,
+	width='240px',
+	(opened)='baseActionMenu.context.base.focusing = true; deselectAllItems()',
+	(closed)='baseActionMenu.context.base.focusing = false')
+	cub-menu-header(*ngIf='baseActionMenu?.context?.base.isAdmin')
+		ng-template(cubMenuHeader)
+			cub-form-field(active)
+				input(
+					cubFormFieldInput,
+					clearable,
+					required,
+					[name]='"BASE.LABEL.NAME" | translate',
+					[placeholder]='"BASE.PLACEHOLDER.TYPE_NAME" | translate',
+					[ngModel]='baseActionMenu.context.base.name',
+					[formControl]='baseNameFormControl',
+					(ngModelChange)='newBaseName = $event',
+					(keydown.enter)='renameBase( baseActionMenu.context.base )',
+					(blur)='renameBase( baseActionMenu.context.base )')
+	cub-menu-content
+		ng-template(cubMenuContent, let-base='base')
+			cub-menu-group
+				button(
+					cubMenuItem,
+					icon='star',
+					iconColor='primary',
+					*ngIf='!base.isFavorite',
+					(click)='setFavorite( true, base )')
+					| {{ "BASE.LABEL.FAVORITE" | translate }}
+				button(
+					cubMenuItem,
+					icon='star-slash',
+					iconColor='primary',
+					*ngIf='base.isFavorite',
+					(click)='setFavorite( false, base )')
+					| {{ "BASE.LABEL.UNFAVORITE" | translate }}
+				button(
+					cubMenuItem,
+					icon='folder',
+					iconColor='primary',
+					position='after',
+					trailingIcon='arrow-right',
+					trailingIconColor='tertiary',
+					[autoClose]='false',
+					[cubSubMenuTriggerFor]='foldersMenu',
+					[cubMenuTriggerContext]='{ base }')
+					| {{ "BASE.LABEL.MOVE_TO_FOLDER" | translate }}
+			cub-menu-group
+				button(
+					cubMenuItem='destructive',
+					icon='trash',
+					*ngIf='base.isAdmin',
+					(click)='removeBase( base )')
+					| {{ "BASE.LABEL.REMOVE" | translate }}
+
+cub-menu(
+	#folderActionMenu,
+	width='240px',
+	(opened)='folderActionMenu.context.category.focusing = true',
+	(closed)='folderActionMenu.context.category.focusing = false; onFolderActionMenuClosed();')
+	cub-menu-header
+		ng-template(cubMenuHeader)
+			cub-form-field(active)
+				input(
+					cubFormFieldInput,
+					clearable,
+					required,
+					[name]='"BASE.LABEL.NAME" | translate',
+					[placeholder]='"BASE.PLACEHOLDER.TYPE_NAME" | translate',
+					[formControl]='categoryNameFormControl',
+					[ngModel]='folderActionMenu.context.category.name',
+					(ngModelChange)='newCategoryName = $event',
+					(keydown.enter)='renameCategory( folderActionMenu.context.category )',
+					(blur)='renameCategory( folderActionMenu.context.category )')
+	cub-menu-content
+		ng-template(cubMenuContent)
+			button(
+				cubMenuItem='destructive',
+				icon='trash',
+				(click)='removeCategory( folderActionMenu.context.category )')
+				| {{ "BASE.LABEL.REMOVE" | translate }}

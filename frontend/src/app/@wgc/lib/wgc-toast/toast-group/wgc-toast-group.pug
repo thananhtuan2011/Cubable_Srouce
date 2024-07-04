@@ -1,0 +1,13 @@
+wgc-toast(
+	*ngFor='let toast of toasts; trackBy: "id" | trackByFn;',
+	[title]='toast?.title',
+	[description]='toast?.description',
+	[icon]='toast?.config?.icon',
+	[color]='toast?.config?.color',
+	[textColor]='toast?.config?.textColor',
+	[buttons]='toast?.config?.buttons',
+	[type]='toast?.config?.type',
+	[canClose]='toast?.config?.canClose',
+	[translate]='toast?.config?.translate',
+	[translateParams]='toast?.config?.translateParams',
+	(closed)='deleteToast( toast?.id )')

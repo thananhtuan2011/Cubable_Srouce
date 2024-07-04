@@ -1,0 +1,65 @@
+include ../mixins/mixin.pug
+
+ng-container(*ngIf='$any( data )?.valueType; else elseBlock;')
+	.layout-row.layout-gap-8
+		.layout-row.flex
+			ng-container([ngSwitch]='$any( data ).valueType')
+				ng-container(*ngSwitchCase='VALUE_TYPE.STATIC')
+					cub-dropdown.flex(
+						searchable,
+						[label]='innerLabel',
+						[placeholder]='placeholder',
+						[size]='size',
+						[variant]='variant',
+						[displayErrorMode]='displayErrorMode',
+						[singleLine]='singleLine',
+						[multiple]='field.isMultipleSelect',
+						[autoFocusOn]='autoFocusOn',
+						[hideRequiredMarker]='hideRequiredMarker',
+						[required]='isRequired',
+						[readonly]='readonly',
+						[formControl]='formControl',
+						[disableControl]='disabled',
+						[valueControl]='$any( data ).data?.value',
+						(valueControlChange)='onValueChanged( $event, $any( data ).data )',
+						(opened)='isPreventOnBlur = true',
+						(closed)='isPreventOnBlur = false')
+						cub-dropdown-item(
+							*ngFor='let option of field.options; trackByValue',
+							[value]='option.value',
+							[label]='option.name',
+							[color]='option.color')
+				ng-container(*ngSwitchCase='VALUE_TYPE.DYNAMIC')
+					+formField
+						+dynamicValue()(
+							readonly,
+							(click)='plusButton.open()')
+				ng-container(*ngSwitchCase='VALUE_TYPE.EMPTY')
+					+formField
+						+emptyValue
+		+valueTypeSwitch
+ng-template(#elseBlock)
+	cub-dropdown(
+		searchable,
+		[label]='innerLabel',
+		[placeholder]='placeholder',
+		[size]='size',
+		[variant]='variant',
+		[displayErrorMode]='displayErrorMode',
+		[singleLine]='singleLine',
+		[multiple]='field.isMultipleSelect',
+		[autoFocusOn]='autoFocusOn',
+		[hideRequiredMarker]='hideRequiredMarker',
+		[required]='isRequired',
+		[readonly]='readonly',
+		[formControl]='formControl',
+		[disableControl]='disabled',
+		[valueControl]='data?.value',
+		(valueControlChange)='onValueChanged( $event, data )',
+		(opened)='isPreventOnBlur = true',
+		(closed)='isPreventOnBlur = false')
+		cub-dropdown-item(
+			*ngFor='let option of field.options; trackByValue',
+			[value]='option.value',
+			[label]='option.name',
+			[color]='option.color')

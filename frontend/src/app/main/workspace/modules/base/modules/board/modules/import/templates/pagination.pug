@@ -1,0 +1,30 @@
+.pagination
+	button.pagination-item(
+		[disabled]='isFirst',
+		(click)='onFirstPage()')
+		cub-icon(
+			name='chevron-double-left',
+			size='20px')
+	button.pagination-item(
+		[disabled]='isFirst',
+		(click)='prevPage()')
+		cub-icon(
+			name='chevron-left',
+			size='20px')
+	button.pagination-item(
+		[class.pagination-item--active]="page === currentPage",
+		*ngFor="let page of pages",
+		(click)="goToPage( page )")
+		| {{ page }}
+	button.pagination-item(
+		[disabled]='isLast',
+		(click)='nextPage()')
+		cub-icon(
+			name='chevron-right',
+			size='20px')
+	button.pagination-item(
+		[disabled]='isLast',
+		(click)='onLastPage()')
+		cub-icon(
+			name='chevron-double-right',
+			size='20px')

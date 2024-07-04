@@ -1,0 +1,8 @@
+ng-container(*ngIf='icon; else elseBlock;')
+	button.wgc-action-item__trigger
+		wgc-icon(size='20px', [name]='icon')
+	.wgc-action-item__label((click)='$event?.stopPropagation()')
+		| {{ label }}
+ng-template(#elseBlock)
+	button.wgc-action-item__trigger
+		| {{ label }}

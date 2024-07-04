@@ -1,0 +1,13 @@
+ng-template([ngIf]='message')
+	.wgc-tooltip(
+		[style.--tooltip-color]='color',
+		[style.--tooltip-text-color]='color | contrast',
+		[style.width]='width',
+		[style.minWidth]='minWidth',
+		[style.maxWidth]='maxWidth',
+		[style.height]='height',
+		[style.minHeight]='minHeight',
+		[style.maxHeight]='maxHeight',
+		[ngClass]='classList')
+		ng-content
+		pre(*ngIf='message?.length', [innerHtml]='message | safeHtml')

@@ -1,0 +1,94 @@
+@import 'src/scss/partials/variable';
+@import 'src/scss/partials/mixin';
+
+.wgc-member-list {
+	@include inside-zindex;
+	display: flex;
+
+	&:not(.wgc-member-list-menu) {
+		align-items: center;
+	}
+
+	&:hover,
+	&.wgc-member-list--active {
+		.wgc-member-list__btn-add {
+			opacity: 1;
+			visibility: visible;
+		}
+	}
+
+	.wgc-member-list__label {
+		margin-right: 15px;
+	}
+
+	.wgc-member-list__btn-add {
+		opacity: 0;
+		visibility: hidden;
+
+		&:not([disabled]) {
+			background-color: $color-white;
+			border-style: dashed;
+			border-color: $color-border-thick;
+			color: $color-placeholder;
+
+			&:focus-visible,
+			&:hover,
+			&.wgc-member-list__btn-add--focusing {
+				color: $color-text;
+			}
+
+			&:hover {
+				border-color: $color-border-thick;
+			}
+
+			&:focus-visible,
+			&.wgc-member-list__btn-add--focusing {
+				border-color: $color-border-super-thick;
+			}
+
+			&.wgc-member-list__btn-add--required {
+				border-color: $color-info;
+				color: $color-info;
+			}
+		}
+	}
+
+	.wgc-member-list__content {
+		display: flex;
+
+		&:not(:empty) ~ .wgc-member-list__btn-add {
+			margin-left: 10px;
+		}
+
+		.wgc-member-list__content-item {
+			position: relative;
+
+			&:hover {
+				wgc-member .wgc-member__avatar {
+					position: relative;
+					z-index: 1;
+					transition: all 100ms ease-in-out;
+					transform: scale(1.4);
+				}
+
+				.wgc-member-list__content-item__btn-remove {
+					z-index: 2;
+					opacity: 1;
+					visibility: visible;
+				}
+			}
+
+			&:not(:first-child) {
+				margin-left: -5px;
+			}
+
+			.wgc-member-list__content-item__btn-remove {
+				position: absolute;
+				top: -8px;
+				right: -8px;
+				opacity: 0;
+				visibility: hidden;
+			}
+		}
+	}
+}

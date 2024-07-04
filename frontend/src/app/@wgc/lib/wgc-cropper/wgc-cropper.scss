@@ -1,0 +1,23 @@
+@import 'cropperjs/dist/cropper.min.css';
+@import 'src/scss/partials/variable';
+
+.wgc-cropper {
+	display: flex;
+	width: var(--cropper-width, 100%);
+	height: var(--cropper-height, 250px);
+	position: relative;
+
+	&.wgc-cropper--circle {
+		.cropper-crop-box,
+		.cropper-view-box {
+			border-radius: 50%;
+			overflow: hidden;
+		}
+	}
+
+	.wgc-cropper__settings {
+		position: absolute;
+		top: 5px;
+		right: 5px;
+	}
+}

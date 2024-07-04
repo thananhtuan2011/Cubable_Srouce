@@ -1,0 +1,130 @@
+@import 'src/scss/partials/variable';
+
+.cub-member-picker {
+	$self: &;
+
+	width: 100%;
+	min-width: 0;
+
+	// flex-direction: column;
+	// max-height: 400px;
+	// padding: 20px;
+	// border-radius: 10px;
+	// border: solid 1px $color-border;
+	// background-color: $color-white;
+	// box-shadow: $box-shadow;
+	// animation: $popup-animation;
+
+	@mixin group {
+		#{ $self }__groups__groups {
+			width: 100%;
+
+			&:not(:last-child) {
+				margin-bottom: 8px;
+			}
+
+			#{ $self }__groups__title {
+				padding-left: 12px;
+				color: $color-text-secondary;
+				margin-bottom: 4px;
+				line-height: 15px;
+				font: {
+					size: 11px;
+					weight: 500;
+				}
+			}
+
+			#{ $self }__groups__group {
+				border-radius: 8px;
+				background: $color-white;
+
+				#{ $self }__groups__group-item {
+					&:first-of-type {
+						border-top-left-radius: 8px;
+						border-top-right-radius: 8px;
+
+						#{ $self }__groups__group-item__member--hover {
+							border-top-left-radius: 8px;
+							border-top-right-radius: 8px;
+						}
+					}
+
+					&:last-of-type {
+						border-bottom-left-radius: 8px;
+						border-bottom-right-radius: 8px;
+
+						#{ $self }__groups__group-item__member--hover {
+							border-bottom-left-radius: 8px;
+							border-bottom-right-radius: 8px;
+						}
+					}
+
+					&:not(#{ $self }__groups__group-item--selected) {
+						cursor: pointer;
+
+						&:hover {
+							background-color: $color-material-hover;
+						}
+
+						#{ $self }__groups__group-item__member--hover {
+							background-color: $color-material-hover;
+						}
+					}
+
+					&#{ $self }__groups__group-item--disabled {
+						cursor: unset;
+					}
+
+					#{ $self }__groups__group-item__data {
+						display: flex;
+						flex-direction: row;
+						justify-content: space-between;
+						align-items: center;
+
+						#{ $self }__groups__group-item__data-icon {
+							margin-right: 8px;
+						}
+					}
+
+					#{ $self }__groups__group-item__member {
+						padding: 6px 12px;
+					}
+
+					#{ $self }__groups__group-item__divider {
+						height: .5px;
+						min-height: .5px;
+						max-height: .5px;
+						margin-left: 49px;
+						background-color: color(lightGray, 200);
+					}
+				}
+			}
+		}
+
+		#{ $self }__groups__not-found {
+			border-radius: 8px;
+			background: $color-white;
+			padding: 10px 12px;
+
+			#{ $self }__groups__not-found-text {
+				color: $color-text-primary;
+			}
+		}
+	}
+
+	#{ $self }__content {
+		display: flex;
+		width: 100%;
+
+		#{ $self }__content-no-input {
+			@include group;
+
+			width: 100%;
+			border-radius: 12px;
+		}
+	}
+
+	&#{ $self }__picker-menu {
+		@include group;
+	}
+}

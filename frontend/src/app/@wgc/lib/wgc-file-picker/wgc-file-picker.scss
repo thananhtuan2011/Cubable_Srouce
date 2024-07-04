@@ -1,0 +1,95 @@
+@import 'src/scss/partials/variable';
+@import 'src/scss/partials/mixin';
+
+.wgc-file-picker {
+	@include scroll;
+	display: flex;
+	flex-direction: column;
+	background-color: $color-white;
+
+	&:not(.wgc-file-picker--inline) {
+		padding: 15px;
+		min-width: 300px;
+		width: 300px;
+		border-radius: 10px;
+		border: solid 1px $color-border;
+		box-shadow: $box-shadow;
+		animation: $popup-animation;
+	}
+
+	.wgc-file-picker__header {
+		display: flex;
+		align-items: center;
+		margin-bottom: 10px;
+
+		.wgc-file-picker__header-title {
+			font-size: 16px;
+			font-weight: $font-weight-semibold;
+			margin-right: 5px;
+			width: 100%;
+			min-width: 0;
+		}
+	}
+
+	.wgc-file-picker__label {
+		font-weight: $font-weight-semibold;
+		margin-bottom: 10px;
+		color: $color-label;
+	}
+
+	.wgc-file-picker__dropzone {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		width: 100%;
+		min-height: 110px;
+		height: 110px;
+		border-radius: 8px;
+		background-color: $color-secondary;
+		color: $color-placeholder;
+	}
+
+	.wgc-file-picker__upload-list {
+		background-color: $color-secondary;
+		border-radius: 10px;
+		padding: 15px;
+
+		.wgc-file-picker__upload-list-item {
+			display: flex;
+			align-items: center;
+
+			&:not(:last-child) {
+				margin-bottom: 10px;
+			}
+
+			.wgc-file-picker__upload-list-item__icon {
+				margin-right: 10px;
+			}
+
+			.wgc-file-picker__upload-list-item__info {
+				margin-right: 10px;
+				min-width: 0;
+				width: 100%;
+
+				.wgc-file-picker__upload-list-item__info-size {
+					font-size: 13px;
+				}
+			}
+
+			.wgc-file-picker__upload-list-item__loading {
+				width: 28px;
+				display: flex;
+				justify-content: center;
+			}
+		}
+	}
+
+	.wgc-file-picker__option {
+		height: 40px;
+		min-height: 40px;
+
+		.wgc-file-picker__option-icon {
+			margin-right: 5px;
+		}
+	}
+}

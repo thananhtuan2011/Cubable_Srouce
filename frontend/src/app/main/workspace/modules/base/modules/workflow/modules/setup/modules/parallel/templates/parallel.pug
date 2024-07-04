@@ -1,0 +1,33 @@
+mixin setting
+	ng-container([ngSwitch]='settings.type')
+		ng-container(*ngSwitchCase='PARALLEL_TYPE.ALL')
+		ng-container(*ngSwitchCase='PARALLEL_TYPE.ANY')
+			any-branch(
+				[baseID]='baseID')&attributes(attributes)
+cub-card(
+	variant='tonal',
+	size='small')
+	cub-card-content
+		.layout-column.layout-gap-12
+			.layout-column.layout-gap-6
+				.text-color-secondary.mh-12
+					| {{ "BASE.WORKFLOW.SETUP.PARALLEL.LABEL.EVENT_MERGE" | translate }}
+				cub-dropdown(
+					required,
+					[clearable]='false',
+					[formControl]='typeControl',
+					[valueControl]='settings.type',
+					(valueControlChange)='onParallelTypeChange( $event )')
+					cub-dropdown-item(
+						*ngFor='let type of parallelType; ngForTrackByValue',
+						[description]=`type.description
+							? ( "BASE.WORKFLOW.SETUP.PARALLEL.MESSAGE." + type.description | translate )
+							: "" `,
+						[label]='( "BASE.WORKFLOW.SETUP.PARALLEL.LABEL." + type.name ) | translate',
+						[value]='type.value')
+			+setting()(
+				#parallelSetting,
+				[blockSetup]='blockSetup',
+				[boardsLk]='boardsLk',
+				[(settings)]='settings',
+				(settingsChange)='onSettingChanged()')

@@ -1,0 +1,213 @@
+@import 'src/scss/partials/variable';
+@import 'src/scss/partials/mixin';
+
+.wgc-date-picker {
+	$self: &;
+	@include scroll;
+	display: flex;
+	flex-direction: column;
+	width: 320px;
+	background-color: $color-white;
+
+	&#{ $self }--inline {
+		padding-right: 5px;
+		padding-left: 5px;
+	}
+
+	&:not(#{ $self }--inline) {
+		padding: 15px;
+		border-radius: 10px;
+		border: solid 1px $color-border;
+		box-shadow: $box-shadow;
+		animation: $popup-animation;
+
+		#{ $self }__footer-divider {
+			margin-right: -15px;
+			margin-left: -15px;
+		}
+	}
+
+	#{ $self }__header {
+		display: flex;
+		align-items: center;
+		margin-bottom: 10px;
+
+		#{ $self }__header-title {
+			display: flex;
+			align-items: center;
+			font: {
+				size: 16px;
+				weight: $font-weight-semibold;
+			};
+			margin-right: 5px;
+			width: 100%;
+			min-width: 0;
+		}
+	}
+
+	#{ $self }__controls {
+		display: flex;
+		margin-bottom: 15px;
+		justify-content: space-between;
+		align-items: center;
+	}
+
+	#{ $self }__month-preview {
+		&:first-of-type {
+			margin-right: 10px;
+		}
+
+		&-container {
+			display: flex;
+		}
+	}
+
+	#{ $self }__day-in-week {
+		display: flex;
+		padding-top: 10px;
+		padding-bottom: 10px;
+		border-bottom: 1px solid $color-border;
+
+		span {
+			width: 14.28%;
+			max-width: 14.28%;
+			text-align: center;
+		}
+	}
+
+	#{ $self }__day-in-month {
+		display: flex;
+		flex-wrap: wrap;
+
+		span {
+			width: 14.28%;
+			max-width: 14.28%;
+			margin: {
+				top: 10px;
+				bottom: 10px;
+			};
+			cursor: pointer;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			position: relative;
+
+			&:before {
+				content: '';
+				position: absolute;
+				top: 0;
+				bottom: 0;
+				left: 0;
+				right: 0;
+			}
+
+			&:after {
+				content: attr(data-date);
+				height: 26px;
+				width: 26px;
+				border-radius: 50%;
+				border: 1px solid transparent;
+				display: flex;
+				align-items: center;
+				justify-content: center;
+				position: relative;
+			}
+
+			&:hover:not(#{ $self }__day-in-month--disabled):not(#{ $self }__day-in-month--picked):after {
+				border-color: $color-border;
+			}
+
+			&#{ $self }__day-in-month--today {
+				&:after {
+					background-color: $color-default;
+				}
+			}
+
+			&#{ $self }__day-in-month--picked {
+				color: $color-white;
+
+				&:after {
+					background-color: var(--primary-color, $color-primary);
+				}
+			}
+
+			&#{ $self }__day-in-month--disabled {
+				@include cursor-not-allowed;
+				color: $color-disabled;
+
+				&:after {
+					background-color: transparent;
+				}
+			}
+
+			&#{ $self }__day-in-month--in-range {
+				&:before {
+					background-color: $color-default;
+				}
+
+				&#{ $self }__day-in-month--in-range--start {
+					&:before {
+						left: 50%;
+					}
+				}
+
+				&#{ $self }__day-in-month--in-range--end {
+					&:before {
+						right: 50%;
+					}
+				}
+			}
+		}
+	}
+
+	#{ $self }__date-range-input {
+		margin-top: 10px;
+	}
+
+	#{ $self }__time {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		height: 40px;
+
+		#{ $self }__time-input {
+			width: 90px;
+			margin: {
+				left: 10px;
+				right: 5px;
+			};
+		}
+	}
+
+	#{ $self }__footer-divider {
+		margin-top: 20px;
+		margin-bottom: 10px;
+	}
+
+	#{ $self }__preview {
+		margin-bottom: 15px;
+		font-weight: $font-weight-semibold;
+
+		#{ $self }__preview-label {
+			color: $color-label;
+			font-weight: normal;
+		}
+	}
+
+	#{ $self }__footer {
+		display: flex;
+		margin-right: -5px;
+		margin-left: -5px;
+
+		> div {
+			flex: 1 1 50%;
+			padding-right: 5px;
+			padding-left: 5px;
+
+			> button {
+				width: 100%;
+			}
+		}
+	}
+
+}

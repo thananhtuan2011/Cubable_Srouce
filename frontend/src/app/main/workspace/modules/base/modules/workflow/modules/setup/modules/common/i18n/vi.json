@@ -1,0 +1,15 @@
+{
+	"LABEL": {
+		"ADD_CONDITION": "Thêm điều kiện",
+		"AND": "Và",
+		"APPLY_LOGIC": "Áp dụng lô-gíc",
+		"CUSTOM": "Tùy chỉnh",
+		"OR": "Hoặc",
+		"ROW_FILTER_CONDITION": "Điều kiện lọc hàng",
+		"FROM": "Từ",
+		"TO": "Thành",
+		"FOR_CONDITIONS_BELOW": "cho những điều kiện dưới đây",
+		"REMOVE_ALL": "Gỡ tất cả",
+		"ALL_FILTER_OPTIONS_REMOVED": "Tất cả điều kiện lọc đã bị xóa. Thêm điều kiện để lọc"
+	}
+}

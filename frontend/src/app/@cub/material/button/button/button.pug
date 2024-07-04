@@ -1,0 +1,15 @@
+span.cub-button-wrapper(
+	(click)='preventClickOnInside( $event )')
+	cub-loading.cub-button__loading(
+		*ngIf='loading',
+		[size]='8')
+	cub-icon.cub-button__icon(
+		*ngIf='leadingIcon',
+		[name]='leadingIcon',
+		[size]='leadingIconSize')
+	span.cub-button__content
+		ng-content
+	cub-icon.cub-button__icon(
+		*ngIf='trailingIcon',
+		[name]='trailingIcon',
+		[size]='trailingIconSize')

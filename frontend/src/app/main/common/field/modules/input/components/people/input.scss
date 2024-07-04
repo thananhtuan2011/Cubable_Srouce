@@ -1,0 +1,43 @@
+@import 'src/app/@cub/scss/partials/variable';
+
+:host {
+	.people-field-input__values {
+		display: flex;
+		flex-direction: row;
+		justify-content: center;
+		align-items: center;
+		border-radius: 20px;
+		gap: 4px;
+		min-height: 20px;
+		padding: {
+			right: 8px;
+		};
+
+		background-color: $color-material-default;
+
+		&.people-field-input__values-filled {
+			background-color: $color-white;
+			border: 1px solid $color-material-default;
+		}
+
+		.people-field-input__values-value {
+			max-width: 120px;
+			color: $color-text-hyperlink;
+
+			font: {
+				size: 14px;
+				weight: 400,
+			}
+		}
+	}
+
+	.people-field-input__input {
+		display: flex;
+		flex: 1;
+		min-width: 50px;
+
+		&.people-field-input__input--unfocused {
+			display: none;
+		}
+	}
+}

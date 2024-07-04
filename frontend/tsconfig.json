@@ -1,0 +1,28 @@
+{
+  "extends": "./node_modules/angular-core/tsconfig.json",
+  "compilerOptions": {
+    "types": [
+      "node"
+    ],
+    "typeRoots": [
+      "node_modules/@types"
+    ],
+    "baseUrl": "./src",
+    "paths": {
+      "@main": [ "app/main" ],
+      "@main/*": [ "app/main/*" ],
+      "@resources": [ "app/resources" ],
+      "@resources/*": [ "app/resources/*" ],
+      "@core": [ "app/@core" ],
+      "@core/*": [ "app/@core/*" ],
+      "@error": [ "app/@error" ],
+      "@error/*": [ "app/@error/*" ],
+      "@wgc": [ "app/@wgc" ],
+      "@wgc/*": [ "app/@wgc/*", "app/@wgc/lib/*" ],
+      "@cub": [ "app/@cub" ],
+      "@cub/*": [ "app/@cub/*" ],
+      "@environments": [ "environments" ],
+      "@environments/*": [ "environments/*" ]
+    }
+  }
+}

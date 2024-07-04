@@ -1,0 +1,37 @@
+{
+	"LABEL": {
+		"ACCOUNT_SETTINGS": "Cài đặt tài khoản",
+		"ANOTHER_DEVICE": "Khi đăng nhập trên một thiết bị khác",
+		"AUTOMATIC_LOGOUT": "Tự động đăng xuất",
+		"AVATAR": "Ảnh đại diện",
+		"BACK": "Quay lại",
+		"BACK_TO_WORKSPACE_LISTING": "Quay lại danh sách Workspace",
+		"BY_TIME": "Vào một thời điểm cụ thể (trên bất kỳ thiết bị nào)",
+		"CANCEL": "Hủy bỏ",
+		"CHANGE_PASSWORD": "Thay đổi mật khẩu",
+		"CLOSE": "Đóng",
+		"CLOSE_BROWSER": "Khi đóng trình duyệt hiện tại (trên bất kỳ thiết bị nào)",
+		"CONFIRM_NEW_PASSWORD": "Xác nhận mật khẩu mới",
+		"CURRENT_PASSWORD": "Mật khẩu hiện tại",
+		"EMAIL_ADDRESS": "Địa chỉ e-mail",
+		"EVERY_DAY": "Mỗi ngày (vào 4 giờ sáng)",
+		"EVERY_MONTH": "Mỗi 30 ngày (vào 4 giờ sáng)",
+		"EVERY_WEEK": "Mỗi 7 ngày (vào 4 giờ sáng)",
+		"LAST_MODIFIED_TIME": "Lần sửa đổi cuối cùng",
+		"NAME": "Tên",
+		"NEVER": "Không bao giờ",
+		"NEW_PASSWORD": "Mật khẩu mới",
+		"OVERVIEW": "Cài đặt chung",
+		"PASSWORD": "Mật khẩu",
+		"SAVE": "Lưu",
+		"SAVE_CHANGES": "Lưu thay đổi",
+		"SECURITY": "Bảo mật"
+	},
+	"PLACEHOLDER": {
+		"TYPE_NAME": "Nhập tên",
+		"TYPE_PASSWORD": "Nhập mật khẩu"
+	},
+	"MESSAGE": {
+		"SET_AUTOMATIC_LOGOUT_TO_PREVENT": "Đặt đăng xuất tự động để phòng ngừa việc quên đăng xuất nếu bạn thường xuyên sử dụng thiết bị dùng chung hoặc công cộng"
+	}
+}

@@ -1,0 +1,56 @@
+include ../mixins/mixin.pug
+
+.layout-row.layout-align-start-center.layout-gap-8.layout-wrap.flex
+	ng-container(*ngTemplateOutlet='fieldPicker')
+
+	+comparisonOperator
+
+	//- ng-container(*ngIf='operatorHasComparisonType.has( operator )')
+	//- 	cub-dropdown(
+	//- 		autoWidth,
+	//- 		required,
+	//- 		#comparisonTypeDropdown,
+	//- 		[displayErrorMode]='ERROR_MODE.Tooltip',
+	//- 		[menuSize]='{ minWidth: 162 }',
+	//- 		[clearable]='false',
+	//- 		[disableControl]=`
+	//- 			error?.field
+	//- 				|| ( excludeFields?.isDisable
+	//- 				&& ( excludeFieldsLK?.[ field?.id ] ) )`,
+	//- 		[formControl]='typeControl',
+	//- 		[(valueControl)]='$any( data ).compareType',
+	//- 		(valueControlChange)='onTypeChange()')
+	//- 		cub-dropdown-item(
+	//- 			[label]=`"FIELD.COMPARISON.METHOD.CUSTOM.PEOPLE" | translate`,
+	//- 			[value]='comparisonPeopleType.CUSTOM')
+	//- 		cub-dropdown-item(
+	//- 			[label]='"FIELD.COMPARISON.METHOD.SPECIFIC_FIELD" | translate',
+	//- 			[value]='comparisonPeopleType.SPECIFIC_FIELD')
+	//- 		cub-dropdown-item(
+	//- 			*ngIf='operator === comparisonOperatorType.IS_EXACTLY',
+	//- 			[label]='"FIELD.COMPARISON.METHOD.CURRENT_VIEWER" | translate',
+	//- 			[value]='comparisonPeopleType.CURRENT_VIEWER')
+
+	ng-container(*ngIf='data?.compareType')
+		ng-container([ngSwitch]='data.compareType')
+			ng-container(*ngSwitchCase='COMPARISON_TYPE.STATIC')
+				cub-form-field.flex.miw-200(
+					size='small')
+					cub-member-list(
+						limit='2',
+						width='360px',
+						overlayX='start',
+						[canAdd]=`!error?.field || !( excludeFields?.isDisable
+								&& ( excludeFieldsLK?.[ field?.id ] ) )`,
+						[canRemove]='!error?.field',
+						[strictDisplay]='false',
+						[hasFooter]='false',
+						[users]='users',
+						[selectedUserIDs]='data.userIDs',
+						(added)='addUsers( $event )',
+						(removed)='removeUsers( $event )')
+			ng-container(*ngSwitchCase='COMPARISON_TYPE.AUTO')
+				+comparisonTypeAuto
+
+	ng-container(*ngIf='operatorHasComparisonType.has( operator )')
+		+comparisonType

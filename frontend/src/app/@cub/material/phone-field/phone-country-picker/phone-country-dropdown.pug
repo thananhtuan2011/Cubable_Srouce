@@ -1,0 +1,35 @@
+include ./preview-flag.include.pug
+include ./country-menu.partial.pug
+
+cub-form-field(
+	[label]='label',
+	[description]='description',
+	[helpText]='helpText',
+	[size]='size',
+	[variant]='variant',
+	[displayErrorMode]='displayErrorMode',
+	[autoWidth]='autoWidth',
+	[focusing]='isOpened',
+	(container.click)='open()')
+	ng-container(
+		cubFormFieldPrefix,
+		*ngIf='countryCode')
+		+preview-flag
+	input(
+		cubFormFieldInput,
+		readonly,
+		[autoFocusOn]='autoFocusOn',
+		[autoReset]='autoReset',
+		[name]='name || label',
+		[placeholder]='"CUB.PLACEHOLDER.SELECT_PHONE_COUNTRY_CODE" | translate',
+		[disabled]='disabled',
+		[clearable]='canClear',
+		[ngModel]='previewText',
+		(cleared)='onCleared()')
+	ng-container(
+		cubFormFieldSuffix,
+		*ngIf='!readonly')
+		cub-icon(
+			size='16px',
+			color='tertiary',
+			[name]='isOpened ? "chevron-up" : "chevron-down"')

@@ -1,0 +1,21 @@
+{
+	"LABEL": {
+		"CHECK_SYNTAX": "Check syntax",
+		"COLLAPSE": "Collapse",
+		"EXAMPLE": "Example",
+		"EXPAND": "Expand",
+		"EXPECTED_RESULT": "Expected result",
+		"FIELDS": "Fields",
+		"LOGICAL_FUNCTION": "Logical function",
+		"SYNTAX": "Syntax"
+	},
+	"PLACEHOLDER": {
+		"TYPE_EXPRESSION_HERE": "Type expression here...",
+		"TYPE_FORMULA_HERE": "Type formula here..."
+	},
+	"MESSAGE": {
+		"CHECKING_SYNTAX": "Checking syntax...",
+		"EVERYTHING_LOOKS_GOOD": "Everything looks good!",
+		"SYNTAX_ERROR": "Syntax error!"
+	}
+}

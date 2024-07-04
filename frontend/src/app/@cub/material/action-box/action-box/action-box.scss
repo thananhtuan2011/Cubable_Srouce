@@ -1,0 +1,50 @@
+@import '../../../scss/partials/variable';
+@import '../../../scss/partials/mixin';
+
+.cub-action-box {
+	$self: &;
+
+	@include backdrop-blur;
+	@include visible-transition(opacity);
+
+	position: fixed;
+	left: 50%;
+	z-index: $z-level-4;
+
+	display: flex;
+	column-gap: 4px;
+	padding: 10px 8px;
+	border-radius: 50px;
+	visibility: hidden;
+	opacity: 0;
+
+	font-weight: $font-weight-semibold;
+
+	transform: translateX(-50%);
+
+	&#{ $self }--visible {
+		visibility: visible;
+		opacity: 1;
+	}
+
+	&#{ $self }-top {
+		top: var(--action-box-offset, 120px);
+	}
+
+	&#{ $self }-bottom {
+		bottom: var(--action-box-offset, 120px);
+	}
+
+	#{ $self }__start,
+	#{ $self }__middle,
+	#{ $self }__end {
+		display: flex;
+		align-items: center;
+	}
+
+	#{ $self }__start,
+	#{ $self }__middle:not(:has(.cub-action-item)),
+	#{ $self }__end {
+		padding: 8px 10px;
+	}
+}

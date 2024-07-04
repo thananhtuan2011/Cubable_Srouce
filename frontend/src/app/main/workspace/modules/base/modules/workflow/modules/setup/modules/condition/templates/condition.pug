@@ -1,0 +1,35 @@
+mixin setting
+	ng-container([ngSwitch]='type')
+		ng-container(*ngSwitchCase='CONDITION_TYPE.COMPARE_VALUE')
+			compare-value&attributes(attributes)
+		ng-container(*ngSwitchCase='CONDITION_TYPE.FIND_RECORD')
+			find-record(
+				[baseID]='baseID')&attributes(attributes)
+
+cub-card(
+	variant='tonal',
+	size='small')
+	cub-card-content
+		.layout-column.layout-gap-6
+			.text-color-secondary.ml-12
+				| {{ "BASE.WORKFLOW.SETUP.CONDITION.LABEL.SWITCH_BASE" | translate }}
+			cub-dropdown(
+				required,
+				[clearable]='false',
+				[beforeSelectItem]='onBeforeSelectType',
+				[formControl]='typeControl',
+				[valueControl]='type',
+				(valueControlChange)='onConditionTypeChange( $event )')
+				//- [disabled]='!type.addable', TEMP remove
+				cub-dropdown-item(
+					*ngFor='let type of conditionsType; ngForTrackByValue',
+					[description]='( "BASE.WORKFLOW.SETUP.CONDITION.MESSAGE." + type.description ) | translate',
+					[label]='( "BASE.WORKFLOW.SETUP.CONDITION.LABEL." + type.name ) | translate',
+					[value]='type.value')
+
++setting()(
+	#conditionSetting,
+	[blockSetup]='blockSetup',
+	[boardsLk]='boardsLk',
+	[(settings)]='settings',
+	(settingsChange)='onSettingChanged()')

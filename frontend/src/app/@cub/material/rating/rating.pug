@@ -1,0 +1,30 @@
+ng-container(
+	*ngIf='readonly; else elseBlock;')
+	cub-emoji.cub-rating-point(
+		*ngFor='let point of points',
+		[class.cub-rating-point--active]=`
+			point <= value
+		`,
+		[emoji]='emoji')
+ng-template(#elseBlock)
+	button.cub-rating-point(
+		#button,
+		tabindex='-1',
+		*ngFor='let point of points',
+		[class.cub-rating-point--active]=`
+			point <= ( selectingPoint || value )
+		`,
+		[disabled]=`
+			isDisabled
+				|| point > range
+		`,
+		(mouseenter)=`
+			!button.disabled
+				&& selectPoint( point )
+		`,
+		(mouseleave)=`
+			!button.disabled
+				&& selectPoint( null )
+		`,
+		(click)='setPoint( point )')
+		cub-emoji([emoji]='emoji')

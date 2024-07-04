@@ -1,0 +1,31 @@
+version: 0.2
+
+env:
+    variables:
+        BUILD_ENV: "{{build_env}}"
+        S3_BUCKET_URL: "{{s3_bucket_url}}"
+phases:
+  install:
+    runtime-versions:
+        nodejs: 16
+    commands:
+        - echo Installing source NPM dependencies...
+        - npm i
+        - npm i -g @angular/cli@15.2.8
+        - npm i -g gzipper
+  build:
+    commands:
+        - echo Build started
+        - ng build --configuration $BUILD_ENV --output-path ./dist/source
+        - gzipper c ./dist/source --include js,css,html,eot,ttf,otf,woff,woff2 --output-file-format [filename].[ext] ./dist/compressed/
+        - echo Deploy started
+        - aws s3 rm $S3_BUCKET_URL --recursive
+        - aws s3 sync dist/source $S3_BUCKET_URL
+        - aws s3 cp dist/compressed $S3_BUCKET_URL --recursive --exclude "*" --include "*.html" --content-type text/html --content-encoding gzip --cache-control "public, must-revalidate, proxy-revalidate, max-age=0, s-maxage=3600, max-age=31536000"
+        - aws s3 cp dist/compressed $S3_BUCKET_URL --recursive --exclude "*" --include "*.css" --content-type text/css --content-encoding gzip
+        - aws s3 cp dist/compressed $S3_BUCKET_URL --recursive --exclude "*" --include "*.js" --content-type application/javascript --content-encoding gzip
+        - aws s3 cp dist/compressed $S3_BUCKET_URL --recursive --exclude "*" --include "*.eot" --content-type application/vnd.ms-fontobject --content-encoding gzip
+        - aws s3 cp dist/compressed $S3_BUCKET_URL --recursive --exclude "*" --include "*.ttf" --content-type font/ttf --content-encoding gzip
+        - aws s3 cp dist/compressed $S3_BUCKET_URL --recursive --exclude "*" --include "*.otf" --content-type font/otf --content-encoding gzip
+        - aws s3 cp dist/compressed $S3_BUCKET_URL --recursive --exclude "*" --include "*.woff" --content-type font/woff --content-encoding gzip
+        - aws s3 cp dist/compressed $S3_BUCKET_URL --recursive --exclude "*" --include "*.woff2" --content-type font/woff2 --content-encoding gzip

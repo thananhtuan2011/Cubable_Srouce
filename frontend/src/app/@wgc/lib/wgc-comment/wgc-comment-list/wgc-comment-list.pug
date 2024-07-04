@@ -1,0 +1,186 @@
+//- mixin btn-reply
+//- 	button(
+//- 		wgcBasicButton,
+//- 		*ngIf='canComment && !comment?.isReplying',
+//- 		[color]='"LABEL" | color',
+//- 		(click)='replyComment( comment )')
+//- 		| {{ "WGC.PLACEHOLDER.WRITE_YOUR_REPLY" | translate }}
+
+//- mixin menu-reply
+//- 	.wgc-comment-list-comment__reply(
+//- 		[class.border-left-hidden]='( !comment.isHiddenReplies && comment.totalReplies > limitReplies ) || !comment.totalReplies',
+//- 		[class.border-radius-hidden]='!canComment && !comment.totalReplies || comment.isHiddenReplies && comment.totalReplies || comment.totalReplies && comment.totalReplies <= limitReplies')
+//- 		.wgc-comment-list-comment__menu__reply
+//- 			ng-container(*ngIf='comment?.totalReplies > limitReplies')
+//- 				ng-container(*ngIf='!comment.isHiddenReplies; else elseBlock;')
+//- 					wgc-member-list(
+//- 						readonly,
+//- 						limit='2',
+//- 						[includesStatus]='[ MEMBER_STATUS?.INACTIVE, MEMBER_STATUS?.WAITING ]',
+//- 						[members]='comment.repliedUsers',
+//- 						[(selected)]='comment.repliedUserIDs')
+//- 					button(
+//- 						wgcBasicButton,
+//- 						[color]='"LABEL" | color',
+//- 						(click)='comment.isHiddenReplies = true')
+//- 						| {{ "WGC.LABEL.REPLIES" | translate : { replyCount: comment.totalReplies } }}
+//- 					wgc-color-dot(viewOnly, size='3px', *ngIf='canComment && !comment?.isReplying', [color]='"LABEL" | color')
+//- 				ng-template(#elseBlock)
+//- 					button(
+//- 						wgcBasicButton,
+//- 						[color]='"LABEL" | color',
+//- 						(click)='comment.isShowLessReplies = !comment?.isShowLessReplies; comment.isShowLessReplies ? repliesLoadMore?.emit( comment ): comment.isHiddenReplies = false')
+//- 						| {{ "WGC.LABEL." + ( !comment?.isShowLessReplies ? "SHOW_PREVIOUS_REPLIES" : "HIDE_ALL_REPLIES") | translate : { replyCount: comment?.totalReplies - limitReplies } }}
+//- 					wgc-color-dot(viewOnly, size='3px', *ngIf='canComment && !comment?.isReplying', [color]='"LABEL" | color')
+//- 			+btn-reply
+
+//- mixin comment
+//- 	.wgc-comment-list-comment__item
+//- 		wgc-member.h-36(
+//- 			size='36px',
+//- 			[hasViewProfile]='false',
+//- 			[displayMemberName]='false',
+//- 			[member]='comment?.user')
+//- 		wgc-card.wgc-comment-list-comment__card(
+//- 			autoUnhighlight,
+//- 			contentPaddingVertical='10px',
+//- 			contentPaddingHorizontal='10px',
+//- 			[color]='"DEFAULT" | color',
+//- 			[(highlight)]='comment.highlight')
+//- 			.wgc-comment-list-comment__header
+//- 				.wgc-comment-list-comment__header__left
+//- 					wgc-truncate.wgc-comment-list-comment__header__title__name
+//- 						| {{ comment?.user?.name | empty }}
+//- 					.wgc-comment-list-comment__header__title__time
+//- 						| {{ comment?.createdAt | momentFromNow }}
+//- 						ng-container(*ngIf='comment?.isEdited')
+//- 							wgc-color-dot.wgc-comment-list-comment__header__color__dot(viewOnly, size='3px', [color]='"LABEL" | color')
+//- 							button(
+//- 								wgcBasicButton,
+//- 								[color]='"LABEL" | color',
+//- 								[wgcTooltip]='"WGC.MESSAGE.SHOW_ALL_EDIT_HISTORY" | translate',
+//- 								(click)='openDialogEditHistory( comment )')
+//- 								| {{ "WGC.LABEL.EDITED" | translate }}
+//- 				.wgc-comment-list-comment__header__right
+//- 					wgc-loading(*ngIf='!comment?.id')
+//- 					button(
+//- 						wgcBasicButton,
+//- 						*ngIf='comment?.editable && comment?.id',
+//- 						icon='more-vertical',
+//- 						[color]='"LABEL" | color',
+//- 						[wgcTooltip]='"WGC.LABEL.MORE_ACTIONS" | translate',
+//- 						[menuData]='{ comments: comments, comment: comment }',
+//- 						[wgcMenuTriggerFor]='commentMenu')
+//- 			.wgc-comment-list-comment__content(*ngIf='editingComment?.id !== comment?.id')
+//- 				wgc-comment-content(
+//- 					*ngIf='comment?.content?.html',
+//- 					[limitContentHeight]='limitContentHeight',
+//- 					[content]='comment?.content?.html')
+
+//- 				wgc-comment-link-list(
+//- 					*ngIf='comment?.linkPreviews?.length',
+//- 					[linkPreviews]='comment?.linkPreviews')
+
+//- 				wgc-comment-attachment-list(
+//- 					*ngIf='comment?.attachments?.length',
+//- 					[attachments]='comment?.attachments')
+
+//- 				wgc-comment-image-list(
+//- 					*ngIf='comment?.images?.length',
+//- 					[images]='comment?.images',
+//- 					(imageClicked)='imageClicked?.emit( $event )')
+//- 			wgc-comment-box(
+//- 				autoFocusOn,
+//- 				subEditor,
+//- 				*ngIf='editingComment?.id === comment?.id',
+//- 				[maxFilePerComment]='maxFilePerComment',
+//- 				[editingComment]='editingComment',
+//- 				[mentionSource]='mentionSource',
+//- 				(commentSent)='updateComment( $event )',
+//- 				(cancelled)='editingComment = undefined')
+//- 			.wgc-comment-list-comment__reaction
+//- 				.wgc-comment-list-comment__reaction__border(*ngIf='comment?.reactionCount')
+//- 					button.wgc-comment-list-comment__reaction__list(
+//- 						wgcBasicButton,
+//- 						[color]='"LABEL" | color',
+//- 						(click)='openDialogDetailReaction( comment ); $event?.stopPropagation();')
+//- 						ng-container(*ngFor='let reaction of comment.reactions; trackBy: "id" | trackByFn;')
+//- 							img.wgc-comment-list-comment__reaction__icon(
+//- 								height='20px',
+//- 								width='20px',
+//- 								*ngIf='reaction.users?.length',
+//- 								[src]='ASSETS_ICON_SHADOW[ reaction?.iconType ]',
+//- 								(click)='openDialogDetailReaction( comment, reaction?.iconType ); $event?.stopPropagation();')
+//- 						h5.wgc-comment-list-comment__reaction__count
+//- 							| {{ comment?.reactionCount | kUnit }}
+//- 				button.wgc-comment-list-comment__btn__reaction(
+//- 					wgcIconButton,
+//- 					circle,
+//- 					position='above',
+//- 					size='small',
+//- 					*ngIf='canComment',
+//- 					[color]='"WHITE" | color',
+//- 					[menuData]='{ comment: comment }',
+//- 					[wgcMenuTriggerFor]='reactionMenu')
+//- 					img([lazyLoad]='"assets/images/icons/reactions/reaction-group.png"')
+
+//- wgc-menu(#commentMenu, width='150px')
+//- 	wgc-menu-content
+//- 		ng-template(wgcMenuContent, let-comments='comments', let-comment='comment')
+//- 			button(wgcMenuItem, icon='edit', (click)='setEditComment( comment )')
+//- 				| {{ "WGC.LABEL.EDIT" | translate }}
+//- 			button(wgcMenuItem, icon='trash', [color]='"DANGER" | color', (click)='deleteComment( comments, comment )')
+//- 				| {{ "WGC.LABEL.DELETE" | translate }}
+
+//- wgc-menu.wgc-comment-list-comment__btn__reaction__group(#reactionMenu)
+//- 	wgc-menu-content
+//- 		ng-template(wgcMenuContent, let-comment='comment')
+//- 			.wgc-comment-list-comment__btn__reaction__item
+//- 				ng-container(*ngFor='let iconType of ICON_LIST; trackBy: "id" | trackByFn;')
+//- 					img.wgc-comment-list-comment__btn__reaction__icon(
+//- 						height='28px',
+//- 						width='28px',
+//- 						*ngIf='iconType !== comment?.userReactedType',
+//- 						[src]='ASSETS_ICON_SHADOW[ iconType ]',
+//- 						(click)='updateReaction( iconType, comment ); reactionMenu?.close();')
+
+//- .wgc-comment-list-wrapper
+//- 	not-found.wgc-comment-list__empty(
+//- 		*ngIf='!comments?.length',
+//- 		[name]='"WGC.LABEL.COMMENTS" | translate',
+//- 		[emptyImage]='"assets/images/icons/comment.png"',
+//- 		[emptyDescription]='canComment ? ( "WGC.MESSAGE.ADD_FIRST_COMMENT" | translate ) : undefined')
+//- 	wgc-scroll-bar.wgc-comment-list__content(
+//- 		suppressScrollX,
+//- 		detectScroll,
+//- 		*ngIf='comments?.length',
+//- 		(scrollReachBottom)='commentsLoadMore?.emit( !$event )')
+//- 		.wgc-comment-list-comment(*ngFor='let comment of comments; trackBy: "id" | trackByFn;')
+//- 			ng-container(*ngVar='comments; let comments;')
+//- 				.wgc-comment-list-comment__root([class.border-left-hidden]='!canComment && !comment?.totalReplies')
+//- 					.wgc-comment-list-comment__root__content
+//- 						+comment
+//- 				+menu-reply
+//- 				.wgc-comment-list__content(*ngIf='comment?.totalReplies <= limitReplies')
+//- 					.wgc-comment-list-comment__reply(*ngFor='let comment of comment?.replies | slice : 0 : comment?.replies?.length; trackBy: "id" | trackByFn;')
+//- 						+comment
+//- 						.wgc-comment-list-comment__btn__reply
+//- 							+btn-reply
+//- 				.wgc-comment-list__content(*ngIf='comment?.totalReplies > limitReplies')
+//- 					.wgc-comment-list-comment__reply(*ngFor='let comment of comment?.replies | slice : 0 : !comment.isHiddenReplies ? 0 : ( comment?.isShowLessReplies ? comment?.replies?.length : limitReplies ); trackBy: "id" | trackByFn;')
+//- 						+comment
+//- 						.wgc-comment-list-comment__btn__reply
+//- 							+btn-reply
+
+//- 	div(*ngIf='canComment')
+//- 		.wgc-comment-list__status
+//- 			ng-container(*ngIf='replyingComment')
+//- 				div([innerHtml]='"WGC.LABEL.REPLYING_TO" | translate: { name: replyingComment?.user.name } | empty | safeHtml')
+//- 				button(wgcBasicButton, [color]='"LABEL" | color', (click)='cancelReplyState()')
+//- 					| {{ "WGC.LABEL.CANCEL" | translate }}
+//- 		wgc-comment-box(
+//- 			[subEditor]='!!replyingComment',
+//- 			[maxFilePerComment]='maxFilePerComment',
+//- 			[mentionSource]='mentionSource',
+//- 			(commentSent)='createComment( $event, replyingComment )',
+//- 			(cancelled)='cancelReplyState()')

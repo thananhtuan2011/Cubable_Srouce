@@ -1,0 +1,48 @@
+.virtual-scroll-overlay
+
+.virtual-scroll-viewport(
+	[style.left.px]='viewportOffsetLeft',
+	[style.top.px]='viewportOffsetTop',
+	[style.width.px]='viewportWidth',
+	[style.height.px]='viewportHeight')
+	.virtual-scroll-inner(
+		detectScroll,
+		cubScrollBar,
+		(scrolling)='onScrolling( $event )')
+		div(
+			[style.width.px]='viewportScrollWidth',
+			[style.height.px]='viewportScrollHeight')
+	.virtual-scroll-track.virtual-scroll-horizontal-track(
+		*ngIf='horizontalScrollRatio < 1',
+		[style.left.px]='horizontalTrackOffsetX',
+		[style.bottom.px]='horizontalTrackOffsetY',
+		[style.width.px]='horizontalTrackSize',
+		(click)=`onTrackClicked(
+			$event,
+			ScrollDirection.Horizontal
+		)`)
+		.virtual-scroll-thumb(
+			[style.left.%]='horizontalThumbOffset',
+			[style.width.%]='horizontalThumbSize',
+			(mousedown)=`onThumbMousedown(
+				$event,
+				ScrollDirection.Horizontal
+			)`)
+	.virtual-scroll-track.virtual-scroll-vertical-track(
+		*ngIf='verticalScrollRatio < 1',
+		[style.right.px]='verticalTrackOffsetX',
+		[style.top.px]='verticalTrackOffsetY',
+		[style.height.px]='verticalTrackSize',
+		(click)=`onTrackClicked(
+			$event,
+			ScrollDirection.Vertical
+		)`)
+		.virtual-scroll-thumb(
+			[style.top.%]='verticalThumbOffset',
+			[style.height.%]='verticalThumbSize',
+			(mousedown)=`onThumbMousedown(
+				$event,
+				ScrollDirection.Vertical
+			)`)
+
+ng-content

@@ -1,0 +1,20 @@
+include ./preview-flag.include.pug
+include ./country-menu.partial.pug
+
+button(
+	tabindex='-1',
+	[disabled]='readonly || disabled',
+	[cubMenuTriggerFor]='countryMenu',
+	(menuOpened)='opened.emit()',
+	(menuClosed)='closed.emit()')
+	cub-icon(
+		name='assets/@cub/images/icons/add-flag.svg',
+		size='20px',
+		*ngIf='countryCode === null; else elseBlock;')
+	ng-template(#elseBlock)
+		span.cub-phone-country-picker__preview
+			span.cub-phone-country-picker__preview__image
+				+preview-flag
+			span.cub-phone-country-picker__preview__text(
+				*ngIf='!flagOnly')
+				| {{ previewText }}

@@ -1,0 +1,70 @@
+mixin limitData(title)
+	.layout-row.layout-align-start-center.color-label&attributes(attributes)
+		cub-icon.mr-10(
+			name='check',
+			size='24px',
+			[color]='"GREEN" | color : 400')
+		b.color-label
+			| {{ "AUTH.LABEL.#{title}" | translate }}
+
+mixin backToSignIn
+	button.full-width(
+		cubButton,
+		(click)='stateNavigate([ PATH?.SIGN_IN ])')&attributes(attributes)
+		| {{ "AUTH.LABEL.BACK_TO_SIGN_IN" | translate }}
+
+mixin error
+	.text-center
+		h2.mb-8
+			block
+		.mb-16
+			| {{ "AUTH.MESSAGE.INVITATION_ERROR_DESCRIPTION" | translate }}
+	+backToSignIn
+
+mixin content
+	.layout.pos-relative.layout-column.margin-auto.h-fit-content
+		cub-loading.margin-auto(*ngIf='isInitiatingData; else elseBlock;')
+		ng-template(#elseBlock)
+			.layout-column.full-width
+				ng-container([ngSwitch]='step')
+					ng-container(*ngSwitchCase='INVITATION_STEP?.ACCEPT')
+						auto-access-workspace(
+							[title]=`
+								"AUTH.LABEL."
+								+ ( isAuthorized ? "JOIN_WORKSPACE" : "WAIT_MINUTES" ) | translate
+								: { name: isAuthorized ? workspace?.name : account?.name }`,
+							[disabled]='isDirectAcceptWorkspace',
+							[workspace]='workspace',
+							(switchWorkspace)='stateNavigate([ PATH?.SIGN_IN ])',
+							(redirected)='accessWorkspace()')
+					ng-container(*ngSwitchCase='INVITATION_STEP?.DELETED')
+						+error
+							| {{ "AUTH.LABEL.DELETED_INVITATION" | translate }}
+					ng-container(*ngSwitchCase='INVITATION_STEP?.REJECTED')
+						+error
+							| {{ "AUTH.LABEL.INVITATION_REJECTED" | translate }}
+					ng-container(*ngSwitchCase='INVITATION_STEP?.EXPIRED')
+						+error
+							| {{ "AUTH.LABEL.INVITATION_EXPIRED" | translate }}
+					ng-container(*ngSwitchCase='INVITATION_STEP?.INVALID')
+						+error
+							| {{ "AUTH.LABEL.INVITATION_INVALID" | translate }}
+					ng-container(*ngSwitchCase='INVITATION_STEP?.LIMITATION')
+						.side-content.w-380
+							.layout-column.layout-align-start-center.mb-10
+								img.mb-10(
+									width='250px',
+									height='250px',
+									[lazyLoad]='"assets/images/icons/error.webp"')
+								h2
+									| {{ "AUTH.LABEL.ITS_TIME_TO_UPGRADE" | translate }}
+							.color-label.text-center.mb-40
+								| {{ "AUTH.MESSAGE.YOUR_WORKSPACE_HAVE_REACHED_THE_LIMIT" | translate }}
+							.pl-20.mb-55
+								+limitData("UNLIMITED_RECORD").mb-20
+								+limitData("UNLIMITED_AUTOMATION").mb-20
+								+limitData("UNLIMITED_CAPACITY")
+							+backToSignIn().mb-30
+	//- language-selection.p-20
+
+include patterns/auth.pug

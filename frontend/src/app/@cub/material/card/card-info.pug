@@ -1,0 +1,18 @@
+cub-icon.cub-card-info__icon.cub-card-info__leading-icon(
+	*ngIf='leadingIcon',
+	[name]='leadingIcon',
+	[color]='leadingIconColor',
+	[size]='leadingIconSize')
+.cub-card-info__content
+	.cub-card-info__title(
+		[attr.title]='title')
+		| {{ title }}
+	.cub-card-info__description(
+		[attr.title]='description')
+		| {{ description }}
+	ng-content
+cub-icon.cub-card-info__icon.cub-card-info__trailing-icon(
+	*ngIf='trailingIcon',
+	[name]='trailingIcon',
+	[color]='trailingIconColor',
+	[size]='trailingIconSize')

@@ -1,0 +1,23 @@
+ng-template(#content)
+	ng-container(*ngIf='lazyContent?.templateRef; else elseBlock;')
+		ng-container(*ngTemplateOutlet='lazyContent?.templateRef')
+	ng-template(#elseBlock)
+		ng-content
+
+.cub-drawer__content(
+	mwlResizable,
+	(resizing)='onResizing( $event )',
+	(resizeEnd)='onResizeEnd( $event )')
+	.cub-drawer__resizer(
+		mwlResizeHandle,
+		*ngIf='resizable',
+		[resizeEdges]='{ left: position === "right", right: position === "left" }')
+	ng-container(*ngIf='isRendered')
+		ng-container(*ngTemplateOutlet='content')
+.cub-drawer__btn-open(
+	[cubTooltip]='"CUB.LABEL.EXPAND" | translate',
+	[cubTooltipPosition]='position === "right" ? "before" : "after"',
+	(click)='open()')
+	cub-icon(
+		size='20px',
+		[name]='position === "right" ? "chevron-double-left" : "chevron-double-right"')

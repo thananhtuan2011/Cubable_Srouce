@@ -1,0 +1,19 @@
+.text-color-secondary
+	| {{ "BASE.WORKFLOW.SETUP.END.LABEL.WORKFLOW_END" | translate }}
+cub-card(
+	variant='tonal',
+	size='small')
+	cub-card-content
+		cub-radio-group(
+			[ngModel]='type',
+			(ngModelChange)='onChangeType( $event )')
+			cub-radio(
+				[label]='"BASE.WORKFLOW.SETUP.END.LABEL.CANNOT_ACTIVE" | translate',
+				[value]='endType.Once')
+				span.text-color-secondary
+					| {{ "BASE.WORKFLOW.SETUP.END.MESSAGE.CANNOT_ACTIVE_HINT" | translate }}&nbsp;
+					a
+						| {{ "BASE.WORKFLOW.SETUP.END.LABEL.READ_MORE" | translate }}
+			cub-radio(
+				[label]='"BASE.WORKFLOW.SETUP.END.LABEL.CAN_ACTIVE" | translate',
+				[value]='endType.Many')

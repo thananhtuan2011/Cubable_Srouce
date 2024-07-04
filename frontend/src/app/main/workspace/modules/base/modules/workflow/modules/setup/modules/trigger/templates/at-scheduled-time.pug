@@ -1,0 +1,92 @@
+cub-card(
+	variant='tonal',
+	size='small')
+	cub-card-content
+		.layout-column.layout-gap-6.flex
+			.text-color-secondary.ml-12
+				| {{ "BASE.WORKFLOW.SETUP.TRIGGER.LABEL.SETUP_TIME" | translate }}
+			.schedule-content
+				cub-dropdown(
+					#scheduleTypePicker,
+					required,
+					hideRequiredMarker,
+					[label]='"BASE.WORKFLOW.SETUP.TRIGGER.LABEL.REPEAT" | translate',
+					[formControl]='typeControl',
+					[valueControl]='settings.type',
+					(valueControlChange)='onScheduleTypeChange( $event )')
+					cub-dropdown-item(
+						*ngFor='let type of SCHEDULE_TYPE; ngForTrackByValue',
+						[label]='( "BASE.WORKFLOW.SETUP.TRIGGER.LABEL." + type.name ) | translate',
+						[value]='type.value')
+				cub-form-field(
+					hideRequiredMarker,
+					*ngIf='settings.type === SCHEDULE_ACTION_TYPE.NONE',
+					[label]='"BASE.WORKFLOW.SETUP.TRIGGER.LABEL.SELECT_DATE" | translate')
+					input(
+						cubFormFieldInput,
+						required,
+						cubDatePickerDateOnly,
+						[clearable]='false',
+						[formControl]='selectDateControl',
+						[cubDatePicker]='$any( settings?.scheduleDetail )?.date',
+						(dateChanged)='onSelectedDate( $event )')
+				.layout-column.layout-gap-6(*ngIf='settings.type === SCHEDULE_ACTION_TYPE.WEEKLY')
+					| {{ "BASE.WORKFLOW.SETUP.TRIGGER.LABEL.SELECT_DAY_OF_WEEK" | translate }}
+					.select-day
+						.item-day(
+							*ngFor='let i of dayOfWeekArray',
+							[class.item-active]='i.isActive === true',
+							(click)='onSelectDayOfWeek( i )')
+							| {{ i.name }}
+				.layout-column.layout-gap-6(*ngIf='settings.type === SCHEDULE_ACTION_TYPE.YEARLY')
+					| {{ "BASE.WORKFLOW.SETUP.TRIGGER.LABEL.SELECT_MONTH" | translate }}
+					.select-day
+						.item-day(
+							*ngFor='let i of months',
+							[class.item-active]='i.isActive === true',
+							(click)='onSelectMonth( i )')
+							| {{ i.name }}
+				.layout-column.layout-gap-6(
+					*ngIf=`settings.type === SCHEDULE_ACTION_TYPE.MONTHLY
+						|| settings.type === SCHEDULE_ACTION_TYPE.YEARLY`)
+					| {{ "BASE.WORKFLOW.SETUP.TRIGGER.LABEL.SELECT_DAY_OF_MONTH" | translate }}
+					.select-day-of-month
+						.item-day(
+							*ngFor='let i of dayOfMonthArray',
+							[class.item-active]='i.isActive === true',
+							(click)='onSelectDayOfMonth( i )')
+							| {{ i.name }}
+						button(
+							*ngIf='settings.type === SCHEDULE_ACTION_TYPE.MONTHLY',
+							cubBasicButton,
+							(click)='onSelectLastDayOfMonth()')
+							| {{ "BASE.WORKFLOW.SETUP.TRIGGER.LABEL.LAST_DAY_OFF_MONTH" | translate }}
+				cub-form-field(
+					hideRequiredMarker,
+					*ngIf=`settings.type`,
+					[label]='"BASE.WORKFLOW.SETUP.TRIGGER.LABEL.SELECT_TIME" | translate')
+					input(
+						cubFormFieldInput,
+						required,
+						[clearable]='false',
+						[formControl]='selectTimeControl',
+						[cubTimePicker]='$any( settings?.scheduleDetail )?.time',
+						(timeChanged)='onTimeChanged( $event )')
+				cub-switch(
+					*ngIf='settings.type === SCHEDULE_ACTION_TYPE.DAILY',
+					[label]='"BASE.WORKFLOW.SETUP.TRIGGER.LABEL.NOT_APPLY_WEEKEND" | translate',
+					[ngModel]='$any( settings?.scheduleDetail )?.notApplyWeekend',
+					(ngModelChange)='onSwitchChange( $event )')
+				.layout-column.layout-gap-6(
+					*ngIf=`settings.type && settings.type !== SCHEDULE_ACTION_TYPE.NONE`)
+					cub-form-field(
+						hideRequiredMarker,
+						[label]='"BASE.WORKFLOW.SETUP.TRIGGER.LABEL.DATE_FROM" | translate')
+						input(
+							cubFormFieldInput,
+							required,
+							cubDatePickerDateOnly,
+							[clearable]='false',
+							[formControl]='dateFromControl',
+							[cubDatePicker]='$any( settings?.scheduleDetail )?.dateFrom',
+							(dateChanged)='onSelectedDateFrom( $event )')

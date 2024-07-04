@@ -1,0 +1,6 @@
+include ../mixins/mixin.pug
+
+.layout-row.layout-align-start-center.layout-gap-8.layout-wrap
+	ng-container(*ngTemplateOutlet='fieldPicker')
+
+	+comparisonOperator

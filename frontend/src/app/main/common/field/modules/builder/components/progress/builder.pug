@@ -1,0 +1,97 @@
+include ../builder.include.pug
+
+ng-template(#settingBlock)
+	.layout-column.layout-gap-8
+		| {{ "FIELD.BUILDER.MESSAGE.PROGRESS_WILL_UPDATE" | translate }}
+		cub-radio-group(
+			[ngModel]='internalField.isAuto',
+			(ngModelChange)='onSwitchMode( $event )')
+			cub-radio(
+				[label]='"FIELD.BUILDER.LABEL.MANUAL" | translate',
+				[value]='false')
+				ng-template(cubRadioContent)
+					form.layout-column.layout-gap-16(
+						*ngIf='!internalField.isAuto',
+						[formGroup]='progressRangeForm')
+						cub-form-field(
+							[label]='"FIELD.BUILDER.LABEL.PROGRESS_START" | translate')
+							input(
+								cubFormFieldInput,
+								autoFocusOn,
+								required,
+								type='number',
+								min='0',
+								pattern='[0-9]+',
+								formControlName='startValue',
+								[placeholder]='"FIELD.BUILDER.PLACEHOLDER.FILL_PROGRESS_START" | translate',
+								[valueControl]='internalField.startValue | convertPercent',
+								(valueControlChange)='onStartValueChanged( $event )')
+							ng-container(cubFormFieldSuffix)
+								.text-color-tertiary
+									| %
+						cub-form-field(
+							[label]='"FIELD.BUILDER.LABEL.PROGRESS_COMPLETE" | translate')
+							input(
+								cubFormFieldInput,
+								required,
+								type='number',
+								min='0',
+								pattern='[0-9]+',
+								formControlName='endValue',
+								[min]='startValue + 1',
+								[placeholder]='"FIELD.BUILDER.PLACEHOLDER.FILL_PROGRESS_COMPLETE" | translate',
+								[valueControl]='internalField.endValue | convertPercent',
+								(valueControlChange)='onEndValueChanged( $event )')
+							ng-container(cubFormFieldSuffix)
+								.text-color-tertiary
+									| %
+							ng-template(
+								cubFormFieldError='min')
+								| {{ "FIELD.BUILDER.MESSAGE.PROGRESS_COMPLETE_GREATER_THAN_PROGRESS_START" | translate }}
+			cub-radio(
+				disabled,
+				[label]='"FIELD.BUILDER.LABEL.AUTO" | translate',
+				[value]='true')
+				.text-color-tertiary
+					| {{ "FIELD.BUILDER.MESSAGE.PROGRESS_AUTO_HELP_TEXT" | translate }}
+
+ng-template(#defaultBlock)
+	progress-field-input(
+		autoFocusOn,
+		[label]='"FIELD.BUILDER.LABEL.DEFAULT_VALUE" | translate',
+		[field]='internalField',
+		[(data)]='initialData',
+		(dataChange)='onInitialDataChanged( $event )')
+	//- cub-form-field(
+	//- 	[label]='"FIELD.BUILDER.LABEL.DEFAULT_PROGRESS" | translate')
+	//- 	input(
+	//- 		#input,
+	//- 		cubFormFieldInput,
+	//- 		autoFocusOn,
+	//- 		type='number',
+	//- 		min='0',
+	//- 		[placeholder]='"FIELD.BUILDER.PLACEHOLDER.FILL_PROGRESS" | translate',
+	//- 		[ngModel]='initialData | convertPercent',
+	//- 		(ngModelChange)='onInitialDataChanged( $event )')
+	//- 	ng-container(cubFormFieldSuffix)
+	//- 		.text-color-tertiary
+	//- 			| %
+	//- 	ng-container(
+	//- 		cubFormFieldError,
+	//- 		*ngIf='input.value?.length && +input.value < startValue')
+	//- 		| {{ "FIELD.BUILDER.MESSAGE.PROGRESS_DEFAULT_GREATER_THAN_PROGRESS_START" | translate }}
+	//- 	ng-container(
+	//- 		cubFormFieldError,
+	//- 		*ngIf='input.value?.length && +input.value > endValue')
+	//- 		| {{ "FIELD.BUILDER.MESSAGE.PROGRESS_DEFAULT_LESS_THAN_PROGRESS_COMPLETE" | translate }}
+
+ng-container(
+	*ngTemplateOutlet=`
+		fieldTemplate;
+		context: {
+			settingBlock,
+			defaultBlock: internalField.isAuto
+				? undefined
+				: defaultBlock,
+		};
+	`)

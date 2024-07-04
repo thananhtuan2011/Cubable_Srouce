@@ -1,0 +1,114 @@
+@import '../../../../scss/partials/variable';
+
+.cub-menu-item {
+	$self: &;
+
+	display: flex;
+	align-items: stretch;
+	width: 100%;
+	min-width: 0;
+	max-width: 100%;
+
+	background-color: $color-white;
+
+	text-align: left;
+
+	&:first-of-type {
+		border-top: {
+			left-radius: 8px;
+			right-radius: 8px;
+		};
+	}
+
+	&:last-of-type {
+		border-bottom: {
+			left-radius: 8px;
+			right-radius: 8px;
+		};
+	}
+
+	&:not(:last-of-type) {
+		#{ $self }__right {
+			position: relative;
+
+			&:after {
+				content: '';
+
+				position: absolute;
+				left: 0;
+				right: 0;
+				bottom: 0;
+
+				border-bottom: .5px solid $color-border-primary;
+			}
+		}
+	}
+
+	// Type
+	@at-root {
+		&#{ $self }-destructive {
+			color: $color-material-destructive-default;
+
+			&:disabled {
+				color: $color-material-destructive-disable;
+			}
+		}
+	}
+
+	// Common states
+	@at-root {
+		&:not(:disabled) {
+			&:active,
+			&:hover,
+			&:focus-visible,
+			&#{ $self }--pointing,
+			&#{ $self }--selected {
+				background-color: $color-material-hover;
+			}
+		}
+	}
+
+	#{ $self }__left,
+	#{ $self }__right {
+		display: flex;
+		min-height: 40px;
+		padding: {
+			top: 10px;
+			bottom: 10px;
+		};
+	}
+
+	#{ $self }__left {
+		padding-left: 12px;
+	}
+
+	#{ $self }__right {
+		width: 100%;
+		min-width: 0;
+		max-width: 100%;
+		padding-right: 8px;
+	}
+
+	#{ $self }__prefix,
+	#{ $self }__suffix {
+		display: flex;
+	}
+
+	#{ $self }__prefix {
+		&:not(:empty) {
+			margin-right: 8px;
+		}
+	}
+
+	#{ $self }__content {
+		display: block;
+		width: 100%;
+		min-width: 0;
+		max-width: 100%;
+		height: fit-content;
+		margin: {
+			top: auto;
+			bottom: auto;
+		};
+	}
+}

@@ -1,0 +1,45 @@
+button.cub-flowchart-node__btn-insert-previous-node(
+	#btnInsertPreviousNode,
+	cubBasicButton,
+	icon='plus-circle-fill',
+	iconSize='20px',
+	*ngIf='canInsertPreviousNode',
+	(click)='onBtnInsertPreviousNodeClicked( $event )')
+
+.cub-flowchart-node-wrapper(#wrapperBlock)
+	.cub-flowchart-node__content-block(
+		#contentBlock,
+		(click)='onContentClicked( $event )')
+		ng-container(
+			*ngIf='isBlankChild; else elseBlock;')
+			.cub-flowchart-node__btn-add-child-node(
+				*ngIf='canInsertNode')
+				button(
+					cubBasicButton,
+					icon='plus-circle-fill',
+					iconSize='20px',
+					(click)='onBtnAddChildNodeClicked( $event )')
+		ng-template(#elseBlock)
+			ng-container(
+				*ngTemplateOutlet=`
+					flowchart.templateMap.get( node.type );
+					context: { cmp: this, node, isCollapsed };
+				`
+			)
+	ng-container(*ngIf='hasBranches')
+		.cub-flowchart-node__spliting-point(
+			#splitingPoint)
+		.cub-flowchart-node__merging-point(
+			#mergingPoint)
+	.cub-flowchart-node__children-block
+		ng-template(#childNodesFactory)
+
+button.cub-flowchart-node__btn-insert-next-node(
+	#btnInsertNextNode,
+	cubBasicButton,
+	icon='plus-circle-fill',
+	iconSize='20px',
+	*ngIf='canInsertNextNode',
+	(click)='onBtnInsertNextNodeClicked( $event )')
+
+ng-template(#nextNodeFactory)

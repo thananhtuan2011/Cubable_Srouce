@@ -1,0 +1,139 @@
+mixin viewDraggable(type)
+	ng-container(*ngIf=`${type} === VIEW_TYPE.DATA; else elseBlock`)
+		data-view(#dataViewComps)&attributes(attributes)
+	ng-template(#elseBlock)
+		form-view(#formViewComps)&attributes(attributes)
+
+mixin viewUnDraggable(type)
+	ng-container(*ngIf=`${type} === VIEW_TYPE.DATA; else elseBlock`)
+		data-view&attributes(attributes)
+	ng-template(#elseBlock)
+		form-view&attributes(attributes)
+
+mixin unDraggable(data)
+	.view-arrangement-wrapper(*ngFor=`let view of ${data}; ngForTrackByID`)
+		.view-arrangement
+			+viewUnDraggable('view.type')(
+				[isFromManageTab]='true',
+				[view]='view',
+				[tabManage]='true',
+				[boardID]='boardID',
+				[canCreate]='canCreate',
+				[isFromAllView]='true',
+				[activeView]='activeView',
+				[views]='views',
+				[tempView]='tempView',
+				(updateChange)='updateChange.emit( $event )',
+				(deleteChange)='deleteChange.emit( $event )',
+				(duplicateChange)='duplicateChange.emit( $event )',
+				(sharedChange)='sharedChange.emit( $event )',
+				(activeViewChange)='activeViewChange.emit( $event )')
+
+mixin tabAccess
+	cub-scroll-bar(
+		cdkDropList,
+		suppressX,
+		*ngIf='views?.length',
+		[cdkDropListData]='views',
+		(cdkDropListDropped)='onViewArrange( $event )')
+		ng-container(*ngFor='let view of views; ngForTrackByID')
+			.view-arrangement-wrapper.cursor.ml-12(
+				cdkDrag,
+				cdkDragLockAxis='y',
+				[cdkDragData]='view',
+				[class.view-arrangement-wrapper--active]='view?.id === activeView?.id')
+				cub-icon.mr-8(cdkDragHandle, name='drag', size='20px', [color]='"LABEL" | color')
+				.dragging-preview(*cdkDragPreview)
+					.text-truncate([title]='view.name | empty')
+						| {{ view.name | empty }}
+				.view-arrangement
+					+viewDraggable('view.type')(
+						[view]='view',
+						[boardID]='boardID',
+						[canCreate]='canCreate',
+						[isFromAllView]='true',
+						[tabAccess]='true',
+						[tempView]='tempView',
+						[views]='views',
+						(updateChange)='updateChange.emit( $event )',
+						(deleteChange)='deleteChange.emit( $event )',
+						(sharedChange)='sharedChange.emit( $event )',
+						(duplicateChange)='duplicateChange.emit( $event )',
+						(activeViewChange)='activeViewChange.emit( $event )')
+
+mixin tabManage
+	cub-scroll-bar.layout-column.layout-gap-8.flex.mr-6(
+		suppressX,
+		*ngIf='views?.length')
+		.layout-column.layout-gap-8
+			.ml-14
+				.text-semibold.line-height-20
+					| {{ "BASE.BOARD.VIEW.ALL.LABEL.CREATE_BY_ME" | translate }}
+				cub-divider.mt-2
+			.ml-12
+				ng-container(*ngIf='manageViewCreatedByMe.length; else elseBlock;')
+					+unDraggable('manageViewCreatedByMe')
+				ng-template(#elseBlock)
+					cub-card(variant='tonal')
+						cub-card-content
+							| {{ "BASE.BOARD.VIEW.ALL.MESSAGE.NO_CREATE_BY_ME" | translate }}
+		.layout-column.layout-gap-8
+			.ml-14
+				.text-semibold.line-height-20
+					| {{ "BASE.BOARD.VIEW.ALL.LABEL.CREATE_BY_OTHER" | translate }}
+				cub-divider.mt-2
+			.ml-12
+				ng-container(*ngIf='manageViewCreatedByOther.length; else elseBlock1;')
+					+unDraggable('manageViewCreatedByOther')
+				ng-template(#elseBlock1)
+					cub-card(variant='tonal')
+						cub-card-content
+							| {{ "BASE.BOARD.VIEW.ALL.MESSAGE.NO_CREATE_BY_OTHER" | translate }}
+
+include ../../common/templates/new-view.pug
+
++newViewMenu('createChange.emit')
+
+cub-popup.all-view-popup(
+	#allViewPopup,
+	minWidth='400px',
+	maxWidth='400px',
+	maxHeight='520px',
+	(opened)='tabIndex = 0')
+	cub-popup-header
+		ng-template(cubPopupHeader)
+			.layout-row.layout-align-space-between-center.layout-gap-8.flex
+				h4
+					| {{ "BASE.BOARD.VIEW.ALL.LABEL.LIST_TITLE" | translate }}
+				button(
+					cubClearButton,
+					size='24px',
+					[cubTooltip]='"BASE.LABEL.CLOSE" | translate',
+					(click)='allViewPopup.close()')
+	cub-popup-content
+		ng-template(cubPopupContent)
+			cub-tabs.flex(alignment='center', [(selectedIndex)]='tabIndex')
+				cub-tab([label]='"BASE.BOARD.VIEW.ALL.LABEL.ACCESS" | translate: { length: ( views.length || 0 ) }')
+					ng-template(cubTabContent)
+						+tabAccess
+				cub-tab([label]='"BASE.BOARD.VIEW.ALL.LABEL.MANAGE" | translate: { length: ( manageViewCreatedByMe.length + manageViewCreatedByOther.length || 0 ) }')
+					ng-template(cubTabContent)
+						+tabManage
+	cub-popup-footer(*ngIf='canCreate')
+		ng-template(cubPopupFooter)
+			.layout-row.layout-align-end
+				button.w-120(
+					cubButton='primary',
+					[cubMenuTriggerFor]='newViewMenu')
+					| {{ "BASE.BOARD.VIEW.ALL.LABEL.CREATE" | translate }}
+
+button.w-135(
+	cubFloatingButton,
+	size='large',
+	*ngIf='views?.length',
+	[cubPopupTriggerFor]='allViewPopup')
+	| {{ "BASE.BOARD.VIEW.ALL.LABEL.LIST_TITLE" | translate }}
+	cub-icon.ml-4(
+		color='white',
+		size='16px',
+		[name]='allViewPopup?.isOpened ? "chevron-up" : "chevron-down"')

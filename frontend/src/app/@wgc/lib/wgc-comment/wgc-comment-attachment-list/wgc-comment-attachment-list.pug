@@ -1,0 +1,13 @@
+//- .wgc-comment-attachment(*ngFor='let file of attachments')
+//- 	.wgc-comment-attachment-wrapper
+//- 		img(width='24px', [lazyLoad]='file?.name | fileIcon')
+//- 		.wgc-comment-attachment__info
+//- 			wgc-truncate.wgc-comment-attachment__info__name(limitLine='1')
+//- 				| {{ file?.name | empty }}
+//- 			.wgc-comment-attachment__info__size
+//- 				| {{ file?.size | fileSize }}
+//- 		button(
+//- 			wgcBasicButton,
+//- 			icon='cloud-download',
+//- 			[wgcTooltip]='"WGC.LABEL.DOWNLOAD" | translate',
+//- 			(click)='openFile( file )')

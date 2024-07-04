@@ -1,0 +1,170 @@
+mixin comment(comment, parentComment)
+	.cub-comment-list-comment__item
+		cub-avatar(
+			[label]=`${comment}.user?.name`,
+			[avatar]=`${comment}.user?.avatar`)
+		.cub-comment-list-comment__item__content(
+			*ngIf=`editingComment?.id !== ${comment}.id; else elseBlock;`)
+			.cub-comment-list-comment__main
+				.cub-comment-list-comment__card
+					.cub-comment-list-comment__card__header
+						ng-container(*ngIf='user; else elseBlock')
+							.text-truncate(
+								[title]=`${comment}.user?.name | empty`)
+								| {{ #{comment}.user?.name | empty }}
+							.text-state(
+								*ngIf='user.status === MEMBER_STATUS.INACTIVE')
+								| {{ "CUB.MESSAGE.INACTIVATE" | translate }}
+						ng-template(#elseBlock)
+							| {{ "CUB.MESSAGE.UNDEFINED" | translate }}
+					.cub-comment-list-comment__card__content
+						cub-comment-content(
+							*ngIf=`${comment}.metadata?.delta?.length`,
+							[content]=`${comment}.metadata`)
+						cub-comment-link-list(
+							*ngIf=`${comment}.linkPreviews?.length`,
+							[linkPreviews]=`${comment}.linkPreviews`)
+						cub-comment-attachment-list(
+							*ngIf=`${comment}.files?.length`,
+							[files]=`${comment}.files`)
+				.cub-comment-list-comment__main__more__action(
+					*ngIf=`
+						${comment}.editable
+						&& ${comment}.id
+						&& ${comment}.id !== editingComment?.id`,
+					[class.visibility]=`moreActionID === ${comment}.id`)
+					button(
+						cubBasicButton,
+						icon='more-horizontal',
+						[active]=`moreActionID === ${comment}.id`,
+						[color]='"LABEL" | color',
+						[cubTooltip]='"CUB.LABEL.MORE_ACTIONS" | translate',
+						[cubMenuTriggerContext]=`{ comments: comments, comment: ${comment} }`,
+						[cubMenuTriggerFor]='commentMenu')
+			.cub-comment-list-comment__item__content__action
+				.cub-comment-list-comment__item__link-secondary(
+					(click)='$event?.stopPropagation()')
+					| {{ "CUB.LABEL.LIKE" | translate }}
+				.cub-comment-list-comment__item__link-secondary(
+					*ngIf='canComment',
+					(click)=`replyComment( ${parentComment}, ${comment} )`)
+					| {{ "CUB.LABEL.REPLY" | translate }}
+				.cub-comment-list-comment__item__text-tertiary
+					| {{ #{comment}.createdAt | cubFromNow }}
+				.cub-comment-list-comment__item__link-tertiary(
+					*ngIf=`${comment}.createdAt !== ${comment}.updatedAt`)
+					| {{ "CUB.LABEL.EDITED" | translate }}
+		ng-template(#elseBlock)
+			.cub-comment-list-comment__edit
+				cub-comment-box(
+					autoFocusOn,
+					isBorderHidden,
+					[boardAvailableUsersFunc]='boardAvailableUsersFunc',
+					[comment]='editingComment',
+					(commentSent)=`updateComment( $event, ${comment} )`,
+					(cancelled)='editingComment = undefined')
+				.cub-comment-list-comment__item__content__action
+					a((click)='cancelEdit()')
+						| {{ "CUB.LABEL.CANCEL_EDIT" | translate }}
+
+cub-menu(
+	#commentMenu,
+	width='194px',
+	(opened)='moreActionID = commentMenu.context.comment.id',
+	(closed)='moreActionID = null')
+	cub-menu-content
+		ng-template(
+			cubMenuContent,
+			let-comments='comments',
+			let-comment='comment')
+			button(
+				cubMenuItem,
+				icon='pencil',
+				(click)='setEditComment( comment )')
+				| {{ "CUB.LABEL.EDIT" | translate }}
+			button(
+				cubMenuItem='destructive',
+				icon='trash',
+				(click)='deleteComment( comments, comment )')
+				| {{ "CUB.LABEL.DELETE" | translate }}
+
+.cub-comment-list(
+	[style.marginTop.px]='isBottomSticky && !commentListHeight ? editorHeight : 0')
+	.cub-comment-list__editor(
+		*ngIf='canComment',
+		[class.cub-comment-list__editor--top]='isTopSticky',
+		[class.cub-comment-list__editor--bottom]='isBottomSticky')
+		cub-comment-box(
+			[boardAvailableUsersFunc]='boardAvailableUsersFunc',
+			(commentSent)='createComment( $event )')
+	.cub-comment-list__wrapper(
+		[style.marginTop.px]='isTopSticky ? editorHeight + commentListRowGap : 0',
+		[style.paddingTop.px]=`
+			isBottomSticky && commentListHeight
+			? 3*commentListRowGap
+			: 0
+		`)
+		.cub-comment-list__content
+			.cub-comment-list-comment(*ngFor='let comment of comments; ngForTrackByID')
+				.cub-comment-list-comment__root
+					+comment('comment')
+				.cub-comment-list-comment__reply(
+					*ngIf=`comment.amount
+						|| replyingComment && comment.isReplying`)
+					ng-container(*ngIf='comment.amount')
+						ng-container(
+							*ngIf=`comment.amount <= comment.replies?.length
+								&& comment.isShowAllReplies
+								|| comment.amount <= limitPerLoad;
+								else elseBlock2;`)
+							.cub-comment-list-comment__reply__item(
+								*ngFor=`
+									let reply of comment.replies
+									| slice : 0 : comment.replies?.length;
+									ngForTrackByID
+								`)
+								+comment('reply', 'comment')
+							.cub-comment-list-comment__reply__show-more(
+								*ngIf=`
+									comment.isShowAllReplies
+									&& comment.amount > limitPerLoad
+								`)
+								cub-icon(
+									name='turn-up-left',
+									size='20px',
+									color='secondary')
+								a((click)='comment.isShowAllReplies = false')
+									| {{ "CUB.LABEL.SHOW_LESS_REPLY" | translate : { amount: comment.amount } }}
+						ng-template(#elseBlock2)
+							.cub-comment-list-comment__reply__show-more(
+								[style.marginLeft]='"12px"')
+								cub-icon(
+									size='20px',
+									color='secondary',
+									name='turn-down-right')
+								a((click)='showMoreReply( comment )')
+									| {{ "CUB.LABEL.SHOW_MORE_REPLY" | translate : { amount: comment.amount } }}
+					.cub-comment-list-comment__reply__editor(
+						*ngIf='replyingComment && comment.isReplying')
+						cub-avatar(
+							[label]='replyingComment.user?.name',
+							[avatar]='replyingComment.user?.avatar')
+						.cub-comment-list-comment__reply__editor-box
+							.cub-comment-list-comment__reply__editor-box__card
+								cub-comment-box(
+									autoFocusOn,
+									isBorderHidden,
+									#commentBoxReply,
+									[boardAvailableUsersFunc]='boardAvailableUsersFunc',
+									[replyOfComment]='replyOfComment',
+									[comment]='replyingComment',
+									(commentSent)='createComment( $event, replyingComment )',
+									(cancelled)='replyingComment = undefined')
+							.cub-comment-list-comment__item__content__action
+								a((click)='cancelReply( comment )')
+									| {{ "CUB.LABEL.CANCEL" | translate }}
+			.cub-comment__show-more
+				a(
+					*ngIf='!loadedAllComments',
+					(click)='commentsLoadMore.emit()')
+					| {{ "CUB.LABEL.SEE_MORE_COMMENT" | translate }}

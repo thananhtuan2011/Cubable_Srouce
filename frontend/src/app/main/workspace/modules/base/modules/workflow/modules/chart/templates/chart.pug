@@ -1,0 +1,436 @@
+mixin outerBoxBlock(typeBlock, iconBlock)
+	ng-template(
+		cubFlowchartNodeTemplate,
+		let-cmp='cmp',
+		let-node='node',
+		let-isCollapsed='isCollapsed',
+		[type]=`WORKFLOW_BLOCK_TYPE.${typeBlock}`)
+		.layout-row.layout-align-start-center.layout-gap-12
+			cub-icon.node__invalid-icon(
+				name='warning-fill',
+				size='24px',
+				color='error',
+				*ngIf='node.metadata.invalid')
+			.layout-row.layout-align-space-between-center.full-width.layout-gap-6
+				button.outer-box-button(
+					cubButton='secondary',
+					size='small',
+					[ngClass]=`node.metadata.invalid
+						? { 'outer-box-button--error': true }
+						: node.id === blockActive?.id
+							? { 'outer-box-button--active': true }
+							: undefined`)
+					.layout-row.layout-align-start-center.full-height.layout-gap-8
+						.outer-box-icon
+							cub-icon(
+								name=`${iconBlock}`,
+								size='20px',
+								[color]='"purple" | cubPalette : "500"')
+						| {{ node?.metadata.blockData.metadata?.index }}.&nbsp;
+						| {{ "BASE.WORKFLOW.CHART.LABEL.#{typeBlock}" | translate }}
+						cub-icon(
+							name='info-circle',
+							size='16px',
+							color='secondary',
+							*ngIf='node.metadata?.description',
+							[cubTooltip]='node.metadata?.description')
+						//- button(
+						//- 	cubBasicButton,
+						//- 	icon='more-vertical',
+						//- 	iconSize='20px',
+						//- 	[cubTooltip]='"BASE.WORKFLOW.CHART.LABEL.MORE_ACTION" | translate',
+						//- 	[active]=`blockActionMenu?.context?.node.id === node.id
+						//- 		&& blockActionMenu?.isOpened`,
+						//- 	[cubMenuTriggerFor]='blockActionMenu',
+						//- 	[cubMenuTriggerContext]='{ node, element: subProcessButton }',
+						//- 	(click)='$event.stopPropagation()')
+						+buttonBlockActionMenu(undefined, '{ node, element: outerBoxButton }')(#outerBoxButton)
+				button(
+					cubButton='secondary',
+					icon='expand',
+					iconSize='20px',
+					[icon]='isCollapsed ? "expand" : "collapse"',
+					(click)='isCollapsed ? cmp.expand() : cmp.collapse()')
+
+mixin nodeOuterBoxBlock(type)
+	ng-template(
+		cubFlowchartNodeTemplate,
+		let-node='node',
+		[type]=`WORKFLOW_BLOCK_TYPE.${type}`)
+		.node-outer-box
+			| {{ "BASE.WORKFLOW.CHART.LABEL.#{type}" | translate }}
+
+mixin descriptionBlock(defaultTitle, iconSizeDefault, iconNameDefault)
+	.layout-row.layout-align-start-center.layout-gap-8
+		cub-icon(
+			*ngIf=`node.metadata?.settingDescription?.iconName || ${iconNameDefault}`,
+			[size]=`${iconSizeDefault} || "32px"`,
+			[name]=`node.metadata?.settingDescription?.iconName || ${iconNameDefault}`,
+			[color]='node.metadata?.settingDescription?.iconColor')
+		ng-container(*ngIf='nodeEditing === node.id; else elseBlock;')
+			cub-form-field(
+				(click)='$event.stopPropagation()')
+				textarea.h-50(
+					cubFormFieldInput,
+					autoFocusOn,
+					[formControl]='descriptionFormControl',
+					[placeholder]='"BASE.WORKFLOW.CHART.PLACEHOLDER.TYPE_DESCRIPTION" | translate',
+					[valueControl]=`node.metadata?.description
+						|| ( node.metadata?.settingDescription?.message | stripHtml )
+						|| ( "BASE.WORKFLOW.CHART.PLACEHOLDER.${defaultTitle}" | translate )`,
+					(valueControlChange)='description = $event',
+					(blur)='onDescriptionChange( node )')
+		ng-template(#elseBlock)
+			ng-container(*ngIf='node.metadata?.description?.length; else elseBlock1;')
+				.text-truncate(
+					[title]='node.metadata?.description')
+					.block-description(
+						[innerHTML]='node.metadata?.description')
+			ng-template(#elseBlock1)
+				.block-description(
+					[class.text-color-secondary]='!node.metadata?.settingDescription',
+					[innerHTML]=`node.metadata?.settingDescription?.message
+						|| ( "BASE.WORKFLOW.CHART.PLACEHOLDER.${defaultTitle}" | translate )`)
+
+mixin buttonBlockActionMenu(iconColor, cubMenuTriggerContext)
+	button(
+		cubBasicButton,
+		iconColor=iconColor,
+		icon='more-vertical',
+		iconSize='20px',
+		[cubTooltip]='"BASE.WORKFLOW.CHART.LABEL.MORE_ACTION" | translate',
+		[cubMenuTriggerFor]='blockActionMenu',
+		[cubMenuTriggerContext]=`${cubMenuTriggerContext} || { node }`,
+		(click)='$event.stopPropagation()')&attributes(attributes)
+
+mixin headerBlock(order, title)
+	.layout-row.layout-align-space-between-center.flex
+		.h5.text-color-white
+			| {{ #{order} }}.&nbsp;
+			| {{ "BASE.WORKFLOW.CHART.LABEL.#{title}" | translate }}
+		+buttonBlockActionMenu('white')
+
+cub-menu(
+	#blockTypeMenu,
+	width='202px',
+	(opened)='scalable = false',
+	(closed)='scalable = true')
+	cub-menu-content
+		ng-template(
+			cubMenuContent,
+			let-node='node')
+			button(
+				cubMenuItem,
+				icon='bolt-circle',
+				[disabled]='node.type === WORKFLOW_BLOCK_TYPE.TRIGGER',
+				(click)='changedBlockType( node, WORKFLOW_BLOCK_TYPE.TRIGGER )')
+				| {{ "BASE.WORKFLOW.CHART.LABEL.TRIGGER" | translate }}
+			button(
+				cubMenuItem,
+				icon='branch',
+				[disabled]='node.type === WORKFLOW_BLOCK_TYPE.CONDITION',
+				(click)='changedBlockType( node, WORKFLOW_BLOCK_TYPE.CONDITION )')
+				| {{ "BASE.WORKFLOW.CHART.LABEL.CONDITION_BRANCH" | translate }}
+			button(
+				cubMenuItem,
+				icon='play',
+				[disabled]='node.type === WORKFLOW_BLOCK_TYPE.ACTION',
+				(click)='changedBlockType( node, WORKFLOW_BLOCK_TYPE.ACTION )')
+				| {{ "BASE.WORKFLOW.CHART.LABEL.ACTION" | translate }}
+			button(
+				cubMenuItem,
+				icon='sub-process',
+				[disabled]='node.type === WORKFLOW_BLOCK_TYPE.SUB_PROCESS',
+				(click)='changedBlockType( node, WORKFLOW_BLOCK_TYPE.SUB_PROCESS )')
+				| {{ "BASE.WORKFLOW.CHART.LABEL.SUB_PROCESS" | translate }}
+			button(
+				cubMenuItem,
+				icon='branch-parallel',
+				[disabled]='node.type === WORKFLOW_BLOCK_TYPE.PARALLEL',
+				(click)='changedBlockType( node, WORKFLOW_BLOCK_TYPE.PARALLEL )')
+				| {{ "BASE.WORKFLOW.CHART.LABEL.PARALLEL" | translate }}
+			button(
+				cubMenuItem,
+				icon='branch-parallel',
+				[disabled]='node.type === WORKFLOW_BLOCK_TYPE.LOOP',
+				(click)='changedBlockType( node, WORKFLOW_BLOCK_TYPE.LOOP )')
+				| {{ "BASE.WORKFLOW.CHART.LABEL.LOOP" | translate }}
+			button(
+				cubMenuItem,
+				icon='hourglass',
+				[disabled]='node.type === WORKFLOW_BLOCK_TYPE.DELAY',
+				(click)='changedBlockType( node, WORKFLOW_BLOCK_TYPE.DELAY )')
+				| {{ "BASE.WORKFLOW.CHART.LABEL.DELAY" | translate }}
+
+cub-menu(
+	#blockAddMenu,
+	width='202px',
+	(opened)='scalable = false',
+	(closed)='scalable = true')
+	cub-menu-content
+		ng-template(
+			cubMenuContent,
+			let-nodeEvent='nodeEvent',
+			let-addable='addable')
+			button(
+				cubMenuItem,
+				icon='bolt-circle',
+				[disabled]='!addable?.trigger',
+				(click)='addedNode( nodeEvent, WORKFLOW_BLOCK_TYPE.TRIGGER )')
+				| {{ "BASE.WORKFLOW.CHART.LABEL.TRIGGER" | translate }}
+			button(
+				cubMenuItem,
+				icon='branch',
+				[disabled]='!addable?.condition',
+				(click)='addedNode( nodeEvent, WORKFLOW_BLOCK_TYPE.CONDITION )')
+				| {{ "BASE.WORKFLOW.CHART.LABEL.CONDITION_BRANCH" | translate }}
+			button(
+				cubMenuItem,
+				icon='play',
+				[disabled]='!addable?.action',
+				(click)='addedNode( nodeEvent, WORKFLOW_BLOCK_TYPE.ACTION )')
+				| {{ "BASE.WORKFLOW.CHART.LABEL.ACTION" | translate }}
+			button(
+				cubMenuItem,
+				icon='sub-process',
+				[disabled]='!addable?.subProcess',
+				(click)='addedNode( nodeEvent, WORKFLOW_BLOCK_TYPE.SUB_PROCESS )')
+				| {{ "BASE.WORKFLOW.CHART.LABEL.SUB_PROCESS" | translate }}
+			button(
+				cubMenuItem,
+				icon='branch-parallel',
+				[disabled]='!addable?.parallel',
+				(click)='addedNode( nodeEvent, WORKFLOW_BLOCK_TYPE.PARALLEL )')
+				| {{ "BASE.WORKFLOW.CHART.LABEL.PARALLEL" | translate }}
+			button(
+				cubMenuItem,
+				icon='branch-parallel',
+				[disabled]='!addable?.loop',
+				(click)='addedNode( nodeEvent, WORKFLOW_BLOCK_TYPE.LOOP )')
+				| {{ "BASE.WORKFLOW.CHART.LABEL.LOOP" | translate }}
+			button(
+				cubMenuItem,
+				icon='hourglass',
+				[disabled]='!addable?.delay',
+				(click)='addedNode( nodeEvent, WORKFLOW_BLOCK_TYPE.DELAY )')
+				| {{ "BASE.WORKFLOW.CHART.LABEL.DELAY" | translate }}
+
+cub-menu(
+	#blockActionMenu,
+	width='258px',
+	(opened)='scalable = false',
+	(closed)='scalable = true')
+	cub-menu-content
+		ng-template(
+			cubMenuContent,
+			let-node='node',
+			let-element='element')
+			ng-container(*ngIf='BLOCK_SUPPORT_DESCRIPTION.has( node.type )')
+				button(
+					cubMenuItem,
+					icon='pencil',
+					(click)='editDescription( node, element )')
+					| {{ "BASE.WORKFLOW.CHART.LABEL.EDIT_DESCRIPTION" | translate }}
+				button(
+					cubMenuItem,
+					icon='refresh',
+					(click)='refreshDescription( node )')
+					| {{ "BASE.WORKFLOW.CHART.LABEL.REFRESH_DESCRIPTION" | translate }}
+			button(
+				cubMenuItem,
+				icon='arrow-left-right',
+				position='end-after',
+				[cubMenuTriggerFor]='blockTypeMenu',
+				[cubMenuTriggerContext]='{ node }',
+				[disabled]='node.metadata?.blockData?.isEntry')
+				| {{ "BASE.WORKFLOW.CHART.LABEL.CHANGE_EVENT" | translate }}
+			button(
+				cubMenuItem='destructive',
+				icon='trash',
+				[disabled]='node.metadata?.blockData?.isEntry',
+				(click)='delete( node )')
+				| {{ "BASE.WORKFLOW.CHART.LABEL.DELETE" | translate }}
+
+cub-menu(
+	#blockWrapperDescription,
+	width='280px',
+	(closed)='onDescriptionChange( blockWrapperDescription.context.node )')
+	cub-menu-content
+		ng-template(
+			cubMenuContent,
+			let-node='node')
+			cub-form-field(
+				includeOuterSize,
+				(click)='$event.stopPropagation()')
+				textarea.h-60(
+					cubFormFieldInput,
+					autoFocusOn,
+					[formControl]='descriptionFormControl',
+					[placeholder]='"BASE.WORKFLOW.CHART.PLACEHOLDER.TYPE_DESCRIPTION" | translate',
+					[valueControl]=`node.metadata?.description | stripHtml`,
+					(valueControlChange)='description = $event',
+					(blur)='onDescriptionChange( node )')
+
+cub-flowchart(
+	#flowChart,
+	[rootNode]='rootNode',
+	[options]='{ scalable }',
+	(nodeAddon)='onAddNode( $event )',
+	(nodeClicked)='onNodeClicked( $event )',
+	(backdropClicked)='onBackdropClicked()')
+	ng-template(
+		cubFlowchartNodeTemplate,
+		let-node='node',
+		[type]='WORKFLOW_BLOCK_TYPE.TRIGGER')
+		.node
+			cub-icon.node__invalid-icon(
+				name='warning-fill',
+				size='24px',
+				color='error',
+				*ngIf='node.metadata.invalid')
+			cub-card.w-280(
+				clickable,
+				size='small',
+				boxShadow='on',
+				[state]=`node.metadata.invalid
+					? "error"
+					: node.id === blockActive?.id
+						? "active"
+						: undefined`)
+				cub-card-header(
+					style='background: linear-gradient(90deg, #54a158 0.02%, #8ddd8b 96.38%)')
+					+headerBlock('node?.metadata.blockData.metadata?.index', 'TRIGGER')
+				cub-card-content
+					+descriptionBlock('TRIGGER')
+	ng-template(
+		cubFlowchartNodeTemplate,
+		let-node='node',
+		[type]='WORKFLOW_BLOCK_TYPE.CONDITION')
+		.node
+			cub-icon.node__invalid-icon(
+				name='warning-fill',
+				size='24px',
+				color='error',
+				*ngIf='node.metadata.invalid')
+			cub-card.w-280(
+				clickable,
+				size='small',
+				boxShadow='on',
+				[state]=`node.metadata.invalid
+					? "error"
+					: node.id === blockActive?.id
+						? "active"
+						: undefined`)
+				cub-card-header(
+					style='background: linear-gradient(90deg, #ed4c7a 11.58%, #ff8ea9 96.38%)')
+					+headerBlock('node?.metadata.blockData.metadata?.index', 'CONDITION_BRANCH')
+				cub-card-content
+					+descriptionBlock('CONDITION')
+	ng-template(
+		cubFlowchartNodeTemplate,
+		let-node='node',
+		[type]='WORKFLOW_BLOCK_TYPE.ACTION')
+		.node
+			cub-icon.node__invalid-icon(
+				name='warning-fill',
+				size='24px',
+				color='error',
+				*ngIf='node.metadata.invalid')
+			cub-card.w-280(
+				clickable,
+				size='small',
+				boxShadow='on',
+				[state]=`node.metadata.invalid
+					? "error"
+					: node.id === blockActive?.id
+						? "active"
+						: undefined`)
+				cub-card-header(
+					style='background: linear-gradient(90deg, #545ada 30.34%, #56b6ff 118.92%)')
+					+headerBlock('node?.metadata.blockData.metadata?.index', 'ACTION')
+				cub-card-content
+					+descriptionBlock('ACTION')
+	ng-template(
+		cubFlowchartNodeTemplate,
+		let-node='node',
+		[type]='WORKFLOW_BLOCK_TYPE.END')
+		.node-end
+			cub-icon(
+				name='ban-circle',
+				size='24px',
+				color='white')
+	+outerBoxBlock('SUB_PROCESS', 'sub-process')
+	+outerBoxBlock('LOOP', 'branch-parallel')
+	+nodeOuterBoxBlock('SUB_PROCESS_EXIT')
+	+nodeOuterBoxBlock('SUB_PROCESS_START')
+	+nodeOuterBoxBlock('LOOP_EXIT')
+	+nodeOuterBoxBlock('LOOP_START')
+	ng-template(
+		cubFlowchartNodeTemplate,
+		let-node='node',
+		[type]='WORKFLOW_BLOCK_TYPE.DELAY')
+		.node
+			cub-icon.node__invalid-icon(
+				name='warning-fill',
+				size='24px',
+				color='error',
+				*ngIf='node.metadata.invalid')
+			.delay-card(
+				[class.delay-card--error]='node.metadata.invalid',
+				[class.delay-card--active]='node.id === blockActive?.id')
+				+descriptionBlock('DELAY', '"16px"', '"hourglass"')
+				+buttonBlockActionMenu
+				//- button(
+				//- 	cubBasicButton,
+				//- 	icon='more-vertical',
+				//- 	iconSize='16px',
+				//- 	[cubTooltip]='"BASE.WORKFLOW.CHART.LABEL.MORE_ACTION" | translate',
+				//- 	[active]=`blockActionMenu?.context?.node.id === node.id
+				//- 		&& blockActionMenu?.isOpened`,
+				//- 	[cubMenuTriggerFor]='blockActionMenu',
+				//- 	[cubMenuTriggerContext]='{ node }',
+				//- 	(click)='$event.stopPropagation()')
+	ng-template(
+		cubFlowchartNodeTemplate,
+		let-node='node',
+		[type]='WORKFLOW_BLOCK_TYPE.PARALLEL')
+		.layout-row.layout-align-start-center.layout-gap-12
+			cub-icon.node__invalid-icon(
+				name='warning-fill',
+				size='24px',
+				color='error',
+				*ngIf='node.metadata.invalid')
+			.layout-row.layout-align-space-between-center.full-width.layout-gap-4
+				button.outer-box-button(
+					cubButton='secondary',
+					size='small',
+					[ngClass]=`node.metadata.invalid
+						? { 'outer-box-button--error': true }
+						: node.id === blockActive?.id
+							? { 'outer-box-button--active': true }
+							: undefined`)
+					.layout-row.layout-align-start-center.full-height.layout-gap-8
+						.outer-box-icon
+							cub-icon(
+								name='branch-parallel',
+								size='20px',
+								[color]='"purple" | cubPalette : "500"')
+						| {{ "BASE.WORKFLOW.CHART.LABEL.PARALLEL" | translate }}
+						cub-icon(
+							name='info-circle',
+							size='16px',
+							color='secondary',
+							*ngIf='node.metadata?.description',
+							[cubTooltip]='node.metadata?.description')
+						+buttonBlockActionMenu(undefined, '{ node, element: outerBoxButton }')(#outerBoxButton)
+				button(
+					cubBasicButton,
+					icon='plus-circle-fill',
+					iconSize='20px',
+					(click)='addedChildNode( node )')
+	ng-template(
+		cubFlowchartNodeTemplate,
+		let-node='node',
+		[type]='WORKFLOW_BLOCK_TYPE.MERGE')
+		.node-merge
+			| {{ "BASE.WORKFLOW.CHART.LABEL.MERGE" | translate }}

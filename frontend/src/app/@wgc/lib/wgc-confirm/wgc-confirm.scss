@@ -1,0 +1,38 @@
+@import 'src/scss/partials/variable';
+@import '../wgc-dialog/dialog-container/wgc-dialog-container';
+
+.wgc-confirm {
+	.wgc-confirm--popup {
+		display: flex;
+		position: fixed;
+		top: 30px;
+		left: 50%;
+		transform: translateX(-50%);
+		padding: 5px;
+		font-size: 12px;
+		z-index: $z-level-4;
+		border-radius: 6px;
+		border: 1px solid $color-border;
+		box-shadow: $box-shadow;
+		animation: $popup-animation;
+		background-color: $color-white;
+	}
+
+	.wgc-confirm--dialog {
+		.wgc-confirm__warning {
+			display: flex;
+			align-items: center;
+			margin-top: 20px;
+			margin-bottom: 10px;
+			color: $color-danger;
+
+			.wgc-confirm__warning__icon {
+				margin-right: 5px;
+			}
+		}
+	}
+}
+
+.wgc-confirm-backdrop {
+	background-color: $color-backdrop;
+}

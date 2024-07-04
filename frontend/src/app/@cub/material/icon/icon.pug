@@ -1,0 +1,7 @@
+cub-image(
+	*ngIf='isImage; else elseBlock;',
+	[src]='name',
+	[width]='size',
+	[height]='size')
+ng-template(#elseBlock)
+	i.icon([ngClass]='"icon-" + name')

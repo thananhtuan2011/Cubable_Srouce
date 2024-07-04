@@ -1,0 +1,15 @@
+.cub-action-box__start
+	ng-container(
+		*ngTemplateOutlet='actionBoxStart?.templateRef')
+cub-divider(vertical)
+.cub-action-box__middle
+	ng-container(
+		*ngTemplateOutlet='actionBoxMiddle?.templateRef')
+cub-divider(vertical)
+.cub-action-box__end
+	ng-container(
+		*ngTemplateOutlet='actionBoxEnd?.templateRef')
+	button(
+		*ngIf='!actionBoxEnd',
+		(click)='dismiss( $event )')
+		| {{ "CUB.LABEL.CANCEL" | translate }}

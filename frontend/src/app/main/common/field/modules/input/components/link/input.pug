@@ -1,0 +1,110 @@
+include ../mixins/mixin.pug
+
+ng-container(*ngIf='$any( data )?.valueType; else elseBlock;')
+	.layout-row.layout-gap-8
+		ng-container([ngSwitch]='$any( data ).valueType')
+			ng-container(*ngSwitchCase='VALUE_TYPE.STATIC')
+				cub-form-field.flex(
+					#formField,
+					[label]='innerLabel',
+					[size]='size',
+					[variant]='variant',
+					[disabled]='disabled',
+					[displayErrorMode]='displayErrorMode',
+					[hideRequiredMarker]='hideRequiredMarker',
+					[focusing]='linkEditorPopupRef?.isOpened')
+					ng-container(
+						cubFormFieldDisplay,
+						*ngIf=`
+							$any( data ).valueType === VALUE_TYPE.STATIC
+							&& $any( data ).data`)
+						a(
+							target='_blank',
+							[href]='$any( data ).data.link | link')
+							| {{ $any( data ).data.text || $any( data ).data.link }}
+					ng-container(
+						cubFormFieldSuffix,
+						*ngIf=`$any( data ).valueType === VALUE_TYPE.STATIC
+							&& !disabled && !readonly`)
+						button(
+							cubBasicButton,
+							tabindex='-1',
+							icon='link',
+							[style.padding.px]='0',
+							[iconSize]=`
+								formField.isSmallSize
+									? "16px"
+									: "20px"
+							`,
+							(click)='openLinkEditorPopup( $event, $any( data ).data )')
+					input(
+						cubFormFieldInput,
+						type='url',
+						maxlength='255',
+						[placeholder]=`
+							placeholder
+								?? "www.cubable.com"
+						`,
+						[autoFocusOn]='autoFocusOn',
+						[required]='isRequired',
+						[readonly]='readonly',
+						[clearable]='!readonly',
+						[formControl]='formControl',
+						[disableControl]='disabled',
+						[valueControl]='$any( data ).data?.link',
+						(valueControlChange)='onLinkChanged( $event, $any( data ).data )')
+			ng-container(*ngSwitchCase='VALUE_TYPE.DYNAMIC')
+				+formField
+					+dynamicValue()(
+						readonly,
+						(click)='plusButton.open()')
+			ng-container(*ngSwitchCase='VALUE_TYPE.EMPTY')
+				+formField
+					+emptyValue
+		+valueTypeSwitch
+ng-template(#elseBlock)
+	cub-form-field(
+		#formField,
+		[label]='innerLabel',
+		[size]='size',
+		[variant]='variant',
+		[displayErrorMode]='displayErrorMode',
+		[hideRequiredMarker]='hideRequiredMarker',
+		[focusing]='linkEditorPopupRef?.isOpened')
+		input(
+			cubFormFieldInput,
+			type='url',
+			maxlength='255',
+			[placeholder]=`
+				placeholder
+					?? "www.cubable.com"
+			`,
+			[autoFocusOn]='autoFocusOn',
+			[required]='isRequired',
+			[readonly]='readonly',
+			[clearable]='!readonly',
+			[formControl]='formControl',
+			[disableControl]='disabled',
+			[valueControl]='data?.link',
+			(valueControlChange)='onLinkChanged( $event, data )')
+		ng-container(
+			cubFormFieldDisplay,
+			*ngIf='data')
+			a(
+				target='_blank',
+				[href]='data.link | link')
+				| {{ data.text || data.link }}
+		ng-container(
+			cubFormFieldSuffix,
+			*ngIf='!disabled && !readonly')
+			button(
+				cubBasicButton,
+				tabindex='-1',
+				icon='link',
+				[style.padding.px]='0',
+				[iconSize]=`
+					formField.isSmallSize
+						? "16px"
+						: "20px"
+				`,
+				(click)='openLinkEditorPopup( $event, data )')

@@ -1,0 +1,21 @@
+@import 'src/app/@cub/scss/partials/variable';
+
+:host {
+	display: flex;
+	flex-direction: column;
+	width: 100%;
+	min-width: 0;
+	height: 100%;
+	min-height: 0;
+	gap: 12px;
+
+	.complete-condition {
+		display: flex;
+		flex-direction: column;
+		gap: 12px;
+		padding: 12px;
+		border-radius: 8px;
+
+		background-color: $color-white;
+	}
+}

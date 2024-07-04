@@ -1,0 +1,8 @@
+include includes/error.include.pug
+
++error
+	img.mb-10(width='250px', height='187.61px', [lazyLoad]='"assets/images/arts/404.webp"')
+	h2.mb-10([innerHtml]='"ERROR.LABEL.SOMETHING_MISSING" | translate')
+	.color-label.mb-30([innerHtml]='"ERROR.MESSAGE.SOMETHING_MISSING" | translate')
+	button(wgcButton, color='primary', (click)='back()')
+		| {{ "ERROR.LABEL.BACK_TO_HOME" | translate }}

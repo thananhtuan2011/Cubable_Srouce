@@ -1,0 +1,11 @@
+cub-dropdown(
+	required,
+	#boardPicker,
+	[clearable]='false',
+	[formControl]='boardIDControl',
+	[(valueControl)]='boardID',
+	(valueControlChange)='onBoardChange()')
+	cub-dropdown-item(
+		*ngFor='let board of boards; ngForTrackByID',
+		[label]='board.name',
+		[value]='board.id')

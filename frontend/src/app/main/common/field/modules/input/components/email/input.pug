@@ -1,0 +1,61 @@
+include ../mixins/mixin.pug
+
+ng-container(*ngIf='$any( data )?.valueType; else elseBlock;')
+	.layout-row.layout-gap-8
+		ng-container([ngSwitch]='$any( data ).valueType')
+			ng-container(*ngSwitchCase='VALUE_TYPE.STATIC')
+				cub-form-field.flex(
+					[label]='innerLabel',
+					[size]='size',
+					[variant]='variant',
+					[disabled]='disabled',
+					[displayErrorMode]='displayErrorMode',
+					[hideRequiredMarker]='hideRequiredMarker')
+					input(
+						cubFormFieldInput,
+						type='email',
+						maxlength='255',
+						[placeholder]=`
+							placeholder
+								?? "email@gmail.com"
+						`,
+						[autoFocusOn]='autoFocusOn',
+						[required]='isRequired',
+						[readonly]='readonly',
+						[clearable]='!readonly',
+						[formControl]='formControl',
+						[disableControl]='disabled',
+						[valueControl]='$any( data )?.data',
+						(valueControlChange)='onDataChanged( $event )')
+			ng-container(*ngSwitchCase='VALUE_TYPE.DYNAMIC')
+				+formField
+					+dynamicValue()(
+						readonly,
+						(click)='plusButton.open()')
+			ng-container(*ngSwitchCase='VALUE_TYPE.EMPTY')
+				+formField
+					+emptyValue
+		+valueTypeSwitch
+ng-template(#elseBlock)
+	cub-form-field(
+		[label]='innerLabel',
+		[size]='size',
+		[variant]='variant',
+		[displayErrorMode]='displayErrorMode',
+		[hideRequiredMarker]='hideRequiredMarker')
+		input(
+			cubFormFieldInput,
+			type='email',
+			maxlength='255',
+			[placeholder]=`
+				placeholder
+					?? "email@gmail.com"
+			`,
+			[autoFocusOn]='autoFocusOn',
+			[required]='isRequired',
+			[readonly]='readonly',
+			[clearable]='!readonly',
+			[formControl]='formControl',
+			[disableControl]='disabled',
+			[valueControl]='data',
+			(valueControlChange)='onDataChanged( $event )')

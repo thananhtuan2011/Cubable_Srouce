@@ -1,0 +1,27 @@
+@import '../../scss/partials/variable';
+
+.cub-chip {
+	$self: &;
+
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	width: fit-content;
+	min-width: 32px;
+	max-width: 100%;
+	height: fit-content;
+	min-height: 20px;
+	max-height: 100%;
+	padding: 2px 8px;
+	border-radius: 20px;
+
+	color: var(--chip-text-color, $color-text-primary);
+	background-color: var(--chip-color, $color-material-default);
+
+	font-size: 12px;
+	line-height: 16px;
+
+	&#{ $self }--has-avatar {
+		padding: 0 8px 0 0;
+	}
+}

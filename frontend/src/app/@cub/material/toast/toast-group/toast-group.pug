@@ -1,0 +1,8 @@
+cub-toast(
+	*ngFor='let toast of toasts; trackByID',
+	[title]='toast.title',
+	[icon]='toast.config.icon',
+	[type]='toast.config.type',
+	[canClose]='toast.config.canClose',
+	[translate]='toast.config.translate',
+	(closed)='deleteToast( toast.id )')

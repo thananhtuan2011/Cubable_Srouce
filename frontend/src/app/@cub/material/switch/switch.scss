@@ -1,0 +1,118 @@
+@import '../../scss/partials/variable';
+@import '../../scss/partials/mixin';
+
+.cub-switch {
+	$self: &;
+
+	display: flex;
+	column-gap: 8px;
+	width: fit-content;
+	height: fit-content;
+
+	cursor: pointer;
+
+	// Size
+	@at-root {
+		&#{ $self }-small {
+			#{ $self }__box {
+				width: 28px;
+				min-width: 28px;
+				max-width: 28px;
+				height: 16px;
+				min-height: 16px;
+				max-height: 16px;
+
+				&:after {
+					width: 12px;
+					height: 12px;
+				}
+			}
+		}
+
+		&#{ $self }-large {
+			#{ $self }__box {
+				width: 36px;
+				min-width: 36px;
+				max-width: 36px;
+				height: 20px;
+				min-height: 20px;
+				max-height: 20px;
+
+				&:after {
+					width: 16px;
+					height: 16px;
+				}
+			}
+		}
+	}
+
+	// Active state
+	@at-root {
+		&:not([disabled]) {
+			&#{ $self }--active {
+				#{ $self }__box {
+					background-color: var(--switch-color, color(green, 500));
+				}
+			}
+		}
+
+		&#{ $self }--active {
+			#{ $self }__box {
+				&:after {
+					transform: translateX(100%);
+				}
+			}
+		}
+	}
+
+	// Readonly state
+	@at-root {
+		&[readonly] {
+			cursor: default;
+		}
+	}
+
+	// Disabled state
+	@at-root {
+		&[disabled] {
+			@include cursor-not-allowed;
+
+			#{ $self }__box {
+				background-color: $color-material-default;
+
+				&:after {
+					background-color: $color-icon-tertiary;
+				}
+			}
+		}
+	}
+
+	#{ $self }-wrapper {
+		display: flex;
+		align-items: center;
+		height: 20px;
+		max-height: 20px;
+	}
+
+	#{ $self }__box {
+		@include visible-transition(background-color);
+
+		padding: 2px;
+		border-radius: 20px;
+
+		background-color: $color-material-default;
+
+		&:after {
+			@include transition(transform);
+
+			content: '';
+
+			display: block;
+			border-radius: 50%;
+
+			background-color: $color-white;
+
+			transform: translateX(0);
+		}
+	}
+}

@@ -1,0 +1,111 @@
+include ./toast.pug
+
+ng-template(#toastLoading)
+	+toastLoading('toastLoading')
+
+ng-template(#toastSuccess)
+	+toastSuccess('toastSuccess')
+
+ng-template(#toastFail)
+	+toastFail('toastFail')
+
+ng-container([ngSwitch]='typePopup')
+	ng-container(*ngSwitchCase='1')
+		cub-popup(
+			#popupImport,
+			minWidth='500px',
+			maxWidth='500px',
+			maxHeight='520px')
+			cub-popup-header
+				ng-template(cubPopupHeader)
+					.layout-row.layout-align-space-between-center.layout-gap-8.flex
+						h4
+							| {{ "BASE.BOARD.IMPORT.LABEL.CHOOSE_FILE" | translate }}
+						button(
+							cubClearButton,
+							size='24px',
+							[cubTooltip]='"BASE.LABEL.CLOSE" | translate',
+							(click)='popupRef.close()')
+			cub-popup-content
+				ng-template(cubPopupContent)
+					cub-list
+						.layout-row.layout-align-space-between-center.layout-gap-16.flex
+							button.btn_import.flex-50.p-16(
+								cubListItem,
+								(click)='pickFileDesktop()')
+								.layout-row.layout-gap-8
+									cub-image(
+										width='20px',
+										height='20px',
+										src='assets/images/files/desktop.webp',)
+									span
+										| {{ "BASE.BOARD.IMPORT.LABEL.DESKTOP" | translate }}
+							
+							button.btn_import.flex-50.p-16(
+								cubListItem,
+								(click)='pickFileGoggleSheet()')
+								.layout-row.layout-gap-8
+									cub-image(
+										width='20px',
+										height='20px',
+										src='assets/images/files/gg-sheet.webp')
+									span
+										| {{ "BASE.BOARD.IMPORT.LABEL.GG_SHEET" | translate }}
+
+		ng-container(*ngTemplateOutlet='popupImport.templateRef') 
+	ng-container(*ngSwitchCase='2')
+		cub-popup(
+			#popupImportSpreadsheet,
+			minWidth='500px',
+			maxWidth='500px',
+			maxHeight='520px')
+			cub-popup-header
+				ng-template(cubPopupHeader)
+					.layout-row.layout-align-space-between-center.layout-gap-8.flex
+						h4
+							| {{ "BASE.BOARD.IMPORT.LABEL.SELECT_SPREADSHEET_TO_IMPORT_DATA" | translate }}
+						button(
+							cubClearButton,
+							size='24px',
+							[cubTooltip]='"BASE.LABEL.CLOSE" | translate',
+							(click)='popupRef.close()')
+			cub-popup-content
+				ng-template(cubPopupContent)
+					.layout-column.layout-gap-12
+						cub-dropdown(
+							required,
+							#boardPicker,
+							displayErrorMode,
+							[label]='"BASE.BOARD.IMPORT.LABEL.CHOOSE_BOARD" | translate',
+							[clearable]='false',
+							[formControl]='sheetsControl',
+							[valueControl]='infoSheet?.currentSheet',
+							(valueControlChange)='onSheetChange( $event )')
+							cub-dropdown-item(
+								*ngFor='let sheet of infoSheet.sheets; let i = index; ngForTrackByID',
+								[label]='sheet',
+								[value]='sheet')
+							span(cubDropdownError, *ngIf='infoSheet?.isError && infoSheet?.totalRows !== 0')
+								| {{ "BASE.BOARD.IMPORT.MESSAGE.SPREADSHEET_WITH_ROWS_GREATER" | translate }}
+							span(cubDropdownError, *ngIf='infoSheet?.isError && infoSheet?.totalRows === 0')
+								| {{ "BASE.BOARD.IMPORT.MESSAGE.SHEET_INVALID" | translate }}
+						.layout-row.layout-align-start-center.layout-gap-8
+							cub-icon(
+								name='info-circle',
+								size='20px')
+							label
+								| {{ "BASE.BOARD.IMPORT.LABEL.CONTENT" | translate }}
+			cub-popup-footer
+				ng-template(cubPopupFooter)
+					.layout-row.layout-gap-12.layout-align-end
+						button.w-80(
+							cubButton='secondary',
+							(click)='popupRef.close()')
+							| {{ "BASE.BOARD.IMPORT.LABEL.CANCEL" | translate }}
+						button.w-120(
+							cubButton,
+							[disabled]='infoSheet?.isError',
+							(click)='onContinue()')
+							| {{ "BASE.BOARD.IMPORT.LABEL.NEXT" | translate }}
+
+		ng-container(*ngTemplateOutlet='popupImportSpreadsheet.templateRef')

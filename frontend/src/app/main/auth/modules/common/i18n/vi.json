@@ -1,0 +1,8 @@
+{
+	"LABEL": {
+		"SWITCH_WORKSPACE": "Chuyển đổi Workspace"
+	},
+	"MESSAGE": {
+		"REDIRECT_WORKSPACE": "Bạn đang được chuyển hướng đến <b class='color-text'>{{ name }}</b> sau {{ count }} giây."
+	}
+}

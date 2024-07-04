@@ -1,0 +1,13 @@
+//- ng-template(#content)
+//- 	ng-content
+
+//- .wgc-tag-list-wrapper
+//- 	ng-container(*ngTemplateOutlet='content')
+//- 	wgc-tag.wgc-tag--more(
+//- 		*ngIf='isTruncated',
+//- 		[position]='moreMenuPosition',
+//- 		[truncate]='false',
+//- 		[color]='tagColor',
+//- 		[wgcMenuTriggerFor]='moreMenu',
+//- 		(click)='showMore?.emit()')
+//- 		| +{{ moreDisplay | kUnit }}

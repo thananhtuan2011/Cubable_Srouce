@@ -1,0 +1,21 @@
+ng-container(*ngIf='isTitleString; else elseBlock;')
+	cub-image.cub-toast__image(
+		width='36px',
+		height='36px',
+		[src]='iconUrl')
+	.cub-toast__title
+		span(
+			*ngIf='translate; else elseBlock;',
+			[attr.title]='( title | translate : translate )',
+			[innerHtml]='( title | translate : translate )')
+		ng-template(#elseBlock)
+			span(
+				[attr.title]='title',
+				[innerHtml]='title')
+ng-template(#elseBlock)
+	ng-container(
+		*ngTemplateOutlet='title')
+button(
+	cubClearButton,
+	*ngIf='canClose',
+	(click)='close()')

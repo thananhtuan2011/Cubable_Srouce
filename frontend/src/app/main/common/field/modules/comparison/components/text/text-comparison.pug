@@ -1,0 +1,119 @@
+include ../mixins/mixin.pug
+
+mixin input(data)
+	cub-form-field&attributes(attributes)(
+		displayErrorMode='tooltip')
+		input(
+			required,
+			clearable,
+			cubFormFieldInput,
+			#textInput='cubFormFieldInput',
+			[disableControl]=`
+				error?.field
+					|| ( excludeFields?.isDisable
+						&& ( excludeFieldsLK?.[ field?.id ] ) )`,
+			[name]='"FIELD.COMPARISON.LABEL.TEXT" | translate',
+			[placeholder]='"FIELD.COMPARISON.PLACEHOLDER.FILL_TEXT" | translate',
+			[formControl]='dataControl',
+			[(valueControl)]=`${data}`,
+			(valueControlChange)='onDataChange()')
+
+cub-menu(
+	#wordCountOperatorsMenu)
+	cub-menu-content
+		ng-template(cubMenuContent)
+			button(
+				cubMenuSelectItem,
+				*ngFor='let o of comparisonOperatorsWordCount; ngForTrackByValue',
+				[selected]='o.value === operator',
+				(click)='onWordCountOperatorChange( o )')
+				| {{ o.label | translate | lowercase | empty }}
+
+cub-menu(
+	#operatorMenu,
+	minWidth='158px',
+	maxHeight='220px')
+	cub-menu-content
+		ng-template(cubMenuContent)
+			cub-menu-group
+				button(
+					cubMenuSelectItem,
+					*ngFor='let o of comparisonOperators; ngForTrackByValue',
+					[selected]='o.value === operator',
+					(click)='operator = o.value; onOperatorChange();')
+					| {{ o.label | translate | lowercase | empty }}
+				button.pl-28(
+					cubMenuItem,
+					position='after',
+					trailingIconColor='tertiary',
+					trailingIcon='chevron-right',
+					[autoClose]='false',
+					[cubSubMenuTriggerFor]='wordCountOperatorsMenu')
+					| {{ "FIELD.COMPARISON.LABEL.WORD_COUNT" | translate | lowercase }}
+
+.layout-row.layout-align-start-center.layout-gap-8.layout-wrap.flex
+	ng-container(*ngTemplateOutlet='fieldPicker')
+
+	cub-form-field(
+		autoWidth,
+		cubMenuTriggerProgrammatically,
+		required,
+		#operatorFormField,
+		cubMenuTriggerType='fit-menu',
+		#operatorMenuTrigger='cubMenuTriggerFor',
+		[cubMenuTriggerDisableOpen]='error?.field',
+		[focusing]='operatorMenu.isOpened',
+		[cubMenuTriggerOrigin]='operatorFormField.container',
+		[cubMenuTriggerFor]='operatorMenu',
+		(container.click)=`operatorMenuTrigger.open(
+			undefined,
+			{ restoreFocus: "origin" }
+		)`)
+		input(
+			cubFormFieldInput,
+			readonly,
+			[disableControl]=`
+				error?.field
+					|| ( excludeFields?.isDisable
+						&& ( excludeFieldsLK?.[ field?.id ] ) )`,
+			[placeholder]='"FIELD.COMPARISON.PLACEHOLDER.SELECT_OPTION" | translate',
+			[clearable]='false',
+			[ngModel]='operator | textOperatorName | translate | lowercase')
+		ng-container(cubFormFieldSuffix)
+			cub-icon(
+				size='16px',
+				color='tertiary',
+				[name]='operatorMenuTrigger.isOpened ? "chevron-up" : "chevron-down"')
+
+	ng-container(*ngIf='$any( data )?.compareType')
+		ng-container([ngSwitch]='$any( data ).compareType')
+			ng-container(*ngSwitchCase='COMPARISON_TYPE.AUTO')
+				+comparisonTypeAuto
+			ng-container(*ngSwitchCase='COMPARISON_TYPE.STATIC')
+				+input('$any( data ).text').flex.miw-200
+
+	ng-container(*ngIf='operatorHasComparisonType.has( operator )')
+		+comparisonType
+
+	ng-container(
+		*ngIf=`operator === COMPARISON_OPERATOR.STARTS_WITH
+			|| operator === COMPARISON_OPERATOR.ENDS_WITH`)
+		+input('data').w-172
+
+	cub-form-field.w-172(
+		*ngIf='operatorsAllowWordCount.has( operator )',
+		displayErrorMode='tooltip')
+		input(
+			required,
+			cubFormFieldInput,
+			type='number',
+			min='0',
+			placeholder='0',
+			#numberInput='cubFormFieldInput',
+			[disableControl]=`
+				error?.field
+					|| ( excludeFields?.isDisable
+						&& ( excludeFieldsLK?.[ field?.id ] ) )`,
+			[formControl]='dataControl',
+			[valueControl]='data',
+			(valueControlChange)='data = $event?.length ? +$event : data; onDataChange();')
